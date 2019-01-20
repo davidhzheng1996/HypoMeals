@@ -1,0 +1,1 @@
+web: gunicorn hypomeals.wsgi --log-file -
