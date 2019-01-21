@@ -27,13 +27,14 @@ SECRET_KEY = '=i@fl14(e7-xz-ej3ifpn)hotxei-#fifyixz8+l@*xjut8vc2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0','hypomeals-dev.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1','localhost','0.0.0.0','hypomeals-dev.herokuapp.com']
 
 
 # Application definition
 
 INSTALLED_APPS = [
     'inventorymanager.apps.InventorymanagerConfig',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
