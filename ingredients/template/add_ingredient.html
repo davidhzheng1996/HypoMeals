@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add ingredients</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.4/css/bulma.min.css">
+</head>
+
+<body>
+  <div class="columns" id="app">
+    <div class="column is-two-thirds">
+          <section class="section">
+        <h1 class="title">Inventory Manager</h1>
+        <p class="subtitle">
+          Add ingredients xD!
+        </p>
+        <hr>      
+        
+        <!-- form starts here -->
+        <section class="form">
+            <form v-on:submit.prevent="$validator.validateAll(); console.log(form);">
+          <div class="field">
+           <label class="label">Name</label>
+            <div class="control">
+              <input name ="name" v-model="form.name" v-validate="'required|min:3'" v-bind:class="{'is-danger': errors.has('name')}" class="input" type="text" placeholder="Ingredient Name">
+            </div>
+            <p class="help is-danger" v-show="errors.has('name')">
+  {{ errors.first('name') }}
+    </p>
+          </div>
+           
+          
+          <div class="field">
+           <label class="label">Number</label>
+            <div class="control">
+              <input v-model="form.name" class="input" type="text" placeholder="Ingredient Number">
+            </div>
+          </div>
+          
+          <div class="field">
+            <label class="label">Vendor Information</label>
+                <div class="control">
+                    <textarea class="textarea" placeholder="Optional Vendor Info" v-model="form.message"></textarea>
+                </div>
+            </div>   
+          
+          <div class="field">
+           <label class="label">Package Size</label>
+            <div class="control">
+              <input v-model="form.name" class="input" type="text" placeholder="Package Size">
+            </div>
+          </div>
+          
+          <div class="field">
+           <label class="label">Cost</label>
+            <div class="control">
+              <input v-model="form.name" class="input" type="text" placeholder="Cost per Package">
+            </div>
+          </div>
+            
+          <div class="field">
+            <label class="label">Comment</label>
+                <div class="control">
+                    <textarea class="textarea" placeholder="Optional Comment" v-model="form.message"></textarea>
+                </div>
+            </div> 
+            </form>
+        </section>
+  ...
+  <div class="field is-grouped">
+        <div class="control">
+      <button v-bind:disabled="errors.any()" class="button is-primary">Submit</button>
+    </div>
+  </div>
+</form>
+      </section>
+    </div>
+  </div>
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js"></script>
+
+<script>
+Vue.use(VeeValidate);
+    VeeValidate.Validator.extend("polite", {
+  getMessage: field => `You need to be polite in the ${field} field`,
+  validate: value => value.toLowerCase().indexOf("please") !== -1
+});
+new Vue({
+  el: '#app',
+  data: {
+    form : {
+      name: '',
+        message: ''
+    }
+  }
+});
+</script>
+
+</body>
+</html>
