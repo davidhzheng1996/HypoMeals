@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Add ingredients</title>
+  <!-- CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.4/css/bulma.min.css">
 </head>
 
@@ -17,7 +18,7 @@
         
         <!-- form starts here -->
         <section class="form">
-            <form v-on:submit.prevent="$validator.validateAll(); console.log(form);">
+            <form v-on:submit.prevent="addIngredient()">
           <div class="field">
            <label class="label">Name</label>
             <div class="control">
@@ -76,7 +77,11 @@
     </div>
   </div>
   
+<!-- javascript -->
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js"></script>
+<script src=”https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+<script src=”https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
 
 <script>
 Vue.use(VeeValidate);
@@ -92,6 +97,32 @@ new Vue({
         message: ''
     }
   }
+},
+methods: {
+  getIngredients: function() {
+  this.loading = true;
+  this.$http.get(‘/api/article/’)
+      .then((response) => {
+        this.ingredients = response.data;
+        this.loading = false;
+      })
+      .catch((err) => {
+       this.loading = false;
+       console.log(err);
+      })
+ },
+  addIngredient(): function() {
+  this.loading = true;
+  this.$http.post(‘/api/article/’,this.newIngredient)
+      .then((response) => {
+        this.loading = false;
+        this.getIngredients();
+      })
+      .catch((err) => {
+        this.loading = false;
+        console.log(err);
+      })
+ },
 });
 </script>
 
