@@ -101,7 +101,7 @@ new Vue({
 methods: {
   getIngredients: function() {
   this.loading = true;
-  this.$http.get(‘/api/article/’)
+  this.$http.get(‘/’)
       .then((response) => {
         this.ingredients = response.data;
         this.loading = false;
@@ -113,7 +113,7 @@ methods: {
  },
   addIngredient(): function() {
   this.loading = true;
-  this.$http.post(‘/api/article/’,this.newIngredient)
+  this.$http.post(‘/’,this.newIngredient)
       .then((response) => {
         this.loading = false;
         this.getIngredients();
