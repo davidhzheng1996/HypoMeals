@@ -22,7 +22,7 @@
           <div class="field">
            <label class="label">Name</label>
             <div class="control">
-              <input name ="name" v-model="form.name" v-validate="'required|min:3'" v-bind:class="{'is-danger': errors.has('name')}" class="input" type="text" placeholder="Ingredient Name">
+              <input name ="name" v-model="newIngredient.name" v-validate="'required|min:3'" v-bind:class="{'is-danger': errors.has('name')}" class="input" type="text" placeholder="Ingredient Name">
             </div>
             <p class="help is-danger" v-show="errors.has('name')">
   {{ errors.first('name') }}
@@ -33,35 +33,35 @@
           <div class="field">
            <label class="label">Number</label>
             <div class="control">
-              <input v-model="form.name" class="input" type="text" placeholder="Ingredient Number">
+              <input v-model="newIngredient.number" class="input" type="text" placeholder="Ingredient Number">
             </div>
           </div>
           
           <div class="field">
             <label class="label">Vendor Information</label>
                 <div class="control">
-                    <textarea class="textarea" placeholder="Optional Vendor Info" v-model="form.message"></textarea>
+                    <textarea class="textarea" placeholder="Optional Vendor Info" v-model="newIngredient.vendor_info"></textarea>
                 </div>
             </div>   
           
           <div class="field">
            <label class="label">Package Size</label>
             <div class="control">
-              <input v-model="form.name" class="input" type="text" placeholder="Package Size">
+              <input v-model="newIngredient.package_size" class="input" type="text" placeholder="Package Size">
             </div>
           </div>
           
           <div class="field">
            <label class="label">Cost</label>
             <div class="control">
-              <input v-model="form.name" class="input" type="text" placeholder="Cost per Package">
+              <input v-model="newIngredient.cost" class="input" type="text" placeholder="Cost per Package">
             </div>
           </div>
             
           <div class="field">
             <label class="label">Comment</label>
                 <div class="control">
-                    <textarea class="textarea" placeholder="Optional Comment" v-model="form.message"></textarea>
+                    <textarea class="textarea" placeholder="Optional Comment" v-model="newIngredient.comment"></textarea>
                 </div>
             </div> 
             </form>
@@ -92,14 +92,15 @@ Vue.use(VeeValidate);
 new Vue({
   el: '#app',
   data: {
-    form : {
-      name: '',
-        message: ''
-    }
+   //articles: [],
+   loading: false,
+   //currentArticle: {},
+   message: null,
+   newIngredient: { 'name': null, 'number': null, 'vendor_info': null,'package_size': null, 'cost': null, 'comment': null, },
   }
 },
 mounted: function() {
- this.addIngredient();
+ 
 },
 methods: {
 //   getIngredients: function() {
