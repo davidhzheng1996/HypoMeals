@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- always put your name in your work -->
+    <meta name="author" content="Robert C. Duvall">
+    <!-- stop the web browser from ever caching this page or its images -->
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!-- libraries neded for this page -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
+    <!-- support for this page -->
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+  <title>ToDo List</title>
+</head>
+<body>
+  <div class="cont">
+    <h1 class="login-title">Inventory Manager</h1>
+  </div>
+    <div class="login-form">
+      <div class="login-row">
+        <input type="text" class="login-input name" placeholder="User"/>
+      </div>
+      <div class="login-row">
+        <input type="password" class="login-input pass" placeholder="Password"/>
+      </div>
+      <button type="button" class="login-submit">Sign in</button>
+    </div>
+</body>
+</html>
