@@ -69,7 +69,7 @@
   ...
   <div class="field is-grouped">
         <div class="control">
-      <button v-bind:disabled="errors.any()" class="button is-primary">Submit</button>
+      <button v-bind:disabled="errors.any()" class="button is-primary" v-on:click="addIngredient()">Submit</button>
     </div>
   </div>
 </form>
@@ -98,22 +98,25 @@ new Vue({
     }
   }
 },
+mounted: function() {
+ this.addIngredient();
+},
 methods: {
-  getIngredients: function() {
-  this.loading = true;
-  this.$http.get(‘/’)
-      .then((response) => {
-        this.ingredients = response.data;
-        this.loading = false;
-      })
-      .catch((err) => {
-       this.loading = false;
-       console.log(err);
-      })
- },
+//   getIngredients: function() {
+//   this.loading = true;
+//   this.$http.get(‘/’)
+//       .then((response) => {
+//         this.ingredients = response.data;
+//         this.loading = false;
+//       })
+//       .catch((err) => {
+//        this.loading = false;
+//        console.log(err);
+//       })
+//  },
   addIngredient(): function() {
   this.loading = true;
-  this.$http.post(‘/’,this.newIngredient)
+  this.$http.post('/api/ingredient/',this.newIngredient)
       .then((response) => {
         this.loading = false;
         this.getIngredients();
@@ -122,7 +125,7 @@ methods: {
         this.loading = false;
         console.log(err);
       })
- },
+ }
 });
 </script>
 
