@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Vue-js | Django | Crud App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="A simple crud app made with the vue js and django">
+<meta name="keywords" content="vuejs, django, crudapp, restapi">
+<!-- <! — bootstap  -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<!-- <! — boostrap css → -->
+</head>
+
+<body>
+        <div id="starting">
+                <div class="container">
+                  <div class="row">
+                    <h1>List of SKUs
+                    <button class="btn btn-success" data-toggle="modal" data-target="#addSkuModal">Add Sku</button>
+                    </h1>
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">Productline</th>
+                          <th scope="col">Unit UPC</th>
+                          <th scope="col">Case UPC</th>
+                          <th scope="col">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="sku in skus">
+                          <th scope="row">${sku.productline}</th>
+                          <td>${sku.unitupc}</td>
+                          <td>${sku.caseupc}</td>
+                          <td>
+                            <button class="btn btn-info" v-on:click="getSku(sku.id)">Edit</button>
+                            <button class="btn btn-danger" v-on:click="deleteSku(sku.id)">Delete</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="loading" v-if="loading===true">Loading&#8230;</div>
+
+<!-- Add Article Modal -->
+<div class="modal fade" id="addSkuModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Add Sku</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <form v-on:submit.prevent="addSku()">
+          <div class="modal-body">
+          <div class="form-group">
+              <label>SKU Productline</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter Sku Productline"
+                v-model="newSku.productline"
+                required="required" >
+            </div>
+
+              <div class="form-group">
+                  <label>Case UPC</label>
+                  <input
+                    type="number"
+                    class="form-control"
+                    placeholder="Enter Case UPC"
+                    v-model="newSku.caseupc"
+                    required="required" >
+                </div>
+
+                <div class="form-group">
+                    <label>Unit UPC</label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      placeholder="Enter Unit UPC"
+                      v-model="newSku.unitupc"
+                      required="required" >
+                  </div>
+             
+              </div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button type="submit" class="btn btn-primary">Save changes</button>
+  </div>   
+  
+            </form>
+
+    </div>
+  </div>
+<div class="loading" v-if="loading===true">Loading&#8230;</div>          
+</div>
+<!-- End of add article modal -->
+
+<!-- Edit Article Modal -->
+<div class="modal fade" id="editSkuModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+<div class="modal-header">
+  <h5 class="modal-title" id="exampleModalLongTitle">Edit Sku</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<form v-on:submit.prevent="updateSku()">
+<div class="modal-body">
+        <div class="form-group">
+                <label>SKU Productline</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Sku Productline"
+                  v-model="currentSku.productline"
+                  required="required" >
+              </div>
+  
+                <div class="form-group">
+                    <label>Case UPC</label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      placeholder="Enter Case UPC"
+                      v-model="currentSku.caseupc"
+                      required="required" >
+                  </div>
+  
+                  <div class="form-group">
+                      <label>Unit UPC</label>
+                      <input
+                        type="number"
+                        class="form-control"
+                        placeholder="Enter Unit UPC"
+                        v-model="currentSku.unitupc"
+                        required="required" >
+                    </div>
+
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+  <button type="submit" class="btn btn-primary">Save changes</button>
+</div>
+</form>
+</div>
+</div>
+<div class="loading" v-if="loading===true">Loading&#8230;</div>
+</div>
+<!-- End of edit article modal -->
+
+
+</div>
+
+
+<!-- <! — bootrtap js files → -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<!-- <! — vue.js files → -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+<script type="text/javascript">
+    new Vue({
+      el: '#starting',
+      delimiters: ['${','}'],
+      data: {
+      skus: [],
+      loading: false,
+      currentSku: {},
+      message: null,
+      newSku: { 'productline': 'trolling materials', 'id': null, 'caseupc': 256,'unitupc': 214, },
+    },
+    mounted: function() {
+        this.getSkus();
+  },
+    methods: {
+        getSkus: function(){
+            this.loading = true;
+            this.$http.get('/api/sku/')
+                .then((response) => {
+                    this.skus = response.data;
+                    this.loading = false;
+                })
+                .catch((err) => {
+                    this.loading = false;
+                    console.log(err);
+                })
+        },
+        getSku: function(id){
+            this.loading = true;
+            this.$http.get('/api/sku/'+id+'/')
+                .then((response) => {
+                    this.currentSku = response.data;
+                    $("#editSkuModal").modal('show');
+                    this.loading = false;
+                })
+                .catch((err) => {
+                    this.loading = false;
+                    console.log(err);
+                })
+        },
+        deleteSku: function(id){
+          this.loading = true;
+          // TODO: use delimiters
+          this.$http.delete('/api/sku/' + id + '/')
+            .then((response) => {
+              this.loading = false;
+              this.getSkus();
+            })
+            .catch((err) => {
+              this.loading = false;
+              console.log(err);
+            })
+        },
+        addSku: function() {
+          this.loading = true;
+          this.$http.post('/api/sku/',this.newSku)
+            .then((response) => {
+          $("#addSkuModal").modal('hide');
+          this.loading = false;
+          this.getSkus();
+          })
+            .catch((err) => {
+          this.loading = false;
+          console.log(err);
+        })
+        },
+        updateSku: function() {
+          this.loading = true;
+          console.log(this.currentSku)
+          this.$http.put('/api/sku/'+ this.currentSku.id + '/',     this.currentSku)
+            .then((response) => {
+              $("#editSkuModal").modal('hide');
+          this.loading = false;
+          this.currentSku = response.data;
+          this.getSkus();
+          })
+            .catch((err) => {
+          this.loading = false;
+          console.log(err);
+        })
+  }
+
+
+  }
+    });
+    </script>
+</body>
+</html>
