@@ -1,81 +1,80 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Add ingredients</title>
-  <!-- CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.4/css/bulma.min.css">
-</head>
-
-<body>
-  <div class="columns" id="app">
-    <div class="column is-two-thirds">
-          <section class="section">
-        <h1 class="title">Inventory Manager</h1>
-        <p class="subtitle">
-          Add ingredients xD!
-        </p>
-        <hr>      
-        
-        <!-- form starts here -->
-        <section class="form">
-        <form v-on:submit.prevent="addIngredient()">
-    <div class = "field">
-           <label class="label">Name</label>
-            <div class="control">
-              <input name ="name" v-model="newIngredient.name" class="input" type="text" placeholder="Ingredient Name" @input="$v.newIngredient.name.$touch()">
-            </div>
-          </div>
-<!--                <div class="error" v-if="newIngredient.name.required">Name is required</div>-->
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>Add ingredients</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.4/css/bulma.min.css">
+  </head>
            
+  <body>
+    <div class="columns" id="app">
+      <div class="column is-two-thirds">
+            <section class="section">
+          <h1 class="title">Inventory Manager</h1>
+          <p class="subtitle">
+            Add ingredients xD!
+          </p>      
           
-          <div class="field">
-           <label class="label">Number</label>
-            <div class="control">
-              <input v-model="newIngredient.id" class="input" type="number" placeholder="Ingredient Number">
+          <!-- form starts here -->
+          <section class="form">
+              <form v-on:submit.prevent="addIngredient()">
+            <div class="field">
+            <label class="label">Name</label>
+              <div class="control">
+                <input name ="name" v-model="newIngredient.name" class="input" type="text" placeholder="Ingredient Name">
+              </div>
             </div>
-          </div>
-          
-          <div class="field">
-            <label class="label">Vendor Information</label>
-                <div class="control">
-                    <textarea class="textarea" placeholder="Optional Vendor Info" v-model="newIngredient.description"></textarea>
-                </div>
-            </div>   
-          
-          <div class="field">
-           <label class="label">Package Size</label>
-            <div class="control">
-              <input v-model="newIngredient.package_size" class="input" type="text" placeholder="Package Size">
-            </div>
-          </div>
-          
-          <div class="field">
-           <label class="label">Cost</label>
-            <div class="control">
-              <input v-model="newIngredient.cpp" class="input" type="number" placeholder="Cost per Package">
-            </div>
-          </div>
             
-<!--
-          <div class="field">
-            <label class="label">Comment</label>
-                <div class="control">
-                    <textarea class="textarea" placeholder="Optional Comment" v-model="newIngredient.comment"></textarea>
-                </div>
-            </div> 
--->
-                <button type = "submit" class="button is-primary">Submit</button>
-            </form>
-  ...
-<!--
-  <div class="field is-grouped">
-        <div class="control">
-      <button type = "submit" class="button is-primary" v-on:click="addIngredient()">Submit</button>
+            
+            <div class="field">
+            <label class="label">Number</label>
+              <div class="control">
+                <input v-model="newIngredient.id" class="input" type="number" placeholder="Ingredient Number">
+              </div>
+            </div>
+            
+            <div class="field">
+              <label class="label">Vendor Information</label>
+                  <div class="control">
+                      <textarea class="textarea" placeholder="Optional Vendor Info" v-model="newIngredient.description"></textarea>
+                  </div>
+              </div>   
+            
+            <div class="field">
+            <label class="label">Package Size</label>
+              <div class="control">
+                <input v-model="newIngredient.package_size" class="input" type="text" placeholder="Package Size">
+              </div>
+            </div>
+            
+            <div class="field">
+            <label class="label">Cost</label>
+              <div class="control">
+                <input v-model="newIngredient.cpp" class="input" type="number" placeholder="Cost per Package">
+              </div>
+            </div>
+              
+  <!--
+            <div class="field">
+              <label class="label">Comment</label>
+                  <div class="control">
+                      <textarea class="textarea" placeholder="Optional Comment" v-model="newIngredient.comment"></textarea>
+                  </div>
+              </div> 
+  -->
+                  <button type = "submit" class="button is-primary">Submit</button>
+              </form>
+    ...
+  <!--
+    <div class="field is-grouped">
+          <div class="control">
+        <button type = "submit" class="button is-primary" v-on:click="addIngredient()">Submit</button>
+      </div>
     </div>
-  </div>
--->
-      </section>
+  -->
         </section>
+          </section>
+        </div>
       </div>
     </div>
   

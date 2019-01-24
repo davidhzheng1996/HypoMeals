@@ -24,5 +24,7 @@ urlpatterns = [
     # rest api url routers
     path('api/', include(router.urls)),
     # add ingredient page
-    path('add_ingredient', TemplateView.as_view(template_name='add_ingredient.html')),
+    # path('add_ingredient', TemplateView.as_view(template_name='add_ingredient.html')),
+    # view ingredient page
+    path('ingredients', TemplateView.as_view(template_name='ingredient.html'))
 ]
