@@ -21,6 +21,15 @@
   		<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 	</head>
 	<body>
+	<nav class="navbar navbar-dark bg-dark">
+	  <span class="navbar-text" style="color:white; font-weight: bold;">
+      Inventory Manager
+    </span>
+     <ul class="navbar-nav mr-auto" style="position:fixed;right:1rem">
+	  <li class="nav-item">
+        <a class="nav-link" a href="{% url 'logout' %}">Logout</a>
+      </li>
+	</nav> 
 	{% block content %}
     {% endblock %}
 	</body>

@@ -11,3 +11,7 @@ body {
   overflow-x:hidden;
   background-color: #fff;
 }
+
+.navbar{
+  margin-bottom:1%;
+}
