@@ -32,7 +32,7 @@
                           <td>${ingredient.description}</td>
                           <td>
                             <!-- <button class="btn btn-info" v-on:click="getArticle(article.article_id)">Edit</button> -->
-                            <!-- <button class="btn btn-danger" v-on:click="deleteArticle(article.article_id)">Delete</button> -->
+                            <button class="btn btn-danger" v-on:click="deleteIngredient(ingredient.id)">Delete</button>
                           </td>
                         </tr>
                       </tbody>
@@ -81,7 +81,24 @@
                     this.loading = false;
                     console.log(err);
                 })
+        },
+        deleteIngredient: function(id){
+          this.loading = true;
+          console.log(id)
+          this.$http.delete('/api/ingredient/${id}/')
+            .then((response) => {
+              this.loading = false;
+              this.getIngredients();
+            })
+            .catch((err) => {
+              this.loading = false;
+              console.log(err);
+            })
         }
+
+
+
+
    }
     });
     </script>
