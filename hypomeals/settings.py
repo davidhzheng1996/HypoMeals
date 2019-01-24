@@ -107,6 +107,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# CSRF protection for rest api 
+
+REST_FRAMEWORK = {
+'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',    ),
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
