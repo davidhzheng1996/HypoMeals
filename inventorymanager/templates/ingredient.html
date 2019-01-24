@@ -1,0 +1,218 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="utf-8">
+    <title>Vue-js | Django | Crud App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A simple crud app made with the vue js and django">
+    <meta name="keywords" content="vuejs, django, crudapp, restapi">
+    <!-- <! — bootstap  -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- <! — boostrap css → -->
+    </head>
+
+    <body>
+            <div id="starting">
+                    <div class="container">
+                      <div class="row">
+                        <h1>List of Ingredients
+                        <button class="btn btn-success" data-toggle="modal" data-target="#addIngredientModal">Add Ingredient</button>
+                        </h1>
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th scope="col">#</th>
+                              <th scope="col">Heading</th>
+                              <th scope="col">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr v-for="ingredient in ingredients">
+                              <th scope="row">${ingredient.name}</th>
+                              <td>${ingredient.description}</td>
+                              <td>
+                                <!-- <button class="btn btn-info" v-on:click="getArticle(article.article_id)">Edit</button> -->
+                                <button class="btn btn-danger" v-on:click="deleteIngredient(ingredient.id)">Delete</button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="loading" v-if="loading===true">Loading&#8230;</div>
+                  </div>
+
+  <!-- Add Article Modal -->
+  <div class="modal fade" id="addIngredientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Add Ingredient</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <form v-on:submit.prevent="addIngredient()">
+              <div class="field">
+              <label class="label">Name</label>
+                <div class="control">
+                  <input name ="name" v-model="newIngredient.name" class="input" type="text" placeholder="Ingredient Name" required="required">
+                </div>
+              </div>
+              
+              
+              <div class="field">
+              <label class="label">Ingredient ID</label>
+                <div class="control">
+                  <input v-model="newIngredient.id" class="input" type="number" placeholder="Ingredient Number">
+                </div>
+              </div>
+
+              <div class="field">
+                  <label class="label">Package Size</label>
+                    <div class="control">
+                      <input v-model="newIngredient.package_size" class="input" type="text" placeholder="Package Size" required="required">
+                    </div>
+                  </div>
+                  
+                  <div class="field">
+                  <label class="label">Cost</label>
+                    <div class="control">
+                      <input v-model="newIngredient.cpp" class="input" type="number" placeholder="Cost per Package" required="required">
+                    </div>
+                  </div>
+              
+              <div class="field">
+                <label class="label">Vendor Information</label>
+                    <div class="control">
+                        <textarea class="textarea" placeholder="Optional Vendor Info" v-model="newIngredient.description"></textarea>
+                    </div>
+                </div>   
+                
+    <!--
+              <div class="field">
+                <label class="label">Comment</label>
+                    <div class="control">
+                        <textarea class="textarea" placeholder="Optional Comment" v-model="newIngredient.comment"></textarea>
+                    </div>
+                </div> 
+    -->
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>   
+                </form>
+
+          <!-- <form v-on:submit.prevent="addArticle()">
+          <div class="modal-body">
+              <div class="form-group">
+                <label for="article_heading">Article Heading</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="article_heading"
+                  placeholder="Enter Article Heading"
+                  v-model="newArticle.article_heading"
+                  required="required" >
+              </div>
+              <div class="form-group">
+                <label for="article_body">Article Body</label>
+                <textarea
+                  class="form-control"
+                  id="article_body"
+                  placeholder="Enter Article Body"
+                  v-model="newArticle.article_body"
+                  required="required"
+                  rows="3"></textarea>
+              </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+          </form> -->
+
+        </div>
+      </div>
+    <div class="loading" v-if="loading===true">Loading&#8230;</div>          
+    </div>
+    <!-- End of article modal -->
+
+
+
+
+
+
+
+
+    <!-- <! — bootrtap js files → -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+    <!-- <! — vue.js files → -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+    <script type="text/javascript">
+        new Vue({
+          el: '#starting',
+          delimiters: ['${','}'],
+          data: {
+          ingredients: [],
+          loading: false,
+          currentIngredient: {},
+          message: null,
+          newIngredient: { 'name': null, 'id': 0, 'description': null,'package_size': null, 'cpp': 0,  },
+        },
+        mounted: function() {
+            this.getIngredients();
+      },
+        methods: {
+            getIngredients: function(){
+                this.loading = true;
+                this.$http.get('/api/ingredient/')
+                    .then((response) => {
+                        this.ingredients = response.data;
+                        this.loading = false;
+                    })
+                    .catch((err) => {
+                        this.loading = false;
+                        console.log(err);
+                    })
+            },
+            deleteIngredient: function(id){
+              this.loading = true;
+              console.log(id)
+              this.$http.delete('/api/ingredient/${id}/')
+                .then((response) => {
+                  this.loading = false;
+                  this.getIngredients();
+                })
+                .catch((err) => {
+                  this.loading = false;
+                  console.log(err);
+                })
+            },
+            addIngredient: function() {
+              console.log('add ingredient')
+              this.loading = true;
+              console.log(this.newIngredient)
+              this.$http.post('/api/ingredient/',this.newIngredient)
+                .then((response) => {
+              this.loading = false;
+              this.getIngredients();
+              })
+                .catch((err) => {
+              this.loading = false;
+              console.log(err);
+            })
+    }
+
+
+
+      }
+        });
+        </script>
+    </body>
+    </html>
