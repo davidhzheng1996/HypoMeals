@@ -1,136 +1,137 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Add ingredients</title>
-  <!-- CSS -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.4/css/bulma.min.css">
-</head>
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>Add ingredients</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.4.4/css/bulma.min.css">
+  </head>
 
-<body>
-  <div class="columns" id="app">
-    <div class="column is-two-thirds">
-          <section class="section">
-        <h1 class="title">Inventory Manager</h1>
-        <p class="subtitle">
-          Add ingredients xD!
-        </p>
-        <hr>      
-        
-        <!-- form starts here -->
-        <section class="form">
-            <form v-on:submit.prevent="addIngredient()">
-          <div class="field">
-           <label class="label">Name</label>
-            <div class="control">
-              <input name ="name" v-model="newIngredient.name" class="input" type="text" placeholder="Ingredient Name">
-            </div>
-          </div>
-           
+  <body>
+    <div class="columns" id="app">
+      <div class="column is-two-thirds">
+            <section class="section">
+          <h1 class="title">Inventory Manager</h1>
+          <p class="subtitle">
+            Add ingredients xD!
+          </p>
+          <hr>      
           
-          <div class="field">
-           <label class="label">Number</label>
-            <div class="control">
-              <input v-model="newIngredient.id" class="input" type="number" placeholder="Ingredient Number">
+          <!-- form starts here -->
+          <section class="form">
+              <form v-on:submit.prevent="addIngredient()">
+            <div class="field">
+            <label class="label">Name</label>
+              <div class="control">
+                <input name ="name" v-model="newIngredient.name" class="input" type="text" placeholder="Ingredient Name">
+              </div>
             </div>
-          </div>
-          
-          <div class="field">
-            <label class="label">Vendor Information</label>
-                <div class="control">
-                    <textarea class="textarea" placeholder="Optional Vendor Info" v-model="newIngredient.description"></textarea>
-                </div>
-            </div>   
-          
-          <div class="field">
-           <label class="label">Package Size</label>
-            <div class="control">
-              <input v-model="newIngredient.package_size" class="input" type="text" placeholder="Package Size">
-            </div>
-          </div>
-          
-          <div class="field">
-           <label class="label">Cost</label>
-            <div class="control">
-              <input v-model="newIngredient.cpp" class="input" type="number" placeholder="Cost per Package">
-            </div>
-          </div>
             
-<!--
-          <div class="field">
-            <label class="label">Comment</label>
-                <div class="control">
-                    <textarea class="textarea" placeholder="Optional Comment" v-model="newIngredient.comment"></textarea>
-                </div>
-            </div> 
--->
-                <button type = "submit" class="button is-primary">Submit</button>
-            </form>
-  ...
-<!--
-  <div class="field is-grouped">
-        <div class="control">
-      <button type = "submit" class="button is-primary" v-on:click="addIngredient()">Submit</button>
-    </div>
-  </div>
--->
-      </section>
-        </section>
+            
+            <div class="field">
+            <label class="label">Number</label>
+              <div class="control">
+                <input v-model="newIngredient.id" class="input" type="number" placeholder="Ingredient Number">
+              </div>
+            </div>
+            
+            <div class="field">
+              <label class="label">Vendor Information</label>
+                  <div class="control">
+                      <textarea class="textarea" placeholder="Optional Vendor Info" v-model="newIngredient.description"></textarea>
+                  </div>
+              </div>   
+            
+            <div class="field">
+            <label class="label">Package Size</label>
+              <div class="control">
+                <input v-model="newIngredient.package_size" class="input" type="text" placeholder="Package Size">
+              </div>
+            </div>
+            
+            <div class="field">
+            <label class="label">Cost</label>
+              <div class="control">
+                <input v-model="newIngredient.cpp" class="input" type="number" placeholder="Cost per Package">
+              </div>
+            </div>
+              
+  <!--
+            <div class="field">
+              <label class="label">Comment</label>
+                  <div class="control">
+                      <textarea class="textarea" placeholder="Optional Comment" v-model="newIngredient.comment"></textarea>
+                  </div>
+              </div> 
+  -->
+                  <button type = "submit" class="button is-primary">Submit</button>
+              </form>
+    ...
+  <!--
+    <div class="field is-grouped">
+          <div class="control">
+        <button type = "submit" class="button is-primary" v-on:click="addIngredient()">Submit</button>
       </div>
     </div>
+  -->
+        </section>
+          </section>
+        </div>
+      </div>
+    
+  <!-- javascript -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+                                                                  
+  <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+
+  <script type = "text/javascript">
+  // Vue.use(VeeValidate);
+  //     VeeValidate.Validator.extend("polite", {
+  //   getMessage: field => `You need to be polite in the ${field} field`,
+  //   validate: value => value.toLowerCase().indexOf("please") !== -1
+  // });
+  new Vue({
+    el: '#app',
+    data: {
+    //articles: [],
+    //loading: false,
+    //currentArticle: {},
+    message: null,
+    newIngredient: { 'name': null, 'id': 0, 'description': null,'package_size': null, 'cpp': 0,  },
+  },
+  // mounted: function() {
   
-<!-- javascript -->
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
-                                                                 
-<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
-
-<script type = "text/javascript">
-// Vue.use(VeeValidate);
-//     VeeValidate.Validator.extend("polite", {
-//   getMessage: field => `You need to be polite in the ${field} field`,
-//   validate: value => value.toLowerCase().indexOf("please") !== -1
-// });
-new Vue({
-  el: '#app',
-  data: {
-   //articles: [],
-   //loading: false,
-   //currentArticle: {},
-   message: null,
-   newIngredient: { 'name': null, 'id': 0, 'description': null,'package_size': null, 'cpp': 0,  },
-},
-// mounted: function() {
- 
-// },
-methods: {
-//   getIngredients: function() {
-//   this.loading = true;
-//   this.$http.get(‘/’)
-//       .then((response) => {
-//         this.ingredients = response.data;
-//         this.loading = false;
-//       })
-//       .catch((err) => {
-//        this.loading = false;
-//        console.log(err);
-//       })
-//  },
-  addIngredient: function() {
-  this.loading = true;
-  this.$http.post('/api/ingredient/',this.newIngredient)
-      .then((response) => {
-        this.loading = false;
-//        this.getIngredients();
-      })
-      .catch((err) => {
-        this.loading = false;
-        console.log(err);
-      })
- }
-}
-});
-</script>
-              
-    </body>          
-</html>
+  // },
+  methods: {
+  //   getIngredients: function() {
+  //   this.loading = true;
+  //   this.$http.get(‘/’)
+  //       .then((response) => {
+  //         this.ingredients = response.data;
+  //         this.loading = false;
+  //       })
+  //       .catch((err) => {
+  //        this.loading = false;
+  //        console.log(err);
+  //       })
+  //  },
+    addIngredient: function() {
+    this.loading = true;
+    this.$http.post('/api/ingredient/',this.newIngredient)
+        .then((response) => {
+          this.loading = false;
+  //        this.getIngredients();
+        })
+        .catch((err) => {
+          this.loading = false;
+          console.log(err);
+        })
+  }
+  
+  }
+  });
+  </script>
+                
+      </body>          
+  </html>
