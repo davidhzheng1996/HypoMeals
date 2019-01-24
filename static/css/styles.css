@@ -1,0 +1,13 @@
+body {
+  font-size: 80%;
+  height: 100%;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-attachment: fixed;
+  font-family: "Open Sans", sans-serif;
+  color:black;
+  overflow-x:hidden;
+  background-color: #fff;
+}

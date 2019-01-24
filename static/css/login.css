@@ -1,23 +1,14 @@
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
 
-body {
-  font-size: 62.5%;
-  height: 100%;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  background-attachment: fixed;
-  font-family: "Open Sans", sans-serif;
-  color:#f9fbff;
-  overflow-x:hidden;
-  background-color: #424344;
-}
-
 .cont {
   height: 100%;
   overflow: auto;
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow:0 0 0 50px white inset; /* Change the color to your own background color */
+    -webkit-text-fill-color: #333;
 }
 
 input, button {
@@ -29,36 +20,31 @@ input, button {
   position: relative;
   height: 100%;
 }
-
-.login-form {
-  display:block;
-  top: 25%;
-  left: 0;
-  width: 25%;
-  height: 50%;
-  padding: 1.5rem 2.5rem;
-  text-align: center;
-  margin:auto;
-}
-.login-row {
-  height: 5rem;
-  padding-top: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
 .login-input {
-  display: inline-block;
+  display: block;
+  float:none;
+  height:5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  border: 2px solid black;
   width: 22rem;
   height: 100%;
   padding-left: 1.5rem;
   font-size: 1.5rem;
-  background: transparent;
-  color: #FDFCFD;
+  color: black;
+  margin-left:auto;
+  margin-right:auto;
 }
 .login-submit {
+  display:block;
   position: relative;
-  width: 100%;
+  width: 33%;
   height: 4rem;
-  margin: 5rem 0 2.2rem;
+  margin-top:5%;
+  margin-left:auto;
+  margin-right:auto;
   color: rgba(255, 255, 255, 0.8);
   background: #FF3366;
   font-size: 1.5rem;
@@ -70,10 +56,10 @@ input, button {
 
 .login-signup {
   font-size: 1.2rem;
-  color: #ABA8AE;
+  color: black;
 }
 .login-signup a {
-  color: #fff;
+  color: black;
   cursor: pointer;
 }
 
