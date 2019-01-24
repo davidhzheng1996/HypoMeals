@@ -9,8 +9,73 @@
     <!-- <! — bootstap  -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- <! — boostrap css → -->
+    <!-- <! — bootrtap js files → -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+    <!-- <! — vue.js files → -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
+    <script type="text/javascript">
+        new Vue({
+          el: '#testingsearch',
+          delimiters: ['${','}'],
+          data: {
+          ingredients: [],
+          loading: false,
+          currentIngredient: {},
+          message: null,
+          newIngredient: { 'name': null, 'id': 0, 'description': null,'package_size': null, 'cpp': 0,  },
+        },
+        mounted: function() {
+            // this.getIngredients();
+      },
+        methods: {
+            getIngredients: function(){
+                this.loading = true;
+                this.$http.get('/api/ingredient/')
+                    .then((response) => {
+                        this.ingredients = response.data;
+                        this.loading = false;
+                    })
+                    .catch((err) => {
+                        this.loading = false;
+                        console.log(err);
+                    })
+            },
+            deleteIngredient: function(id){
+              this.loading = true;
+              console.log(id)
+              this.$http.delete('/api/ingredient/${id}/')
+                .then((response) => {
+                  this.loading = false;
+                  this.getIngredients();
+                })
+                .catch((err) => {
+                  this.loading = false;
+                  console.log(err);
+                })
+            },
+            addIngredient: function() {
+              console.log('add ingredient')
+              this.loading = true;
+              console.log(this.newIngredient)
+              this.$http.post('/api/ingredient/',this.newIngredient)
+                .then((response) => {
+              this.loading = false;
+              this.getIngredients();
+              })
+                .catch((err) => {
+              this.loading = false;
+              console.log(err);
+            })
+    }
+    }
+        });
+        </script>
     </head>
-
+    {% if user.is_authenticated %}
     <body>
             <div id="starting">
                     <div class="container">
@@ -53,7 +118,6 @@
             </button>
           </div>
 
-          <form v-on:submit.prevent="addIngredient()">
               <div class="field">
               <label class="label">Name</label>
                 <div class="control">
@@ -98,11 +162,10 @@
                     </div>
                 </div> 
     -->
-    <div class="modal-footer">
+    <div id="testingsearch" class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Save changes</button>
+        <button v-on:click="addIngredient" class="btn btn-primary">Save changes</button>
       </div>   
-                </form>
 
           <!-- <form v-on:submit.prevent="addArticle()">
           <div class="modal-body">
@@ -138,81 +201,9 @@
     <div class="loading" v-if="loading===true">Loading&#8230;</div>          
     </div>
     <!-- End of article modal -->
-
-
-
-
-
-
-
-
-    <!-- <! — bootrtap js files → -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    
-    <!-- <! — vue.js files → -->
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue-resource@1.3.5"></script>
-    <script type="text/javascript">
-        new Vue({
-          el: '#starting',
-          delimiters: ['${','}'],
-          data: {
-          ingredients: [],
-          loading: false,
-          currentIngredient: {},
-          message: null,
-          newIngredient: { 'name': null, 'id': 0, 'description': null,'package_size': null, 'cpp': 0,  },
-        },
-        mounted: function() {
-            this.getIngredients();
-      },
-        methods: {
-            getIngredients: function(){
-                this.loading = true;
-                this.$http.get('/api/ingredient/')
-                    .then((response) => {
-                        this.ingredients = response.data;
-                        this.loading = false;
-                    })
-                    .catch((err) => {
-                        this.loading = false;
-                        console.log(err);
-                    })
-            },
-            deleteIngredient: function(id){
-              this.loading = true;
-              console.log(id)
-              this.$http.delete('/api/ingredient/${id}/')
-                .then((response) => {
-                  this.loading = false;
-                  this.getIngredients();
-                })
-                .catch((err) => {
-                  this.loading = false;
-                  console.log(err);
-                })
-            },
-            addIngredient: function() {
-              console.log('add ingredient')
-              this.loading = true;
-              console.log(this.newIngredient)
-              this.$http.post('/api/ingredient/',this.newIngredient)
-                .then((response) => {
-              this.loading = false;
-              this.getIngredients();
-              })
-                .catch((err) => {
-              this.loading = false;
-              console.log(err);
-            })
-    }
-
-
-
-      }
-        });
-        </script>
+    {% else %}
+     <p>You are not logged in</p>
+    <a href="{% url 'login' %}">login</a>
+    {% endif %}
     </body>
     </html>

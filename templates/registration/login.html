@@ -17,17 +17,20 @@
   <title>ToDo List</title>
 </head>
 <body>
-  <div class="cont">
+<form method="post">
+  {% csrf_token %}
+ <div class="cont">
     <h1 class="login-title">Inventory Manager</h1>
   </div>
     <div class="login-form">
       <div class="login-row">
-        <input type="text" class="login-input name" placeholder="User"/>
+        <input type="text" name="username" autofocus required class="login-input name" placeholder="User"/>
       </div>
       <div class="login-row">
-        <input type="password" class="login-input pass" placeholder="Password"/>
+        <input type="password" name="password" class="login-input pass" placeholder="Password"/>
       </div>
-      <button type="button" class="login-submit">Sign in</button>
-    </div>
+      <button type="submit" class="login-submit">Sign in</button>
+    </div> 
+</form>
 </body>
 </html>
