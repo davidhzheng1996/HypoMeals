@@ -43,16 +43,7 @@
             <form v-on:submit.prevent="addSku()">
                <div class="modal-body">
                   <div class="form-group">
-                     <label>SKU Name*</label>
-                     <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter Sku Name"
-                        v-model="newSku.sku_name"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>SKU Productline*</label>
+                     <label>SKU Productline</label>
                      <input
                         type="text"
                         class="form-control"
@@ -61,7 +52,7 @@
                         required="required" >
                   </div>
                   <div class="form-group">
-                     <label>Case UPC*</label>
+                     <label>Case UPC</label>
                      <input
                         type="number"
                         class="form-control"
@@ -70,47 +61,13 @@
                         required="required" >
                   </div>
                   <div class="form-group">
-                     <label>Unit UPC*</label>
+                     <label>Unit UPC</label>
                      <input
                         type="number"
                         class="form-control"
                         placeholder="Enter Unit UPC"
                         v-model="newSku.unitupc"
                         required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Unit Size*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Unit Size"
-                        v-model="newSku.unit_size"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Count per Case*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Count per Case"
-                        v-model="newSku.count"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>(Optional) Tuples</label>
-                     <input
-                        class="form-control"
-                        placeholder="Enter Optional Tuples"
-                        v-model="newSku.tuple"
-                        rows="5">
-                  </div>
-                  <div class="form-group">
-                     <label>(Optional) Comment</label>
-                     <input
-                        class="form-control"
-                        placeholder="Enter Optional Comment"
-                        v-model="newSku.comment"
-                        rows="3">
                   </div>
                </div>
                <div class="modal-footer">
@@ -135,15 +92,6 @@
             </div>
             <form v-on:submit.prevent="updateSku()">
                <div class="modal-body">
-                  <div class="form-group">
-                     <label>SKU Name*</label>
-                     <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter Sku Name"
-                        v-model="newSku.sku_name"
-                        required="required" >
-                  </div>
                   <div class="form-group">
                      <label>SKU Productline</label>
                      <input
@@ -170,40 +118,6 @@
                         placeholder="Enter Unit UPC"
                         v-model="currentSku.unitupc"
                         required="required" >
-                  </div>
-                   <div class="form-group">
-                     <label>Unit Size*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Unit Size"
-                        v-model="newSku.unit_size"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Count per Case*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Count per Case"
-                        v-model="newSku.count"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>(Optional) Tuples</label>
-                     <input
-                        class="form-control"
-                        placeholder="Enter Optional Tuples"
-                        v-model="newSku.tuple"
-                        rows="5">
-                  </div>
-                  <div class="form-group">
-                     <label>(Optional) Comment</label>
-                     <input
-                        class="form-control"
-                        placeholder="Enter Optional Comment"
-                        v-model="newSku.comment"
-                        rows="3">
                   </div>
                </div>
                <div class="modal-footer">

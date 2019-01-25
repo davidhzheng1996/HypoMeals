@@ -10,11 +10,11 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <!-- libraries neded for this page -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.min.js"></script>
     <!-- support for this page -->
   {% load static %}
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
   <link rel="stylesheet" href="{% static 'css/login.css' %}">
-  <title>ToDo List</title>
+  <title>Login Page</title>
 </head>
 <body>
 <form method="post">
@@ -22,15 +22,9 @@
  <div class="cont">
     <h1 class="login-title">Inventory Manager</h1>
   </div>
-    <div class="login-form">
-      <div class="login-row">
-        <input type="text" name="username" autofocus required class="login-input name" placeholder="User"/>
-      </div>
-      <div class="login-row">
-        <input type="password" name="password" class="login-input pass" placeholder="Password"/>
-      </div>
-      <button type="submit" class="login-submit">Sign in</button>
-    </div> 
+  <input type="text" name="username" autofocus required class="login-input name" placeholder="User"/>
+   <input type="password" name="password" class="login-input pass" placeholder="Password"/>
+  <button type="submit" class="login-submit">Sign in</button>
 </form>
 </body>
 </html>
