@@ -6,7 +6,8 @@ new Vue({
      loading: false,
      currentSku: {},
      message: null,
-     newSku: { 'productline': 'trolling materials', 'id': null, 'caseupc': 256,'unitupc': 214, },
+     newSku: { 'sku_name': '','productline': '', 'id': null, 'caseupc': 1234,'unitupc': 1234, 'unit_size': 0, 'count': 0, 'tuple': null, 
+     'comment': null},
    },
    mounted: function() {
        this.getSkus();
