@@ -7,6 +7,7 @@ new Vue({
      currentIngredient: {},
      message: null,
      newIngredient: { 'name': 'Potato', 'id': null, 'description': null,'package_size': '3', 'cpp': 20, },
+     ingredientCSV: null,
    },
    mounted: function() {
        this.getIngredients();
@@ -77,7 +78,22 @@ new Vue({
          this.loading = false;
          console.log(err);
        })
-   }
+      },
+      // https://www.academind.com/learn/vue-js/snippets/image-upload/
+      selectIngredientCSV: function(event) {
+        this.ingredientCSV = event.target.files[0]
+        console.log(this.ingredientCSV)
+        console.log('select csv');
+      },
+        
+      uploadIngredientCSV: function() {
+        console.log('upload csv');
+        // upload this.ingredientCSV to REST api in FormData or Binary data
+        const formData = new FormData()
+        formData.append('ingredient_csv', this.selectedFile, this.selectedFile.name)
+        axios.post('my-domain.com/file-upload', formData)
+      },
+
    
    
    }

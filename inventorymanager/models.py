@@ -42,3 +42,4 @@ class Manufacture_Goal(models.Model):
 
 	class Meta: 
 		unique_together = (("user","sku"),)
+

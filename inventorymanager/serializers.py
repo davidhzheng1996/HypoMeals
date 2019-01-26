@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from .models import *
 
-# Example
+
+# Serializer serializes model data
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -12,6 +13,7 @@ class SkuSerializer(serializers.ModelSerializer):
         model = Sku
         fields = '__all__'
 
+# Responsible for serializing both ingredient and ingredient csv 
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient

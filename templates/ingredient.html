@@ -6,6 +6,13 @@
          <h1>List of Ingredients
             <button class="btn btn-success" data-toggle="modal" data-target="#addIngredientModal">Add Ingredient</button>
          </h1>
+         <!-- <input type="file" v-on:change="importIngredientCSV()"> -->
+         <input type="file" @change="selectIngredientCSV">
+         <button type="submit" @click="uploadIngredientCSV">Upload</button>
+         <!-- <form method="post" enctype="multipart/form-data" v-on:submit.prevent="importIngredientCSV()">
+            <input type="file" name="ingredientsCSV">
+            <button type="submit">Upload</button>
+         </form> -->
          <table class="table">
             <thead>
                <tr>
@@ -96,6 +103,7 @@
       <div class="loading" v-if="loading===true">Loading&#8230;</div>
    </div>
    <!-- End of add article modal -->
+
    <!-- Edit Article Modal -->
    <div class="modal fade" id="editIngredientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">

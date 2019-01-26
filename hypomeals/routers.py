@@ -4,7 +4,7 @@ from inventorymanager.viewsets import *
 # router maps rest api urls to correponding ViewSets 
 router = routers.DefaultRouter()
 
-# /sku now maps to SkuViewSet
+# map REST API url to corresponding ViewSet
 router.register(r'sku', SkuViewSet)
 router.register(r'customer', CustomerViewSet)
 router.register(r'ingredient', IngredientViewSet)
