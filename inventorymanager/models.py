@@ -8,14 +8,20 @@ class User(models.Model):
 
 class Sku(models.Model):
 	productline = models.CharField(max_length=256)
-	caseupc = models.IntegerField(null=True)
-	unitupc = models.IntegerField(null=True)
+	caseupc = models.IntegerField(null=False, default=1000)
+	unitupc = models.IntegerField(null=True, default=1000)
+	sku_name = models.CharField(max_length=128, null=False, default='')
+	count = models.IntegerField(null=True)
+	unit_size = models.CharField(max_length=128, null=True)
+	tuples = models.TextField(null=True)
+	comment = models.TextField(null=True)
 
 class Ingredient(models.Model):
-	name = models.CharField(max_length=128)
+	ingredient_name = models.CharField(max_length=128, null=False, default='')
 	description = models.TextField(null=True) 
 	package_size = models.CharField(max_length=128,null=True)
 	cpp = models.IntegerField(null=True)
+	comment = models.TextField(null=True)
 
 class Sku_To_Ingredient(models.Model):
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)

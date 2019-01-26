@@ -17,7 +17,7 @@
             </thead>
             <tbody>
                <tr v-for="ingredient in ingredients">
-                  <th scope="row">${ingredient.name}</th>
+                  <th scope="row">${ingredient.ingredient_name}</th>
                   <td>${ingredient.package_size}</td>
                   <td>${ingredient.cpp}</td>
                   <td>
@@ -43,16 +43,16 @@
             <form v-on:submit.prevent="addIngredient()">
                <div class="modal-body">
                   <div class="form-group">
-                     <label>Ingredient Name</label>
+                     <label>Ingredient Name*</label>
                      <input
                         type="text"
                         class="form-control"
                         placeholder="Enter Ingredient Name"
-                        v-model="newIngredient.name"
+                        v-model="newIngredient.ingredient_name"
                         required="required" >
                   </div>
                   <div class="form-group">
-                     <label>Package Size</label>
+                     <label>Package Size*</label>
                      <input
                         type="text"
                         class="form-control"
@@ -61,7 +61,7 @@
                         required="required" >
                   </div>
                   <div class="form-group">
-                     <label>Cost per Package</label>
+                     <label>Cost per Package*</label>
                      <input
                         type="number"
                         class="form-control"
@@ -84,6 +84,14 @@
                         class="form-control"
                         placeholder="Enter Optional Ingredient ID"
                         v-model="newIngredient.id">
+                  </div>
+                  <div class="form-group">
+                     <label>(Optional) Comment</label>
+                     <input
+                        class="form-control"
+                        placeholder="Enter Optional Comment"
+                        v-model="newIngredient.comment"
+                        rows="3">
                   </div>
                </div>
                <div class="modal-footer">
@@ -109,16 +117,16 @@
             <form v-on:submit.prevent="updateIngredient()">
                <div class="modal-body">
                   <div class="form-group">
-                     <label>Ingredient Name</label>
+                     <label>Ingredient Name*</label>
                      <input
                         type="text"
                         class="form-control"
                         placeholder="Enter Ingredient Name"
-                        v-model="currentIngredient.name"
+                        v-model="currentIngredient.ingredient_name"
                         required="required" >
                   </div>
                   <div class="form-group">
-                     <label>Package Size</label>
+                     <label>Package Size*</label>
                      <input
                         type="text"
                         class="form-control"
@@ -127,7 +135,7 @@
                         required="required" >
                   </div>
                   <div class="form-group">
-                     <label>Cost per Package</label>
+                     <label>Cost per Package*</label>
                      <input
                         type="number"
                         class="form-control"
@@ -150,6 +158,14 @@
                         class="form-control"
                         placeholder="Enter Optional Ingredient ID"
                         v-model="currentIngredient.id">
+                  </div>
+                  <div class="form-group">
+                     <label>(Optional) Comment</label>
+                     <input
+                        class="form-control"
+                        placeholder="Enter Optional Comment"
+                        v-model="currentIngredient.comment"
+                        rows="3">
                   </div>
                </div>
                <div class="modal-footer">

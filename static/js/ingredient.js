@@ -6,7 +6,7 @@ new Vue({
      loading: false,
      currentIngredient: {},
      message: null,
-     newIngredient: { 'name': 'Potato', 'id': null, 'description': null,'package_size': '3', 'cpp': 20, },
+     newIngredient: { 'ingredient_name': '', 'id': null, 'description': null,'package_size': '', 'cpp': 0, 'comment': null,},
    },
    mounted: function() {
        this.getIngredients();
