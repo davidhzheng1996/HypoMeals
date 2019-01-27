@@ -7,6 +7,7 @@ new Vue({
      currentIngredient: {},
      message: null,
      newIngredient: { 'ingredient_name': '', 'id': null, 'description': null,'package_size': '', 'cpp': 0, 'comment': null,},
+     ingredientFile: null
    },
    mounted: function() {
        this.getIngredients();
@@ -76,21 +77,29 @@ new Vue({
            .catch((err) => {
          this.loading = false;
          console.log(err);
-       })
+        })
       },
       // https://www.academind.com/learn/vue-js/snippets/image-upload/
       selectIngredientCSV: function(event) {
-        this.ingredientCSV = event.target.files[0]
-        console.log(this.ingredientCSV)
-        console.log('select csv');
+        this.ingredientFile = event.target.files[0]
+        console.log(this.ingredientFile)
       },
         
       uploadIngredientCSV: function() {
-        console.log('upload csv');
-        // upload this.ingredientCSV to REST api in FormData or Binary data
+        this.loading = true;
+        // upload this.ingredientCSV to REST api in FormData
         const formData = new FormData()
-        formData.append('ingredient_csv', this.selectedFile, this.selectedFile.name)
-        axios.post('my-domain.com/file-upload', formData)
+        // https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
+        formData.append('file', this.ingredientFile, this.ingredientFile.name)
+        this.$http.post('/api/ingredient_file/', formData)
+           .then((response) => {
+         this.loading = false;
+         this.getIngredients();
+         })
+           .catch((err) => {
+         this.loading = false;
+         console.log(err);
+        })
       },
 
    

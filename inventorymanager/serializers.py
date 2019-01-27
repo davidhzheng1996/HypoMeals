@@ -18,7 +18,7 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingredient
         fields = '__all__'
 
-# Serialize uploaded ingredient file 
+# For uploaded Ingredient File 
 class IngredientFileSerializer(serializers.ModelSerializer):
     class Meta:
         model = IngredientFile
