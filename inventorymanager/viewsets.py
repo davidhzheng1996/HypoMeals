@@ -2,9 +2,15 @@ from rest_framework import viewsets
 from rest_framework import parsers
 from rest_framework import response
 from rest_framework import status
+from rest_framework import decorators
 from .models import *
 from .serializers import *
 
+# APIView is specific for handling REST API requests. User need to Explicitly describe  
+# the logic for post, get, delete, etc. If not described, action is not allowed. 
+# ViewSet simplifies the API logic by providing common actions logic. 
+# https://stackoverflow.com/questions/41379654/difference-between-apiview-class-and-viewsets-class/41380941
+# https://stackoverflow.com/questions/32589087/django-rest-framework-difference-between-views-and-viewsets
 
 class SkuViewSet(viewsets.ModelViewSet):
     queryset = Sku.objects.all()
@@ -13,26 +19,6 @@ class SkuViewSet(viewsets.ModelViewSet):
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-
-    # Set up file upload rest api endpoint
-    # https://www.trell.se/blog/file-uploads-json-apis-django-rest-framework/
-    @decorators.action(
-        detail=True,
-        methods=['POST'],
-        serializer_class=IngredientSerializer,
-        # available parsers: https://www.django-rest-framework.org/api-guide/parsers/ 
-        parser_classes=[parsers.FormParser, parsers.MultiPartParser],
-    )
-    def csv(self, request, pk):
-        obj = self.get_object()
-        serializer = self.serializer_class(obj, data=request.data,
-                                           partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return response.Response(serializer.data, status.HTTP_201_CREATED)
-        return response.Response(serializer.errors,
-                                 status.HTTP_400_BAD_REQUEST)
-
 
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()

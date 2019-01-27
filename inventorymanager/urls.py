@@ -1,9 +1,14 @@
 from django.urls import path
-
 from . import views
+from .views import IngredientFileView
 
+# map url to views.view_class
 urlpatterns = [
     path('', views.index, name='index'),
+    # map /ingredient to ingredient.html
     path('ingredient',views.ingredient),
-    path('sku',views.sku)
+    # map /sku to sku.html
+    path('sku',views.sku),
+    # ingredient file upload endpoint
+    path('api/ingredient_file/', IngredientFileView.as_view())
 ]

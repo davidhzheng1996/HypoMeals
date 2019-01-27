@@ -13,10 +13,15 @@ class SkuSerializer(serializers.ModelSerializer):
         model = Sku
         fields = '__all__'
 
-# Responsible for serializing both ingredient and ingredient csv 
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
+        fields = '__all__'
+
+# Serialize uploaded ingredient file 
+class IngredientFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IngredientFile
         fields = '__all__'
 
 class CustomerSerializer(serializers.ModelSerializer):
