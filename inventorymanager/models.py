@@ -49,6 +49,7 @@ class Sku_To_Customer(models.Model):
 class Manufacture_Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
+	goal_sku_name = models.CharField(max_length=128, null=False, default='')
 	desired_quantity = models.IntegerField()
 
 	class Meta: 

@@ -24,7 +24,6 @@ def ingredient(request):
 def sku(request):
 	return render(request, "sku.html")
 
-
 # https://blog.vivekshukla.xyz/uploading-file-using-api-django-rest-framework/
 # https://www.django-rest-framework.org/api-guide/views/
 # APIView is specific for handling REST API requests. User need to Explicitly describe  
@@ -61,3 +60,6 @@ class IngredientFileView(APIView):
 			return Response(file_serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 	
+@login_required(login_url='/accounts/login/')
+def manufacture_goal(request):
+	return render(request, "manufacturing.html")
