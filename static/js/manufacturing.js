@@ -2,21 +2,21 @@ new Vue({
      el: '#starting',
      delimiters: ['${','}'],
      data: {
-     ingredients: [],
+     goals: [],
      loading: false,
-     currentIngredient: {},
+     currentGoal: {},
      message: null,
-     newIngredient: { 'ingredient_name': '', 'id': null, 'description': null,'package_size': '', 'cpp': 0, 'comment': null,},
+     newGoal: { 'goal_sku_name': '', 'desired_quanitity': 0, 'id': null, 'user_id': null, 'sku_id': null, },
    },
    mounted: function() {
-       this.getIngredients();
+       this.getGoals();
    },
    methods: {
-       getIngredients: function(){
+       getGoals: function(){
            this.loading = true;
-           this.$http.get('/api/ingredient/')
+           this.$http.get('/api/manufacture_goal/')
                .then((response) => {
-                   this.ingredients = response.data;
+                   this.goals = response.data;
                    this.loading = false;
                })
                .catch((err) => {
@@ -24,12 +24,12 @@ new Vue({
                    console.log(err);
                })
        },
-       getIngredient: function(id){
+       getGoal: function(id){
            this.loading = true;
-           this.$http.get('/api/ingredient/'+id+'/')
+           this.$http.get('/api/manufacture_goal/'+id+'/')
                .then((response) => {
-                   this.currentIngredient = response.data;
-                   $("#editIngredientModal").modal('show');
+                   this.currentGoal = response.data;
+                   $("#editGoalModal").modal('show');
                    this.loading = false;
                })
                .catch((err) => {
@@ -37,41 +37,41 @@ new Vue({
                    console.log(err);
                })
        },
-       deleteIngredient: function(id){
+       deleteGoal: function(id){
          this.loading = true;
          // TODO: use delimiters
-         this.$http.delete('/api/ingredient/' + id + '/')
+         this.$http.delete('/api/manufacture_goal/' + id + '/')
            .then((response) => {
              this.loading = false;
-             this.getIngredients();
+             this.getGoals();
            })
            .catch((err) => {
              this.loading = false;
              console.log(err);
            })
        },
-       addIngredient: function() {
+       addGoal: function() {
          this.loading = true;
-         this.$http.post('/api/ingredient/',this.newIngredient)
+         this.$http.post('/api/manufacture_goal/',this.newGoal)
            .then((response) => {
-         $("#addIngredientModal").modal('hide');
+         $("#addGoalModal").modal('hide');
          this.loading = false;
-         this.getIngredients();
+         this.getGoals();
          })
            .catch((err) => {
          this.loading = false;
          console.log(err);
        })
        },
-       updateIngredient: function() {
+       updateGoal: function() {
          this.loading = true;
-         console.log(this.currentIngredient)
-         this.$http.put('/api/ingredient/'+ this.currentIngredient.id + '/',     this.currentIngredient)
+         console.log(this.currentGoal)
+         this.$http.put('/api/manufacture_goal/'+ this.currentGoal.id + '/',     this.currentGoal)
            .then((response) => {
-             $("#editIngredientModal").modal('hide');
+             $("#editGoalModal").modal('hide');
          this.loading = false;
-         this.currentIngredient = response.data;
-         this.getIngredients();
+         this.currentGoal = response.data;
+         this.getGoals();
          })
            .catch((err) => {
          this.loading = false;
