@@ -3,8 +3,6 @@ new Vue({
      delimiters: ['${','}'],
      data: {
      ingredients: [],
-     // selected: '',
-     query: '',
      loading: false,
      currentIngredient: {},
      message: null,

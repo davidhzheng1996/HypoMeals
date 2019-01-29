@@ -28,3 +28,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
 class ManufactureGoalViewSet(viewsets.ModelViewSet):
     queryset = Manufacture_Goal.objects.all()
     serializer_class = ManufactureGoalSerializer
+
+class ProductLineViewSet(viewsets.ModelViewSet):
+    queryset = Product_Line.objects.all()
+    serializer_class = ProductLineSerializer

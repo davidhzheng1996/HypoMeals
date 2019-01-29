@@ -10,6 +10,7 @@ urlpatterns = [
     # map /sku to sku.html
     path('sku',views.sku),
     path('manufacture_goal', views.manufacture_goal),
+    path('product_line', views.product_line),
     # ingredient file upload endpoint
     # TODO how to integrate this with router's url patterns?
     path('api/ingredient_import/', IngredientImportView.as_view()),

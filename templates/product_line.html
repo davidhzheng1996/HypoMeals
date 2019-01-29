@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% block content %}
+<div id="starting">
+   <div class="container">
+      <div class="row">
+         <h1>List of Product Lines
+            <button class="btn btn-success" data-toggle="modal" data-target="#addProductLineModal">Add Product Line</button>
+         </h1>
+         <table class="table">
+            <thead>
+               <tr>
+                  <th scope="col">Name</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr v-for="product_line in product_lines">
+                  <th scope="row">${product_line.product_line_name}</th>
+                  <td>
+                     <button class="btn btn-info" v-on:click="getProductLine(product_line.id)">Edit</button>
+                     <button class="btn btn-danger" v-on:click="deleteProductLine(product_line.id)">Delete</button>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+   </div>
+   <div class="loading" v-if="loading===true">Loading&#8230;</div>
+   <!-- Add Article Modal -->
+   <div class="modal fade" id="addProductLineModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLongTitle">Add Product Line</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            <form v-on:submit.prevent="addProductLine()">
+               <div class="modal-body">
+                  <div class="form-group">
+                     <label>Product Line Name*</label>
+                     <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Product Line Name"
+                        v-model="newProductLine.product_line_name"
+                        required="required" >
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+               </div>
+            </form>
+         </div>
+      </div>
+      <div class="loading" v-if="loading===true">Loading&#8230;</div>
+   </div>
+   <!-- End of add article modal -->
+
+   <!-- Edit Article Modal -->
+   <div class="modal fade" id="editProductLineModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLongTitle">Edit Product Line</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            <form v-on:submit.prevent="updateProductLine()">
+               <div class="modal-body">
+                  <div class="form-group">
+                     <label>Product Line Name*</label>
+                     <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter roduct Line Name"
+                        v-model="currentProductLine.product_line_name"
+                        required="required" >
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+               </div>
+            </form>
+         </div>
+      </div>
+      <div class="loading" v-if="loading===true">Loading&#8230;</div>
+   </div>
+   <!-- End of edit article modal -->
+</div>
+<!-- <! — bootrtap js files → -->
+<script src="../static/js/product_line.js"></script>
+{% endblock %}

@@ -34,6 +34,10 @@ class ManufactureGoalSerializer(serializers.ModelSerializer):
         model = Manufacture_Goal
         fields = '__all__'
 
+class ProductLineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product_Line
+        fields = '__all__'
 # models not having a serializers yet 
 # class sku_to_ingredients(models.Model):
 # 	sku = models.ForeignKey(sku,on_delete=models.CASCADE,primary_key=True)

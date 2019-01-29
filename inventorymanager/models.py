@@ -25,7 +25,10 @@ class Ingredient(models.Model):
 
 class Product_Line(models.Model):
 	product_line_name = models.CharField(max_length=128, null=False, default='')
-	sku = models.ForeignKey(Sku, on_delete=models.CASCADE)
+	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
+
+	class Meta:
+		unique_together = (("product_line_name","sku"),)
 
 class IngredientFile(models.Model):
 	file = models.FileField(blank=False, null=False)
