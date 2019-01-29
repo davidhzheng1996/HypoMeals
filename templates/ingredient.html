@@ -5,26 +5,14 @@
       <div class="row">
          <h1>List of Ingredients
             <button class="btn btn-success" data-toggle="modal" data-target="#addIngredientModal">Add Ingredient</button>
-<!--             <select v-model="selected">
-               <option disabled value="">Select a Field</option>
-               <option>Name</option>
-               <option>Package Size</option>
-               <option>Cost</option>
-            </select> -->
-            <form class="form-inline my-2 my-lg-0">
-               <input class="form-control mr-sm-2" id="ingredient_search" type="search" placeholder="Search for Ingredients" 
-               aria-label="Search" v-model="query">
-               <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
+            <input class="btn btn-success" type="file" @change="selectIngredientCSV">
+            <button class="btn btn-success" type="submit" @click="uploadIngredientCSV">Upload</button>
+            <button class="btn btn-success" type="submit" @click="exportIngredientCSV">Export</button>
          </h1>
-         <input type="file" @change="selectIngredientCSV">
-         <button type="submit" @click="uploadIngredientCSV">Upload</button>
-         <button type="submit" @click="exportIngredientCSV">Export</button>
-         <!-- try not using form -->
-         <!-- <form method="post" enctype="multipart/form-data" v-on:submit.prevent="importIngredientCSV()">
-            <input type="file" name="ingredientsCSV">
-            <button type="submit">Upload</button>
-         </form> -->
+         <div class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getIngredients()">Search</button>
+        </div>
          <table class="table">
             <thead>
                <tr>

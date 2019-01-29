@@ -9,15 +9,21 @@ new Vue({
      currentIngredient: {},
      message: null,
      newIngredient: { 'ingredient_name': '', 'id': null, 'description': null,'package_size': '', 'cpp': 0, 'comment': null,},
-     ingredientFile: null
+     ingredientFile: null,
+     search_term: ''
    },
    mounted: function() {
        this.getIngredients();
    },
    methods: {
        getIngredients: function(){
+           let api_url = '/api/ingredient/';
+           // https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
+           if(this.search_term !== '' || this.search_term !== null) {
+                api_url = '/api/ingredient/?search=' + this.search_term
+           }
            this.loading = true;
-           this.$http.get('/api/ingredient/')
+           this.$http.get(api_url)
                .then((response) => {
                    this.ingredients = response.data;
                    this.loading = false;
@@ -84,7 +90,6 @@ new Vue({
       // https://www.academind.com/learn/vue-js/snippets/image-upload/
       selectIngredientCSV: function(event) {
         this.ingredientFile = event.target.files[0]
-        console.log(this.ingredientFile)
       },
         
       uploadIngredientCSV: function() {
