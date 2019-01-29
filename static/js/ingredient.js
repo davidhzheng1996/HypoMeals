@@ -3,6 +3,8 @@ new Vue({
      delimiters: ['${','}'],
      data: {
      ingredients: [],
+     // selected: '',
+     query: '',
      loading: false,
      currentIngredient: {},
      message: null,
@@ -11,6 +13,14 @@ new Vue({
    },
    mounted: function() {
        this.getIngredients();
+   },
+   computed: {
+    ingredientResults(){
+      return this.ingredients.filter((currentIngredient) => {
+       return currentIngredient.name.toLowerCase()
+       .indexOf(this.query.toLowerCase()) > -1;
+     });
+    }
    },
    methods: {
        getIngredients: function(){

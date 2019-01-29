@@ -4,6 +4,7 @@ new Vue({
      data: {
      skus: [],
      loading: false,
+     query:'',
      currentSku: {},
      message: null,
      newSku: { 'sku_name': '','productline': '', 'id': null, 'caseupc': 1234,'unitupc': 1234, 'unit_size': 0, 'count': 0, 'tuple': null, 

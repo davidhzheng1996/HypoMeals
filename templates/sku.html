@@ -5,6 +5,13 @@
       <div class="row">
          <h1>List of SKUs
             <button class="btn btn-success" data-toggle="modal" data-target="#addSkuModal">Add Sku</button>
+            <form class="form-inline my-2 my-lg-0">
+               <input class="form-control mr-sm-2" id="ingredient_search" type="search" placeholder="Search for SKUs" 
+               aria-label="Search" v-model="query">
+               <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            <input type="file" @change="selectIngredientCSV">
+            <button type="submit" @click="uploadIngredientCSV">Upload</button>
          </h1>
          <table class="table">
             <thead>

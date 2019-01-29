@@ -5,10 +5,23 @@
       <div class="row">
          <h1>List of Ingredients
             <button class="btn btn-success" data-toggle="modal" data-target="#addIngredientModal">Add Ingredient</button>
+<!--             <select v-model="selected">
+               <option disabled value="">Select a Field</option>
+               <option>Name</option>
+               <option>Package Size</option>
+               <option>Cost</option>
+            </select> -->
+            <form class="form-inline my-2 my-lg-0">
+               <input class="form-control mr-sm-2" id="ingredient_search" type="search" placeholder="Search for Ingredients" 
+               aria-label="Search" v-model="query">
+               <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            <input type="file" @change="selectIngredientCSV">
+            <button type="submit" @click="uploadIngredientCSV">Upload</button>
          </h1>
          <!-- <input type="file" v-on:change="importIngredientCSV()"> -->
-         <input type="file" @change="selectIngredientCSV">
-         <button type="submit" @click="uploadIngredientCSV">Upload</button>
+         <!-- <input type="file" @change="selectIngredientCSV">
+         <button type="submit" @click="uploadIngredientCSV">Upload</button> -->
          <!-- <form method="post" enctype="multipart/form-data" v-on:submit.prevent="importIngredientCSV()">
             <input type="file" name="ingredientsCSV">
             <button type="submit">Upload</button>
