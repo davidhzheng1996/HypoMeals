@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import IngredientImportView, IngredientExportView
+from .views import IngredientImportView, IngredientExportView, SkuImportView, SkuExportView
 
 # map url to views.view_class
 urlpatterns = [
@@ -15,5 +15,9 @@ urlpatterns = [
     # TODO how to integrate this with router's url patterns?
     path('api/ingredient_import/', IngredientImportView.as_view()),
     # ingredient file export endpoint 
-    path('api/ingredient_export/', IngredientExportView.as_view())
+    path('api/ingredient_export/', IngredientExportView.as_view()),
+
+    path('api/sku_import/', SkuImportView.as_view()),
+    # ingredient file export endpoint 
+    path('api/sku_export/', SkuExportView.as_view())
 ]

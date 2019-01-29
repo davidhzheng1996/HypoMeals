@@ -35,6 +35,11 @@ class IngredientFile(models.Model):
 	description = models.TextField(null=True) 
 	timestamp = models.DateTimeField(auto_now_add=True)
 
+class SkuFile(models.Model):
+	file = models.FileField(blank=False, null=False)
+	description = models.TextField(null=True) 
+	timestamp = models.DateTimeField(auto_now_add=True)
+
 class Sku_To_Ingredient(models.Model):
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
 	ig = models.ForeignKey(Ingredient,on_delete=models.CASCADE)

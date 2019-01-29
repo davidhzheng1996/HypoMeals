@@ -84,3 +84,53 @@ class IngredientExportView(APIView):
                                 ingredient_row.append(getattr(ingredient, field.name))
                         writer.writerow(ingredient_row)
                 return response
+
+class SkuImportView(APIView):
+	# available parsers: https://www.django-rest-framework.org/api-guide/parsers/ 
+	# file sent should be in FormData
+	parser_classes = (MultiPartParser, FormParser)
+	def post(self, request, *args, **kwargs):
+		# https://stackoverflow.com/questions/28545553/django-rest-frameworks-request-post-vs-request-data
+		# request.data is more flexible than request.FILES
+		file_serializer = SkuFileSerializer(data=request.data)
+		if file_serializer.is_valid():
+			file_serializer.save()
+			# Use self.method() to access the function inside the same class...
+			# https://stackoverflow.com/questions/24813740/python-error-cannot-access-function-in-class 
+			self.process_file(request.data['file'])
+			return Response(file_serializer.data, status.HTTP_201_CREATED)
+		else:
+			return Response(file_serializer.errors, status.HTTP_400_BAD_REQUEST)
+	# https://stackoverflow.com/questions/40663168/processing-an-uploaded-file-using-django
+	def process_file(self, csv_file):
+		with open(csv_file.name) as f:
+			reader = csv.DictReader(f)
+			for row in reader:
+				sku = Sku(productline=row['productline'],
+						caseupc=row['caseupc'],
+						unitupc=row['unitupc'],
+						sku_name=row['sku_name'],
+						comment=row['comment'],
+						unit_size=row['unit_size'],
+						count=row['count'],
+						tuples=row['tuples'])
+				sku.save()
+
+class SkuExportView(APIView):
+        def get(self, request, *args, **kwargs):
+                # https://docs.djangoproject.com/en/2.1/howto/outputting-csv/
+                # export all Ingredients into a csv file
+                response = HttpResponse(content_type='text/csv')
+                response['Content-Disposition'] = "attachment; filename=\"skus.csv\""
+
+                writer = csv.writer(response)
+                # https://stackoverflow.com/questions/15029666/exporting-items-from-a-model-to-csv-django-python
+                sku_fields = Sku._meta.fields
+                field_row = [field.name for field in sku_fields]
+                writer.writerow(field_row)
+                for sku in Sku.objects.all():
+                        sku_row = []
+                        for field in Sku._meta.fields:
+                                sku_row.append(getattr(sku, field.name))
+                        writer.writerow(sku_row)
+                return response
