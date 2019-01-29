@@ -23,6 +23,10 @@ def ingredient(request):
 @login_required(login_url='/accounts/login/')
 def sku(request):
 	return render(request, "sku.html")
+	
+@login_required(login_url='/accounts/login/')
+def manufacture_goal(request):
+	return render(request, "manufacturing.html")
 
 # https://blog.vivekshukla.xyz/uploading-file-using-api-django-rest-framework/
 # https://www.django-rest-framework.org/api-guide/views/
@@ -30,22 +34,11 @@ def sku(request):
 # the logic for post, get, delete, etc. If not described, action is not allowed. 
 # We do not use ViewSet for IngredientFile because user should not be able issue GET or
 # DELETE requests for IngredientFile 
-class IngredientFileView(APIView):
+# TODO Should we save the imported file at all?
+class IngredientImportView(APIView):
 	# available parsers: https://www.django-rest-framework.org/api-guide/parsers/ 
 	# file sent should be in FormData
 	parser_classes = (MultiPartParser, FormParser)
-	# https://stackoverflow.com/questions/40663168/processing-an-uploaded-file-using-django
-	def process_file(self, csv_file):
-		with open(csv_file.name) as f:
-			reader = csv.DictReader(f)
-			for row in reader:
-				ingredient = Ingredient(ingredient_name=row['ingredient_name'], 
-									description=row['description'],
-									package_size=row['package_size'],
-									cpp=row['cpp'],
-									comment=row['comment'])
-				ingredient.save()
-	
 	def post(self, request, *args, **kwargs):
 		# https://stackoverflow.com/questions/28545553/django-rest-frameworks-request-post-vs-request-data
 		# request.data is more flexible than request.FILES
@@ -58,8 +51,33 @@ class IngredientFileView(APIView):
 			return Response(file_serializer.data, status.HTTP_201_CREATED)
 		else:
 			return Response(file_serializer.errors, status.HTTP_400_BAD_REQUEST)
+	# https://stackoverflow.com/questions/40663168/processing-an-uploaded-file-using-django
+	def process_file(self, csv_file):
+		with open(csv_file.name) as f:
+			reader = csv.DictReader(f)
+			for row in reader:
+				ingredient = Ingredient(ingredient_name=row['ingredient_name'], 
+									description=row['description'],
+									package_size=row['package_size'],
+									cpp=row['cpp'],
+									comment=row['comment'])
+				ingredient.save()
 
-	
-@login_required(login_url='/accounts/login/')
-def manufacture_goal(request):
-	return render(request, "manufacturing.html")
+class IngredientExportView(APIView):
+        def get(self, request, *args, **kwargs):
+                # https://docs.djangoproject.com/en/2.1/howto/outputting-csv/
+                # export all Ingredients into a csv file
+                response = HttpResponse(content_type='text/csv')
+                response['Content-Disposition'] = "attachment; filename=\"ingredients.csv\""
+
+                writer = csv.writer(response)
+                # https://stackoverflow.com/questions/15029666/exporting-items-from-a-model-to-csv-django-python
+                ingredient_fields = Ingredient._meta.fields
+                field_row = [field.name for field in ingredient_fields]
+                writer.writerow(field_row)
+                for ingredient in Ingredient.objects.all():
+                        ingredient_row = []
+                        for field in Ingredient._meta.fields:
+                                ingredient_row.append(getattr(ingredient, field.name))
+                        writer.writerow(ingredient_row)
+                return response

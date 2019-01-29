@@ -91,7 +91,7 @@ new Vue({
         const formData = new FormData()
         // https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
         formData.append('file', this.ingredientFile, this.ingredientFile.name)
-        this.$http.post('/api/ingredient_file/', formData)
+        this.$http.post('/api/ingredient_import/', formData)
            .then((response) => {
          this.loading = false;
          this.getIngredients();
@@ -100,6 +100,30 @@ new Vue({
          this.loading = false;
          console.log(err);
         })
+      },
+
+      exportIngredientCSV: function() {
+        this.loading = true;
+        this.$http.get('/api/ingredient_export/')
+          .then((response) => {
+                // https://thewebtier.com/snippets/download-files-with-axios/
+                // https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
+                // url to the csv file in form of a Blob
+                // url lifetime is tied to the document in the window
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                // create a link with the file url and click on it
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'ingredient.csv');
+                document.body.appendChild(link);
+                link.click();
+                
+                this.loading = false;
+                this.getIngredients();
+          }).catch((err) => {
+                this.loading = false;
+                console.log(err)
+          })
       },
 
    }

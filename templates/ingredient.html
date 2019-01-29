@@ -6,9 +6,10 @@
          <h1>List of Ingredients
             <button class="btn btn-success" data-toggle="modal" data-target="#addIngredientModal">Add Ingredient</button>
          </h1>
-         <!-- <input type="file" v-on:change="importIngredientCSV()"> -->
          <input type="file" @change="selectIngredientCSV">
          <button type="submit" @click="uploadIngredientCSV">Upload</button>
+         <button type="submit" @click="exportIngredientCSV">Export</button>
+         <!-- try not using form -->
          <!-- <form method="post" enctype="multipart/form-data" v-on:submit.prevent="importIngredientCSV()">
             <input type="file" name="ingredientsCSV">
             <button type="submit">Upload</button>
