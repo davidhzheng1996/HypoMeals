@@ -23,6 +23,10 @@ class Ingredient(models.Model):
 	cpp = models.IntegerField(null=True)
 	comment = models.TextField(null=True)
 
+class Product_Line(models.Model):
+	product_line_name = models.CharField(max_length=128, null=False, default='')
+	sku = models.ForeignKey(Sku, on_delete=models.CASCADE)
+
 class IngredientFile(models.Model):
 	file = models.FileField(blank=False, null=False)
 	description = models.TextField(null=True) 
