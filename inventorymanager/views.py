@@ -110,10 +110,10 @@ class SkuImportView(APIView):
 						caseupc=row['caseupc'],
 						unitupc=row['unitupc'],
 						sku_name=row['sku_name'],
-						comment=row['comment'],
-						unit_size=row['unit_size'],
 						count=row['count'],
-						tuples=row['tuples'])
+						unit_size=row['unit_size'],
+						tuples=row['tuples'],
+						comment=row['comment'])
 				sku.save()
 
 class SkuExportView(APIView):
