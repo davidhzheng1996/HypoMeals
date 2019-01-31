@@ -1,8 +1,12 @@
+// import Vue from 'vue'
+// import 'vue-instant/dist/vue-instant.css'
+// import VueInstant from 'vue-instant'
+// Vue.use(VueInstant)
 // https://codesandbox.io/s/o29j95wx9
 new Vue({
      el: '#starting',
      delimiters: ['${','}'],
-  data: {
+     data: {
      ingredients: [],
      loading: false,
      currentIngredient: {},
@@ -10,13 +14,16 @@ new Vue({
      newIngredient: { 'ingredient_name': '', 'id': null, 'description': null,'package_size': '', 'cpp': 0, 'comment': null,},
      ingredientFile: null,
      search_term: '',
-     search_suggestions: search_suggestions,
+     search_suggestions: [],
      search_input: '',
      // what is this for???
      suggestionAttribute: 'original_title',
    },
    mounted: function() {
        this.getIngredients();
+   },
+   components: {
+        'vue-instant': VueInstant.VueInstant
    },
    methods: {
        getIngredients: function(){
@@ -136,15 +143,16 @@ new Vue({
           })
       },
 
-      // Input assistance 
+      // User input assistance 
       search_input_changed: function() {
         const that = this
-        this.$http.get('/api/ingredient/?search=' + this.search_term)
-                .then((response) => {
-                        for (var i in response.data) {
-                                this.search_suggestions.push(response.data[i].ingredient_name)
-                        }
+        this.search_suggestions = []
+        axios.get('https://api.themoviedb.org/3/search/movie?api_key=342d3061b70d2747a1e159ae9a7e9a36&query=' + this.search_input)
+            .then(function(response) {
+                response.data.results.forEach(function(a) {
+                    that.search_suggestions.push(a)
                 })
+            })
       },
 
    }
