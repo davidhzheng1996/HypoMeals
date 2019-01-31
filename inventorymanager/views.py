@@ -59,7 +59,7 @@ class IngredientImportView(APIView):
 		with open(csv_file.name) as f:
 			reader = csv.DictReader(f)
 			for row in reader:
-				ingredient = Ingredient(ingredient_name=row['ingredient_name'], 
+				ingredient = Ingredient(ingredient_name=row['ingredient_name'].lower(), 
 									description=row['description'],
 									package_size=row['package_size'],
 									cpp=row['cpp'],

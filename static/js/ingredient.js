@@ -37,6 +37,7 @@ new Vue({
                .then((response) => {
                    this.ingredients = response.data;
                    this.loading = false;
+                   this.lowerCaseName();
                    if(!this.has_paginated){
                       this.setPages();
                       this.has_paginated=true; 
@@ -93,6 +94,13 @@ new Vue({
          if((this.ingredients.length%this.perPage)==0){
             this.addPage();
          }
+         for(let index = 0; index<this.ingredients.length; index++){
+            if(this.newIngredient.ingredient_name.toLowerCase().trim()===(this.ingredients[index].ingredient_name.toLowerCase().trim())){
+                console.log("Already exists");
+                return;
+                //console.log(err);
+            }
+          }
          this.getIngredients();
          //ingredients.append(this.newingredient)
          })
@@ -100,6 +108,11 @@ new Vue({
          this.loading = false;
          console.log(err);
        })
+       },
+       lowerCaseName: function(){
+          for(let index = 0; index<this.ingredients.length; index++){
+            this.ingredients[index].ingredient_name = this.ingredients[index].ingredient_name.toLowerCase().trim();
+          }
        },
        updateIngredient: function() {
          this.loading = true;
