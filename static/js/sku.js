@@ -15,6 +15,7 @@ new Vue({
      skuFile: null,
      search_term: '',
      has_paginated:false,
+     csv_uploaded:false,
    },
    mounted: function() {
        this.getSkus();
@@ -29,6 +30,11 @@ new Vue({
                    if(!this.has_paginated){
                       this.setPages();
                       this.has_paginated=true; 
+                    }
+                    if(this.csv_uploaded){
+                      this.pages=[];
+                      this.setPages();
+                      this.csv_uploaded=false;
                     }
                })
                .catch((err) => {
@@ -134,6 +140,7 @@ new Vue({
         this.$http.post('/api/sku_import/', formData)
            .then((response) => {
          this.loading = false;
+         this.csv_uploaded=true;
          this.getSkus();
          })
            .catch((err) => {
