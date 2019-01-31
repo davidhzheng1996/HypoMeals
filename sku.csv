@@ -1,0 +1,4 @@
+id,productline,caseupc,unitupc,sku_name,count,unit_size,tuples,comment
+6,glass bottles,1234,1234,a bottle,10,20 lbs,,very sturdy
+7,wombats,1234,1234,wombat,12,10,,
+8,tacos,312432897777,543403129324,chicken tacos,12,14 lbs,half a chicken,taste aight

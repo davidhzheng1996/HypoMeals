@@ -7,10 +7,14 @@ new Vue({
      query:'',
      currentSku: {},
      message: null,
+     page:1,
+     perPage: 2,
+     pages:[],
      newSku: { 'sku_name': '','productline': '', 'id': null, 'caseupc': 1234,'unitupc': 1234, 'unit_size': 0, 'count': 0, 'tuples': null, 
      'comment': null},
      skuFile: null,
-     search_term: ''
+     search_term: '',
+     has_paginated:false,
    },
    mounted: function() {
        this.getSkus();
@@ -22,6 +26,10 @@ new Vue({
                .then((response) => {
                    this.skus = response.data;
                    this.loading = false;
+                   if(!this.has_paginated){
+                      this.setPages();
+                      this.has_paginated=true; 
+                    }
                })
                .catch((err) => {
                    this.loading = false;
@@ -47,6 +55,9 @@ new Vue({
          this.$http.delete('/api/sku/' + id + '/')
            .then((response) => {
              this.loading = false;
+                    if((this.skus.length%this.perPage)==1){
+                      this.deletePage();
+                    }
              this.getSkus();
            })
            .catch((err) => {
@@ -54,12 +65,39 @@ new Vue({
              console.log(err);
            })
        },
+      setPages: function () {
+        let numberOfPages = Math.ceil(this.skus.length / this.perPage);
+        for (let index = 1; index <= numberOfPages; index++) {
+          this.pages.push(index);
+        }
+      },
+      addPage: function (){
+          this.pages.push(Math.ceil(this.skus.length / this.perPage)+1);
+      },
+      deletePage: function (){
+        this.pages=[];
+          let numberOfPages = Math.ceil(this.skus.length / this.perPage);
+        for (let index = 1; index < numberOfPages; index++) {
+          this.pages.push(index);
+        }
+      },
+      paginate: function (skus) {
+      let page = this.page;
+      console.log(page)
+      let perPage = this.perPage;
+      let from = (page * perPage) - perPage;
+      let to = (page * perPage);
+      return  skus.slice(from, to);
+    },
        addSku: function() {
          this.loading = true;
          this.$http.post('/api/sku/',this.newSku)
            .then((response) => {
          $("#addSkuModal").modal('hide');
          this.loading = false;
+         if((this.skus.length%this.perPage)==0){
+            this.addPage();
+         }
          this.getSkus();
          })
            .catch((err) => {
@@ -129,5 +167,13 @@ new Vue({
       },
    
    
-   }
+   },
+
+
+  computed: {
+    displayedSkus () {
+      return this.paginate(this.skus);
+    }
+  },
+
    });

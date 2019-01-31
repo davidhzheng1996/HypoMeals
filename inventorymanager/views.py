@@ -19,12 +19,6 @@ def index(request):
 @login_required(login_url='/accounts/login/')
 def ingredient(request):
 	return render(request, "ingredient.html")
-# def ingredient(request,
-#     template='ingredient.html'):
-#     context = {
-#         'ingredient': Ingredient.objects.all(),
-#     }
-#     return render(request, template, context)
 
 @login_required(login_url='/accounts/login/')
 def sku(request):
