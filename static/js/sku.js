@@ -27,6 +27,7 @@ new Vue({
                .then((response) => {
                    this.skus = response.data;
                    this.loading = false;
+                   this.lowerCaseName();
                    if(!this.has_paginated){
                       this.setPages();
                       this.has_paginated=true; 
@@ -101,6 +102,13 @@ new Vue({
            .then((response) => {
          $("#addSkuModal").modal('hide');
          this.loading = false;
+         for(let index = 0; index<this.skus.length; index++){
+            if(this.newSku.sku_name.toLowerCase().trim()===(this.skus[index].sku_name.toLowerCase().trim())){
+                console.log("Already exists");
+                return;
+                //console.log(err);
+            }
+          }
          if((this.skus.length%this.perPage)==0){
             this.addPage();
          }
@@ -110,6 +118,11 @@ new Vue({
          this.loading = false;
          console.log(err);
        })
+       },
+       lowerCaseName: function(){
+          for(let index = 0; index<this.ingredients.length; index++){
+            this.skus[index].sku_name = this.skus[index].sku_name.toLowerCase().trim();
+          }
        },
        updateSku: function() {
          this.loading = true;

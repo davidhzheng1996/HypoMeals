@@ -91,9 +91,6 @@ new Vue({
            .then((response) => {
          $("#addIngredientModal").modal('hide');
          this.loading = false;
-         if((this.ingredients.length%this.perPage)==0){
-            this.addPage();
-         }
          for(let index = 0; index<this.ingredients.length; index++){
             if(this.newIngredient.ingredient_name.toLowerCase().trim()===(this.ingredients[index].ingredient_name.toLowerCase().trim())){
                 console.log("Already exists");
@@ -101,6 +98,9 @@ new Vue({
                 //console.log(err);
             }
           }
+         if((this.ingredients.length%this.perPage)==0){
+            this.addPage();
+         }
          this.getIngredients();
          //ingredients.append(this.newingredient)
          })

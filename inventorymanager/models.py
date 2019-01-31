@@ -24,7 +24,7 @@ class Ingredient(models.Model):
 	comment = models.TextField(null=True)
 
 class Product_Line(models.Model):
-	product_line_name = models.CharField(max_length=128, unique=True, null=False, default='')
+	product_line_name = models.CharField(max_length=128, unique=True, null=False, default='', primary_key=True)
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
 
 	class Meta:
