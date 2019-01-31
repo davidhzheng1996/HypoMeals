@@ -3,9 +3,14 @@ new Vue({
      delimiters: ['${','}'],
      data: {
      ingredients: [],
+     // pagination_ingredients:[],
+     //resource_url: '/api/ingredient/',
      loading: false,
      currentIngredient: {},
      message: null,
+     page:1,
+     perPage: 5,
+     pages:[],
      newIngredient: { 'ingredient_name': '', 'id': null, 'description': null,'package_size': '', 'cpp': 0, 'comment': null,},
      ingredientFile: null,
      search_term: ''
@@ -17,9 +22,9 @@ new Vue({
        getIngredients: function(){
            let api_url = '/api/ingredient/';
            // https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
-           if(this.search_term !== '' || this.search_term !== null) {
-                api_url = '/api/ingredient/?search=' + this.search_term
-           }
+           // if(this.search_term !== '' || this.search_term !== null) {
+           //      api_url = '/api/ingredient/?search=' + this.search_term
+           // }
            this.loading = true;
            this.$http.get(api_url)
                .then((response) => {
@@ -85,6 +90,21 @@ new Vue({
          console.log(err);
         })
       },
+      setPages: function () {
+        let numberOfPages = Math.ceil(this.ingredients.length / this.perPage);
+        for (let index = 1; index <= numberOfPages; index++) {
+          this.pages.push(index);
+        }
+      },
+
+      paginate: function (ingredients) {
+      let page = this.page;
+      console.log(page)
+      let perPage = this.perPage;
+      let from = (page * perPage) - perPage;
+      let to = (page * perPage);
+      return  ingredients.slice(from, to);
+    },
       // https://www.academind.com/learn/vue-js/snippets/image-upload/
       selectIngredientCSV: function(event) {
         this.ingredientFile = event.target.files[0]
@@ -131,5 +151,18 @@ new Vue({
           })
       },
 
-   }
-   });
+   },
+
+  computed: {
+    displayedIngredients () {
+      return this.paginate(this.ingredients);
+    }
+  },
+
+  watch: {
+    ingredients () {
+      this.setPages();
+    }
+  },
+
+   });  

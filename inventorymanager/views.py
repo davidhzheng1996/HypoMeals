@@ -18,7 +18,13 @@ def index(request):
 
 @login_required(login_url='/accounts/login/')
 def ingredient(request):
-	return render(request, 'ingredient.html')
+	return render(request, "ingredient.html")
+# def ingredient(request,
+#     template='ingredient.html'):
+#     context = {
+#         'ingredient': Ingredient.objects.all(),
+#     }
+#     return render(request, template, context)
 
 @login_required(login_url='/accounts/login/')
 def sku(request):
@@ -103,9 +109,11 @@ class SkuImportView(APIView):
 			return Response(file_serializer.errors, status.HTTP_400_BAD_REQUEST)
 	# https://stackoverflow.com/questions/40663168/processing-an-uploaded-file-using-django
 	def process_file(self, csv_file):
+		print(csv_file)
 		with open(csv_file.name) as f:
 			reader = csv.DictReader(f)
 			for row in reader:
+				print(row)
 				sku = Sku(productline=row['productline'],
 						caseupc=row['caseupc'],
 						unitupc=row['unitupc'],
