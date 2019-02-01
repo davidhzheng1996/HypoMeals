@@ -1,10 +1,5 @@
 from django.db import models
-
-# Create your models here.
-class User(models.Model):
-	# The PRIMARY KEY ID IS AUTO GENERATED FOR ALL MODELS 
-	username = models.CharField(max_length=64)
-	password = models.CharField(max_length=128)
+from django.contrib.auth.models import User
 
 class Sku(models.Model):
 	productline = models.CharField(max_length=256)
@@ -31,6 +26,7 @@ class IngredientFile(models.Model):
 class Sku_To_Ingredient(models.Model):
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
 	ig = models.ForeignKey(Ingredient,on_delete=models.CASCADE)
+
 
 	class Meta:
 		unique_together = (("sku","ig"),)

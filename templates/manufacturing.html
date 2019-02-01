@@ -37,7 +37,8 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
-            <form v-on:submit.prevent="addGoal()">
+            <!-- Not sure if this needs to be refactored.... jinja2 inside of vue? ew. -->
+            <form v-on:submit.prevent="addGoal('{{user.id}}')">
                <div class="modal-body">
                   <div class="form-group">
                      <label>SKU Name*</label>
@@ -112,4 +113,6 @@
 </div>
 <!-- <! — bootrtap js files → -->
 <script src="../static/js/manufacturing.js"></script>
+<!-- Not sure if there isn't a better solution -->
+<script>vm.getGoals({{user.id}})</script>
 {% endblock %}

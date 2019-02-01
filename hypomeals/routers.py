@@ -11,5 +11,5 @@ router = routers.DefaultRouter()
 router.register(r'sku', SkuViewSet)
 router.register(r'customer', CustomerViewSet)
 router.register(r'ingredient', IngredientViewSet)
-router.register(r'manufacture_goal', ManufactureGoalViewSet)
+# router.register(r'manufacture_goal', ManufactureGoalViewSet) //replace with explicit
 

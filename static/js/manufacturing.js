@@ -1,4 +1,4 @@
-new Vue({
+var vm = new Vue({
      el: '#starting',
      delimiters: ['${','}'],
      data: {
@@ -6,16 +6,18 @@ new Vue({
      loading: false,
      currentGoal: {},
      message: null,
-     newGoal: { 'goal_sku_name': '', 'desired_quanitity': 0, 'id': null, 'user_id': null, 'sku_id': null, },
+     //COUPLED WITH BACKEND DO NOT REMOVE BELOW
+     newGoal: { 'goal_sku_name': '', 'desired_quantity': 0, 'user': null, 'sku': null, },
    },
    mounted: function() {
-       this.getGoals();
+       // this.getGoals();
    },
    methods: {
-       getGoals: function(){
+       getGoals: function(userid){
            this.loading = true;
-           this.$http.get('/api/manufacture_goal/')
+           this.$http.get('/api/manufacture_goal/'+userid)
                .then((response) => {
+                  console.log(response)
                    this.goals = response.data;
                    this.loading = false;
                })
@@ -37,20 +39,22 @@ new Vue({
                    console.log(err);
                })
        },
-       deleteGoal: function(id){
-         this.loading = true;
-         // TODO: use delimiters
-         this.$http.delete('/api/manufacture_goal/' + id + '/')
-           .then((response) => {
-             this.loading = false;
-             this.getGoals();
-           })
-           .catch((err) => {
-             this.loading = false;
-             console.log(err);
-           })
-       },
-       addGoal: function() {
+       // deleteGoal: function(id){
+       //   this.loading = true;
+       //   // TODO: use delimiters
+       //   this.$http.delete('/api/manufacture_goal/' + id + '/')
+       //     .then((response) => {
+       //       this.loading = false;
+       //       this.getGoals();
+       //     })
+       //     .catch((err) => {
+       //       this.loading = false;
+       //       console.log(err);
+       //     })
+       // },
+       addGoal: function(userid) {
+         this.newGoal.user = userid
+         console.log(this.newGoal)
          this.loading = true;
          this.$http.post('/api/manufacture_goal/',this.newGoal)
            .then((response) => {
