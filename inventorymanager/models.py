@@ -3,22 +3,34 @@ from django.contrib.auth.models import User
 
 class Sku(models.Model):
 	productline = models.CharField(max_length=256)
-	caseupc = models.IntegerField(null=False, default=1000)
-	unitupc = models.IntegerField(null=True, default=1000)
-	sku_name = models.CharField(max_length=128, null=False, default='')
+	caseupc = models.FloatField(null=False, default=1000)
+	unitupc = models.FloatField(null=True, default=1000)
+	sku_name = models.CharField(max_length=128, unique=True, null=False, default='')
 	count = models.IntegerField(null=True)
 	unit_size = models.CharField(max_length=128, null=True)
 	tuples = models.TextField(null=True)
 	comment = models.TextField(null=True)
 
 class Ingredient(models.Model):
-	ingredient_name = models.CharField(max_length=128, null=False, default='')
+	ingredient_name = models.CharField(max_length=128, unique=True, null=False, default='')
 	description = models.TextField(null=True) 
 	package_size = models.CharField(max_length=128,null=True)
 	cpp = models.IntegerField(null=True)
 	comment = models.TextField(null=True)
 
+class Product_Line(models.Model):
+	product_line_name = models.CharField(max_length=128, unique=True, null=False, default='', primary_key=True)
+	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
+
+	class Meta:
+		unique_together = (("product_line_name","sku"),)
+
 class IngredientFile(models.Model):
+	file = models.FileField(blank=False, null=False)
+	description = models.TextField(null=True) 
+	timestamp = models.DateTimeField(auto_now_add=True)
+
+class SkuFile(models.Model):
 	file = models.FileField(blank=False, null=False)
 	description = models.TextField(null=True) 
 	timestamp = models.DateTimeField(auto_now_add=True)

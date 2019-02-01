@@ -22,6 +22,12 @@ CREATE TABLE ingredients
 	cpp INTEGER,
 );
 
+CREATE TABLE productline
+(
+	name varchar(128) NOT NULL, 
+	sku_id INTEGER REFERENCES sku(uid), 
+);
+
 CREATE TABLE sku_to_ingredients
 (
 	sku_id INTEGER REFERENCES sku(uid), 

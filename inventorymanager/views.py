@@ -18,7 +18,7 @@ def index(request):
 
 @login_required(login_url='/accounts/login/')
 def ingredient(request):
-	return render(request, 'ingredient.html')
+	return render(request, "ingredient.html")
 
 @login_required(login_url='/accounts/login/')
 def sku(request):
@@ -28,6 +28,9 @@ def sku(request):
 def manufacture_goal(request):
 	return render(request, "manufacturing.html")
 
+@login_required(login_url='/accounts/login/')
+def product_line(request):
+	return render(request, "product_line.html")
 # https://blog.vivekshukla.xyz/uploading-file-using-api-django-rest-framework/
 # https://www.django-rest-framework.org/api-guide/views/
 # APIView is specific for handling REST API requests. User need to Explicitly describe  
@@ -56,7 +59,7 @@ class IngredientImportView(APIView):
 		with open(csv_file.name) as f:
 			reader = csv.DictReader(f)
 			for row in reader:
-				ingredient = Ingredient(ingredient_name=row['ingredient_name'], 
+				ingredient = Ingredient(ingredient_name=row['ingredient_name'].lower(), 
 									description=row['description'],
 									package_size=row['package_size'],
 									cpp=row['cpp'],
@@ -80,4 +83,56 @@ class IngredientExportView(APIView):
                         for field in Ingredient._meta.fields:
                                 ingredient_row.append(getattr(ingredient, field.name))
                         writer.writerow(ingredient_row)
+                return response
+
+class SkuImportView(APIView):
+	# available parsers: https://www.django-rest-framework.org/api-guide/parsers/ 
+	# file sent should be in FormData
+	parser_classes = (MultiPartParser, FormParser)
+	def post(self, request, *args, **kwargs):
+		# https://stackoverflow.com/questions/28545553/django-rest-frameworks-request-post-vs-request-data
+		# request.data is more flexible than request.FILES
+		file_serializer = SkuFileSerializer(data=request.data)
+		if file_serializer.is_valid():
+			file_serializer.save()
+			# Use self.method() to access the function inside the same class...
+			# https://stackoverflow.com/questions/24813740/python-error-cannot-access-function-in-class 
+			self.process_file(request.data['file'])
+			return Response(file_serializer.data, status.HTTP_201_CREATED)
+		else:
+			return Response(file_serializer.errors, status.HTTP_400_BAD_REQUEST)
+	# https://stackoverflow.com/questions/40663168/processing-an-uploaded-file-using-django
+	def process_file(self, csv_file):
+		print(csv_file)
+		with open(csv_file.name) as f:
+			reader = csv.DictReader(f)
+			for row in reader:
+				print(row)
+				sku = Sku(productline=row['productline'],
+						caseupc=row['caseupc'],
+						unitupc=row['unitupc'],
+						sku_name=row['sku_name'],
+						count=row['count'],
+						unit_size=row['unit_size'],
+						tuples=row['tuples'],
+						comment=row['comment'])
+				sku.save()
+
+class SkuExportView(APIView):
+        def get(self, request, *args, **kwargs):
+                # https://docs.djangoproject.com/en/2.1/howto/outputting-csv/
+                # export all Ingredients into a csv file
+                response = HttpResponse(content_type='text/csv')
+                response['Content-Disposition'] = "attachment; filename=\"skus.csv\""
+
+                writer = csv.writer(response)
+                # https://stackoverflow.com/questions/15029666/exporting-items-from-a-model-to-csv-django-python
+                sku_fields = Sku._meta.fields
+                field_row = [field.name for field in sku_fields]
+                writer.writerow(field_row)
+                for sku in Sku.objects.all():
+                        sku_row = []
+                        for field in Sku._meta.fields:
+                                sku_row.append(getattr(sku, field.name))
+                        writer.writerow(sku_row)
                 return response

@@ -4,10 +4,18 @@ new Vue({
      data: {
      skus: [],
      loading: false,
+     query:'',
      currentSku: {},
      message: null,
-     newSku: { 'sku_name': '','productline': '', 'id': null, 'caseupc': 1234,'unitupc': 1234, 'unit_size': 0, 'count': 0, 'tuple': null, 
+     page:1,
+     perPage: 2,
+     pages:[],
+     newSku: { 'sku_name': '','productline': '', 'id': null, 'caseupc': 1234,'unitupc': 1234, 'unit_size': 0, 'count': 0, 'tuples': null, 
      'comment': null},
+     skuFile: null,
+     search_term: '',
+     has_paginated:false,
+     csv_uploaded:false,
    },
    mounted: function() {
        this.getSkus();
@@ -19,6 +27,16 @@ new Vue({
                .then((response) => {
                    this.skus = response.data;
                    this.loading = false;
+                   this.lowerCaseName();
+                   if(!this.has_paginated){
+                      this.setPages();
+                      this.has_paginated=true; 
+                    }
+                    if(this.csv_uploaded){
+                      this.pages=[];
+                      this.setPages();
+                      this.csv_uploaded=false;
+                    }
                })
                .catch((err) => {
                    this.loading = false;
@@ -44,6 +62,9 @@ new Vue({
          this.$http.delete('/api/sku/' + id + '/')
            .then((response) => {
              this.loading = false;
+                    if((this.skus.length%this.perPage)==1){
+                      this.deletePage();
+                    }
              this.getSkus();
            })
            .catch((err) => {
@@ -51,18 +72,57 @@ new Vue({
              console.log(err);
            })
        },
+      setPages: function () {
+        let numberOfPages = Math.ceil(this.skus.length / this.perPage);
+        for (let index = 1; index <= numberOfPages; index++) {
+          this.pages.push(index);
+        }
+      },
+      addPage: function (){
+          this.pages.push(Math.ceil(this.skus.length / this.perPage)+1);
+      },
+      deletePage: function (){
+        this.pages=[];
+          let numberOfPages = Math.ceil(this.skus.length / this.perPage);
+        for (let index = 1; index < numberOfPages; index++) {
+          this.pages.push(index);
+        }
+      },
+      paginate: function (skus) {
+      let page = this.page;
+      console.log(page)
+      let perPage = this.perPage;
+      let from = (page * perPage) - perPage;
+      let to = (page * perPage);
+      return  skus.slice(from, to);
+    },
        addSku: function() {
          this.loading = true;
          this.$http.post('/api/sku/',this.newSku)
            .then((response) => {
          $("#addSkuModal").modal('hide');
          this.loading = false;
+         for(let index = 0; index<this.skus.length; index++){
+            if(this.newSku.sku_name.toLowerCase().trim()===(this.skus[index].sku_name.toLowerCase().trim())){
+                console.log("Already exists");
+                return;
+                //console.log(err);
+            }
+          }
+         if((this.skus.length%this.perPage)==0){
+            this.addPage();
+         }
          this.getSkus();
          })
            .catch((err) => {
          this.loading = false;
          console.log(err);
        })
+       },
+       lowerCaseName: function(){
+          for(let index = 0; index<this.ingredients.length; index++){
+            this.skus[index].sku_name = this.skus[index].sku_name.toLowerCase().trim();
+          }
        },
        updateSku: function() {
          this.loading = true;
@@ -78,8 +138,62 @@ new Vue({
          this.loading = false;
          console.log(err);
        })
-   }
+   },
+
+      selectSkuCSV: function(event) {
+        this.skuFile = event.target.files[0]
+      },
+        
+      uploadSkuCSV: function() {
+        this.loading = true;
+        // upload this.ingredientCSV to REST api in FormData
+        const formData = new FormData()
+        // https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
+        formData.append('file', this.skuFile, this.skuFile.name)
+        this.$http.post('/api/sku_import/', formData)
+           .then((response) => {
+         this.loading = false;
+         this.csv_uploaded=true;
+         this.getSkus();
+         })
+           .catch((err) => {
+         this.loading = false;
+         console.log(err);
+        })
+      },
+
+      exportSkuCSV: function() {
+        this.loading = true;
+        this.$http.get('/api/sku_export/')
+          .then((response) => {
+                // https://thewebtier.com/snippets/download-files-with-axios/
+                // https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
+                // url to the csv file in form of a Blob
+                // url lifetime is tied to the document in the window
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                // create a link with the file url and click on it
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'sku.csv');
+                document.body.appendChild(link);
+                link.click();
+                
+                this.loading = false;
+                this.getSkus();
+          }).catch((err) => {
+                this.loading = false;
+                console.log(err)
+          })
+      },
    
    
-   }
+   },
+
+
+  computed: {
+    displayedSkus () {
+      return this.paginate(this.skus);
+    }
+  },
+
    });
