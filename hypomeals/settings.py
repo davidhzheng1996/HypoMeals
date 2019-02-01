@@ -45,8 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'el_pagination',
+    'django.contrib.staticfiles'
 ]
 
 MIDDLEWARE = [

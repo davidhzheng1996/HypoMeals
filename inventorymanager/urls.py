@@ -17,8 +17,7 @@ urlpatterns = [
     # ingredient file export endpoint 
     path('api/ingredient_export/', IngredientExportView.as_view()),
     path('api/manufacture_goal/', viewsets.manufacture_goals),
-    path('api/manufacture_goal/<int:id>', viewsets.manufacture_goals_get)
-
+    path('api/manufacture_goal/<int:id>', viewsets.manufacture_goals_get),
     path('api/sku_import/', SkuImportView.as_view()),
     # ingredient file export endpoint 
     path('api/sku_export/', SkuExportView.as_view())
