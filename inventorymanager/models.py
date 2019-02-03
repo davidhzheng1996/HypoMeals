@@ -18,6 +18,10 @@ class Ingredient(models.Model):
 	cpp = models.IntegerField(null=True)
 	comment = models.TextField(null=True)
 
+class Goal(models.Model):
+	user = models.ForeignKey(User,on_delete=models.CASCADE)
+	goalname = models.CharField(max_length=128,null=False,default='')
+
 class Product_Line(models.Model):
 	product_line_name = models.CharField(max_length=128, unique=True, null=False, default='', primary_key=True)
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
@@ -57,9 +61,12 @@ class Sku_To_Customer(models.Model):
 class Manufacture_Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
+	name = models.ForeignKey(Goal,on_delete=models.CASCADE)
 	goal_sku_name = models.CharField(max_length=128, null=False, default='')
 	desired_quantity = models.IntegerField()
 
 	class Meta: 
 		unique_together = (("user","sku"),)
+
+
 

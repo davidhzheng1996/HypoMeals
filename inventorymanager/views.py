@@ -31,6 +31,10 @@ def manufacture_goal(request):
 @login_required(login_url='/accounts/login/')
 def product_line(request):
 	return render(request, "product_line.html")
+
+@login_required(login_url='/accounts/login/')
+def goal(request):
+	return render(request, "goal.html")
 # https://blog.vivekshukla.xyz/uploading-file-using-api-django-rest-framework/
 # https://www.django-rest-framework.org/api-guide/views/
 # APIView is specific for handling REST API requests. User need to Explicitly describe  

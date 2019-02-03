@@ -18,6 +18,7 @@ var vm = new Vue({
            this.$http.get('/api/manufacture_goal/'+userid)
                .then((response) => {
                   console.log(response)
+                  console.log(response.data)
                    this.goals = response.data;
                    this.loading = false;
                })
@@ -53,7 +54,7 @@ var vm = new Vue({
        //     })
        // },
        addGoal: function(userid) {
-         this.newGoal.user = userid
+         this.newGoal.user = parseInt(userid
          console.log(this.newGoal)
          this.loading = true;
          this.$http.post('/api/manufacture_goal/',this.newGoal)

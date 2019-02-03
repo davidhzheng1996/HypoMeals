@@ -120,7 +120,7 @@ new Vue({
        })
        },
        lowerCaseName: function(){
-          for(let index = 0; index<this.ingredients.length; index++){
+          for(let index = 0; index<this.skus.length; index++){
             this.skus[index].sku_name = this.skus[index].sku_name.toLowerCase().trim();
           }
        },
