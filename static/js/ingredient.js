@@ -21,6 +21,14 @@ new Vue({
      //temp:[],
      // what is this for???
      suggestionAttribute: 'original_title',
+
+     // sorting variables
+     sortKey: 'ingredient_name',
+     sortAsc: [
+            { 'ingredient_name': true },
+            { 'package_size': true },
+            { 'cpp': true }
+          ],
    },
    mounted: function() {
        this.getIngredients();
@@ -29,9 +37,9 @@ new Vue({
        getIngredients: function(){
            let api_url = '/api/ingredient/';
            // https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
-           // if(this.search_term !== '' || this.search_term !== null) {
-           //      api_url = '/api/ingredient/?search=' + this.search_term
-           // }
+           if(this.search_term !== '' || this.search_term !== null) {
+                api_url = '/api/ingredient/?search=' + this.search_term
+           }
            this.loading = true;
            this.$http.get(api_url)
                .then((response) => {
@@ -180,26 +188,40 @@ new Vue({
 
       exportIngredientCSV: function() {
         this.loading = true;
-        this.$http.get('/api/ingredient_export/')
-          .then((response) => {
-                // https://thewebtier.com/snippets/download-files-with-axios/
-                // https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
-                // url to the csv file in form of a Blob
-                // url lifetime is tied to the document in the window
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                // create a link with the file url and click on it
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'ingredient.csv');
-                document.body.appendChild(link);
-                link.click();
+        // Export all current ingredients to a csv file
+        // https://codepen.io/dimaZubkov/pen/eKGdxN
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += [
+          Object.keys(this.ingredients[0]).join(","),
+          // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+          ...this.ingredients.map(key => Object.values(key).join(","))
+        ].join("\n");
+        const url = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "ingredient.csv");
+        link.click();
+        // Export the entire ingredient database as CSV 
+        // this.$http.get('/api/ingredient_export/')
+        //   .then((response) => {
+        //         // https://thewebtier.com/snippets/download-files-with-axios/
+        //         // https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
+        //         // url to the csv file in form of a Blob
+        //         // url lifetime is tied to the document in the window
+        //         const url = window.URL.createObjectURL(new Blob([response.data]));
+        //         // create a link with the file url and click on it
+        //         const link = document.createElement('a');
+        //         link.href = url;
+        //         link.setAttribute('download', 'ingredient.csv');
+        //         document.body.appendChild(link);
+        //         link.click();
                 
-                this.loading = false;
-                this.getIngredients();
-          }).catch((err) => {
-                this.loading = false;
-                console.log(err)
-          })
+        //         this.loading = false;
+        //         this.getIngredients();
+        //   }).catch((err) => {
+        //         this.loading = false;
+        //         console.log(err)
+        //   })
       },
 
       selectIngredient: function(){
@@ -232,6 +254,18 @@ new Vue({
                         }
                 })
       },
+
+      // https://vuejs.org/v2/guide/migration.html#Replacing-the-orderBy-Filter
+      sortBy: function(key) {
+        this.sortKey = key
+        this.sortAsc[key] = !this.sortAsc[key]
+        if(!this.sortAsc[this.sortKey]){
+          this.ingredients = _.sortBy(this.ingredients, this.sortKey)
+        } else {
+          this.ingredients = _.sortBy(this.ingredients, this.sortKey).reverse()
+        }
+      },
+
    },
 
   computed: {
