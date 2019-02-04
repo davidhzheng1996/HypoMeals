@@ -49,12 +49,13 @@ class IngredientImportView(APIView):
 	def post(self, request, *args, **kwargs):
 		# https://stackoverflow.com/questions/28545553/django-rest-frameworks-request-post-vs-request-data
 		# request.data is more flexible than request.FILES
+		# skip saving imported files for now
 		file_serializer = IngredientFileSerializer(data=request.data)
 		if file_serializer.is_valid():
-			file_serializer.save()
+			# file_serializer.save()
 			# Use self.method() to access the function inside the same class...
 			# https://stackoverflow.com/questions/24813740/python-error-cannot-access-function-in-class 
-			self.process_file(request.data['file'])
+			self.validate(request.data['file'])
 			return Response(file_serializer.data, status.HTTP_201_CREATED)
 		else:
 			return Response(file_serializer.errors, status.HTTP_400_BAD_REQUEST)
@@ -69,6 +70,28 @@ class IngredientImportView(APIView):
 									cpp=row['cpp'],
 									comment=row['comment'])
 				ingredient.save()
+	
+	# validation conforms to https://piazza.com/class/jpvlvyxg51d1nc?cid=52
+	# return errors, warnings 
+	def validate(self, csv_file):
+		errors = []
+		warnings = []
+		recorded = []
+		with open(csv_file.name) as f:
+			reader = csv.DictReader(f)
+			# validate field names
+			if reader.fieldnames != ['Ingr#','Name','Vendor Info','Size','Cost','Comment']:
+				errors.append('File headers not compliant to standard')
+				print('Fileheaders not compliant')
+				return {'errors': errors, 'warnings': warnings}
+			for row in reader:
+				print(row)
+				if row in recorded:
+					errors.append('Duplicate entries found')
+					print('duplicate entries')
+				recorded.append(row)
+			
+			return {'errors': errors, 'warnings': warnings}
 
 class IngredientExportView(APIView):
         def get(self, request, *args, **kwargs):

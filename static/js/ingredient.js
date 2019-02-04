@@ -29,6 +29,8 @@ new Vue({
             { 'package_size': true },
             { 'cpp': true }
           ],
+     // File Upload Errors
+     upload_errors: '',
    },
    mounted: function() {
        this.getIngredients();
