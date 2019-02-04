@@ -20,8 +20,10 @@
             <thead>
                <tr>
                   <th v-on:click="sortBy('ingredient_name')" scope="col">Name</th>
+                  <th v-on:click="sortBy('id')" scope="col">Ingredient ID</th>
                   <th v-on:click="sortBy('package_size')" scope="col">Package Size</th>
                   <th v-on:click="sortBy('cpp')" scope="col">Cost per Package</th>
+                  <th v-on:click="sortBy('description')" scope="col">Vendor Info</th>
                   <th scope="col">Actions</th>
                </tr>
             </thead>
@@ -29,8 +31,10 @@
                <!-- https://vuejs.org/v2/guide/migration.html#Replacing-the-orderBy-Filter -->
                <tr v-for="ingredient in displayedIngredients">
                   <th scope="row">${ingredient.ingredient_name}</th>
+                  <td>${ingredient.id}</td>
                   <td>${ingredient.package_size}</td>
                   <td>${ingredient.cpp}</td>
+                  <td>${ingredient.description}</td>
                   <td>
                      <button class="btn btn-info" v-on:click="getIngredient(ingredient.id)">Edit</button>
                      <button class="btn btn-danger" v-on:click="deleteIngredient(ingredient.id)">Delete</button>
@@ -244,7 +248,7 @@
         // https://stackoverflow.com/questions/51104720/use-both-vue-js-and-jquery-autocomplete
         $(function() {
            $( "#search_input_id" ).autocomplete({
-              minLength:2,   
+              minLength:1,   
               delay:500,   
               source: search_suggestions
            });

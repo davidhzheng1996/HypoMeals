@@ -17,6 +17,9 @@ from django.contrib.auth.decorators import login_required
 class SkuViewSet(viewsets.ModelViewSet):
     queryset = Sku.objects.all()
     serializer_class = SkuSerializer
+    filter_backends = (filters.SearchFilter, )
+    # notice that we could also filter on foreign key's fields
+    search_fields = ('sku_name', 'productline')
 
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
@@ -25,7 +28,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
     # https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
     filter_backends = (filters.SearchFilter, )
     # notice that we could also filter on foreign key's fields
-    search_fields = ('ingredient_name', 'description', 'comment')
+    search_fields = ('ingredient_name', 'description')
 
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()

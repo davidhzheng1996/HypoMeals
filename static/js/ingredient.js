@@ -4,7 +4,6 @@ new Vue({
      delimiters: ['${','}'],
   data: {
      ingredients: [],
-     //resource_url: '/api/ingredient/',
      loading: false,
      currentIngredient: {},
      message: null,
@@ -18,7 +17,6 @@ new Vue({
      search_input: '',
      has_paginated:false,
      csv_uploaded:false,
-     //temp:[],
      // what is this for???
      suggestionAttribute: 'original_title',
 
@@ -27,7 +25,9 @@ new Vue({
      sortAsc: [
             { 'ingredient_name': true },
             { 'package_size': true },
-            { 'cpp': true }
+            { 'cpp': true },
+            { 'description': true },
+            {'id': true}
           ],
    },
    mounted: function() {

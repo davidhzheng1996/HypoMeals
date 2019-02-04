@@ -16,14 +16,36 @@ new Vue({
      search_term: '',
      has_paginated:false,
      csv_uploaded:false,
+
+     search_term: '',
+     search_suggestions: search_suggestions,
+     search_input: '',
+
+     suggestionAttribute: 'original_title',
+
+     sortKey: 'sku_name',
+     sortAsc: [
+            { 'sku_name': true },
+            { 'id': true },
+            { 'productline': true },
+            { 'caseupc': true },
+            {'unitupc': true},
+            {'unit_size': true},
+            {'count': true},
+          ],
    },
    mounted: function() {
        this.getSkus();
    },
    methods: {
        getSkus: function(){
+          let api_url = '/api/isku/';
+           // https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
+           if(this.search_term !== '' || this.search_term !== null) {
+                api_url = '/api/sku/?search=' + this.search_term;
+           }
            this.loading = true;
-           this.$http.get('/api/sku/')
+           this.$http.get(api_url)
                .then((response) => {
                    this.skus = response.data;
                    this.loading = false;
@@ -90,7 +112,6 @@ new Vue({
       },
       paginate: function (skus) {
       let page = this.page;
-      console.log(page)
       let perPage = this.perPage;
       let from = (page * perPage) - perPage;
       let to = (page * perPage);
@@ -164,26 +185,60 @@ new Vue({
 
       exportSkuCSV: function() {
         this.loading = true;
-        this.$http.get('/api/sku_export/')
-          .then((response) => {
-                // https://thewebtier.com/snippets/download-files-with-axios/
-                // https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
-                // url to the csv file in form of a Blob
-                // url lifetime is tied to the document in the window
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                // create a link with the file url and click on it
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'sku.csv');
-                document.body.appendChild(link);
-                link.click();
+        // Export all current skus to a csv file
+        // https://codepen.io/dimaZubkov/pen/eKGdxN
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += [
+          Object.keys(this.skus[0]).join(","),
+          // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+          ...this.skus.map(key => Object.values(key).join(","))
+        ].join("\n");
+        const url = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "sku.csv");
+        link.click();
+        // this.loading = true;
+        // this.$http.get('/api/sku_export/')
+        //   .then((response) => {
+        //         // https://thewebtier.com/snippets/download-files-with-axios/
+        //         // https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
+        //         // url to the csv file in form of a Blob
+        //         // url lifetime is tied to the document in the window
+        //         const url = window.URL.createObjectURL(new Blob([response.data]));
+        //         // create a link with the file url and click on it
+        //         const link = document.createElement('a');
+        //         link.href = url;
+        //         link.setAttribute('download', 'sku.csv');
+        //         document.body.appendChild(link);
+        //         link.click();
                 
-                this.loading = false;
-                this.getSkus();
-          }).catch((err) => {
-                this.loading = false;
-                console.log(err)
-          })
+        //         this.loading = false;
+        //         this.getSkus();
+        //   }).catch((err) => {
+        //         this.loading = false;
+        //         console.log(err)
+        //   })
+      },
+
+      search_input_changed: function() {
+        const that = this
+        this.$http.get('/api/sku/?search=' + this.search_term)
+                .then((response) => {
+                        for (var i in response.data) {
+                                this.search_suggestions.push(response.data[i].sku_name.toLowerCase());
+                        }
+                })
+      },
+
+        sortBy: function(key) {
+        this.sortKey = key
+        this.sortAsc[key] = !this.sortAsc[key]
+        if(!this.sortAsc[this.sortKey]){
+          this.skus = _.sortBy(this.skus, this.sortKey)
+        } else {
+          this.iskus = _.sortBy(this.skus, this.sortKey).reverse()
+        }
       },
    
    
