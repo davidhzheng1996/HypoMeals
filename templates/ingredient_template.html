@@ -1,0 +1,16 @@
+
+<!--                {% load endless %}
+                 {% paginate objects %} -->
+                     {% for ingredient in ingredientss %}
+                        <div class="well object">
+                           <th scope="row">${ingredient.ingredient_name}</th>
+                           <td>${ingredient.package_size}</td>
+                           <td>${ingredient.cpp}</td>
+                           <td>
+                           <button class="btn btn-info" v-on:click="getIngredient(ingredient.id)">Edit</button>
+                           <button class="btn btn-danger" v-on:click="deleteIngredient(ingredient.id)">Delete</button>
+                           </td>
+                        </div>
+                     {% endfor %}
+               <!-- {% show_more "More results" %} -->
+<!-- <script src="../static/js/ingredient.js"></script> -->

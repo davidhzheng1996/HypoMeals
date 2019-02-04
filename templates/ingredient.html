@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load static %}
+      <link rel="stylesheet" href="{% static 'css/ingredients.css' %}">
+{% block content %}
+<div id="starting">
+   <div class="container">
+      <div class="row">
+         <h1>List of Ingredients
+            <button class="btn btn-success" data-toggle="modal" data-target="#addIngredientModal">Add Ingredient</button>
+            <input class="btn btn-success" type="file" @change="selectIngredientCSV">
+            <button class="btn btn-success" type="submit" @click="uploadIngredientCSV">Upload</button>
+            <button class="btn btn-success" type="submit" @click="exportIngredientCSV">Export</button>
+         </h1>
+         <div class="form-inline my-2 my-lg-0">
+            <input id = "search_input_id" class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" @change="search_input_changed" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getIngredients()">Search</button>
+        </div>
+         <table class="table">
+            <thead>
+               <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Package Size</th>
+                  <th scope="col">Cost per Package</th>
+                  <th scope="col">Actions</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr v-for="ingredient in displayedIngredients">
+                  <th scope="row">${ingredient.ingredient_name}</th>
+                  <td>${ingredient.package_size}</td>
+                  <td>${ingredient.cpp}</td>
+                  <td>
+                     <button class="btn btn-info" v-on:click="getIngredient(ingredient.id)">Edit</button>
+                     <button class="btn btn-danger" v-on:click="deleteIngredient(ingredient.id)">Delete</button>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <div class="clearfix btn-group col-md-2 offset-md-5">
+            <button type="button" class="btn btn-sm btn-outline-secondary" v-if="page != 1" @click="page--"> << </button>
+            <!-- <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> ${pageNumber} </button> -->
+            <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>
+            <button type="button" @click="page++" v-if="page < pages.length" class="btn btn-sm btn-outline-secondary"> >> </button>
+          </div>
+   </div>
+   <div class="loading" v-if="loading===true">Loading&#8230;</div>
+   <!-- Add Article Modal -->
+   <div class="modal fade" id="addIngredientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLongTitle">Add Ingredient</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            <form v-on:submit.prevent="addIngredient()">
+               <div class="modal-body">
+                  <div class="form-group">
+                     <label>Ingredient Name*</label>
+                     <input
+                        type="text"
+                        id="name"
+                        class="form-control"
+                        placeholder="Enter Ingredient Name"
+                        v-model="newIngredient.ingredient_name"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
+                     <label>Package Size*</label>
+                     <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Package Size"
+                        v-model="newIngredient.package_size"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
+                     <label>Cost per Package*</label>
+                     <input
+                        type="number"
+                        class="form-control"
+                        placeholder="Enter Cost per Package"
+                        v-model="newIngredient.cpp"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
+                     <label>(Optional) Vender Info</label>
+                     <textarea
+                        class="form-control"
+                        placeholder="Enter Optional Vender Info"
+                        v-model="newIngredient.description"
+                        rows="3"></textarea>
+                  </div>
+                  <div class="form-group">
+                     <label>(Optional) Ingredient ID</label>
+                     <input
+                        type="number"
+                        class="form-control"
+                        placeholder="Enter Optional Ingredient ID"
+                        v-model="newIngredient.id">
+                  </div>
+                  <div class="form-group">
+                     <label>(Optional) Comment</label>
+                     <input
+                        class="form-control"
+                        placeholder="Enter Optional Comment"
+                        v-model="newIngredient.comment"
+                        rows="3">
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+               </div>
+            </form>
+         </div>
+      </div>
+      <div class="loading" v-if="loading===true">Loading&#8230;</div>
+   </div>
+   <!-- End of add article modal -->
+
+   <!-- Edit Article Modal -->
+   <div class="modal fade" id="editIngredientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLongTitle">Edit Ingredient</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            <form v-on:submit.prevent="updateIngredient()">
+               <div class="modal-body">
+                  <div class="form-group">
+                     <label>Ingredient Name*</label>
+                     <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Ingredient Name"
+                        v-model="currentIngredient.ingredient_name"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
+                     <label>Package Size*</label>
+                     <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Package Size"
+                        v-model="currentIngredient.package_size"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
+                     <label>Cost per Package*</label>
+                     <input
+                        type="number"
+                        class="form-control"
+                        placeholder="Enter Cost per Package"
+                        v-model="currentIngredient.cpp"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
+                     <label>(Optional) Vender Info</label>
+                     <textarea
+                        class="form-control"
+                        placeholder="Enter Optional Vender Info"
+                        v-model="currentIngredient.description"
+                        rows="3"></textarea>
+                  </div>
+                  <div class="form-group">
+                     <label>(Optional) Ingredient ID</label>
+                     <input
+                        type="number"
+                        class="form-control"
+                        placeholder="Enter Optional Ingredient ID"
+                        v-model="currentIngredient.id">
+                  </div>
+                  <div class="form-group">
+                     <label>(Optional) Comment</label>
+                     <input
+                        class="form-control"
+                        placeholder="Enter Optional Comment"
+                        v-model="currentIngredient.comment"
+                        rows="3">
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+               </div>
+            </form>
+         </div>
+      </div>
+      <div class="loading" v-if="loading===true">Loading&#8230;</div>
+   </div>
+   <!-- End of edit article modal -->
+</div>
+<!-- <! — bootrtap js files → -->
+<script>
+        var search_suggestions = []
+        // https://stackoverflow.com/questions/51104720/use-both-vue-js-and-jquery-autocomplete
+        $(function() {
+           $( "#search_input_id" ).autocomplete({
+              minLength:2,   
+              delay:500,   
+              source: search_suggestions
+           });
+        });
+</script>
+<script src="../static/js/ingredient.js"></script>
+{% endblock %}

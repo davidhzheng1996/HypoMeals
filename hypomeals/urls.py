@@ -15,8 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from .routers import router
 
 urlpatterns = [
     path('', include('inventorymanager.urls')),
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
+    # rest api url routers
+    path('api/', include(router.urls)),
 ]

@@ -1,0 +1,72 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
+
+.cont {
+  height: 100%;
+  overflow: auto;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow:0 0 0 50px white inset; /* Change the color to your own background color */
+    -webkit-text-fill-color: #333;
+}
+
+input, button {
+  outline: none;
+  border: none;
+}
+
+.login {
+  position: relative;
+  height: 100%;
+}
+.login-input {
+  display: block;
+  float:none;
+  height:5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  border: 2px solid black;
+  width: 22rem;
+  height: 100%;
+  padding-left: 1.5rem;
+  font-size: 1.5rem;
+  color: black;
+  margin-left:auto;
+  margin-right:auto;
+}
+.login-submit {
+  display:block;
+  position: relative;
+  width: 33%;
+  height: 4rem;
+  margin-top:5%;
+  margin-left:auto;
+  margin-right:auto;
+  color: rgba(255, 255, 255, 0.8);
+  background: #FF3366;
+  font-size: 1.5rem;
+  border-radius: 3rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition: width 0.3s 0.15s, font-size 0.1s 0.15s;
+}
+
+.login-signup {
+  font-size: 1.2rem;
+  color: black;
+}
+.login-signup a {
+  color: black;
+  cursor: pointer;
+}
+
+.login-title{
+	text-align: center; 
+	font-size:70px;
+	padding-top:5%;
+	margin-left:auto;
+  margin-right:auto;
+}
