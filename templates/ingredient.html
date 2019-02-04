@@ -9,6 +9,7 @@
             <button class="btn btn-success" data-toggle="modal" data-target="#addIngredientModal">Add Ingredient</button>
             <input class="btn btn-success" type="file" @change="selectIngredientCSV">
             <button class="btn btn-success" type="submit" @click="uploadIngredientCSV">Upload</button>
+            <p class="error" v-if="upload_errors">${ upload_errors }</p>
             <button class="btn btn-success" type="submit" @click="exportIngredientCSV">Export</button>
             <!-- <button class="btn btn-success" type="submit" @click="selectIngredient">Create Dependency Report</button> -->
          </h1>

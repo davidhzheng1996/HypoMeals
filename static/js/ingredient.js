@@ -29,6 +29,8 @@ new Vue({
             { 'description': true },
             {'id': true}
           ],
+     // File Upload Errors
+     upload_errors: '',
    },
    mounted: function() {
        this.getIngredients();
@@ -176,6 +178,7 @@ new Vue({
         formData.append('file', this.ingredientFile, this.ingredientFile.name)
         this.$http.post('/api/ingredient_import/', formData)
            .then((response) => {
+             console.log(response.data)
          this.loading = false;
          this.csv_uploaded=true;
          this.getIngredients();
