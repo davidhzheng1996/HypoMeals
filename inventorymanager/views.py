@@ -49,18 +49,26 @@ class IngredientImportView(APIView):
 	def post(self, request, *args, **kwargs):
 		# https://stackoverflow.com/questions/28545553/django-rest-frameworks-request-post-vs-request-data
 		# request.data is more flexible than request.FILES
-		# skip saving imported files for now
-		file_serializer = IngredientFileSerializer(data=request.data)
-		if file_serializer.is_valid():
+		csv_file = request.data['file']
+		validate_results = self.validate(csv_file)
+		if validate_results['errors'] != []:
+			return Response(validate_results, status.HTTP_400_BAD_REQUEST)
+		# save ingredients in file
+		self.save(csv_file)
+		return Response(validate_results, status.HTTP_201_CREATED)
+
+		# file_serializer = IngredientFileSerializer(data=request.data)
+		# if file_serializer.is_valid():
 			# file_serializer.save()
 			# Use self.method() to access the function inside the same class...
 			# https://stackoverflow.com/questions/24813740/python-error-cannot-access-function-in-class 
-			self.validate(request.data['file'])
-			return Response(file_serializer.data, status.HTTP_201_CREATED)
-		else:
-			return Response(file_serializer.errors, status.HTTP_400_BAD_REQUEST)
+		# 	self.validate(request.data['file'])
+		# 	return Response(file_serializer.data, status.HTTP_201_CREATED)
+		# else:
+		# 	return Response(file_serializer.errors, status.HTTP_400_BAD_REQUEST)
+
 	# https://stackoverflow.com/questions/40663168/processing-an-uploaded-file-using-django
-	def process_file(self, csv_file):
+	def save(self, csv_file):
 		with open(csv_file.name) as f:
 			reader = csv.DictReader(f)
 			for row in reader:
@@ -72,7 +80,6 @@ class IngredientImportView(APIView):
 				ingredient.save()
 	
 	# validation conforms to https://piazza.com/class/jpvlvyxg51d1nc?cid=52
-	# return errors, warnings 
 	def validate(self, csv_file):
 		errors = []
 		warnings = []
@@ -82,16 +89,28 @@ class IngredientImportView(APIView):
 			# validate field names
 			if reader.fieldnames != ['Ingr#','Name','Vendor Info','Size','Cost','Comment']:
 				errors.append('File headers not compliant to standard')
-				print('Fileheaders not compliant')
 				return {'errors': errors, 'warnings': warnings}
-			for row in reader:
-				print(row)
-				if row in recorded:
-					errors.append('Duplicate entries found')
-					print('duplicate entries')
-				recorded.append(row)
-			
-			return {'errors': errors, 'warnings': warnings}
+			for ingr in reader:
+				if ingr in recorded:
+					errors.append('Duplicate entries found for %s' % ingr['Name'])
+				recorded.append(ingr)
+				
+				# check if unique key exists
+				obj = Ingredient.objects.get(ingredient_name=ingr['Name'])
+				# if exists, only success if id matches. Update other fields 
+				if obj and obj.pk != ingr['Ingr#']:
+					errors.append['Ambiguous record for %s' % obj.name]
+				else if obj:
+					# update other fields
+					warnings.append(['Update fields for %s' % obj.name])
+				else:
+					# check if object with id exists
+					obj = Ingredient.objects.get(pk=ingr['Ingr#'])					
+					if obj:
+						# overwrite existing object
+						warnings.append(['Overwrite object with id %i' % obj.pk])
+
+		return {'errors': errors, 'warnings': warnings}
 
 class IngredientExportView(APIView):
         def get(self, request, *args, **kwargs):
