@@ -21,6 +21,14 @@ new Vue({
      //temp:[],
      // what is this for???
      suggestionAttribute: 'original_title',
+
+     // sorting variables
+     sortKey: 'ingredient_name',
+     sortAsc: [
+            { 'ingredient_name': true },
+            { 'package_size': true },
+            { 'cpp': true }
+          ],
    },
    mounted: function() {
        this.getIngredients();
@@ -29,9 +37,9 @@ new Vue({
        getIngredients: function(){
            let api_url = '/api/ingredient/';
            // https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
-           // if(this.search_term !== '' || this.search_term !== null) {
-           //      api_url = '/api/ingredient/?search=' + this.search_term
-           // }
+           if(this.search_term !== '' || this.search_term !== null) {
+                api_url = '/api/ingredient/?search=' + this.search_term
+           }
            this.loading = true;
            this.$http.get(api_url)
                .then((response) => {
@@ -214,6 +222,18 @@ new Vue({
                         }
                 })
       },
+
+      // https://vuejs.org/v2/guide/migration.html#Replacing-the-orderBy-Filter
+      sortBy: function(key) {
+        this.sortKey = key
+        this.sortAsc[key] = !this.sortAsc[key]
+        if(!this.sortAsc[this.sortKey]){
+          this.ingredients = _.sortBy(this.ingredients, this.sortKey)
+        } else {
+          this.ingredients = _.sortBy(this.ingredients, this.sortKey).reverse()
+        }
+      },
+
    },
 
   computed: {
