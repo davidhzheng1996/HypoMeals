@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
+from django.http import FileResponse
+from reportlab.pdfgen import canvas
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,6 +12,7 @@ from .serializers import *
 from .models import *
 
 import csv
+import io
 
 # Create your views here.
 @login_required(login_url='/accounts/login/')
@@ -82,7 +85,8 @@ class IngredientExportView(APIView):
                 ingredient_fields = Ingredient._meta.fields
                 field_row = [field.name for field in ingredient_fields]
                 writer.writerow(field_row)
-                for ingredient in Ingredient.objects.all():
+                # for ingredient in Ingredient.objects.all():
+                for ingredient in ingredients:
                         ingredient_row = []
                         for field in Ingredient._meta.fields:
                                 ingredient_row.append(getattr(ingredient, field.name))
