@@ -21,6 +21,8 @@ new Vue({
      //temp:[],
      // what is this for???
      suggestionAttribute: 'original_title',
+     // File Upload Errors
+     upload_errors: '',
    },
    mounted: function() {
        this.getIngredients();
