@@ -47,9 +47,6 @@ new Vue({
                       this.setPages();
                       this.csv_uploaded=false;
                     }
-                    // for(let i = 0; i < pages.length;i++){
-                    //   console.log(pages[i]);
-                    // }
                })
                .catch((err) => {
                    this.loading = false;
@@ -93,7 +90,7 @@ new Vue({
          this.loading = false;
          for(let index = 0; index<this.ingredients.length; index++){
             if(this.newIngredient.ingredient_name.toLowerCase().trim()===(this.ingredients[index].ingredient_name.toLowerCase().trim())){
-                console.log("Already exists");
+                this.message = "already exists";
                 return;
                 //console.log(err);
             }
@@ -203,6 +200,27 @@ new Vue({
                 this.loading = false;
                 console.log(err)
           })
+      },
+
+      selectIngredient: function(){
+            //let api_url = '/api/ingredient/';
+           // https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
+           // if(this.search_term !== '' || this.search_term !== null) {
+           //      api_url = '/api/ingredient/?search=' + this.search_term
+           // }
+           let api_url = '/api/ingredient/';
+           this.loading = true;
+           this.$http.get(api_url)
+               .then((response) => {
+                   this.ingredients = response.data;
+                   this.loading = false;
+                   $("#selectIngredientModal").modal('show');
+                   this.lowerCaseName();
+               })
+               .catch((err) => {
+                   this.loading = false;
+                   console.log(err);
+               })
       },
             // Input assistance 
       search_input_changed: function() {

@@ -80,6 +80,19 @@ var vm = new Vue({
          this.loading = false;
          console.log(err);
        })
-   }
+   },
+
+      manufacturingCalculator: function(goalid) {
+            for(key in this.goals){
+            // console.log('here')
+            if(this.goals.hasOwnProperty(key)){
+            // console.log(this.goals[key].id)
+              if(this.goals[key].id == goalid){
+                this.currentGoal = this.goals[key]
+                $("#calculatorResultModal").modal('show');
+              }
+            }
+          }
+      },
    }
    });
