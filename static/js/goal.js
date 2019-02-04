@@ -13,7 +13,6 @@ var vm = new Vue({
    methods: {
        getGoals: function(userid){
            this.loading = true;
-           console.log(this.newGoal)
            this.$http.get('/api/goal/'+userid)
                .then((response) => {
                   console.log(response)
@@ -32,7 +31,7 @@ var vm = new Vue({
             if(this.goals.hasOwnProperty(key)){
             // console.log(this.goals[key].id)
               if(this.goals[key].id == goalid){
-                this.currentGoal = this.goals[key]
+                this.currentGoal = {'id':this.goals[key].id,'goalname':this.goals[key].goalname,'user':this.goals[key].user}
                 $("#editGoalModal").modal('show');
               }
             }
@@ -40,7 +39,6 @@ var vm = new Vue({
        },
        deleteGoal: function(userid,goalid){
          this.loading = true;
-         console.log('dsfsdaj sdalk;fj sadlk;fj sladk sadk;fj sa')
          // TODO: use delimiters
          this.$http.post('/api/delete_goal/' + userid + '/'+goalid)
            .then((response) => {
@@ -66,15 +64,13 @@ var vm = new Vue({
          console.log(err);
        })
        },
-       updateGoal: function() {
+       updateGoal: function(userid,goalid) {
          this.loading = true;
-         console.log(this.currentGoal)
-         this.$http.put('/api/goal/'+ this.currentGoal.id + '/',     this.currentGoal)
+         this.$http.post('/api/update_goal/'+ userid + '/'+goalid, this.currentGoal)
            .then((response) => {
              $("#editGoalModal").modal('hide');
              this.loading = false;
-             this.currentGoal = response.data;
-             this.getGoals();
+             this.getGoals(userid);
          })
            .catch((err) => {
          this.loading = false;
@@ -94,5 +90,9 @@ var vm = new Vue({
             }
           }
       },
+
+      viewGoal:function(goalid){
+        window.location.href = '/goal/'+goalid
+      }
    }
    });

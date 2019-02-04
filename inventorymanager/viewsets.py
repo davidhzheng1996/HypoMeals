@@ -40,16 +40,18 @@ class ProductLineViewSet(viewsets.ModelViewSet):
     serializer_class = ProductLineSerializer
 
 
+# Begin Explicit APIs
+
+# Skus within goal
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])
 def manufacture_goals(request):
     if(request.method == 'POST'):
         try: 
             sku = Sku.objects.get(sku_name=request.data['goal_sku_name'])
+            goal = Goal.objects.get(id=request.data['name'])
             # COUPLED WITH FRONT END MAY WANT TO REFACTOR
             request.data['sku'] = sku.id
-            print('here')
-            print(request.data)
             serializer = ManufactureGoalSerializer(data = request.data)
             if(serializer.is_valid()):
                 serializer.save()
@@ -60,10 +62,10 @@ def manufacture_goals(request):
 
 @login_required(login_url='/accounts/login/')
 @api_view(['GET'])
-def manufacture_goals_get(request,id):
+def manufacture_goals_get(request,id,goalid):
     if(request.method == 'GET'):
         try: 
-            goals = Manufacture_Goal.objects.filter(user = id)
+            goals = Manufacture_Goal.objects.filter(user = id, name=goalid)
             response = []
             for goal in goals:
                 serializer = ManufactureGoalSerializer(goal)
@@ -72,6 +74,33 @@ def manufacture_goals_get(request,id):
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+def delete_manufacture_goal(request,specificgoal):
+    if(request.method == 'POST'):
+        try: 
+            manufacture_goal = Manufacture_Goal.objects.filter(id = specificgoal)
+            manufacture_goal.delete()
+            return Response(status = status.HTTP_204_NO_CONTENT)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+def update_manufacture_goal(request):
+    if(request.method == 'POST'):
+        try: 
+            manufacture_goal = Manufacture_Goal.objects.get(id = request.data['id'])
+            serializer = ManufactureGoalSerializer(manufacture_goal,{'desired_quantity':request.data['desired_quantity']},partial=True)
+            if(serializer.is_valid()):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+        except Exception as e: 
+            print(e)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+# Singular Manufacturing Goal
 @login_required(login_url='/accounts/login/')
 @api_view(['GET','POST'])
 def goal(request,id):
@@ -87,7 +116,6 @@ def goal(request,id):
             return Response(status = status.HTTP_400_BAD_REQUEST)
     if(request.method == 'POST'):
         try: 
-            print(request.data)
             serializer = GoalSerializer(data = request.data)
             if(serializer.is_valid()):
                 serializer.save()
@@ -99,13 +127,26 @@ def goal(request,id):
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])
 def delete_goal(request,id,goalid):
-    print('hdsafjads')
     if(request.method == 'POST'):
         try: 
             goal = Goal.objects.filter(user = id, id=goalid)
             goal.delete()
             return Response(status = status.HTTP_204_NO_CONTENT)
         except Exception as e: 
-            return Response(stauts = status.HTTP_400_BAD_REQUEST)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
 
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+def update_goal(request,id,goalid):
+    if(request.method == 'POST'):
+        try: 
+            goal = Goal.objects.get(user = id, id=goalid)
+            serializer = GoalSerializer(goal,{'goalname':request.data['goalname']},partial=True)
+            if(serializer.is_valid()):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+        except Exception as e: 
+            print(e)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
 

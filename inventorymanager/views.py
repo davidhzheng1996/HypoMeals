@@ -25,8 +25,8 @@ def sku(request):
 	return render(request, "sku.html")
 	
 @login_required(login_url='/accounts/login/')
-def manufacture_goal(request):
-	return render(request, "manufacturing.html")
+def manufacture_goal(request,goalid):
+	return render(request, "manufacturing.html",{'goalid':goalid})
 
 @login_required(login_url='/accounts/login/')
 def product_line(request):
