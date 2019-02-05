@@ -44,6 +44,32 @@ class ProductLineViewSet(viewsets.ModelViewSet):
 
 
 # Begin Explicit APIs
+@login_required(login_url='/accounts/login/')
+@api_view(['GET'])
+def ingredients_to_sku_get(request,skuid):
+    if(request.method == 'GET'):
+        try: 
+            ingredients_to_sku = Sku_To_Ingredient.objects.filter(sku=skuid)
+            ids= ingredients_to_sku.values_list("ig",flat=True)
+            ingredients = Ingredient.objects.filter(id__in=ids)
+            response = []
+            for ingredient in ingredients:
+                serializer = IngredientSerializer(ingredient)
+                for relation in ingredients_to_sku: 
+                    if(relation.id == ingredient.id):
+                        print('here')
+                        data = serializer.data
+                        data['quantity'] = relation.quantity
+                        response.append(data)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+# @login_required(login_url='/accounts/login/')
+# @api_view(['POST'])
+# def ingredients_to_sku(request,skuid):
+#     if(request.method == 'POST'):
+#         try:
 
 # Skus within goal
 @login_required(login_url='/accounts/login/')
@@ -63,6 +89,7 @@ def manufacture_goals(request):
         except Exception as e:
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
+# SKUs within manufacture goal
 @login_required(login_url='/accounts/login/')
 @api_view(['GET'])
 def manufacture_goals_get(request,id,goalid):
