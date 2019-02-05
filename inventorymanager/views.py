@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import *
 from .models import *
+from django.db import transaction
 
 import csv
 import io
@@ -57,12 +58,11 @@ class IngredientImportView(APIView):
 		# https://stackoverflow.com/questions/28545553/django-rest-frameworks-request-post-vs-request-data
 		# request.data is more flexible than request.FILES
 		csv_file = request.data['file']
-		validate_results = self.validate(csv_file)
-		if validate_results['errors'] != []:
-			return Response(validate_results, status.HTTP_400_BAD_REQUEST)
-		# save ingredients in file
-		self.save(csv_file)
-		return Response(validate_results, status.HTTP_201_CREATED)
+		errors, warnings = self.save(csv_file)
+		post_result = {'errors': errors, 'warnings': warnings}
+		if errors != []:
+			return Response(post_result, status.HTTP_400_BAD_REQUEST)
+		return Response(post_result, status.HTTP_201_CREATED)
 
 		# file_serializer = IngredientFileSerializer(data=request.data)
 		# if file_serializer.is_valid():
@@ -75,49 +75,62 @@ class IngredientImportView(APIView):
 		# 	return Response(file_serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 	# https://stackoverflow.com/questions/40663168/processing-an-uploaded-file-using-django
+	# return [errors], [warnings]
+	@transaction.atomic
 	def save(self, csv_file):
-		with open(csv_file.name) as f:
-			reader = csv.DictReader(f)
-			for row in reader:
-				ingredient = Ingredient(ingredient_name=row['ingredient_name'].lower(), 
-									description=row['description'],
-									package_size=row['package_size'],
-									cpp=row['cpp'],
-									comment=row['comment'])
-				ingredient.save()
-	
-	# validation conforms to https://piazza.com/class/jpvlvyxg51d1nc?cid=52
-	def validate(self, csv_file):
 		errors = []
 		warnings = []
-		recorded = []
+		# https://docs.djangoproject.com/en/1.9/topics/db/transactions/#savepoint-rollback
+		transaction_savepoint = transaction.savepoint()
 		with open(csv_file.name) as f:
 			reader = csv.DictReader(f)
-			# validate field names
-			if reader.fieldnames != ['Ingr#','Name','Vendor Info','Size','Cost','Comment']:
-				errors.append('File headers not compliant to standard')
-				return {'errors': errors, 'warnings': warnings}
-			for ingr in reader:
-				if ingr in recorded:
-					errors.append('Duplicate entries found for %s' % ingr['Name'])
-				recorded.append(ingr)
-				
-				# check if unique key exists
-				obj = Ingredient.objects.get(ingredient_name=ingr['Name'])
-				# if exists, only success if id matches. Update other fields 
-				if obj and obj.pk != ingr['Ingr#']:
-					errors.append['Ambiguous record for %s' % obj.name]
-				elif obj:
-					# update other fields
-					warnings.append(['Update fields for %s' % obj.name])
-				else:
-					# check if object with id exists
-					obj = Ingredient.objects.get(pk=ingr['Ingr#'])					
-					if obj:
-						# overwrite existing object
-						warnings.append(['Overwrite object with id %i' % obj.pk])
+			header_val_error, _ = self.validate_header(reader.fieldnames)
+			if header_val_error:
+				errors.append(header_val_error)
+			for ingr_dict in reader:
+				ingr_val_error, ingr_val_warning = self.validate_ingredient(ingr_dict)
+				if ingr_val_warning:
+					warnings.append(ingr_val_warning)
+				if ingr_val_error:
+					errors.append(ingr_val_error)
+					break
+				ingredient = Ingredient(id=ingr_dict['Ingr#'],
+										ingredient_name=ingr_dict['Name'].lower(), 
+										description=ingr_dict['Vendor Info'],
+										package_size=ingr_dict['Size'],
+										cpp=ingr_dict['Cost'],
+										comment=ingr_dict['Comment'])
+				# save without commit, as later validation might fail 
+				ingredient.save()
+		if errors != []:
+			transaction.savepoint_rollback(transaction_savepoint)
+		else:
+			transaction.savepoint_commit(transaction_savepoint)
+		return errors, warnings
+	
+	def validate_header(self, headers):
+		if headers != ['Ingr#','Name','Vendor Info','Size','Cost','Comment']:
+			return 'File headers not compliant to standard', ''
+		return '', ''
 
-		return {'errors': errors, 'warnings': warnings}
+	# validation conforms to https://piazza.com/class/jpvlvyxg51d1nc?cid=52
+	def validate_ingredient(self, ingredient_dict):
+		error = ''
+		warning = ''
+		# if ingredient with same name exists, only update if id matches
+		if Ingredient.objects.filter(ingredient_name=ingredient_dict['Name']).exists():
+			same_name_ingr = Ingredient.objects.get(ingredient_name=ingredient_dict['Name'])
+			if same_name_ingr.pk != int(ingredient_dict['Ingr#']):
+				error = 'Ambiguous record for %s' % same_name_ingr.ingredient_name
+			else:
+				# update other fields
+				warning = 'Update fields for %s' % same_name_ingr.ingredient_name
+		else:
+			# check if object with same id exists
+			if Ingredient.objects.filter(pk=ingredient_dict['Ingr#']).exists():
+				# overwrite existing object
+				warning = 'Overwrite object with id %s' % ingredient_dict['Ingr#']
+		return error, warning
 
 class IngredientExportView(APIView):
         def get(self, request, *args, **kwargs):
