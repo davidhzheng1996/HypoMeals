@@ -76,7 +76,8 @@ var vm = new Vue({
          this.loading = false;
          console.log(err);
        })
-      },
+   },
+
       viewGoal:function(goalid){
         window.location.href = '/goal/'+goalid
       }

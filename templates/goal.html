@@ -18,7 +18,7 @@
                   <td>
                      <button class="btn btn-primary" v-on:click="viewGoal(goal.id)">View Goal</button>
                      <button class="btn btn-info" v-on:click="getGoal(goal.id)">Edit</button>
-                     <button class="btn btn-danger" v-on:click="deleteGoal('{{user.id}}',goal.id)">Delete</button>
+                     <button class="btn btn-danger" v-on:click="deleteGoal('{{user.id}}',goal.id)">Delete</button> 
                   </td>
                </tr>
             </tbody>
@@ -26,7 +26,7 @@
       </div>
    </div>
    <div class="loading" v-if="loading===true">Loading&#8230;</div>
-   <!-- Add Article Modal -->
+   <!-- Add Goal Modal -->
    <div class="modal fade" id="addGoalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
@@ -57,6 +57,7 @@
          </div>
       </div>
    </div>
+   <!-- Edit Goal Modal -->
       <div class="modal fade" id="editGoalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
@@ -87,6 +88,8 @@
       </div>
       <div class="loading" v-if="loading===true">Loading&#8230;</div>
    </div>
+   
+   <!-- End of edit goal modal -->
    <div class="modal fade" id="addGoalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
