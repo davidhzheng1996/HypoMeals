@@ -43,7 +43,7 @@ class SkuFile(models.Model):
 class Sku_To_Ingredient(models.Model):
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
 	ig = models.ForeignKey(Ingredient,on_delete=models.CASCADE)
-
+	quantity = models.IntegerField(null=False,default=1)
 
 	class Meta:
 		unique_together = (("sku","ig"),)
