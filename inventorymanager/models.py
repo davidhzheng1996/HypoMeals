@@ -22,8 +22,9 @@ class Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
 	goalname = models.CharField(max_length=128,null=False,default='')
 
+# product_line to sku is one to many. Each sku matches to exactly one product line
 class Product_Line(models.Model):
-	product_line_name = models.CharField(max_length=128, unique=True, null=False, default='', primary_key=True)
+	product_line_name = models.CharField(max_length=128, unique=True, null=False, default='')
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
 
 	class Meta:

@@ -17,6 +17,7 @@ new Vue({
            this.loading = true;
            this.$http.get(api_url)
                .then((response) => {
+                 console.log(response)
                    this.product_lines = response.data;
                    this.loading = false;
                })
