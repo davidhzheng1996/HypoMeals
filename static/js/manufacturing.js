@@ -17,8 +17,12 @@ var vm = new Vue({
    },
    methods: {
        getGoals: function(userid,goalid){
+            let api_url = '/api/manufacture_goal/'+userid+'/'+goalid;
+           // if(this.search_term !== '' || this.search_term !== null) {
+           //      api_url = '/api/search_manufacture_goal/'+userid+'/'+goalid+this.search_term
+           // }
            this.loading = true;
-           this.$http.get('/api/manufacture_goal/'+userid+'/'+goalid)
+           this.$http.get(api_url)
                .then((response) => {
                    this.goals = response.data;
                    this.loading = false;
@@ -93,6 +97,17 @@ var vm = new Vue({
         link.setAttribute("download", "goal.csv");
         link.click();
        },
+      //  search_input_changed: function(userid, goalid) {
+      //   const that = this
+      //   console.log(this.search_term);
+      //   this.$http.get('/api/manufacture_goal/'+userid+'/'+goalid+'/'+'?search='+this.search_term)
+      //           .then((response) => {
+      //                   for (let i = 0; i < response.data.length; i++) {
+      //                     //console.log(response.data[i].ingredient_name);
+      //                   }
+      //                   this.getGoals();
+      //           })
+      // },
        updateGoal: function(userid,goalid) {
          this.loading = true;
          this.$http.post('/api/update_manufacture_goal/',   this.currentGoal)

@@ -66,6 +66,22 @@ new Vue({
          console.log(err);
        })
        },
+       exportCSV: function(){
+        this.loading = true;
+        // Export all current skus to a csv file
+        // https://codepen.io/dimaZubkov/pen/eKGdxN
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += [
+          Object.keys(this.product_lines[0]).join(","),
+          // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+          ...this.product_lines.map(key => Object.values(key).join(","))
+        ].join("\n");
+        const url = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "product_line.csv");
+        link.click();
+       },
        updateProductLine: function() {
          this.loading = true;
          console.log(this.currentProductLine)

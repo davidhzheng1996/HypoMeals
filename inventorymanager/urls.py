@@ -25,6 +25,7 @@ urlpatterns = [
     path('api/manufacture_goal/<int:id>/<int:goalid>', viewsets.manufacture_goals_get),
     path('api/delete_manufacture_goal/<int:specificgoal>',viewsets.delete_manufacture_goal),
     path('api/update_manufacture_goal/',viewsets.update_manufacture_goal),
+    # path('api/search_manufacture_goal/',viewsets.search_manufacture_goal),
     path('api/goal/<int:id>', viewsets.goal),
     path('api/delete_goal/<int:id>/<int:goalid>', viewsets.delete_goal),
     path('api/update_goal/<int:id>/<int:goalid>', viewsets.update_goal),
