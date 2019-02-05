@@ -19,6 +19,7 @@
          <table class="table">
             <thead>
                <tr>
+                  <th scope="col">id</th>
                   <th v-on:click="sortBy('ingredient_name')" scope="col">Name</th>
                   <th v-on:click="sortBy('package_size')" scope="col">Package Size</th>
                   <th v-on:click="sortBy('cpp')" scope="col">Cost per Package</th>
@@ -28,6 +29,7 @@
             <tbody>
                <!-- https://vuejs.org/v2/guide/migration.html#Replacing-the-orderBy-Filter -->
                <tr v-for="ingredient in displayedIngredients">
+                  <th scope="row">${ingredient.id}</th>
                   <th scope="row">${ingredient.ingredient_name}</th>
                   <td>${ingredient.package_size}</td>
                   <td>${ingredient.cpp}</td>
