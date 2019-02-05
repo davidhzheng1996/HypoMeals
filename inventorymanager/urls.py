@@ -12,11 +12,13 @@ urlpatterns = [
     path('product_line', views.product_line),
     path('goal',views.goal),
     path('goal/<int:goalid>',views.manufacture_goal),
+    path('sku/<int:skuid>',views.ingredients_to_sku),
     # ingredient file upload endpoint
     # TODO how to integrate this with router's url patterns?
     path('api/ingredient_import/', IngredientImportView.as_view()),
     # ingredient file export endpoint 
     path('api/ingredient_export/', IngredientExportView.as_view()),
+    path('api/ingredients_to_sku/<int:skuid>',viewsets.ingredients_to_sku_get),
     path('api/manufacture_goal/', viewsets.manufacture_goals),
     path('api/manufacture_goal/<int:id>/<int:goalid>', viewsets.manufacture_goals_get),
     path('api/delete_manufacture_goal/<int:specificgoal>',viewsets.delete_manufacture_goal),

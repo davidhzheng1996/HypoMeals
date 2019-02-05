@@ -17,8 +17,6 @@ var vm = new Vue({
            this.loading = true;
            this.$http.get('/api/manufacture_goal/'+userid+'/'+goalid)
                .then((response) => {
-                  console.log(response)
-                  console.log(response.data)
                    this.goals = response.data;
                    this.loading = false;
                })
@@ -81,9 +79,9 @@ var vm = new Vue({
          this.$http.post('/api/update_manufacture_goal/',   this.currentGoal)
            .then((response) => {
              $("#editGoalModal").modal('hide');
-         this.loading = false;
-         this.currentGoal = response.data;
-         this.getGoals(userid,goalid);
+           this.loading = false;
+           this.currentGoal = response.data;
+           this.getGoals(userid,goalid);
          })
            .catch((err) => {
          this.loading = false;

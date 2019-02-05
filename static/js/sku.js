@@ -100,6 +100,9 @@ new Vue({
           this.pages.push(index);
         }
       },
+      viewSku: function(skuid){
+        window.location.href = '/sku/'+skuid
+      },
       addPage: function (){
           this.pages.push(Math.ceil(this.skus.length / this.perPage)+1);
       },
