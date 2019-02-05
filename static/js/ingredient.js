@@ -13,10 +13,11 @@ new Vue({
      newIngredient: { 'ingredient_name': '', 'id': null, 'description': null,'package_size': '', 'cpp': 0, 'comment': null,},
      ingredientFile: null,
      search_term: '',
-     search_suggestions: search_suggestions,
+     // search_suggestions: search_suggestions,
      search_input: '',
      has_paginated:false,
      csv_uploaded:false,
+     has_searched: false,
      // what is this for???
      suggestionAttribute: 'original_title',
 
@@ -39,9 +40,11 @@ new Vue({
        getIngredients: function(){
            let api_url = '/api/ingredient/';
            // https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
+           console.log(this.search_term)
            if(this.search_term !== '' || this.search_term !== null) {
                 api_url = '/api/ingredient/?search=' + this.search_term
            }
+           //console.log(this.search_term);
            this.loading = true;
            this.$http.get(api_url)
                .then((response) => {
@@ -57,12 +60,33 @@ new Vue({
                       this.setPages();
                       this.csv_uploaded=false;
                     }
+                    var allTerms = []
+                    for(key in this.ingredients){
+                      if(this.ingredients.hasOwnProperty(key)){
+                        allTerms.push(this.ingredients[key].ingredient_name)
+                       // this.has_searched = true;
+                      }
+                    }
+                   $( "#search_input_id" ).autocomplete({
+                      minLength:1,   
+                      delay:500,   
+                      source: allTerms,
+
+                      select: function(event,ui){
+                        this.search_term = ui.item.value
+                        console.log(this.search_term)
+                      }
+
+                   });
                })
                .catch((err) => {
                    this.loading = false;
                    console.log(err);
                })
        },
+       viewIngredient: function(ingredientid){
+        window.location.href = '/ingredient/'+ingredientid
+      },
        getIngredient: function(id){
            this.loading = true;
            this.$http.get('/api/ingredient/'+id+'/')
@@ -250,11 +274,13 @@ new Vue({
             // Input assistance 
       search_input_changed: function() {
         const that = this
+        console.log(this.search_term);
         this.$http.get('/api/ingredient/?search=' + this.search_term)
                 .then((response) => {
-                        for (var i in response.data) {
-                                this.search_suggestions.push(response.data[i].ingredient_name)
+                        for (let i = 0; i < response.data.length; i++) {
+                          console.log(response.data[i].ingredient_name);
                         }
+                        this.getIngredients();
                 })
       },
 

@@ -132,7 +132,6 @@ class IngredientImportView(APIView):
 				warning = 'Overwrite object with id %s' % ingredient_dict['Ingr#']
 		return error, warning
 
-
 class IngredientExportView(APIView):
         def get(self, request, *args, **kwargs):
                 # https://docs.djangoproject.com/en/2.1/howto/outputting-csv/

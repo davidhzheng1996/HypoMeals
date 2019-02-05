@@ -7,7 +7,7 @@ var vm = new Vue({
      currentIngredient: {},
      message: null,
      //COUPLED WITH BACKEND DO NOT REMOVE BELOW
-     newIngredient: { 'ingredient_name': '', 'quantity':1 },
+     newIngredient: { 'ingredient_name': '', 'quantity':0 },
    },
    mounted: function() {},
    methods: {
