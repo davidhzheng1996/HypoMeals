@@ -13,11 +13,11 @@ new Vue({
      newIngredient: { 'ingredient_name': '', 'id': null, 'description': null,'package_size': '', 'cpp': 0, 'comment': null,},
      ingredientFile: null,
      search_term: '',
-     // search_suggestions: search_suggestions,
      search_input: '',
      has_paginated:false,
      csv_uploaded:false,
      has_searched: false,
+     search_suggestions: [],
      // what is this for???
      suggestionAttribute: 'original_title',
 
@@ -34,13 +34,15 @@ new Vue({
      upload_errors: '',
    },
    mounted: function() {
-       this.getIngredients();
+    this.getIngredients();
+     
+
+     
    },
    methods: {
        getIngredients: function(){
            let api_url = '/api/ingredient/';
            // https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
-           console.log(this.search_term)
            if(this.search_term !== '' || this.search_term !== null) {
                 api_url = '/api/ingredient/?search=' + this.search_term
            }
@@ -60,24 +62,26 @@ new Vue({
                       this.setPages();
                       this.csv_uploaded=false;
                     }
-                    var allTerms = []
+
+                    // TODO: fix allTerms 
+                    let allTerms = []
                     for(key in this.ingredients){
                       if(this.ingredients.hasOwnProperty(key)){
                         allTerms.push(this.ingredients[key].ingredient_name)
                        // this.has_searched = true;
                       }
-                    }
-                   $( "#search_input_id" ).autocomplete({
-                      minLength:1,   
-                      delay:500,   
-                      source: allTerms,
+                    } 
+                    // input autocomplete
+     $( "#search_input_id" ).autocomplete({
+      minLength:1,   
+      delay:500,   
+      source: allTerms,
+      select: function(event,ui){
+        this.search_term = ui.item.value
+      }
+     });
+     console.log(allTerms)
 
-                      select: function(event,ui){
-                        this.search_term = ui.item.value
-                        console.log(this.search_term)
-                      }
-
-                   });
                })
                .catch((err) => {
                    this.loading = false;
@@ -271,17 +275,16 @@ new Vue({
                    console.log(err);
                })
       },
-            // Input assistance 
+
       search_input_changed: function() {
-        const that = this
-        console.log(this.search_term);
-        this.$http.get('/api/ingredient/?search=' + this.search_term)
-                .then((response) => {
-                        for (let i = 0; i < response.data.length; i++) {
-                          console.log(response.data[i].ingredient_name);
-                        }
-                        this.getIngredients();
-                })
+        this.getIngredients();
+      },
+
+      // Trigger an action to update search_term
+      // Dirty trick to get around a VueJS bug: https://github.com/vuejs/vue/issues/5248 
+      onBlur: function(event) {
+        if (event && this.search_term !== event.target.value) 
+          this.search_term = event.target.value
       },
 
       // https://vuejs.org/v2/guide/migration.html#Replacing-the-orderBy-Filter
@@ -303,9 +306,21 @@ new Vue({
     }
   },
 
-  // watch: {
-  //   ingredients () {
-  //     this.setPages();
-  //   }
-  // }, 
+  watch: {
+    search_term () {
+      if(this.search_term == '' || this.search_term == null) {
+        return
+      }
+      this.$http.get('/api/ingredient/?search='+this.search_term)
+               .then((response) => {
+                   this.search_suggestions = response.data;
+                   this.loading = false;
+               })
+               .catch((err) => {
+                   this.loading = false;
+                   console.log(err);
+               })
+    }
+
+  }, 
    });
