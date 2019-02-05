@@ -5,15 +5,18 @@
       <div class="row">
          <h1>List of Product Lines
             <button class="btn btn-success" data-toggle="modal" data-target="#addProductLineModal">Add Product Line</button>
+            <p class="message" v-if="message">${ message }</p>
          </h1>
          <table class="table">
             <thead>
                <tr>
+                  <th scope="col">id</th>
                   <th scope="col">Name</th>
                </tr>
             </thead>
             <tbody>
                <tr v-for="product_line in product_lines">
+                  <th scope="row">${product_line.id}</th>
                   <th scope="row">${product_line.product_line_name}</th>
                   <td>
                      <button class="btn btn-info" v-on:click="getProductLine(product_line.id)">Edit</button>

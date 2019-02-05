@@ -7,6 +7,7 @@ new Vue({
      currentProductLine: {},
      message: null,
      newProductLine: { 'product_line_name': '',},
+     message: '',
    },
    mounted: function() {
        this.getProductLines();
@@ -48,6 +49,7 @@ new Vue({
            })
            .catch((err) => {
              this.loading = false;
+             this.message = err.data
              console.log(err);
            })
        },

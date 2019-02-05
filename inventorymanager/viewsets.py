@@ -42,6 +42,15 @@ class ProductLineViewSet(viewsets.ModelViewSet):
     queryset = Product_Line.objects.all()
     serializer_class = ProductLineSerializer
 
+    def destroy(self, request, *args, **kwargs):
+        productline = self.get_object()
+        # If related skus exist, abandon deletion 
+        if Sku.objects.filter(productline=productline.id).exists():
+            error = 'Related SKUs exist. Fail to delete %s' % productline.product_line_name
+            return Response(error, status = status.HTTP_400_BAD_REQUEST)
+        productline.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 # Begin Explicit APIs
 @login_required(login_url='/accounts/login/')
@@ -84,6 +93,22 @@ def delete_ingredients_to_sku(request,sku,ig):
         return Response(status = status.HTTP_204_NO_CONTENT)
     except Exception as e: 
         return Response(status = status.HTTP_400_BAD_REQUEST)
+
+
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+def update_ingredients_to_sku(request,sku,ig):
+    if(request.method == 'POST'):
+        try: 
+            relation = Sku_To_Ingredient.objects.get(sku = sku, ig=ig)
+            serializer = IngredientToSkuSerializer(relation,{'quantity':request.data['quantity']},partial=True)
+            if(serializer.is_valid()):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+        except Exception as e: 
+            print(e)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
 
 
 @login_required(login_url='/accounts/login/')

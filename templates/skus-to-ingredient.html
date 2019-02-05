@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div id="starting">
+   <div class="container">
+      <div class="row">
+         <h1>SKUs for this Ingredient
+         </h1>
+         <table class="table">
+            <thead>
+               <tr>
+                  <th scope="col">Skus</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr v-for="sku in skus">
+                  <th scope="row">${sku.sku_name}</th>
+                  <td>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+   </div>
+</div>
+<script src="../static/js/skus-to-ingredient.js"></script>
+<!-- Not sure if there isn't a better solution -->
+<script>vm.getSkus({{ingredientid}})</script>
+{% endblock %}

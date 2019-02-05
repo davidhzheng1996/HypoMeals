@@ -75,22 +75,25 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
-            <form v-on:submit.prevent="updateIngredient('{{user.id}}',currentIngredient.id)">
+            <form v-on:submit.prevent="updateIngredient('{{skuid}}',currentIngredient.id)">
                <div class="modal-body">
                   <div class="form-group">
-                     <label>Goal Name*</label>
+                     <label>Ingredient Name</label>
                      <input
                         type="text"
                         class="form-control"
                         placeholder="Enter SKU Name"
                         v-model="currentIngredient.ingredient_name"
-                        required="required" readonly>
+                        readonly >
+                  </div>
+                  <div class="form-group">
+                     <label>Quantity*</label>
                      <input
-                        type="text"
+                        type="number"
                         class="form-control"
-                        placeholder="Enter SKU Name"
+                        placeholder="Enter Desired Quantity"
                         v-model="currentIngredient.quantity"
-                        required="required">
+                        required="required" >
                   </div>
                </div>
                <div class="modal-footer">
@@ -102,8 +105,8 @@
       </div>
       <div class="loading" v-if="loading===true">Loading&#8230;</div>
    </div>
-   <!-- Add Goal Modal -->
-   <!-- End of edit article modal -->
+<!-- Add Goal Modal -->
+<!-- End of edit article modal -->
 </div>
 <script src="../static/js/ingredients-to-sku.js"></script>
 <!-- Not sure if there isn't a better solution -->
