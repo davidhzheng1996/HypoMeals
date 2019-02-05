@@ -99,13 +99,9 @@ class IngredientImportView(APIView):
 				# save without commit, as later validation might fail 
 				ingredient.save()
 		if errors != []:
-			print('rollback')
 			transaction.savepoint_rollback(transaction_savepoint)
 		else:
-			print('commit')
 			transaction.savepoint_commit(transaction_savepoint)
-		print(errors)
-		print(warnings)
 		return errors, warnings
 	
 	def validate_header(self, headers):

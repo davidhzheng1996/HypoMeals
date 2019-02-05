@@ -178,7 +178,6 @@ new Vue({
         formData.append('file', this.ingredientFile, this.ingredientFile.name)
         this.$http.post('/api/ingredient_import/', formData)
            .then((response) => {
-             console.log(response.data)
             this.upload_errors = response.data['errors'].join('\n') + response.data['warnings'].join('\n')
          this.loading = false;
          this.csv_uploaded=true;
