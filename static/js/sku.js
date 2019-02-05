@@ -39,11 +39,11 @@ new Vue({
    },
    methods: {
        getSkus: function(){
-          let api_url = '/api/isku/';
+          let api_url = '/api/sku/';
            // https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
-           if(this.search_term !== '' || this.search_term !== null) {
-                api_url = '/api/sku/?search=' + this.search_term;
-           }
+           // if(this.search_term !== '' || this.search_term !== null) {
+           //      api_url = '/api/sku/?search=' + this.search_term;
+           // }
            this.loading = true;
            this.$http.get(api_url)
                .then((response) => {

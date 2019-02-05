@@ -6,6 +6,9 @@ var vm = new Vue({
      loading: false,
      currentGoal: {},
      message: null,
+     search_term: '',
+     // search_suggestions: search_suggestions,
+     search_input: '',
      //COUPLED WITH BACKEND DO NOT REMOVE BELOW
      newGoal: { 'goal_sku_name': '', 'desired_quantity': 0, 'user': null, 'sku': null, 'name':-1},
    },
@@ -73,6 +76,22 @@ var vm = new Vue({
          this.loading = false;
          console.log(err);
        })
+       },
+       exportCSV: function(){
+        this.loading = true;
+        // Export all current skus to a csv file
+        // https://codepen.io/dimaZubkov/pen/eKGdxN
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += [
+          Object.keys(this.goals[0]).join(","),
+          // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+          ...this.goals.map(key => Object.values(key).join(","))
+        ].join("\n");
+        const url = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "goal.csv");
+        link.click();
        },
        updateGoal: function(userid,goalid) {
          this.loading = true;
