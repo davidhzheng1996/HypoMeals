@@ -24,13 +24,13 @@ var vm = new Vue({
                })
        },
        getIngredient: function(ingredientid){
-          for(key in this.goals){
+          for(key in ingredients){
             // console.log('here')
-            if(this.goals.hasOwnProperty(key)){
+            if(this.ingredients.hasOwnProperty(key)){
             // console.log(this.goals[key].id)
-              if(this.goals[key].id == goalid){
-                this.currentGoal = {'id':this.goals[key].id,'goalname':this.goals[key].goalname,'user':this.goals[key].user}
-                $("#editGoalModal").modal('show');
+              if(this.ingredients[key].id == ingredientid){
+                this.currentIngredient = {'ingredient_name':this.ingredients[key].ingredient_name,'quantity':this.ingredients[key].quantity}
+                $("#editIngredientModal").modal('show');
               }
             }
           }
@@ -38,24 +38,24 @@ var vm = new Vue({
        deleteIngredient: function(skuid,ingredientid){
          this.loading = true;
          // TODO: use delimiters
-         this.$http.post('/api/delete_goal/' + userid + '/'+goalid)
+         this.$http.post('../api/delete_ingredients_to_sku/' + skuid+ '/'+ingredientid)
            .then((response) => {
              this.loading = false;
-             this.getGoals(userid);
+             this.getIngredients(skuid);
            })
            .catch((err) => {
              this.loading = false;
              console.log(err);
            })
        },
-       addGoal: function(skuid,ingredientid) {
-         this.newGoal.user = parseInt(userid,10)
+       addIngredient: function(skuid) {
          this.loading = true;
-         this.$http.post('/api/goal/'+userid,this.newGoal)
+         console.log(skuid)
+         this.$http.post('/api/ingredients_to_sku/'+skuid,this.newIngredient)
            .then((response) => {
-           $("#addGoalModal").modal('hide');
+           $("#addIngredientModal").modal('hide');
            this.loading = false;
-           this.getGoals(userid);
+           this.getIngredients(skuid);
          })
            .catch((err) => {
          this.loading = false;

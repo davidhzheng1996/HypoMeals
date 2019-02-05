@@ -49,6 +49,11 @@ class GoalSerializer(serializers.ModelSerializer):
         model = Goal
         fields = '__all__'
 
+class IngredientToSkuSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = Sku_To_Ingredient
+        fields = '__all__'
+
     
 # models not having a serializers yet 
 # class sku_to_ingredients(models.Model):

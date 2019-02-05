@@ -107,7 +107,7 @@ class IngredientImportView(APIView):
 				# if exists, only success if id matches. Update other fields 
 				if obj and obj.pk != ingr['Ingr#']:
 					errors.append['Ambiguous record for %s' % obj.name]
-				else if obj:
+				elif obj:
 					# update other fields
 					warnings.append(['Update fields for %s' % obj.name])
 				else:
