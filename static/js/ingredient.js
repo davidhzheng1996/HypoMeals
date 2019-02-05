@@ -84,6 +84,9 @@ new Vue({
                    console.log(err);
                })
        },
+       viewIngredient: function(ingredientid){
+        window.location.href = '/ingredient/'+ingredientid
+      },
        getIngredient: function(id){
            this.loading = true;
            this.$http.get('/api/ingredient/'+id+'/')
