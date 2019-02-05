@@ -55,6 +55,22 @@ class ProductLineViewSet(viewsets.ModelViewSet):
 # Begin Explicit APIs
 @login_required(login_url='/accounts/login/')
 @api_view(['GET','POST'])
+def skus_to_ingredient(request,ingredientid):
+    if(request.method == 'GET'):
+        try: 
+            sku_to_ingredient = Sku_To_Ingredient.objects.filter(ig=ingredientid)
+            ids= sku_to_ingredient.values_list("sku",flat=True)
+            skus = Sku.objects.filter(id__in=ids)
+            response = []
+            for sku in skus:
+                serializer = SkuSerializer(sku)
+                response.append(serializer.data)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['GET','POST'])
 def ingredients_to_sku(request,skuid):
     if(request.method == 'GET'):
         try: 
