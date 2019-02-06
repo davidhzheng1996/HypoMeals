@@ -32,10 +32,6 @@ class SkuViewSet(viewsets.ModelViewSet):
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    # searching functionality
-    # https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
-    # filter_backends = (filters.SearchFilter, )
-    # search_fields = ('ingredient_name', 'description')
 
     # https://www.django-rest-framework.org/api-guide/filtering/#filtering-against-query-parameters
     def get_queryset(self):
@@ -44,7 +40,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
         if search_term:
             queryset = Ingredient.objects.filter(Q(ingredient_name__icontains=search_term) | Q(description__icontains=search_term))
             # obtain all ingrs whose name contain search_term
-            # https://docs.djangoproject.com/en/2.1/topics/db/examples/many_to_one/
             ingr_ids = Sku_To_Ingredient.objects.filter(sku__sku_name__icontains=search_term).values('ig')
             queryset |= Ingredient.objects.filter(id__in=ingr_ids)
         return queryset

@@ -32,6 +32,7 @@ new Vue({
             {'unit_size': true},
             {'count': true},
           ],
+      upload_errors: '',
    },
    mounted: function() {
        this.getSkus();
@@ -175,11 +176,14 @@ new Vue({
         formData.append('file', this.skuFile, this.skuFile.name)
         this.$http.post('/api/sku_import/', formData)
            .then((response) => {
+            this.upload_errors = response.data['errors'].join('\n') + response.data['warnings'].join('\n')
+            console.log(this.upload_errors)
          this.loading = false;
          this.csv_uploaded=true;
          this.getSkus();
          })
            .catch((err) => {
+            this.upload_errors = err.data['errors'].join('\n') + err.data['warnings'].join('\n')
          this.loading = false;
          console.log(err);
         })

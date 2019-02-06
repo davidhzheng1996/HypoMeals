@@ -211,6 +211,7 @@ new Vue({
          this.getIngredients();
          })
            .catch((err) => {
+            this.upload_errors = err.data['errors'].join('\n') + err.data['warnings'].join('\n')
          this.loading = false;
          console.log(err);
         })
