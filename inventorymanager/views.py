@@ -323,3 +323,55 @@ class SkuFormulaImportView(APIView):
 			error = 'No ingredient with id %s' % formula_dict['Ingr#']
 		return error, warning
 
+class ProductLineImportView(APIView):
+	# available parsers: https://www.django-rest-framework.org/api-guide/parsers/ 
+	# file sent should be in FormData
+	parser_classes = (MultiPartParser, FormParser)
+	def post(self, request, *args, **kwargs):
+		csv_file = request.data['file']
+		errors, warnings = self.save(csv_file)
+		post_result = {'errors': errors, 'warnings': warnings}
+		if errors != []:
+			return Response(post_result, status.HTTP_400_BAD_REQUEST)
+		return Response(post_result, status.HTTP_201_CREATED)
+		
+	@transaction.atomic
+	def save(self, product_line_file):
+		errors = []
+		warnings = []
+		# https://docs.djangoproject.com/en/1.9/topics/db/transactions/#savepoint-rollback
+		transaction_savepoint = transaction.savepoint()
+		with open(product_line_file.name) as f:
+			reader = csv.DictReader(f)
+			header_val_error, _ = self.validate_header(reader.fieldnames)
+			if header_val_error:
+				errors.append(header_val_error)
+				return errors, warnings
+			for product_line_dict in reader:
+				val_error, val_warning = self.validate_formula(product_line_dict)
+				if val_warning:
+					warnings.append(val_warning)
+				if val_error:
+					errors.append(val_error)
+					break
+				if not Product_Line.objects.filter(product_line_name=product_line_dict['Name']).exists():
+					product_line = Product_Line(product_line_name=product_line_dict['Name'])
+					product_line.save()
+		if errors != []:
+			transaction.savepoint_rollback(transaction_savepoint)
+		else:
+			transaction.savepoint_commit(transaction_savepoint)
+		return errors, warnings
+
+	def validate_header(self, headers):
+		if headers != ['Name']:
+			return 'File headers not compliant to standard', ''
+		return '', ''
+
+	# validation conforms to https://piazza.com/class/jpvlvyxg51d1nc?cid=52
+	def validate_formula(self, product_line_dict):
+		error = ''
+		warning = ''
+		if Product_Line.objects.filter(product_line_name=product_line_dict['Name']).exists():
+			warning = 'Exsiting product line: %s' % product_line_dict['Name']
+		return error, warning

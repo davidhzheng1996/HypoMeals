@@ -8,6 +8,8 @@ new Vue({
      message: null,
      newProductLine: { 'product_line_name': '',},
      message: '',
+     productlineFile: null,
+     upload_errors: ''
    },
    mounted: function() {
        this.getProductLines();
@@ -67,6 +69,32 @@ new Vue({
          console.log(err);
        })
        },
+
+       selectCSV: function(event) {
+        this.productlineFile = event.target.files[0]
+      },
+        
+      uploadCSV: function() {
+        this.loading = true;
+        // upload this.ingredientCSV to REST api in FormData
+        const formData = new FormData()
+        // https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
+        formData.append('file', this.productlineFile, this.productlineFile.name)
+        this.$http.post('/api/product_line_import/', formData)
+           .then((response) => {
+            this.upload_errors = response.data['errors'].join('\n') + response.data['warnings'].join('\n')
+         this.loading = false;
+         this.csv_uploaded=true;
+         this.getProductLines();
+         })
+           .catch((err) => {
+             console.log(err)
+            this.upload_errors = err.data['errors'].join('\n') + err.data['warnings'].join('\n')
+         this.loading = false;
+         console.log(err);
+        })
+      },
+
        exportCSV: function(){
         this.loading = true;
         // Export all current skus to a csv file
