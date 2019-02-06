@@ -13,7 +13,6 @@ new Vue({
      newSku: { 'sku_name': '','productline': '', 'id': null, 'caseupc': 1234,'unitupc': 1234, 'unit_size': 0, 'count': 0, 'tuples': null, 
      'comment': null},
      skuFile: null,
-     search_term: '',
      has_paginated:false,
      csv_uploaded:false,
 
@@ -41,9 +40,9 @@ new Vue({
        getSkus: function(){
           let api_url = '/api/sku/';
            // https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
-           // if(this.search_term !== '' || this.search_term !== null) {
-           //      api_url = '/api/sku/?search=' + this.search_term;
-           // }
+           if(this.search_term !== '' || this.search_term !== null) {
+                api_url = '/api/sku/?search=' + this.search_term;
+           }
            this.loading = true;
            this.$http.get(api_url)
                .then((response) => {

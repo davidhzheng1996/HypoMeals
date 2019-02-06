@@ -18,9 +18,16 @@ from django.db.models import Q
 class SkuViewSet(viewsets.ModelViewSet):
     queryset = Sku.objects.all()
     serializer_class = SkuSerializer
-    filter_backends = (filters.SearchFilter, )
-    # notice that we could also filter on foreign key's fields
-    search_fields = ('sku_name', 'productline')
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_term = self.request.query_params.get('search', None)
+        if search_term:
+            queryset = Sku.objects.filter(Q(sku_name__icontains=search_term) | Q(productline__product_line_name__icontains=search_term))
+            # obtain all skus whose ingredient names include search_term
+            sku_ids = Sku_To_Ingredient.objects.filter(ig__ingredient_name__icontains=search_term).values('sku')
+            queryset |= Sku.objects.filter(id__in=sku_ids)
+        return queryset
 
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
@@ -28,7 +35,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
     # searching functionality
     # https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
     # filter_backends = (filters.SearchFilter, )
-    # # notice that we could also filter on foreign key's fields
     # search_fields = ('ingredient_name', 'description')
 
     # https://www.django-rest-framework.org/api-guide/filtering/#filtering-against-query-parameters
@@ -37,7 +43,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
         search_term = self.request.query_params.get('search', None)
         if search_term:
             queryset = Ingredient.objects.filter(Q(ingredient_name__icontains=search_term) | Q(description__icontains=search_term))
-            # obtain all skus whose name contain search_term
+            # obtain all ingrs whose name contain search_term
             # https://docs.djangoproject.com/en/2.1/topics/db/examples/many_to_one/
             ingr_ids = Sku_To_Ingredient.objects.filter(sku__sku_name__icontains=search_term).values('ig')
             queryset |= Ingredient.objects.filter(id__in=ingr_ids)
