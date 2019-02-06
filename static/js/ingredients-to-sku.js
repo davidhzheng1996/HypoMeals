@@ -8,7 +8,7 @@ var vm = new Vue({
     message: null,
     has_paginated:false,
     page:1,
-    perPage: 1,
+    perPage: 10,
     pages:[],
     //COUPLED WITH BACKEND DO NOT REMOVE BELOW
     newIngredient: {

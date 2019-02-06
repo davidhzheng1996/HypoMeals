@@ -48,7 +48,6 @@ new Vue({
            this.loading = true;
            this.$http.get(api_url)
                .then((response) => {
-                 console.log(response.data)
                    this.ingredients = response.data;
                    this.loading = false;
                    this.lowerCaseName();
@@ -126,6 +125,7 @@ new Vue({
            .then((response) => {
          $("#addIngredientModal").modal('hide');
          this.loading = false;
+         this.has_searched = false;
          if((this.ingredients.length%this.perPage)==0){
             this.addPage();
          }
@@ -217,7 +217,7 @@ new Vue({
           // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
           ...this.ingredients.map(key => Object.values(key).join(","))
         ].join("\n");
-        console.log(csvContent)
+        // console.log(csvContent)
         const url = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", url);

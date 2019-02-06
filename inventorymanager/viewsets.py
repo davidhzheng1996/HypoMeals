@@ -194,7 +194,6 @@ def manufacture_goals(request):
 @api_view(['GET'])
 def manufacture_goals_get(request,id,goalid):
     search_term = request.query_params.get('search', None)
-    print(search_term)
     if(request.method == 'GET'):
         try: 
             if search_term:

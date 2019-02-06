@@ -15,6 +15,7 @@ var vm = new Vue({
      search_input: '',
      //COUPLED WITH BACKEND DO NOT REMOVE BELOW
      newGoal: { 'goal_sku_name': '', 'desired_quantity': 0, 'user': null, 'sku': null, 'name':-1},
+     has_searched: false
    },
    mounted: function() {
        // this.getGoals();
@@ -34,6 +35,26 @@ var vm = new Vue({
                       this.setPages();
                       this.has_paginated=true; 
                     }
+
+                    if(!this.has_searched) {
+                      let allTerms = []
+                      for(key in this.goals){
+                        if(this.goals.hasOwnProperty(key)){
+                          allTerms.push(this.goals[key].goal_sku_name)
+                         this.has_searched = true;
+                        }
+                      }
+                        $( "#search_input_id" ).autocomplete({
+                        minLength:1,   
+                        delay:500,   
+                        source: allTerms,
+                        select: function(event,ui){
+                          this.search_term = ui.item.value
+                        }
+                          });
+                     }
+       
+                    
                })
                .catch((err) => {
                    this.loading = false;
@@ -109,6 +130,7 @@ var vm = new Vue({
            .then((response) => {
            $("#addGoalModal").modal('hide');
            this.loading = false;
+           this.has_searched = false;
            if((this.goals.length%this.perPage)==0){
             this.addPage();
          }
@@ -165,6 +187,11 @@ var vm = new Vue({
     this.getGoals(userid, goalid);
     },
   
+    onBlur: function(event) {
+      if (event && this.search_term !== event.target.value) 
+        this.search_term = event.target.value
+    },
+
    },
 
    computed: {

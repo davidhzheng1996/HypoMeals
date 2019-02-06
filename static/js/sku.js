@@ -23,6 +23,7 @@ new Vue({
      search_term: '',
      search_suggestions: search_suggestions,
      search_input: '',
+     has_searched: false,
 
      suggestionAttribute: 'original_title',
 
@@ -63,6 +64,26 @@ new Vue({
                       this.setPages();
                       this.csv_uploaded=false;
                     }
+
+                    if(!this.has_searched) {
+                      let allTerms = []
+                      for(key in this.skus){
+                        if(this.skus.hasOwnProperty(key)){
+                          allTerms.push(this.skus[key].sku_name)
+                         this.has_searched = true;
+                        }
+                      }
+                        $( "#search_input_id" ).autocomplete({
+                        minLength:1,   
+                        delay:500,   
+                        source: allTerms,
+                        select: function(event,ui){
+                          this.search_term = ui.item.value
+                        }
+                          });
+                     }
+       
+
                })
                .catch((err) => {
                    this.loading = false;
@@ -131,6 +152,7 @@ new Vue({
            .then((response) => {
          $("#addSkuModal").modal('hide');
          this.loading = false;
+         this.has_searched = false;
          for(let index = 0; index<this.skus.length; index++){
             if(this.newSku.sku_name.toLowerCase().trim()===this.skus[index].sku_name.toLowerCase()){
                 console.log("Already exists");
@@ -308,7 +330,11 @@ new Vue({
           this.iskus = _.sortBy(this.skus, this.sortKey).reverse()
         }
       },
-   
+      
+      onBlur: function(event) {
+        if (event && this.search_term !== event.target.value) 
+          this.search_term = event.target.value
+      },
    
    },
 
