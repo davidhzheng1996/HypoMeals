@@ -31,17 +31,28 @@ var vm = new Vue({
         // Export all current skus to a csv file
         // https://codepen.io/dimaZubkov/pen/eKGdxN
         let csvContent = "data:text/csv;charset=utf-8,";
-        csvContent += [
-          Object.keys(this.goals[0]).join(","),
-          // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
-          ...this.goals.map(key => Object.values(key).join(","))
-        ].join("\n");
+        csvContent+=[["Ingredient Name", "Quantity"].join(",")+'\n'];
+        for(key in this.ingredients){
+          csvContent+=[[key, this.ingredients[key]].join(",")+'\n'];
+        }
         const url = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", url);
-        link.setAttribute("download", "goal.csv");
+        link.setAttribute("download", "calculatedIngredients.csv");
         link.click();
        },
-  
+      
+      exportPDF: function(){
+        // let pdfName = 'test'; 
+        // var doc = new jsPDF();
+        // doc.text("Ingredient Name, Quantity", 10, 10);
+        // for(key in this.ingredients){
+        //   doc.text("key, this.ingredients[key]", 10, 10);
+        // }
+        // doc.save(pdfName + '.pdf');
+        const doc = new jsPDF();
+        doc.autoTable({html: '#my-table'});
+        doc.save('calculatedIngredients.pdf');
+      }
    }
    });
