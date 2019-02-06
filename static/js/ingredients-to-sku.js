@@ -57,7 +57,7 @@ var vm = new Vue({
     },
     addIngredient: function (skuid) {
       this.loading = true;
-      console.log(skuid)
+      this.newIngredient.ingredient_name = this.newIngredient.ingredient_name.toLowerCase();
       this.$http.post('/api/ingredients_to_sku/' + skuid, this.newIngredient)
         .then((response) => {
           $("#addIngredientModal").modal('hide');
@@ -71,6 +71,7 @@ var vm = new Vue({
     },
     updateIngredient: function (skuid,ingredientid) {
       this.loading = true;
+      this.currentIngredient.ingredient_name = this.currentIngredient.ingredient_name.toLowerCase();
         this.$http.post('../api/update_ingredients_to_sku/' + skuid+ '/'+ingredientid,this.currentIngredient)
           .then((response) => {
             $("#editIngredientModal").modal('hide');

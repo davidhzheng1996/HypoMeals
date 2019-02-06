@@ -119,6 +119,7 @@ new Vue({
        },
        addIngredient: function() {
          this.loading = true;
+         this.newIngredient.ingredient_name = this.newIngredient.ingredient_name.toLowerCase();
          this.$http.post('/api/ingredient/',this.newIngredient)
            .then((response) => {
          $("#addIngredientModal").modal('hide');
@@ -148,7 +149,7 @@ new Vue({
        },
        updateIngredient: function() {
          this.loading = true;
-         // console.log(this.currentIngredient)
+         this.currentIngredient.ingredient_name = this.currentIngredient.ingredient_name.toLowerCase();
          this.$http.put('/api/ingredient/'+ this.currentIngredient.id + '/',     this.currentIngredient)
            .then((response) => {
              $("#editIngredientModal").modal('hide');
