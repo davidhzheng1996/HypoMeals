@@ -48,6 +48,9 @@ def product_line(request):
 def goal(request):
 	return render(request, "goal.html")
 
+@login_required(login_url='/accounts/login')
+def calculate_goal(request,goalid):
+	return render(request,"calculate.html",{'goalid':goalid})
 # @login_required(login_url='/accounts/login/')
 # def goal(request):
 # 	return render(request, "calculate.html",{'goalid':goalid})

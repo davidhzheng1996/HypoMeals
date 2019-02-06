@@ -10,8 +10,8 @@ var vm = new Vue({
        // this.getGoals();
    },
    methods: {
-       getIngredients: function(userid,goalid){
-            let api_url = '/api/calculate_goal/'+userid+'/'+goalid;
+       getIngredients: function(goalid){
+            let api_url = '/api/calculate_goal/'+goalid;
            // if(this.search_term !== '' || this.search_term !== null) {
            //      api_url = '/api/search_manufacture_goal/'+userid+'/'+goalid+this.search_term
            // }

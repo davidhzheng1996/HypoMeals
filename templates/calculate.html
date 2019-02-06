@@ -19,9 +19,9 @@
                </tr>
             </thead>
             <tbody>
-               <tr v-for="Ingredient in ingredients">
-                  <th scope="row">${ingredient.ingredient_name}</th>
-                  <td>${ingredient.quantity}</td>
+               <tr v-for="(value,key) in ingredients">
+                  <th scope="row">${key}</th>
+                  <td>${value}</td>
                </tr>
             </tbody>
          </table>
@@ -32,5 +32,5 @@
 <!-- <! — bootrtap js files → -->
 <script src="../static/js/calculate.js"></script>
 <!-- Not sure if there isn't a better solution -->
-<script>vm.getIngredients({{user.id}},{{goalid}})</script>
+<script>vm.getIngredients({{goalid}})</script>
 {% endblock %}

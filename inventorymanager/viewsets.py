@@ -70,6 +70,27 @@ class ProductLineViewSet(viewsets.ModelViewSet):
 
 # Begin Explicit APIs
 @login_required(login_url='/accounts/login/')
+@api_view(['GET'])
+def calculate_goal(request,goalid):
+    if(request.method=='GET'):
+        try: 
+            manufacture_goals = Manufacture_Goal.objects.filter(name = goalid)
+            response = {}
+            for goal in manufacture_goals:
+                skuid = goal.sku.id
+                ingredients = Sku_To_Ingredient.objects.filter(sku = skuid)
+                for ingredient in ingredients: 
+                    package_amount = goal.desired_quantity * ingredient.quantity
+                    if ingredient.ig.ingredient_name in response:
+                        response[ingredient.ig.ingredient_name] = response[ingredient.ig.ingredient_name]+package_amount
+                    else: 
+                        response[ingredient.ig.ingredient_name] = package_amount
+                print(response)
+                return Response(response,status=status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
 @api_view(['GET','POST'])
 def skus_to_ingredient(request,ingredientid):
     if(request.method == 'GET'):
