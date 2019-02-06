@@ -261,3 +261,65 @@ class SkuExportView(APIView):
                                 sku_row.append(getattr(sku, field.name))
                         writer.writerow(sku_row)
                 return response
+
+
+class SkuFormulaImportView(APIView):
+	# available parsers: https://www.django-rest-framework.org/api-guide/parsers/ 
+	# file sent should be in FormData
+	parser_classes = (MultiPartParser, FormParser)
+	def post(self, request, *args, **kwargs):
+		csv_file = request.data['file']
+		errors, warnings = self.save(csv_file)
+		post_result = {'errors': errors, 'warnings': warnings}
+		if errors != []:
+			return Response(post_result, status.HTTP_400_BAD_REQUEST)
+		return Response(post_result, status.HTTP_201_CREATED)
+		
+	@transaction.atomic
+	def save(self, formula_file):
+		errors = []
+		warnings = []
+		# https://docs.djangoproject.com/en/1.9/topics/db/transactions/#savepoint-rollback
+		transaction_savepoint = transaction.savepoint()
+		with open(formula_file.name) as f:
+			reader = csv.DictReader(f)
+			header_val_error, _ = self.validate_header(reader.fieldnames)
+			if header_val_error:
+				errors.append(header_val_error)
+				return errors, warnings
+			for formula_dict in reader:
+				val_error, val_warning = self.validate_formula(formula_dict)
+				if val_warning:
+					warnings.append(val_warning)
+				if val_error:
+					errors.append(val_error)
+					break
+				sku = Sku.objects.get(id=formula_dict['SKU#'])
+				ingr = Ingredient.objects.get(id=formula_dict['Ingr#'])
+				sku_to_ingr = Sku_To_Ingredient(
+						sku=sku,
+						ig=ingr,
+						quantity=formula_dict['Quantity'])
+				# save without commit, as later validation might fail 
+				sku_to_ingr.save()
+		if errors != []:
+			transaction.savepoint_rollback(transaction_savepoint)
+		else:
+			transaction.savepoint_commit(transaction_savepoint)
+		return errors, warnings
+
+	def validate_header(self, headers):
+		if headers != ['SKU#','Ingr#','Quantity']:
+			return 'File headers not compliant to standard', ''
+		return '', ''
+
+	# validation conforms to https://piazza.com/class/jpvlvyxg51d1nc?cid=52
+	def validate_formula(self, formula_dict):
+		error = ''
+		warning = ''
+		if not Sku.objects.filter(id=formula_dict['SKU#']).exists():
+			error = 'No Sku with id %s' % formula_dict['SKU#']
+		if not Ingredient.objects.filter(id=formula_dict['Ingr#']).exists():
+			error = 'No ingredient with id %s' % formula_dict['Ingr#']
+		return error, warning
+

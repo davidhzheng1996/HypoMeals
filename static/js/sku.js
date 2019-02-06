@@ -132,10 +132,9 @@ new Vue({
          $("#addSkuModal").modal('hide');
          this.loading = false;
          for(let index = 0; index<this.skus.length; index++){
-            if(this.newSku.sku_name.toLowerCase().trim()===(this.skus[index].sku_name.toLowerCase()){
+            if(this.newSku.sku_name.toLowerCase().trim()===this.skus[index].sku_name.toLowerCase()){
                 console.log("Already exists");
                 return;
-                //console.log(err);
             }
           }
          if((this.skus.length%this.perPage)==0){
@@ -204,7 +203,7 @@ new Vue({
         const formData = new FormData()
         // https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
         formData.append('file', this.formulaFile, this.formulaFile.name)
-        this.$http.post('/api/sku_import/', formData)
+        this.$http.post('/api/sku_formula_import/', formData)
            .then((response) => {
             this.upload_errors = response.data['errors'].join('\n') + response.data['warnings'].join('\n')
             console.log(this.upload_errors)
@@ -298,16 +297,6 @@ new Vue({
         } 
       
 
-      },
-
-      search_input_changed: function() {
-        const that = this
-        this.$http.get('/api/sku/?search=' + this.search_term)
-                .then((response) => {
-                        for (var i in response.data) {
-                                this.search_suggestions.push(response.data[i].sku_name.toLowerCase());
-                        }
-                })
       },
 
         sortBy: function(key) {
