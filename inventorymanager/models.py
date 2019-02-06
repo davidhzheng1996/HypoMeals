@@ -65,7 +65,7 @@ class Manufacture_Goal(models.Model):
 	desired_quantity = models.IntegerField()
 
 	class Meta: 
-		unique_together = (("user","sku"),)
+		unique_together = (("name","sku"),)
 
 
 

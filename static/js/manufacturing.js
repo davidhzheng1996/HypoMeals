@@ -63,7 +63,7 @@ var vm = new Vue({
        },
        addGoal: function(userid,goalid) {
          this.newGoal.user = parseInt(userid)
-         this.newGoal.name = goalid
+         this.newGoal.name = parseInt(goalid)
          this.loading = true;
          console.log(this.newGoal)
          this.$http.post('/api/manufacture_goal/',this.newGoal)

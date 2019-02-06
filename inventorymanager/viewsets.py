@@ -146,6 +146,7 @@ def manufacture_goals(request):
     if(request.method == 'POST'):
         try: 
             sku = Sku.objects.get(sku_name=request.data['goal_sku_name'])
+            print(request.data['name'])
             goal = Goal.objects.get(id=request.data['name'])
             # COUPLED WITH FRONT END MAY WANT TO REFACTOR
             request.data['sku'] = sku.id
