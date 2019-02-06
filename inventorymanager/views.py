@@ -37,7 +37,7 @@ def ingredients_to_sku(request,skuid):
 	return render(request, "ingredients_to_sku.html",{'skuid':skuid})
 
 @login_required(login_url='/accounts/login/')
-def ingredients_to_sku(request,ingredientid):
+def skus_to_ingredients(request,ingredientid):
 	return render(request, "skus_to_ingredient.html",{'ingredientid':ingredientid})
 
 @login_required(login_url='/accounts/login/')

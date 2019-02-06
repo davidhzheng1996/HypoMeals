@@ -11,7 +11,7 @@ var vm = new Vue({
    },
    mounted: function() {},
    methods: {
-       getIngredients: function(ingredientid){
+       getSkus: function(ingredientid){
            this.loading = true;
            this.$http.get('/api/skus_to_ingredient/'+ingredientid)
                .then((response) => {
