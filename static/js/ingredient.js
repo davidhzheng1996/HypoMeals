@@ -36,8 +36,6 @@ new Vue({
    mounted: function() {
     this.getIngredients();
      
-
-     
    },
    methods: {
        getIngredients: function(){
@@ -63,24 +61,24 @@ new Vue({
                       this.csv_uploaded=false;
                     }
 
-                    // TODO: fix allTerms 
+                    if(!this.has_searched) {
                     let allTerms = []
                     for(key in this.ingredients){
                       if(this.ingredients.hasOwnProperty(key)){
                         allTerms.push(this.ingredients[key].ingredient_name)
-                       // this.has_searched = true;
+                       this.has_searched = true;
                       }
-                    } 
-                    // input autocomplete
-     $( "#search_input_id" ).autocomplete({
-      minLength:1,   
-      delay:500,   
-      source: allTerms,
-      select: function(event,ui){
-        this.search_term = ui.item.value
-      }
-     });
-     console.log(allTerms)
+                    }
+                      $( "#search_input_id" ).autocomplete({
+                      minLength:1,   
+                      delay:500,   
+                      source: allTerms,
+                      select: function(event,ui){
+                        this.search_term = ui.item.value
+                      }
+                        });
+                   }
+     
 
                })
                .catch((err) => {
