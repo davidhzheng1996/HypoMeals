@@ -98,6 +98,7 @@ class IngredientImportView(APIView):
 			header_val_error, _ = self.validate_header(reader.fieldnames)
 			if header_val_error:
 				errors.append(header_val_error)
+				return errors, warnings
 			for ingr_dict in reader:
 				ingr_val_error, ingr_val_warning = self.validate_ingredient(ingr_dict)
 				if ingr_val_warning:
@@ -168,33 +169,79 @@ class SkuImportView(APIView):
 	# file sent should be in FormData
 	parser_classes = (MultiPartParser, FormParser)
 	def post(self, request, *args, **kwargs):
-		# https://stackoverflow.com/questions/28545553/django-rest-frameworks-request-post-vs-request-data
-		# request.data is more flexible than request.FILES
-		file_serializer = SkuFileSerializer(data=request.data)
-		if file_serializer.is_valid():
-			file_serializer.save()
-			# Use self.method() to access the function inside the same class...
-			# https://stackoverflow.com/questions/24813740/python-error-cannot-access-function-in-class 
-			self.process_file(request.data['file'])
-			return Response(file_serializer.data, status.HTTP_201_CREATED)
-		else:
-			return Response(file_serializer.errors, status.HTTP_400_BAD_REQUEST)
-	# https://stackoverflow.com/questions/40663168/processing-an-uploaded-file-using-django
-	def process_file(self, csv_file):
-		print(csv_file)
+		csv_file = request.data['file']
+		errors, warnings = self.save(csv_file)
+		post_result = {'errors': errors, 'warnings': warnings}
+		if errors != []:
+			return Response(post_result, status.HTTP_400_BAD_REQUEST)
+		return Response(post_result, status.HTTP_201_CREATED)
+		
+	@transaction.atomic
+	def save(self, csv_file):
+		errors = []
+		warnings = []
+		# https://docs.djangoproject.com/en/1.9/topics/db/transactions/#savepoint-rollback
+		transaction_savepoint = transaction.savepoint()
 		with open(csv_file.name) as f:
 			reader = csv.DictReader(f)
-			for row in reader:
-				print(row)
-				sku = Sku(productline=row['productline'],
-						caseupc=row['caseupc'],
-						unitupc=row['unitupc'],
-						sku_name=row['sku_name'],
-						count=row['count'],
-						unit_size=row['unit_size'],
-						tuples=row['tuples'],
-						comment=row['comment'])
+			header_val_error, _ = self.validate_header(reader.fieldnames)
+			if header_val_error:
+				errors.append(header_val_error)
+				return errors, warnings
+			for sku_dict in reader:
+				val_error, val_warning = self.validate_sku(sku_dict)
+				if val_warning:
+					warnings.append(val_warning)
+				if val_error:
+					errors.append(val_error)
+					break
+				product_line = Product_Line.objects.get(product_line_name=sku_dict['Product Line Name'])
+				sku = Sku(
+						id=sku_dict['SKU#'],
+						productline=product_line,
+						caseupc=sku_dict['Case UPC'],
+						unitupc=sku_dict['Unit UPC'],
+						sku_name=sku_dict['Name'],
+						count=sku_dict['Count per case'],
+						unit_size=sku_dict['Unit size'],
+						comment=sku_dict['Comment'])
+				# save without commit, as later validation might fail 
 				sku.save()
+		if errors != []:
+			transaction.savepoint_rollback(transaction_savepoint)
+		else:
+			transaction.savepoint_commit(transaction_savepoint)
+		return errors, warnings
+
+	def validate_header(self, headers):
+		if headers != ['SKU#','Name','Case UPC','Unit UPC','Unit size','Count per case', 'Product Line Name', 'Comment']:
+			return 'File headers not compliant to standard', ''
+		return '', ''
+
+	# validation conforms to https://piazza.com/class/jpvlvyxg51d1nc?cid=52
+	def validate_sku(self, sku_dict):
+		error = ''
+		warning = ''
+		# if ingredient with same name exists, only update if id matches
+		if Sku.objects.filter(sku_name=sku_dict['Name']).exists():
+			same_name_sku = Sku.objects.get(sku_name=sku_dict['Name'])
+			if same_name_sku.pk != int(sku_dict['SKU#']):
+				error = 'Ambiguous record for %s' % same_name_sku.sku_name
+			else:
+				# update other fields
+				warning = 'Update fields for %s' % same_name_sku.sku_name
+		else:
+			# check if object with same id exists
+			if Sku.objects.filter(pk=sku_dict['SKU#']).exists():
+				# overwrite existing object
+				warning = 'Overwrite object with id %s' % sku_dict['Ingr#']
+		# check if product line exists
+		product_line_name = sku_dict['Product Line Name']
+		if not Product_Line.objects.filter(product_line_name=product_line_name).exists():
+			error = 'No product line named %s' % product_line_name
+		return error, warning
+
+
 
 class SkuExportView(APIView):
         def get(self, request, *args, **kwargs):
@@ -214,3 +261,117 @@ class SkuExportView(APIView):
                                 sku_row.append(getattr(sku, field.name))
                         writer.writerow(sku_row)
                 return response
+
+
+class SkuFormulaImportView(APIView):
+	# available parsers: https://www.django-rest-framework.org/api-guide/parsers/ 
+	# file sent should be in FormData
+	parser_classes = (MultiPartParser, FormParser)
+	def post(self, request, *args, **kwargs):
+		csv_file = request.data['file']
+		errors, warnings = self.save(csv_file)
+		post_result = {'errors': errors, 'warnings': warnings}
+		if errors != []:
+			return Response(post_result, status.HTTP_400_BAD_REQUEST)
+		return Response(post_result, status.HTTP_201_CREATED)
+		
+	@transaction.atomic
+	def save(self, formula_file):
+		errors = []
+		warnings = []
+		# https://docs.djangoproject.com/en/1.9/topics/db/transactions/#savepoint-rollback
+		transaction_savepoint = transaction.savepoint()
+		with open(formula_file.name) as f:
+			reader = csv.DictReader(f)
+			header_val_error, _ = self.validate_header(reader.fieldnames)
+			if header_val_error:
+				errors.append(header_val_error)
+				return errors, warnings
+			for formula_dict in reader:
+				val_error, val_warning = self.validate_formula(formula_dict)
+				if val_warning:
+					warnings.append(val_warning)
+				if val_error:
+					errors.append(val_error)
+					break
+				sku = Sku.objects.get(id=formula_dict['SKU#'])
+				ingr = Ingredient.objects.get(id=formula_dict['Ingr#'])
+				sku_to_ingr = Sku_To_Ingredient(
+						sku=sku,
+						ig=ingr,
+						quantity=formula_dict['Quantity'])
+				# save without commit, as later validation might fail 
+				sku_to_ingr.save()
+		if errors != []:
+			transaction.savepoint_rollback(transaction_savepoint)
+		else:
+			transaction.savepoint_commit(transaction_savepoint)
+		return errors, warnings
+
+	def validate_header(self, headers):
+		if headers != ['SKU#','Ingr#','Quantity']:
+			return 'File headers not compliant to standard', ''
+		return '', ''
+
+	# validation conforms to https://piazza.com/class/jpvlvyxg51d1nc?cid=52
+	def validate_formula(self, formula_dict):
+		error = ''
+		warning = ''
+		if not Sku.objects.filter(id=formula_dict['SKU#']).exists():
+			error = 'No Sku with id %s' % formula_dict['SKU#']
+		if not Ingredient.objects.filter(id=formula_dict['Ingr#']).exists():
+			error = 'No ingredient with id %s' % formula_dict['Ingr#']
+		return error, warning
+
+class ProductLineImportView(APIView):
+	# available parsers: https://www.django-rest-framework.org/api-guide/parsers/ 
+	# file sent should be in FormData
+	parser_classes = (MultiPartParser, FormParser)
+	def post(self, request, *args, **kwargs):
+		csv_file = request.data['file']
+		errors, warnings = self.save(csv_file)
+		post_result = {'errors': errors, 'warnings': warnings}
+		if errors != []:
+			return Response(post_result, status.HTTP_400_BAD_REQUEST)
+		return Response(post_result, status.HTTP_201_CREATED)
+		
+	@transaction.atomic
+	def save(self, product_line_file):
+		errors = []
+		warnings = []
+		# https://docs.djangoproject.com/en/1.9/topics/db/transactions/#savepoint-rollback
+		transaction_savepoint = transaction.savepoint()
+		with open(product_line_file.name) as f:
+			reader = csv.DictReader(f)
+			header_val_error, _ = self.validate_header(reader.fieldnames)
+			if header_val_error:
+				errors.append(header_val_error)
+				return errors, warnings
+			for product_line_dict in reader:
+				val_error, val_warning = self.validate_formula(product_line_dict)
+				if val_warning:
+					warnings.append(val_warning)
+				if val_error:
+					errors.append(val_error)
+					break
+				if not Product_Line.objects.filter(product_line_name=product_line_dict['Name']).exists():
+					product_line = Product_Line(product_line_name=product_line_dict['Name'])
+					product_line.save()
+		if errors != []:
+			transaction.savepoint_rollback(transaction_savepoint)
+		else:
+			transaction.savepoint_commit(transaction_savepoint)
+		return errors, warnings
+
+	def validate_header(self, headers):
+		if headers != ['Name']:
+			return 'File headers not compliant to standard', ''
+		return '', ''
+
+	# validation conforms to https://piazza.com/class/jpvlvyxg51d1nc?cid=52
+	def validate_formula(self, product_line_dict):
+		error = ''
+		warning = ''
+		if Product_Line.objects.filter(product_line_name=product_line_dict['Name']).exists():
+			warning = 'Exsiting product line: %s' % product_line_dict['Name']
+		return error, warning

@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views, viewsets
-from .views import IngredientImportView, IngredientExportView, SkuImportView, SkuExportView
+from .views import IngredientImportView, IngredientExportView, SkuImportView, SkuExportView, SkuFormulaImportView, ProductLineImportView
 
 # map url to views.view_class
 urlpatterns = [
@@ -35,5 +35,7 @@ urlpatterns = [
     path('api/delete_goal/<int:id>/<int:goalid>', viewsets.delete_goal),
     path('api/update_goal/<int:id>/<int:goalid>', viewsets.update_goal),
     path('api/sku_import/', SkuImportView.as_view()),
-    path('api/sku_export/', SkuExportView.as_view())
+    path('api/sku_export/', SkuExportView.as_view()),
+    path('api/sku_formula_import/', SkuFormulaImportView.as_view()),
+    path('api/product_line_import/', ProductLineImportView.as_view())
 ]

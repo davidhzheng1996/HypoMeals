@@ -41,7 +41,7 @@ new Vue({
        getIngredients: function(){
            let api_url = '/api/ingredient/';
            // https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
-           if(this.search_term !== '' || this.search_term !== null) {
+           if(this.search_term !== '' && this.search_term !== null) {
                 api_url = '/api/ingredient/?search=' + this.search_term
            }
            //console.log(this.search_term);
@@ -200,6 +200,7 @@ new Vue({
          this.getIngredients();
          })
            .catch((err) => {
+            this.upload_errors = err.data['errors'].join('\n') + err.data['warnings'].join('\n')
          this.loading = false;
          console.log(err);
         })
