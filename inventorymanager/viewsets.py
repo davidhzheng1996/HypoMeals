@@ -54,8 +54,24 @@ class ProductLineViewSet(viewsets.ModelViewSet):
 
 # Begin Explicit APIs
 @login_required(login_url='/accounts/login/')
-@api_view(['GET'])
-def ingredients_to_sku_get(request,skuid):
+@api_view(['GET','POST'])
+def skus_to_ingredient(request,ingredientid):
+    if(request.method == 'GET'):
+        try: 
+            sku_to_ingredient = Sku_To_Ingredient.objects.filter(ig=ingredientid)
+            ids= sku_to_ingredient.values_list("sku",flat=True)
+            skus = Sku.objects.filter(id__in=ids)
+            response = []
+            for sku in skus:
+                serializer = SkuSerializer(sku)
+                response.append(serializer.data)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['GET','POST'])
+def ingredients_to_sku(request,skuid):
     if(request.method == 'GET'):
         try: 
             ingredients_to_sku = Sku_To_Ingredient.objects.filter(sku=skuid)
@@ -65,22 +81,52 @@ def ingredients_to_sku_get(request,skuid):
             for ingredient in ingredients:
                 serializer = IngredientSerializer(ingredient)
                 for relation in ingredients_to_sku: 
-                    if(relation.id == ingredient.id):
-                        print('here')
+                    if(relation.ig.id == ingredient.id):
                         data = serializer.data
                         data['quantity'] = relation.quantity
                         response.append(data)
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
+    if(request.method == 'POST'):
+        try: 
+            sku = Sku.objects.get(id=skuid)
+            ingredient = Ingredient.objects.get(ingredient_name=request.data['ingredient_name'])
+            newrelation = {'sku':sku.id,'ig':ingredient.id,'quantity':request.data['quantity']}
+            serializer = IngredientToSkuSerializer(data=newrelation)
+            if(serializer.is_valid()):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
 
-# @login_required(login_url='/accounts/login/')
-# @api_view(['POST'])
-# def ingredients_to_sku(request,skuid):
-#     if(request.method == 'POST'):
-#         try:
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+def delete_ingredients_to_sku(request,sku,ig):
+    try: 
+        ingredient_to_sku = Sku_To_Ingredient.objects.get(sku = sku,ig=ig)
+        ingredient_to_sku.delete()
+        return Response(status = status.HTTP_204_NO_CONTENT)
+    except Exception as e: 
+        return Response(status = status.HTTP_400_BAD_REQUEST)
 
-# Skus within goal
+
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+def update_ingredients_to_sku(request,sku,ig):
+    if(request.method == 'POST'):
+        try: 
+            relation = Sku_To_Ingredient.objects.get(sku = sku, ig=ig)
+            serializer = IngredientToSkuSerializer(relation,{'quantity':request.data['quantity']},partial=True)
+            if(serializer.is_valid()):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+        except Exception as e: 
+            print(e)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])
 def manufacture_goals(request):

@@ -35,7 +35,7 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
-            <form v-on:submit.prevent="addIngredient()">
+            <form v-on:submit.prevent="addIngredient('{{skuid}}')">
                <div class="modal-body">
                   <div class="form-group">
                      <label>Ingredient Name</label>
@@ -66,8 +66,47 @@
       </div>
       <div class="loading" v-if="loading===true">Loading&#8230;</div>
    </div>
-   <!-- Add Goal Modal -->
-   <!-- End of edit article modal -->
+   <div class="modal fade" id="editIngredientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLongTitle">Edit Manufacturing Goal</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            <form v-on:submit.prevent="updateIngredient('{{skuid}}',currentIngredient.id)">
+               <div class="modal-body">
+                  <div class="form-group">
+                     <label>Ingredient Name</label>
+                     <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter SKU Name"
+                        v-model="currentIngredient.ingredient_name"
+                        readonly >
+                  </div>
+                  <div class="form-group">
+                     <label>Quantity*</label>
+                     <input
+                        type="number"
+                        class="form-control"
+                        placeholder="Enter Desired Quantity"
+                        v-model="currentIngredient.quantity"
+                        required="required" >
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+               </div>
+            </form>
+         </div>
+      </div>
+      <div class="loading" v-if="loading===true">Loading&#8230;</div>
+   </div>
+<!-- Add Goal Modal -->
+<!-- End of edit article modal -->
 </div>
 <script src="../static/js/ingredients-to-sku.js"></script>
 <!-- Not sure if there isn't a better solution -->
