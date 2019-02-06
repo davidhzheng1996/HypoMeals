@@ -193,9 +193,14 @@ def manufacture_goals(request):
 @login_required(login_url='/accounts/login/')
 @api_view(['GET'])
 def manufacture_goals_get(request,id,goalid):
+    search_term = request.query_params.get('search', None)
+    print(search_term)
     if(request.method == 'GET'):
         try: 
-            goals = Manufacture_Goal.objects.filter(user = id, name=goalid)
+            # filter skus by sku name
+            goals = Manufacture_Goal.objects.filter(Q(user=id), Q(name=goalid), 
+                Q(sku__sku_name__icontains=search_term) 
+                | Q(sku__productline__product_line_name__icontains=search_term))
             response = []
             for goal in goals:
                 serializer = ManufactureGoalSerializer(goal)

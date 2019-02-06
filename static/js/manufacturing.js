@@ -18,9 +18,9 @@ var vm = new Vue({
    methods: {
        getGoals: function(userid,goalid){
             let api_url = '/api/manufacture_goal/'+userid+'/'+goalid;
-           // if(this.search_term !== '' || this.search_term !== null) {
-           //      api_url = '/api/search_manufacture_goal/'+userid+'/'+goalid+this.search_term
-           // }
+           if(this.search_term !== '' && this.search_term !== null) {
+                api_url += '?search=' + this.search_term
+           }
            this.loading = true;
            this.$http.get(api_url)
                .then((response) => {
@@ -70,7 +70,6 @@ var vm = new Vue({
          this.newGoal.name = parseInt(goalid)
          this.newGoal.goal_sku_name = this.newGoal.goal_sku_name.toLowerCase();
          this.loading = true;
-         console.log(this.newGoal)
          this.$http.post('/api/manufacture_goal/',this.newGoal)
            .then((response) => {
            $("#addGoalModal").modal('hide');
@@ -124,7 +123,9 @@ var vm = new Vue({
          console.log(err);
        })
    },
-
+   search_input_changed: function(userid, goalid) {
+    this.getGoals(userid, goalid);
+    },
   
    }
    });
