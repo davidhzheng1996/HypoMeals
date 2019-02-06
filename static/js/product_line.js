@@ -55,6 +55,7 @@ new Vue({
        },
        addProductLine: function() {
          this.loading = true;
+         this.newProductLine.product_line_name = this.newProductLine.product_line_name.toLowerCase();
          this.$http.post('/api/product_line/',this.newProductLine)
            .then((response) => {
          $("#addProductLineModal").modal('hide');
@@ -84,7 +85,7 @@ new Vue({
        },
        updateProductLine: function() {
          this.loading = true;
-         console.log(this.currentProductLine)
+        this.currentProductLine.product_line_name = this.currentProductLine.product_line_name.toLowerCase();
          this.$http.put('/api/product_line/'+ this.currentProductLine.id + '/',     this.currentProductLine)
            .then((response) => {
              $("#editProductLineModal").modal('hide');
