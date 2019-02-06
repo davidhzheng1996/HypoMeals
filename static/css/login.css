@@ -70,3 +70,8 @@ input, button {
 	margin-left:auto;
   margin-right:auto;
 }
+
+#firsttime{
+  margin-top:5%;
+  text-align: center;
+}
