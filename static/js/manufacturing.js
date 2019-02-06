@@ -121,6 +121,8 @@ var vm = new Vue({
          this.loading = false;
          console.log(err);
        })
-   }
+   },
+
+  
    }
    });
