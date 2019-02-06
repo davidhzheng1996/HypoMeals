@@ -197,10 +197,16 @@ def manufacture_goals_get(request,id,goalid):
     print(search_term)
     if(request.method == 'GET'):
         try: 
+            if search_term:
             # filter skus by sku name
-            goals = Manufacture_Goal.objects.filter(Q(user=id), Q(name=goalid), 
-                Q(sku__sku_name__icontains=search_term) 
-                | Q(sku__productline__product_line_name__icontains=search_term))
+                goals = Manufacture_Goal.objects.filter(
+                    Q(user=id),
+                    Q(name=goalid),
+                    Q(sku__sku_name__icontains=search_term)
+                    | Q(sku__productline__product_line_name__icontains=search_term))
+            else:
+                goals = Manufacture_Goal.objects.filter(user=id,name=goalid)
+            # goals = Manufacture_Goal.objects.filter(user=id,name=goalid)
             response = []
             for goal in goals:
                 serializer = ManufactureGoalSerializer(goal)
