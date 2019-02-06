@@ -6,12 +6,14 @@
          <h1>List of SKUs
             <button class="btn btn-success" data-toggle="modal" data-target="#addSkuModal">Add Sku</button>
             <input type="file" @change="selectSkuCSV">
-            <button type="submit" @click="uploadSkuCSV">Upload</button>
+            <button type="submit" @click="uploadSkuCSV">Upload Sku</button>
+            <input type="file" @change="selectFormulaCSV">
+            <button type="submit" @click="uploadFormulaCSV">Upload Formula</button>
             <p class="error" v-if="upload_errors">${ upload_errors }</p>
             <button class="btn btn-success" type="submit" @click="exportSkuCSV">Export</button>
          </h1>
          <div class="form-inline my-2 my-lg-0">
-            <input id = "search_input_id" class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" @change="search_input_changed" aria-label="Search">
+            <input id = "search_input_id" class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getSkus()">Search</button>
         </div>
          <table class="table">

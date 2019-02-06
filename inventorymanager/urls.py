@@ -31,5 +31,7 @@ urlpatterns = [
     path('api/delete_goal/<int:id>/<int:goalid>', viewsets.delete_goal),
     path('api/update_goal/<int:id>/<int:goalid>', viewsets.update_goal),
     path('api/sku_import/', SkuImportView.as_view()),
-    path('api/sku_export/', SkuExportView.as_view())
+    path('api/sku_export/', SkuExportView.as_view()),
+    path('api/sku_formula_import/', SkuFormulaImportView.as_view()),
+    path('api/sku_formula_export/', SkuFormulaExportView.as_view())
 ]

@@ -13,6 +13,7 @@ new Vue({
      newSku: { 'sku_name': '','productline': '', 'id': null, 'caseupc': 1234,'unitupc': 1234, 'unit_size': 0, 'count': 0, 'tuples': null, 
      'comment': null},
      skuFile: null,
+     formulaFile: null,
      has_paginated:false,
      csv_uploaded:false,
 
@@ -41,7 +42,7 @@ new Vue({
        getSkus: function(){
           let api_url = '/api/sku/';
            // https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
-           if(this.search_term !== '' || this.search_term !== null) {
+           if(this.search_term !== '' && this.search_term !== null) {
                 api_url = '/api/sku/?search=' + this.search_term;
            }
            this.loading = true;
@@ -189,6 +190,31 @@ new Vue({
         })
       },
 
+      selectFormulaCSV: function(event) {
+        this.formulaFile = event.target.files[0]
+      },
+        
+      uploadFormulaCSV: function() {
+        this.loading = true;
+        // upload this.ingredientCSV to REST api in FormData
+        const formData = new FormData()
+        // https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
+        formData.append('file', this.formulaFile, this.formulaFile.name)
+        this.$http.post('/api/sku_import/', formData)
+           .then((response) => {
+            this.upload_errors = response.data['errors'].join('\n') + response.data['warnings'].join('\n')
+            console.log(this.upload_errors)
+         this.loading = false;
+         this.csv_uploaded=true;
+         this.getSkus();
+         })
+           .catch((err) => {
+            this.upload_errors = err.data['errors'].join('\n') + err.data['warnings'].join('\n')
+         this.loading = false;
+         console.log(err);
+        })
+      },
+
       exportSkuCSV: function() {
         this.loading = true;
         // Export all current skus to a csv file
@@ -225,16 +251,6 @@ new Vue({
         //         this.loading = false;
         //         console.log(err)
         //   })
-      },
-
-      search_input_changed: function() {
-        const that = this
-        this.$http.get('/api/sku/?search=' + this.search_term)
-                .then((response) => {
-                        for (var i in response.data) {
-                                this.search_suggestions.push(response.data[i].sku_name.toLowerCase());
-                        }
-                })
       },
 
         sortBy: function(key) {

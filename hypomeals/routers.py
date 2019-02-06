@@ -13,4 +13,3 @@ router.register(r'customer', CustomerViewSet)
 router.register(r'ingredient', IngredientViewSet)
 # router.register(r'manufacture_goal', ManufactureGoalViewSet) //replace with explicit
 router.register(r'product_line', ProductLineViewSet)
-

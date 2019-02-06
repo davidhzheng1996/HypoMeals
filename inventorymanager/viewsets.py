@@ -19,6 +19,12 @@ class SkuViewSet(viewsets.ModelViewSet):
     queryset = Sku.objects.all()
     serializer_class = SkuSerializer
 
+    # GET override
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
     def get_queryset(self):
         queryset = super().get_queryset()
         search_term = self.request.query_params.get('search', None)
