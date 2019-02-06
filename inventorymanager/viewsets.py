@@ -5,6 +5,7 @@ from rest_framework import status
 from .models import *
 from .serializers import *
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 
 
 
@@ -26,9 +27,21 @@ class IngredientViewSet(viewsets.ModelViewSet):
     serializer_class = IngredientSerializer
     # searching functionality
     # https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
-    filter_backends = (filters.SearchFilter, )
-    # notice that we could also filter on foreign key's fields
-    search_fields = ('ingredient_name', 'description')
+    # filter_backends = (filters.SearchFilter, )
+    # # notice that we could also filter on foreign key's fields
+    # search_fields = ('ingredient_name', 'description')
+
+    # https://www.django-rest-framework.org/api-guide/filtering/#filtering-against-query-parameters
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_term = self.request.query_params.get('search', None)
+        if search_term:
+            queryset = Ingredient.objects.filter(Q(ingredient_name__icontains=search_term) | Q(description__icontains=search_term))
+            # obtain all skus whose name contain search_term
+            # https://docs.djangoproject.com/en/2.1/topics/db/examples/many_to_one/
+            ingr_ids = Sku_To_Ingredient.objects.filter(sku__sku_name__icontains=search_term).values('ig')
+            queryset |= Ingredient.objects.filter(id__in=ingr_ids)
+        return queryset
 
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()

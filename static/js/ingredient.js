@@ -48,6 +48,7 @@ new Vue({
            this.loading = true;
            this.$http.get(api_url)
                .then((response) => {
+                 console.log(response.data)
                    this.ingredients = response.data;
                    this.loading = false;
                    this.lowerCaseName();
@@ -303,22 +304,6 @@ new Vue({
       return this.paginate(this.ingredients);
     }
   },
-
-  watch: {
-    search_term () {
-      if(this.search_term == '' || this.search_term == null) {
-        return
-      }
-      this.$http.get('/api/ingredient/?search='+this.search_term)
-               .then((response) => {
-                   this.search_suggestions = response.data;
-                   this.loading = false;
-               })
-               .catch((err) => {
-                   this.loading = false;
-                   console.log(err);
-               })
-    }
-
-  }, 
+  
+  
    });
