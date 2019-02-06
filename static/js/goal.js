@@ -6,6 +6,10 @@ var vm = new Vue({
      loading: false,
      currentGoal: {},
      message: null,
+     page:1,
+     perPage: 10,
+     pages:[],
+     has_paginated:false,
      //COUPLED WITH BACKEND DO NOT REMOVE BELOW
      newGoal: { 'goalname': '', 'user':null },
    },
@@ -19,6 +23,10 @@ var vm = new Vue({
                   console.log(response.data)
                    this.goals = response.data;
                    this.loading = false;
+                   if(!this.has_paginated){
+                      this.setPages();
+                      this.has_paginated=true; 
+                    }
                })
                .catch((err) => {
                    this.loading = false;
@@ -37,12 +45,39 @@ var vm = new Vue({
             }
           }
        },
+        setPages: function () {
+        let numberOfPages = Math.ceil(this.goals.length / this.perPage);
+        for (let index = 1; index <= numberOfPages; index++) {
+          this.pages.push(index);
+        }
+      },
+      addPage: function (){
+          this.pages.push(Math.ceil(this.goals.length / this.perPage)+1);
+      },
+      deletePage: function (){
+        this.pages=[];
+          let numberOfPages = Math.ceil(this.goals.length / this.perPage);
+        for (let index = 1; index < numberOfPages; index++) {
+          this.pages.push(index);
+        }
+      },
+      paginate: function (goals) {
+      let page = this.page;
+      // console.log(page)
+      let perPage = this.perPage;
+      let from = (page * perPage) - perPage;
+      let to = (page * perPage);
+      return  goals.slice(from, to);
+    },
        deleteGoal: function(userid,goalid){
          this.loading = true;
          // TODO: use delimiters
          this.$http.post('/api/delete_goal/' + userid + '/'+goalid)
            .then((response) => {
              this.loading = false;
+             if((this.goals.length%this.perPage)==1){
+                      this.deletePage();
+                    }
              this.getGoals(userid);
            })
            .catch((err) => {
@@ -57,6 +92,9 @@ var vm = new Vue({
            .then((response) => {
            $("#addGoalModal").modal('hide');
            this.loading = false;
+           if((this.goals.length%this.perPage)==0){
+            this.addPage();
+         }
            this.getGoals(userid);
          })
            .catch((err) => {
@@ -82,6 +120,11 @@ var vm = new Vue({
       },
       Calculate:function(goalid){
         window.location.href = '/calculate_goal/'+goalid
-      }
-   }
+      },
+   },
+   computed: {
+    displayedGoals () {
+      return this.paginate(this.goals);
+    }
+  },
    });

@@ -53,6 +53,6 @@ var vm = new Vue({
         const doc = new jsPDF();
         doc.autoTable({html: '#my-table'});
         doc.save('calculatedIngredients.pdf');
-      }
-   }
+      },
+   },
    });

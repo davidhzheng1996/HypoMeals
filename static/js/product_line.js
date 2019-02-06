@@ -8,6 +8,11 @@ new Vue({
      message: null,
      newProductLine: { 'product_line_name': '',},
      message: '',
+     page:1,
+     perPage: 10,
+     pages:[],
+     has_paginated:false,
+     csv_uploaded:false,
      productlineFile: null,
      upload_errors: ''
    },
@@ -22,6 +27,15 @@ new Vue({
                .then((response) => {
                    this.product_lines = response.data;
                    this.loading = false;
+                   if(!this.has_paginated){
+                      this.setPages();
+                      this.has_paginated=true; 
+                    }
+                    if(this.csv_uploaded){
+                      this.pages=[];
+                      this.setPages();
+                      this.csv_uploaded=false;
+                    }
                })
                .catch((err) => {
                    this.loading = false;
@@ -47,6 +61,9 @@ new Vue({
          this.$http.delete('/api/product_line/' + id + '/')
            .then((response) => {
              this.loading = false;
+             if((this.product_lines.length%this.perPage)==1){
+                      this.deletePage();
+                    }
              this.getProductLines();
            })
            .catch((err) => {
@@ -62,6 +79,9 @@ new Vue({
            .then((response) => {
          $("#addProductLineModal").modal('hide');
          this.loading = false;
+         if((this.product_lines.length%this.perPage)==0){
+            this.addPage();
+         }
          this.getProductLines();
          })
            .catch((err) => {
@@ -69,7 +89,30 @@ new Vue({
          console.log(err);
        })
        },
-
+       setPages: function () {
+        let numberOfPages = Math.ceil(this.product_lines.length / this.perPage);
+        for (let index = 1; index <= numberOfPages; index++) {
+          this.pages.push(index);
+        }
+      },
+      addPage: function (){
+          this.pages.push(Math.ceil(this.product_lines.length / this.perPage)+1);
+      },
+      deletePage: function (){
+        this.pages=[];
+          let numberOfPages = Math.ceil(this.product_lines.length / this.perPage);
+        for (let index = 1; index < numberOfPages; index++) {
+          this.pages.push(index);
+        }
+      },
+      paginate: function (product_lines) {
+      let page = this.page;
+      // console.log(page)
+      let perPage = this.perPage;
+      let from = (page * perPage) - perPage;
+      let to = (page * perPage);
+      return  product_lines.slice(from, to);
+    },
        selectCSV: function(event) {
         this.productlineFile = event.target.files[0]
       },
@@ -119,6 +162,7 @@ new Vue({
              $("#editProductLineModal").modal('hide');
          this.loading = false;
          this.currentProductLine = response.data;
+         this.csv_uploaded=true;
          this.getProductLines();
          })
            .catch((err) => {
@@ -126,5 +170,11 @@ new Vue({
          console.log(err);
         })
       },
-   }
+   },
+
+   computed: {
+    displayedProductLines () {
+      return this.paginate(this.product_lines);
+    }
+  },
    });

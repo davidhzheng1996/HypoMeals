@@ -8,7 +8,7 @@ new Vue({
      currentIngredient: {},
      message: null,
      page:1,
-     perPage: 3,
+     perPage: 10,
      pages:[],
      newIngredient: { 'ingredient_name': '', 'id': null, 'description': null,'package_size': '', 'cpp': 0, 'comment': null,},
      ingredientFile: null,
@@ -126,13 +126,6 @@ new Vue({
            .then((response) => {
          $("#addIngredientModal").modal('hide');
          this.loading = false;
-         for(let index = 0; index<this.ingredients.length; index++){
-            if(this.newIngredient.ingredient_name.toLowerCase().trim()===(this.ingredients[index].ingredient_name.toLowerCase().trim())){
-                this.message = "already exists";
-                return;
-                //console.log(err);
-            }
-          }
          if((this.ingredients.length%this.perPage)==0){
             this.addPage();
          }
@@ -165,15 +158,10 @@ new Vue({
         })
       },
       setPages: function () {
-        //this.pages = []
         let numberOfPages = Math.ceil(this.ingredients.length / this.perPage);
         for (let index = 1; index <= numberOfPages; index++) {
           this.pages.push(index);
         }
-                    //         for(let i = 0; i < pages.length;i++){
-                    //   console.log(pages[i]);
-                    // }
-        //console.log(pages);
       },
       addPage: function (){
           this.pages.push(Math.ceil(this.ingredients.length / this.perPage)+1);
