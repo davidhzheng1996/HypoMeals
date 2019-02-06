@@ -1,3 +1,6 @@
+Vue.filter('lowercase', function (value) {
+   return value.toLowerCase()
+})
 new Vue({
      el: '#starting',
      delimiters: ['${','}'],
@@ -122,12 +125,13 @@ new Vue({
     },
        addSku: function() {
          this.loading = true;
+         this.newSku.sku_name = this.newSku.sku_name.toLowerCase();
          this.$http.post('/api/sku/',this.newSku)
            .then((response) => {
          $("#addSkuModal").modal('hide');
          this.loading = false;
          for(let index = 0; index<this.skus.length; index++){
-            if(this.newSku.sku_name.toLowerCase().trim()===(this.skus[index].sku_name.toLowerCase().trim())){
+            if(this.newSku.sku_name.toLowerCase().trim()===(this.skus[index].sku_name.toLowerCase()){
                 console.log("Already exists");
                 return;
                 //console.log(err);
@@ -150,7 +154,7 @@ new Vue({
        },
        updateSku: function() {
          this.loading = true;
-         console.log(this.currentSku)
+         this.currentSku.sku_name = this.currentSku.sku_name.toLowerCase();
          this.$http.put('/api/sku/'+ this.currentSku.id + '/',     this.currentSku)
            .then((response) => {
              $("#editSkuModal").modal('hide');
@@ -222,6 +226,49 @@ new Vue({
         //         this.loading = false;
         //         console.log(err)
         //   })
+      },
+
+      exportFormula: function(){
+        this.loading = true;
+        // Export all current ingredients to a csv file
+        // https://codepen.io/dimaZubkov/pen/eKGdxN
+        let csvContent = "data:text/csv;charset=utf-8,";
+
+        csvContent+=[["Sku ID", "Ingr ID", "Quantity"].join(",")+'\n'];
+        let c = 0
+        //console.log(csvContent);
+        for (let i = 0; i < this.skus.length; i++) {
+                //console.log(this.ingredients[key].ingredient_name)
+                this.$http.get('/api/ingredients_to_sku/'+this.skus[i].id)
+               .then((response) => {
+                  c = c + 1;
+                   var ingredients = [];
+                   this.ingredients = response.data;
+                   for(let j = 0; j < this.ingredients.length; j++){
+                        csvContent+=[[this.skus[i].id,this.ingredients[j].id, this.ingredients[j].quantity].join(",")+'\n'];
+                      
+                   }
+                  // this.finished();
+                  if(c==this.skus.length){
+                     console.log(csvContent);
+                   
+                     const url = encodeURI(csvContent);
+                      const link = document.createElement("a");
+                     link.setAttribute("href", url);
+                     link.setAttribute("download", "formulas.csv");
+                     link.click();
+                 }
+                   this.loading = false;
+                   //this.has_called = true; 
+               })
+               .catch((err) => {
+                   this.loading = false;
+                   console.log(err);
+               })
+
+        } 
+      
+
       },
 
       search_input_changed: function() {
