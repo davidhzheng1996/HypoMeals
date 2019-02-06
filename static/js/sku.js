@@ -11,7 +11,7 @@ new Vue({
      currentSku: {},
      message: null,
      page:1,
-     perPage: 2,
+     perPage: 10,
      pages:[],
      newSku: { 'sku_name': '','productline': '', 'id': null, 'caseupc': 1234,'unitupc': 1234, 'unit_size': 0, 'count': 0, 'tuples': null, 
      'comment': null},
