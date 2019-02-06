@@ -5,6 +5,7 @@
       <div class="row">
          <h1>List of Product Lines
             <button class="btn btn-success" data-toggle="modal" data-target="#addProductLineModal">Add Product Line</button>
+            <button class="btn btn-success" type="submit" @click="exportCSV()">Export</button>
             <p class="message" v-if="message">${ message }</p>
          </h1>
          <table class="table">
