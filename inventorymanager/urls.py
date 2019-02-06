@@ -20,6 +20,7 @@ urlpatterns = [
     # ingredient file export endpoint 
     path('api/ingredient_export/', IngredientExportView.as_view()),
     path('api/skus_to_ingredient/<int:ingredientid>',viewsets.skus_to_ingredient),
+    # path('api/calculate_goal/<int:id>/<int:goalid>',viewsets.calculate_ingredient),
     path('api/ingredients_to_sku/<int:skuid>',viewsets.ingredients_to_sku),
     path('api/delete_ingredients_to_sku/<int:sku>/<int:ig>',viewsets.delete_ingredients_to_sku),
     path('api/update_ingredients_to_sku/<int:sku>/<int:ig>',viewsets.update_ingredients_to_sku),
@@ -27,6 +28,7 @@ urlpatterns = [
     path('api/manufacture_goal/<int:id>/<int:goalid>', viewsets.manufacture_goals_get),
     path('api/delete_manufacture_goal/<int:specificgoal>',viewsets.delete_manufacture_goal),
     path('api/update_manufacture_goal/',viewsets.update_manufacture_goal),
+    # path('api/search_manufacture_goal/',viewsets.search_manufacture_goal),
     path('api/goal/<int:id>', viewsets.goal),
     path('api/delete_goal/<int:id>/<int:goalid>', viewsets.delete_goal),
     path('api/update_goal/<int:id>/<int:goalid>', viewsets.update_goal),

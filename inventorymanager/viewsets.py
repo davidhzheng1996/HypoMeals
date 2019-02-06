@@ -50,6 +50,9 @@ class CustomerViewSet(viewsets.ModelViewSet):
 class ManufactureGoalViewSet(viewsets.ModelViewSet):
     queryset = Manufacture_Goal.objects.all()
     serializer_class = ManufactureGoalSerializer
+    # filter_backends = (filters.SearchFilter, )
+    # # notice that we could also filter on foreign key's fields
+    # search_fields = ('goal_sku_name')
 
 class ProductLineViewSet(viewsets.ModelViewSet):
     queryset = Product_Line.objects.all()
@@ -173,6 +176,23 @@ def manufacture_goals_get(request,id,goalid):
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
+# @login_required(login_url='/accounts/login/')
+# @api_view(['GET'])
+# def search_manufacture_goal(request,id,goalid):
+#     if(request.method == 'GET'):
+#         try: 
+#             goals = Manufacture_Goal.objects.filter(user = id, name=goalid)
+#             response = []
+#             for goal in goals:
+#                 serializer = ManufactureGoalSerializer(goal)
+#                 response.append(serializer.data)
+#             filter_backends = (filters.SearchFilter, )
+#                  # notice that we could also filter on foreign key's fields
+#             search_fields = ('ingredient_name', 'description')
+#             return Response(response,status = status.HTTP_200_OK)
+#         except Exception as e: 
+#             return Response(status = status.HTTP_400_BAD_REQUEST)
+
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])
 def delete_manufacture_goal(request,specificgoal):
@@ -248,4 +268,5 @@ def update_goal(request,id,goalid):
         except Exception as e: 
             print(e)
             return Response(status = status.HTTP_400_BAD_REQUEST)
+
 
