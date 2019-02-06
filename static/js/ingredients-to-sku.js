@@ -6,6 +6,10 @@ var vm = new Vue({
     loading: false,
     currentIngredient: {},
     message: null,
+    has_paginated:false,
+    page:1,
+    perPage: 1,
+    pages:[],
     //COUPLED WITH BACKEND DO NOT REMOVE BELOW
     newIngredient: {
       'ingredient_name': '',
@@ -20,6 +24,10 @@ var vm = new Vue({
         .then((response) => {
           this.ingredients = response.data;
           this.loading = false;
+          if(!this.has_paginated){
+                      this.setPages();
+                      this.has_paginated=true; 
+                    }
         })
         .catch((err) => {
           this.loading = false;
@@ -48,6 +56,9 @@ var vm = new Vue({
       this.$http.post('../api/delete_ingredients_to_sku/' + skuid + '/' + ingredientid)
         .then((response) => {
           this.loading = false;
+          if((this.ingredients.length%this.perPage)==1){
+                      this.deletePage();
+                    }
           this.getIngredients(skuid);
         })
         .catch((err) => {
@@ -62,6 +73,9 @@ var vm = new Vue({
         .then((response) => {
           $("#addIngredientModal").modal('hide');
           this.loading = false;
+          if((this.ingredients.length%this.perPage)==0){
+            this.addPage();
+         }
           this.getIngredients(skuid);
         })
         .catch((err) => {
@@ -82,6 +96,35 @@ var vm = new Vue({
         this.loading = false;
         console.log(err);
       })
+    },
+    setPages: function () {
+        let numberOfPages = Math.ceil(this.ingredients.length / this.perPage);
+        for (let index = 1; index <= numberOfPages; index++) {
+          this.pages.push(index);
+        }
+      },
+      addPage: function (){
+          this.pages.push(Math.ceil(this.ingredients.length / this.perPage)+1);
+      },
+      deletePage: function (){
+        this.pages=[];
+          let numberOfPages = Math.ceil(this.ingredients.length / this.perPage);
+        for (let index = 1; index < numberOfPages; index++) {
+          this.pages.push(index);
+        }
+      },
+      paginate: function (ingredients) {
+      let page = this.page;
+      // console.log(page)
+      let perPage = this.perPage;
+      let from = (page * perPage) - perPage;
+      let to = (page * perPage);
+      return  ingredients.slice(from, to);
+    },
+  },
+  computed: {
+    displayedIngredients () {
+      return this.paginate(this.ingredients);
     }
-  }
+  },
 });

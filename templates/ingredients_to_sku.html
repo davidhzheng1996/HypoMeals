@@ -14,7 +14,7 @@
                </tr>
             </thead>
             <tbody>
-               <tr v-for="ingredient in ingredients">
+               <tr v-for="ingredient in displayedIngredients">
                   <th scope="row">${ingredient.ingredient_name}</th>
                   <th scope="row">${ingredient.quantity}</th>
                   <td>
@@ -25,6 +25,12 @@
             </tbody>
          </table>
       </div>
+      <div class="clearfix btn-group col-md-2 offset-md-5">
+            <button type="button" class="btn btn-sm btn-outline-secondary" v-if="page != 1" @click="page--"> << </button>
+            <!-- <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> ${pageNumber} </button> -->
+            <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>
+            <button type="button" @click="page++" v-if="page < pages.length" class="btn btn-sm btn-outline-secondary"> >> </button>
+          </div>
    </div>
    <div class="modal fade" id="addIngredientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">

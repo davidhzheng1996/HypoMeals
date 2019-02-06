@@ -12,7 +12,7 @@
                </tr>
             </thead>
             <tbody>
-               <tr v-for="sku in skus">
+               <tr v-for="sku in displayedSkus">
                   <th scope="row">${sku.sku_name}</th>
                   <td>
                   </td>
@@ -20,6 +20,12 @@
             </tbody>
          </table>
       </div>
+      <div class="clearfix btn-group col-md-2 offset-md-5">
+            <button type="button" class="btn btn-sm btn-outline-secondary" v-if="page != 1" @click="page--"> << </button>
+            <!-- <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> ${pageNumber} </button> -->
+            <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>
+            <button type="button" @click="page++" v-if="page < pages.length" class="btn btn-sm btn-outline-secondary"> >> </button>
+          </div>
    </div>
 </div>
 <script src="../static/js/skus-to-ingredient.js"></script>

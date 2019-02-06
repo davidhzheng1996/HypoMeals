@@ -31,6 +31,11 @@ new Vue({
                       this.setPages();
                       this.has_paginated=true; 
                     }
+                    if(this.csv_uploaded){
+                      this.pages=[];
+                      this.setPages();
+                      this.csv_uploaded=false;
+                    }
                })
                .catch((err) => {
                    this.loading = false;
@@ -157,6 +162,7 @@ new Vue({
              $("#editProductLineModal").modal('hide');
          this.loading = false;
          this.currentProductLine = response.data;
+         this.csv_uploaded=true;
          this.getProductLines();
          })
            .catch((err) => {
