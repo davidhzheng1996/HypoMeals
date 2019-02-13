@@ -8,18 +8,18 @@ class Product_Line(models.Model):
 class Sku(models.Model):
 	caseupc = models.FloatField(null=False, default=1000)
 	unitupc = models.FloatField(null=True, default=1000)
-	sku_name = models.CharField(max_length=128, unique=True, null=False, default='')
+	sku_name = models.CharField(max_length=32, unique=True, null=False, default='')
 	count = models.IntegerField(null=True)
 	unit_size = models.CharField(max_length=128, null=True)
-	tuples = models.TextField(null=True)
 	comment = models.TextField(null=True)
 	productline = models.ForeignKey(Product_Line,on_delete=models.CASCADE)
 
 class Ingredient(models.Model):
+	id = models.BigIntegerField(primary_key=True, null=False)
 	ingredient_name = models.CharField(max_length=128, unique=True, null=False, default='')
 	description = models.TextField(null=True) 
 	package_size = models.CharField(max_length=128,null=True)
-	cpp = models.IntegerField(null=True)
+	cpp = models.FloatField(null=True)
 	comment = models.TextField(null=True)
 
 class Goal(models.Model):
