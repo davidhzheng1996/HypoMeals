@@ -47,11 +47,11 @@
             <form v-on:submit.prevent="addGoal('{{user.id}}')">
                <div class="modal-body">
                   <div class="form-group">
-                     <label>SKU Name*</label>
+                     <label>Goal Name*</label>
                      <input
                         type="text"
                         class="form-control"
-                        placeholder="Enter SKU Name"
+                        placeholder="Enter Goal Name"
                         v-model="newGoal.goalname"
                         required="required" >
                   </div>
@@ -151,11 +151,11 @@
             <form v-on:submit.prevent="updateGoal()">
                <div class="modal-body">
                   <div class="form-group">
-                     <label>SKU Name*</label>
+                     <label>Goal Name*</label>
                      <input
                         type="text"
                         class="form-control"
-                        placeholder="Enter SKU Name"
+                        placeholder="Enter Goal Name"
                         v-model="currentGoal.goal_sku_name"
                         required="required" >
                   </div>
