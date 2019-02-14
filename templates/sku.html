@@ -131,14 +131,6 @@
                         v-model="newSku.id">
                   </div>
                   <div class="form-group">
-                     <label>(Optional) Tuples</label>
-                     <input
-                        class="form-control"
-                        placeholder="Enter Optional Tuples"
-                        v-model="newSku.tuples"
-                        rows="5">
-                  </div>
-                  <div class="form-group">
                      <label>(Optional) Comment</label>
                      <input
                         class="form-control"
@@ -224,12 +216,12 @@
                         required="required" >
                   </div>
                   <div class="form-group">
-                     <label>(Optional) Tuples</label>
+                     <label>(Optional) SKU ID</label>
                      <input
+                        type="number"
                         class="form-control"
-                        placeholder="Enter Optional Tuples"
-                        v-model="currentSku.tuples"
-                        rows="5">
+                        placeholder="Enter Optional Ingredient ID"
+                        v-model="newSku.id">
                   </div>
                   <div class="form-group">
                      <label>(Optional) Comment</label>

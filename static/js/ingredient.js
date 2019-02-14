@@ -50,7 +50,6 @@ new Vue({
                .then((response) => {
                    this.ingredients = response.data;
                    this.loading = false;
-                   this.lowerCaseName();
                    if(!this.has_paginated){
                       this.setPages();
                       this.has_paginated=true; 
@@ -120,13 +119,18 @@ new Vue({
        },
        addIngredient: function() {
          this.loading = true;
-         this.newIngredient.ingredient_name = this.newIngredient.ingredient_name.toLowerCase();
          this.$http.post('/api/ingredient/',this.newIngredient)
            .then((response) => {
          $("#addIngredientModal").modal('hide');
          this.loading = false;
          this.has_searched = false;
-         if((this.ingredients.length%this.perPage)==0){
+         for(let index = 0; index<this.ingredients.length; index++){
+            if(this.newIngredient.ingredient_name.toLowerCase()===this.ingredients[index].ingredient_name.toLowerCase()){
+                console.log("Already exists");
+                return;
+            }
+          }
+          if((this.ingredients.length%this.perPage)==0){
             this.addPage();
          }
          this.getIngredients();
@@ -137,19 +141,19 @@ new Vue({
          console.log(err);
        })
        },
-       lowerCaseName: function(){
-          for(let index = 0; index<this.ingredients.length; index++){
-            this.ingredients[index].ingredient_name = this.ingredients[index].ingredient_name.toLowerCase().trim();
-          }
-       },
        updateIngredient: function() {
          this.loading = true;
-         this.currentIngredient.ingredient_name = this.currentIngredient.ingredient_name.toLowerCase();
          this.$http.put('/api/ingredient/'+ this.currentIngredient.id + '/',     this.currentIngredient)
            .then((response) => {
              $("#editIngredientModal").modal('hide');
          this.loading = false;
          this.currentIngredient = response.data;
+         for(let index = 0; index<this.ingredients.length; index++){
+            if(this.newIngredient.ingredient_name.toLowerCase()===this.ingredients[index].ingredient_name.toLowerCase()){
+                console.log("Already exists");
+                return;
+            }
+          }
          this.getIngredients();
          })
            .catch((err) => {
@@ -285,7 +289,6 @@ new Vue({
                    this.ingredients = response.data;
                    this.loading = false;
                    $("#selectIngredientModal").modal('show');
-                   this.lowerCaseName();
                })
                .catch((err) => {
                    this.loading = false;

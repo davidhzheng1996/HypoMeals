@@ -13,7 +13,7 @@ new Vue({
      page:1,
      perPage: 10,
      pages:[],
-     newSku: { 'sku_name': '','productline': '', 'id': null, 'caseupc': 1234,'unitupc': 1234, 'unit_size': 0, 'count': 0, 'tuples': null, 
+     newSku: { 'sku_name': '','productline': '', 'id': null, 'caseupc': 1234,'unitupc': 1234, 'unit_size': 0, 'count': 0, 
      'comment': null},
      skuFile: null,
      formulaFile: null,
@@ -54,7 +54,6 @@ new Vue({
                .then((response) => {
                    this.skus = response.data;
                    this.loading = false;
-                   this.lowerCaseName();
                    if(!this.has_paginated){
                       this.setPages();
                       this.has_paginated=true; 
@@ -147,18 +146,17 @@ new Vue({
     },
        addSku: function() {
          this.loading = true;
-         this.newSku.sku_name = this.newSku.sku_name.toLowerCase();
          this.$http.post('/api/sku/',this.newSku)
            .then((response) => {
          $("#addSkuModal").modal('hide');
          this.loading = false;
          this.has_searched = false;
-         for(let index = 0; index<this.skus.length; index++){
-            if(this.newSku.sku_name.toLowerCase().trim()===this.skus[index].sku_name.toLowerCase()){
-                console.log("Already exists");
-                return;
-            }
-          }
+         // for(let index = 0; index<this.skus.length; index++){
+         //    if(this.newSku.sku_name.toLowerCase()===this.skus[index].sku_name.toLowerCase()){
+         //        console.log("Already exists");
+         //        return;
+         //    }
+         //  }
          if((this.skus.length%this.perPage)==0){
             this.addPage();
          }
@@ -169,14 +167,8 @@ new Vue({
          console.log(err);
        })
        },
-       lowerCaseName: function(){
-          for(let index = 0; index<this.skus.length; index++){
-            this.skus[index].sku_name = this.skus[index].sku_name.toLowerCase().trim();
-          }
-       },
        updateSku: function() {
          this.loading = true;
-         this.currentSku.sku_name = this.currentSku.sku_name.toLowerCase();
          this.$http.put('/api/sku/'+ this.currentSku.id + '/',     this.currentSku)
            .then((response) => {
              $("#editSkuModal").modal('hide');
