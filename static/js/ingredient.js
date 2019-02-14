@@ -148,12 +148,12 @@ new Vue({
              $("#editIngredientModal").modal('hide');
          this.loading = false;
          this.currentIngredient = response.data;
-         for(let index = 0; index<this.ingredients.length; index++){
-            if(this.newIngredient.ingredient_name.toLowerCase()===this.ingredients[index].ingredient_name.toLowerCase()){
-                console.log("Already exists");
-                return;
-            }
-          }
+         // for(let index = 0; index<this.ingredients.length; index++){
+         //    if(this.newIngredient.ingredient_name.toLowerCase()===this.ingredients[index].ingredient_name.toLowerCase()){
+         //        console.log("Already exists");
+         //        return;
+         //    }
+         //  }
          this.getIngredients();
          })
            .catch((err) => {

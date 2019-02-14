@@ -14,17 +14,15 @@
          <table class="table">
             <thead>
                <tr>
-                  <th scope="col">id</th>
                   <th scope="col">Name</th>
                </tr>
             </thead>
             <tbody>
                <tr v-for="product_line in displayedProductLines">
-                  <th scope="row">${product_line.id}</th>
                   <th scope="row">${product_line.product_line_name}</th>
                   <td>
-                     <button class="btn btn-info" v-on:click="getProductLine(product_line.id)">Edit</button>
-                     <button class="btn btn-danger" v-on:click="deleteProductLine(product_line.id)">Delete</button>
+                     <button class="btn btn-info" v-on:click="getProductLine(product_line.product_line_name)">Edit</button>
+                     <button class="btn btn-danger" v-on:click="deleteProductLine(product_line.product_line_name)">Delete</button>
                   </td>
                </tr>
             </tbody>

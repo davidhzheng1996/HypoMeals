@@ -3,20 +3,20 @@ from django.contrib.auth.models import User
 
 # product_line to sku is one to many. Each sku matches to exactly one product line
 class Product_Line(models.Model):
-	product_line_name = models.CharField(max_length=128, unique=True, null=False, default='')
+	product_line_name = models.CharField(max_length=128, primary_key=True, unique=True, null=False)
 
 class Sku(models.Model):
-	id = models.IntegerField(primary_key=True, null=False, unique=True)
+	id = models.BigIntegerField(primary_key=True, unique=True, null=False)
 	caseupc = models.FloatField(null=False, default=0)
 	unitupc = models.FloatField(null=True, default=0)
 	sku_name = models.CharField(max_length=32, null=False, default='')
-	count = models.IntegerField(null=True)
+	count = models.PositiveIntegerField(null=True)
 	unit_size = models.CharField(max_length=128, null=True)
 	comment = models.TextField(null=True)
-	productline = models.ForeignKey(Product_Line,on_delete=models.CASCADE)
+	productline = models.ForeignKey(Product_Line, on_delete=models.CASCADE, default='')
 
 class Ingredient(models.Model):
-	id = models.IntegerField(primary_key=True, null=False, unique=True)
+	id = models.BigIntegerField(primary_key=True, null=False, unique=True)
 	ingredient_name = models.CharField(max_length=128, unique=True, null=False, default='')
 	description = models.TextField(null=True) 
 	package_size = models.CharField(max_length=128,null=True)
@@ -70,7 +70,7 @@ class Manufacture_Goal(models.Model):
 
 class Formula(models.Model):
 	formula_name = models.CharField(max_length=32, null=False, default='')
-	id = models.IntegerField(primary_key=True, null=False, unique=True)
+	id = models.BigIntegerField(primary_key=True, null=False, unique=True)
 	comment = models.TextField(null=True)
 
 class Manufacture_line(models.Model):

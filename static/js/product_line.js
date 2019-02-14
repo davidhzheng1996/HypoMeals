@@ -42,9 +42,9 @@ new Vue({
                    console.log(err);
                })
        },
-       getProductLine: function(id){
+       getProductLine: function(name){
            this.loading = true;
-           this.$http.get('/api/product_line/'+id+'/')
+           this.$http.get('/api/product_line/'+name+'/')
                .then((response) => {
                    this.currentProductLine = response.data;
                    $("#editProductLineModal").modal('show');
@@ -55,10 +55,10 @@ new Vue({
                    console.log(err);
                })
        },
-       deleteProductLine: function(id){
+       deleteProductLine: function(name){
          this.loading = true;
          // TODO: use delimiters
-         this.$http.delete('/api/product_line/' + id + '/')
+         this.$http.delete('/api/product_line/' + name + '/')
            .then((response) => {
              this.loading = false;
              if((this.product_lines.length%this.perPage)==1){
@@ -74,7 +74,6 @@ new Vue({
        },
        addProductLine: function() {
          this.loading = true;
-         this.newProductLine.product_line_name = this.newProductLine.product_line_name.toLowerCase();
          this.$http.post('/api/product_line/',this.newProductLine)
            .then((response) => {
          $("#addProductLineModal").modal('hide');
@@ -156,8 +155,7 @@ new Vue({
        },
        updateProductLine: function() {
          this.loading = true;
-        this.currentProductLine.product_line_name = this.currentProductLine.product_line_name.toLowerCase();
-         this.$http.put('/api/product_line/'+ this.currentProductLine.id + '/',     this.currentProductLine)
+         this.$http.put('/api/product_line/'+ this.currentProductLine.product_line_name + '/',     this.currentProductLine)
            .then((response) => {
              $("#editProductLineModal").modal('hide');
          this.loading = false;

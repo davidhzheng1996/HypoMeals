@@ -68,7 +68,7 @@ class ProductLineViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         productline = self.get_object()
         # If related skus exist, abandon deletion 
-        if Sku.objects.filter(productline=productline.id).exists():
+        if Sku.objects.filter(productline=productline.product_line_name).exists():
             error = 'Related SKUs exist. Fail to delete %s' % productline.product_line_name
             return Response(error, status = status.HTTP_400_BAD_REQUEST)
         productline.delete()
