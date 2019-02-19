@@ -50,6 +50,10 @@ class IngredientViewSet(viewsets.ModelViewSet):
             queryset |= Ingredient.objects.filter(id__in=ingr_ids)
         return queryset
 
+class FormulaViewSet(viewsets.ModelViewSet):
+    queryset = Formula.objects.all()
+    serializer_class = FormulaSerializer
+
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer

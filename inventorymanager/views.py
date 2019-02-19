@@ -27,6 +27,10 @@ def ingredient(request):
 @login_required(login_url='/accounts/login/')
 def sku(request):
 	return render(request, "sku.html")
+
+@login_required(login_url='/accounts/login/')
+def formula(request):
+	return render(request, "formula.html")
 	
 @login_required(login_url='/accounts/login/')
 def manufacture_goal(request,goalid):

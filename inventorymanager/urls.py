@@ -9,6 +9,7 @@ urlpatterns = [
     path('ingredient',views.ingredient),
     # map /sku to sku.html
     path('sku',views.sku),
+    path('formula',views.formula),
     path('product_line', views.product_line),
     path('goal',views.goal),
     path('goal/<int:goalid>',views.manufacture_goal),

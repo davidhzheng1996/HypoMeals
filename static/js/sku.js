@@ -319,7 +319,7 @@ new Vue({
         if(!this.sortAsc[this.sortKey]){
           this.skus = _.sortBy(this.skus, this.sortKey)
         } else {
-          this.iskus = _.sortBy(this.skus, this.sortKey).reverse()
+          this.skus = _.sortBy(this.skus, this.sortKey).reverse()
         }
       },
       

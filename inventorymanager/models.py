@@ -1,9 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
+import uuid
 
 # product_line to sku is one to many. Each sku matches to exactly one product line
 class Product_Line(models.Model):
 	product_line_name = models.CharField(max_length=128, primary_key=True, unique=True, null=False)
+
+class Formula(models.Model):
+	formula_name = models.CharField(max_length=32, null=False, default='')
+	id = models.BigIntegerField(primary_key=True, null=False, unique=True)
+	comment = models.TextField(null=True)
 
 class Sku(models.Model):
 	id = models.BigIntegerField(primary_key=True, unique=True, null=False)
@@ -14,9 +20,12 @@ class Sku(models.Model):
 	unit_size = models.CharField(max_length=128, null=True)
 	comment = models.TextField(null=True)
 	productline = models.ForeignKey(Product_Line, on_delete=models.CASCADE, default='')
+	formula = models.ForeignKey(Formula, on_delete=models.CASCADE, default = 1)
+	formula_scale_factor = models.FloatField(null=False, default=1.0)
+	manufacture_rate = models.FloatField(null=False, default=1.0)
 
 class Ingredient(models.Model):
-	id = models.BigIntegerField(primary_key=True, null=False, unique=True)
+	id = models.BigIntegerField(primary_key=True, unique=True, null=False)
 	ingredient_name = models.CharField(max_length=128, unique=True, null=False, default='')
 	description = models.TextField(null=True) 
 	package_size = models.CharField(max_length=128,null=True)
@@ -68,24 +77,25 @@ class Manufacture_Goal(models.Model):
 	class Meta: 
 		unique_together = (("name","sku"),)
 
-class Formula(models.Model):
-	formula_name = models.CharField(max_length=32, null=False, default='')
-	id = models.BigIntegerField(primary_key=True, null=False, unique=True)
-	comment = models.TextField(null=True)
-
 class Manufacture_line(models.Model):
 	ml_name = models.CharField(max_length=32, null=False, default='')
 	ml_short_name = models.CharField(primary_key = True, max_length=5, null=False, unique=True)
 	comment = models.TextField(null=True)
 
-# class sku_to_ml(models.Model):
-# 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
-# 	ml_short_name = models.ForeignKey(Manufacture_line, on_delete=models.CASCADE)
+class Sku_to_Ml_Shortname(models.Model):
+	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
+	ml_short_name = models.ForeignKey(Manufacture_line, on_delete=models.CASCADE)
 
-# class Formula_Ingredients(models.Model):
-# 	formula = models.ForeignKey(Formula, on_delete=models.CASCADE)
-# 	ig = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-# 	quantity = models.DecimalField(null=False,max_digits=7, decimal_places=3, default=1.0)
+	class Meta:
+		unique_together = (("sku","ml_short_name"),)
+
+class Formula_Ingredients(models.Model):
+	formula = models.ForeignKey(Formula, on_delete=models.CASCADE)
+	ig = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+	quantity = models.DecimalField(null=False,max_digits=7, decimal_places=3, default=1.0)
+
+	class Meta:
+		unique_together = (("formula","ig"),)
 
 		
 

@@ -18,6 +18,11 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingredient
         fields = '__all__'
 
+class FormulaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Formula
+        fields = '__all__'
+
 # For uploaded Ingredient File 
 class IngredientFileSerializer(serializers.ModelSerializer):
     class Meta:
