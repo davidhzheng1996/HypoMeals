@@ -49,6 +49,10 @@ new Vue({
             response(ingr_names);
           }
         });
+      },
+      messages: {
+        noResults: '',
+        results: function() {}
       }
     });
   },
