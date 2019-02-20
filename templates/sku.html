@@ -7,11 +7,11 @@
             <button class="btn btn-success" data-toggle="modal" data-target="#addSkuModal">Add Sku</button>
             <input class="btn btn-success" type="file" @change="selectSkuCSV">
             <button class="btn btn-success" type="submit" @click="uploadSkuCSV">Upload Sku</button>
-            <input class="btn btn-success" type="file" @change="selectFormulaCSV">
-            <button class="btn btn-success" type="submit" @click="uploadFormulaCSV">Upload Formula</button>
+<!--             <input class="btn btn-success" type="file" @change="selectFormulaCSV">
+            <button class="btn btn-success" type="submit" @click="uploadFormulaCSV">Upload Formula</button> -->
             <p class="error" v-if="upload_errors">${ upload_errors }</p>
             <button class="btn btn-success" type="submit" @click="exportSkuCSV">Export Sku</button>
-            <button class="btn btn-success" type="submit" @click="exportFormula()">Export Formulas</button>
+            <!-- <button class="btn btn-success" type="submit" @click="exportFormula()">Export Formulas</button> -->
          </h1>
          <div class="form-inline my-2 my-lg-0">
             <input id = "search_input_id" class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" autocomplete="on" aria-label="Search" @blur="onBlur">
@@ -40,7 +40,7 @@
                   <td>${sku.unit_size}</td>
                   <td>${sku.count}</td>
                   <td>
-                     <button class="btn btn-primary" v-on:click="viewSku(sku.id)">View Ingredients</button>
+                     <!-- <button class="btn btn-primary" v-on:click="viewSku(sku.id)">View Ingredients</button> -->
                      <button class="btn btn-info" v-on:click="getSku(sku.id)">Edit</button>
                      <button class="btn btn-danger" v-on:click="deleteSku(sku.id)">Delete</button>
                   </td>

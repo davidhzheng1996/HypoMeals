@@ -14,3 +14,4 @@ router.register(r'ingredient', IngredientViewSet)
 router.register(r'formula', FormulaViewSet)
 # router.register(r'manufacture_goal', ManufactureGoalViewSet) //replace with explicit
 router.register(r'product_line', ProductLineViewSet)
+router.register(r'manufacture_line', ManufactureLineViewSet)

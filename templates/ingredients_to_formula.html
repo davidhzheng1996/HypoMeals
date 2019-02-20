@@ -3,7 +3,7 @@
 <div id="starting">
    <div class="container">
       <div class="row">
-         <h1>Ingredients for this SKU
+         <h1>Ingredients for this Formula
             <button class="btn btn-success" data-toggle="modal" data-target="#addIngredientModal">Add Ingredients</button>
          </h1>
          <table class="table">
@@ -19,7 +19,7 @@
                   <th scope="row">${ingredient.quantity}</th>
                   <td>
                      <button class="btn btn-info" v-on:click="getIngredient(ingredient.id)">Edit</button>
-                     <button class="btn btn-danger" v-on:click="deleteIngredient('{{skuid}}',ingredient.id)">Delete</button> 
+                     <button class="btn btn-danger" v-on:click="deleteIngredient('{{formulaid}}',ingredient.id)">Delete</button> 
                   </td>
                </tr>
             </tbody>
@@ -41,7 +41,7 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
-            <form v-on:submit.prevent="addIngredient('{{skuid}}')">
+            <form v-on:submit.prevent="addIngredient('{{formulaid}}')">
                <div class="modal-body">
                   <div class="form-group">
                      <label>Ingredient Name</label>
@@ -81,7 +81,7 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
-            <form v-on:submit.prevent="updateIngredient('{{skuid}}',currentIngredient.id)">
+            <form v-on:submit.prevent="updateIngredient('{{formulaid}}',currentIngredient.id)">
                <div class="modal-body">
                   <div class="form-group">
                      <label>Ingredient Name</label>
@@ -114,7 +114,7 @@
 <!-- Add Goal Modal -->
 <!-- End of edit article modal -->
 </div>
-<script src="../static/js/ingredients-to-sku.js"></script>
+<script src="../static/js/ingredients-to-formula.js"></script>
 <!-- Not sure if there isn't a better solution -->
-<script>vm.getIngredients({{skuid}})</script>
+<script>vm.getIngredients({{formulaid}})</script>
 {% endblock %}

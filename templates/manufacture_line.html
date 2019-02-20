@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+{% block content %}
+<div id="starting">
+   <div class="container">
+      <div class="row">
+         <h1>List of Manufacture Lines
+            <button class="btn btn-success" data-toggle="modal" data-target="#addManufactureLineModal">Add Manufacture Line</button>
+         </h1>
+         <table class="table">
+            <thead>
+               <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Short Name</th>
+                  <th scope="col">Comment</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr v-for="manufacture_line in displayedManufactureLines">
+                  <th scope="row">${manufacture_line.ml_name}</th>
+                  <td>${manufacture_line.ml_short_name}</td>
+                  <td>${manufacture_line.comment}</td>
+                  <td>
+                     <button class="btn btn-info" v-on:click="getManufactureLine(manufacture_line.ml_short_name)">Edit</button>
+                     <button class="btn btn-danger" v-on:click="deleteManufactureLine(manufacture_line.ml_short_name)">Delete</button>
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <div class="clearfix btn-group col-md-2 offset-md-5">
+            <button type="button" class="btn btn-sm btn-outline-secondary" v-if="page != 1" @click="page--"> << </button>
+            <!-- <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> ${pageNumber} </button> -->
+            <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>
+            <button type="button" @click="page++" v-if="page < pages.length" class="btn btn-sm btn-outline-secondary"> >> </button>
+          </div>
+   </div>
+   <div class="loading" v-if="loading===true">Loading&#8230;</div>
+   <!-- Add Article Modal -->
+   <div class="modal fade" id="addManufactureLineModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLongTitle">Add Manufacture Line</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            <form v-on:submit.prevent="addManufactureLine()">
+               <div class="modal-body">
+                  <div class="form-group">
+                     <label>Manufacture Line Name*</label>
+                     <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Manufacture Line Name"
+                        v-model="newManufactureLine.ml_name"
+                        required="required" >
+                  </div><div class="form-group">
+                     <label>Manufacture Line Short Name*</label>
+                     <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Manufacture Line Short Name"
+                        v-model="newManufactureLine.ml_short_name"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
+                     <label>(Optional) Comment</label>
+                     <input
+                        class="form-control"
+                        placeholder="Enter Optional Comment"
+                        v-model="newManufactureLine.comment"
+                        rows="3">
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+               </div>
+            </form>
+         </div>
+      </div>
+      <div class="loading" v-if="loading===true">Loading&#8230;</div>
+   </div>
+   <!-- End of add article modal -->
+
+   <!-- Edit Article Modal -->
+   <div class="modal fade" id="editManufactureLineModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLongTitle">Edit Manufacture Line</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            <form v-on:submit.prevent="updateManufactureLine()">
+               <div class="modal-body">
+                  <div class="form-group">
+                     <label>Manufacture Line Name*</label>
+                     <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter roduct Line Name"
+                        v-model="currentManufactureLine.ml_name"
+                        required="required" >
+                  </div>
+                  </div><div class="form-group">
+                     <label>Manufacture Line Short Name*</label>
+                     <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Manufacture Line Short Name"
+                        v-model="currentManufactureLine.ml_short_name"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
+                     <label>(Optional) Comment</label>
+                     <input
+                        class="form-control"
+                        placeholder="Enter Optional Comment"
+                        v-model="currentManufactureLine.comment"
+                        rows="3">
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+               </div>
+            </form>
+         </div>
+      </div>
+      <div class="loading" v-if="loading===true">Loading&#8230;</div>
+   </div>
+   <!-- End of edit article modal -->
+</div>
+<!-- <! — bootrtap js files → -->
+<script src="../static/js/manufacture-line.js"></script>
+{% endblock %}

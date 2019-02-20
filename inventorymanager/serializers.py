@@ -49,6 +49,11 @@ class ProductLineSerializer(serializers.ModelSerializer):
         model = Product_Line
         fields = '__all__'
 
+class ManufactureLineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Manufacture_line
+        fields = '__all__'
+
 class GoalSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Goal
@@ -57,6 +62,11 @@ class GoalSerializer(serializers.ModelSerializer):
 class IngredientToSkuSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Sku_To_Ingredient
+        fields = '__all__'
+
+class IngredientToFormulaSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = Formula_To_Ingredients
         fields = '__all__'
 
     

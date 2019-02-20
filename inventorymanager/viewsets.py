@@ -65,6 +65,10 @@ class ManufactureGoalViewSet(viewsets.ModelViewSet):
     # # notice that we could also filter on foreign key's fields
     # search_fields = ('goal_sku_name')
 
+class ManufactureLineViewSet(viewsets.ModelViewSet):
+    queryset = Manufacture_line.objects.all()
+    serializer_class = ManufactureLineSerializer
+
 class ProductLineViewSet(viewsets.ModelViewSet):
     queryset = Product_Line.objects.all()
     serializer_class = ProductLineSerializer
@@ -166,6 +170,63 @@ def update_ingredients_to_sku(request,sku,ig):
         try: 
             relation = Sku_To_Ingredient.objects.get(sku = sku, ig=ig)
             serializer = IngredientToSkuSerializer(relation,{'quantity':request.data['quantity']},partial=True)
+            if(serializer.is_valid()):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+        except Exception as e: 
+            print(e)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['GET','POST'])
+def ingredients_to_formula(request,formulaid):
+    if(request.method == 'GET'):
+        try: 
+            ingredients_to_formula = Formula_To_Ingredients.objects.filter(formula=formulaid)
+            ids= ingredients_to_formula.values_list("ig",flat=True)
+            ingredients = Ingredient.objects.filter(id__in=ids)
+            response = []
+            for ingredient in ingredients:
+                serializer = IngredientSerializer(ingredient)
+                for relation in ingredients_to_formula: 
+                    if(relation.ig.id == ingredient.id):
+                        data = serializer.data
+                        data['quantity'] = relation.quantity
+                        response.append(data)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+    if(request.method == 'POST'):
+        try: 
+            formula = Formula.objects.get(id=formulaid)
+            ingredient = Ingredient.objects.get(ingredient_name=request.data['ingredient_name'])
+            newrelation = {'formula':formula.id,'ig':ingredient.id,'quantity':request.data['quantity']}
+            serializer = IngredientToFormulaSerializer(data=newrelation)
+            if(serializer.is_valid()):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+def delete_ingredients_to_formula(request,formula,ig):
+    try: 
+        ingredients_to_formula = Formula_To_Ingredients.objects.get(formula = formula,ig=ig)
+        ingredients_to_formula.delete()
+        return Response(status = status.HTTP_204_NO_CONTENT)
+    except Exception as e: 
+        return Response(status = status.HTTP_400_BAD_REQUEST)
+
+
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+def update_ingredients_to_formula(request,formula,ig):
+    if(request.method == 'POST'):
+        try: 
+            relation = Formula_To_Ingredients.objects.get(formula = formula, ig=ig)
+            serializer = IngredientToFormulaSerializer(relation,{'quantity':request.data['quantity']},partial=True)
             if(serializer.is_valid()):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
