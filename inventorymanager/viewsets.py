@@ -82,6 +82,12 @@ class ProductLineViewSet(viewsets.ModelViewSet):
         productline.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_term = self.request.query_params.get('search', None)
+        if search_term:
+            queryset = Product_Line.objects.filter(product_line_name__icontains=search_term)
+        return queryset
 
 # Begin Explicit APIs
 @login_required(login_url='/accounts/login/')

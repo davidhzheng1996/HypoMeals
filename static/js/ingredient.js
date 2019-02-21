@@ -122,7 +122,6 @@ new Vue({
         .then((response) => {
           $("#addIngredientModal").modal('hide');
           this.loading = false;
-          this.has_searched = false;
           for (let index = 0; index < this.ingredients.length; index++) {
             if (this.newIngredient.ingredient_name.toLowerCase() === this.ingredients[index].ingredient_name.toLowerCase()) {
               console.log("Already exists");

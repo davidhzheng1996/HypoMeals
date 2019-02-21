@@ -15,12 +15,60 @@ var vm = new Vue({
      search_input: '',
      //COUPLED WITH BACKEND DO NOT REMOVE BELOW
      newGoal: { 'goal_sku_name': '', 'desired_quantity': 0, 'user': null, 'sku': null, 'name':-1},
-     has_searched: false
    },
    mounted: function() {
-       // this.getGoals();
+    $("#sku_search_input").autocomplete({
+      minLength: 2,
+      delay: 100,
+      source: function (request, response) {
+        $.ajax({
+          url: "/api/sku",
+          dataType: "json",
+          data: {
+            search: request.term
+          },
+          success: function (data) {
+            names = $.map(data, function (item) {
+              return [item.sku_name];
+            })
+            response(names);
+          }
+        });
+      },
+      appendTo: "#addGoalModal",
+      messages: {
+        noResults: '',
+        results: function() {}
+      }
+    });
    },
    methods: {
+      setUpGoalsAutocomplete: function(userid,goalid){
+        $("#search_input").autocomplete({
+          minLength: 2,
+          delay: 100,
+          source: function (request, response) {
+            $.ajax({
+              url: "/api/manufacture_goal/" + userid + '/' + goalid,
+              dataType: "json",
+              data: {
+                search: request.term
+              },
+              success: function (data) {
+                names = $.map(data, function (item) {
+                  return [item.goal_sku_name];
+                })
+                response(names);
+              }
+            });
+          },
+          messages: {
+            noResults: '',
+            results: function() {}
+          }
+        });
+      },
+
        getGoals: function(userid,goalid){
             let api_url = '/api/manufacture_goal/'+userid+'/'+goalid;
            if(this.search_term !== '' && this.search_term !== null) {
@@ -130,7 +178,6 @@ var vm = new Vue({
            .then((response) => {
            $("#addGoalModal").modal('hide');
            this.loading = false;
-           this.has_searched = false;
            if((this.goals.length%this.perPage)==0){
             this.addPage();
          }
@@ -190,6 +237,11 @@ var vm = new Vue({
     onBlur: function(event) {
       if (event && this.search_term !== event.target.value) 
         this.search_term = event.target.value
+    },
+
+    onBlurSkuName: function(event) {
+      if (event && this.newGoal.goal_sku_name !== event.target.value) 
+        this.newGoal.goal_sku_name = event.target.value
     },
 
    },

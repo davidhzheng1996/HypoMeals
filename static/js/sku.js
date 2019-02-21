@@ -19,14 +19,8 @@ new Vue({
      formulaFile: null,
      has_paginated:false,
      csv_uploaded:false,
-
      search_term: '',
-     search_suggestions: search_suggestions,
      search_input: '',
-     has_searched: false,
-
-     suggestionAttribute: 'original_title',
-
      sortKey: 'sku_name',
      sortAsc: [
             { 'sku_name': true },
@@ -41,6 +35,57 @@ new Vue({
    },
    mounted: function() {
        this.getSkus();
+       $("#search_input").autocomplete({
+        minLength: 2,
+        delay: 100,
+        // https://stackoverflow.com/questions/9656523/jquery-autocomplete-with-callback-ajax-json
+        source: function (request, response) {
+          $.ajax({
+            url: "/api/sku",
+            dataType: "json",
+            data: {
+              // attach '?search=request.term' to the url 
+              search: request.term
+            },
+            success: function (data) {
+              names = $.map(data, function (item) {
+                return [item.sku_name];
+              })
+              response(names);
+            }
+          });
+        },
+        messages: {
+          noResults: '',
+          results: function() {}
+        }
+      });
+      $("#product_line_search_input").autocomplete({
+        minLength: 2,
+        delay: 100,
+        // https://stackoverflow.com/questions/9656523/jquery-autocomplete-with-callback-ajax-json
+        source: function (request, response) {
+          $.ajax({
+            url: "/api/product_line",
+            dataType: "json",
+            data: {
+              // attach '?search=request.term' to the url 
+              search: request.term
+            },
+            success: function (data) {
+              names = $.map(data, function (item) {
+                return [item.product_line_name];
+              })
+              response(names);
+            }
+          });
+        },
+        appendTo: "#addSkuModal",
+        messages: {
+          noResults: '',
+          results: function() {}
+        }
+      });
    },
    methods: {
        getSkus: function(){
@@ -63,26 +108,6 @@ new Vue({
                       this.setPages();
                       this.csv_uploaded=false;
                     }
-
-                    if(!this.has_searched) {
-                      let allTerms = []
-                      for(key in this.skus){
-                        if(this.skus.hasOwnProperty(key)){
-                          allTerms.push(this.skus[key].sku_name)
-                         this.has_searched = true;
-                        }
-                      }
-                        $( "#search_input_id" ).autocomplete({
-                        minLength:1,   
-                        delay:500,   
-                        source: allTerms,
-                        select: function(event,ui){
-                          this.search_term = ui.item.value
-                        }
-                          });
-                     }
-       
-
                })
                .catch((err) => {
                    this.loading = false;
@@ -150,7 +175,6 @@ new Vue({
            .then((response) => {
          $("#addSkuModal").modal('hide');
          this.loading = false;
-         this.has_searched = false;
          // for(let index = 0; index<this.skus.length; index++){
          //    if(this.newSku.sku_name.toLowerCase()===this.skus[index].sku_name.toLowerCase()){
          //        console.log("Already exists");
@@ -327,6 +351,12 @@ new Vue({
         if (event && this.search_term !== event.target.value) 
           this.search_term = event.target.value
       },
+
+      onBlurProductLine: function(event) {
+        if (event && this.newSku.productline !== event.target.value) 
+          this.newSku.productline = event.target.value
+      },
+
    
    },
 

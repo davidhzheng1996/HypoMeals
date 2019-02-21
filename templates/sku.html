@@ -14,7 +14,7 @@
             <!-- <button class="btn btn-success" type="submit" @click="exportFormula()">Export Formulas</button> -->
          </h1>
          <div class="form-inline my-2 my-lg-0">
-            <input id = "search_input_id" class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" autocomplete="on" aria-label="Search" @blur="onBlur">
+            <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" autocomplete="on" aria-label="Search" @blur="onBlur">
             <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getSkus()">Search</button>
         </div>
          <table class="table">
@@ -80,11 +80,14 @@
                   <div class="form-group">
                      <label>SKU Productline*</label>
                      <input
+                        id="product_line_search_input"
                         type="text"
                         class="form-control"
                         placeholder="Enter Sku Productline"
                         v-model="newSku.productline"
-                        required="required" >
+                        required="required" 
+                        autocomplete="on"
+                        @blur="onBlurProductLine">
                   </div>
                   <div class="form-group">
                      <label>Case UPC*</label>
@@ -243,16 +246,5 @@
    </div>
    <!-- End of edit article modal -->
 </div>
-<script>
-        var search_suggestions = []
-        // https://stackoverflow.com/questions/51104720/use-both-vue-js-and-jquery-autocomplete
-        $(function() {
-           $( "#search_input_id" ).autocomplete({
-              minLength:1,   
-              delay:500,   
-              source: search_suggestions
-           });
-        });
-</script>
 <script src="../static/js/sku.js"></script>
 {% endblock %}
