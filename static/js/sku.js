@@ -13,8 +13,8 @@ new Vue({
      page:1,
      perPage: 10,
      pages:[],
-     newSku: { 'sku_name': '','productline': '', 'id': null, 'caseupc': 1234,'unitupc': 1234, 'unit_size': 0, 'count': 0, 
-     'comment': null},
+     newSku: { 'sku_name': '','productline': '', 'id': null, 'caseupc': 1234,'unitupc': 1234, 'unit_size': 0, 'count': 0, 'formula':0,
+     'formula_scale_factor':0, 'manufacture_rate':0,'comment': null},
      skuFile: null,
      formulaFile: null,
      has_paginated:false,
@@ -30,6 +30,9 @@ new Vue({
             {'unitupc': true},
             {'unit_size': true},
             {'count': true},
+            {'formula': true},
+            {'formula_scale_factor': true},
+            {'manufacture_rate': true},
           ],
       upload_errors: '',
    },
@@ -149,8 +152,8 @@ new Vue({
           this.pages.push(index);
         }
       },
-      viewSku: function(skuid){
-        window.location.href = '/sku/'+skuid
+      viewFormula: function(formulaid){
+        window.location.href = '/sku/'+formulaid
       },
       addPage: function (){
           this.pages.push(Math.ceil(this.skus.length / this.perPage)+1);
