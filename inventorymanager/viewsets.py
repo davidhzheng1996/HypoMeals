@@ -123,6 +123,20 @@ def skus_to_ingredient(request,ingredientid):
 
 @login_required(login_url='/accounts/login/')
 @api_view(['GET','POST'])
+def skus_to_formula(request,formulaid):
+    if(request.method == 'GET'):
+        try: 
+            skus = Sku.objects.filter(formula=formulaid)
+            response = []
+            for sku in skus:
+                serializer = SkuSerializer(sku)
+                response.append(serializer.data)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['GET','POST'])
 def formula_to_sku(request,formulaid):
     if(request.method == 'GET'):
         try: 

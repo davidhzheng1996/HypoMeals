@@ -120,6 +120,9 @@ new Vue({
       viewFormula: function(formulaid){
         window.location.href = '/formula/'+formulaid
       },
+      viewSku: function(formulaid,formulaname){
+        window.location.href = '/formula/'+formulaid+'/'+formulaname
+      },
       addPage: function (){
           this.pages.push(Math.ceil(this.formulas.length / this.perPage)+1);
       },

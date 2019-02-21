@@ -44,6 +44,10 @@ def manufacture_goal(request,goalid):
 def formula_to_sku(request,formulaid):
 	return render(request, "formula_to_sku.html",{'formulaid':formulaid})
 
+@login_required(login_url='/accounts/login/')
+def skus_to_formula(request,formulaid,formulaname):
+	return render(request, "skus_to_formula.html",{'formulaid':formulaid},{'formulaname':formulaname})
+
 # @login_required(login_url='/accounts/login/')
 # def formula_to_sku(request,skuid):
 # 	return render(request, "formula_to_sku.html",{'formulaid':formulaid})
