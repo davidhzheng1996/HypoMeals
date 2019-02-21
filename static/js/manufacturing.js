@@ -124,7 +124,6 @@ var vm = new Vue({
        addGoal: function(userid,goalid) {
          this.newGoal.user = parseInt(userid)
          this.newGoal.name = parseInt(goalid)
-         this.newGoal.goal_sku_name = this.newGoal.goal_sku_name.toLowerCase();
          this.loading = true;
          this.$http.post('/api/manufacture_goal/',this.newGoal)
            .then((response) => {
@@ -170,7 +169,6 @@ var vm = new Vue({
       // },
        updateGoal: function(userid,goalid) {
          this.loading = true;
-         this.currentGoal.goal_sku_name = this.currentGoal.goal_sku_name.toLowerCase();
          this.$http.post('/api/update_manufacture_goal/',   this.currentGoal)
            .then((response) => {
              $("#editGoalModal").modal('hide');

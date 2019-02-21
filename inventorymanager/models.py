@@ -1,13 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
+from datetime import date
 
 # product_line to sku is one to many. Each sku matches to exactly one product line
 class Product_Line(models.Model):
 	product_line_name = models.CharField(max_length=128, primary_key=True, unique=True, null=False)
 
 class Formula(models.Model):
-	formula_name = models.CharField(max_length=32, null=False, default='')
+	formula_name = models.CharField(max_length=32, unique=True, null=False, default='')
 	id = models.BigIntegerField(primary_key=True, null=False, unique=True)
 	comment = models.TextField(null=True)
 
@@ -34,7 +35,8 @@ class Ingredient(models.Model):
 
 class Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
-	goalname = models.CharField(max_length=128,null=False,default='')
+	goalname = models.CharField(max_length=128,unique=True,null=False,default='')
+	deadline = models.DateField(default=date.today)
 
 
 class IngredientFile(models.Model):

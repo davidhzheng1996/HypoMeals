@@ -11,6 +11,7 @@ from rest_framework import status
 from .serializers import *
 from .models import *
 from django.db import transaction
+from datetime import date
 
 import csv
 import io
@@ -45,8 +46,8 @@ def formula_to_sku(request,formulaid):
 	return render(request, "formula_to_sku.html",{'formulaid':formulaid})
 
 @login_required(login_url='/accounts/login/')
-def skus_to_formula(request,formulaid,formulaname):
-	return render(request, "skus_to_formula.html",{'formulaid':formulaid},{'formulaname':formulaname})
+def skus_to_formula(request,formulaid):
+	return render(request, "skus_to_formula.html",{'formulaid':formulaid})
 
 # @login_required(login_url='/accounts/login/')
 # def formula_to_sku(request,skuid):
