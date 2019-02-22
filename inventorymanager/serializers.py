@@ -69,6 +69,10 @@ class IngredientToFormulaSerializer(serializers.ModelSerializer):
         model = Formula_To_Ingredients
         fields = '__all__'
 
+class ManufactureLineToSkuSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = Sku_To_Ml_Shortname
+        fields = '__all__'
     
 # models not having a serializers yet 
 # class sku_to_ingredients(models.Model):

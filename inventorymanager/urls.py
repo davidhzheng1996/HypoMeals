@@ -30,6 +30,8 @@ urlpatterns = [
     path('api/netid',viewsets.netid_login),
     path('api/skus_to_formula/<int:formulaid>',viewsets.skus_to_formula),
     path('api/formula_to_sku/<int:formulaid>',viewsets.formula_to_sku),
+    path('api/mls_to_sku/<int:skuid>',viewsets.mls_to_sku),
+    path('api/add_ml_to_sku/<int:skuid>/<int:mlshortname>',viewsets.add_ml_to_sku),
     # path('api/calculate_goal/<int:id>/<int:goalid>',viewsets.calculate_ingredient),
     path('api/ingredients_to_sku/<int:skuid>',viewsets.ingredients_to_sku),
     path('api/delete_ingredients_to_sku/<int:sku>/<int:ig>',viewsets.delete_ingredients_to_sku),
