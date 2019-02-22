@@ -19,6 +19,10 @@ import io
 @login_required(login_url='/accounts/login/')
 def index(request):
 	return render(request,'home.html')
+	
+def netid(request):
+	return render(request,'netid.html')
+
 
 @login_required(login_url='/accounts/login/')
 def ingredient(request):

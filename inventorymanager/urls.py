@@ -7,6 +7,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     # map /ingredient to ingredient.html
     path('ingredient',views.ingredient),
+    path('netid',views.netid),
     # map /sku to sku.html
     path('sku',views.sku),
     path('formula',views.formula),
@@ -25,6 +26,7 @@ urlpatterns = [
     path('api/ingredient_export/', IngredientExportView.as_view()),
     path('api/calculate_goal/<int:goalid>',viewsets.calculate_goal),
     path('api/skus_to_ingredient/<int:ingredientid>',viewsets.skus_to_ingredient),
+    path('api/netid',viewsets.netid_login),
     # path('api/calculate_goal/<int:id>/<int:goalid>',viewsets.calculate_ingredient),
     path('api/ingredients_to_sku/<int:skuid>',viewsets.ingredients_to_sku),
     path('api/delete_ingredients_to_sku/<int:sku>/<int:ig>',viewsets.delete_ingredients_to_sku),

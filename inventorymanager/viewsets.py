@@ -6,7 +6,12 @@ from .models import *
 from .serializers import *
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.middleware.csrf import CsrfViewMiddleware, get_token
+from django.test import Client
+from django.contrib.auth.models import User
 
+
+import requests
 
 
 # APIView is specific for handling REST API requests. User need to Explicitly describe  
@@ -369,7 +374,31 @@ def update_goal(request,id,goalid):
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
             return Response(status = status.HTTP_400_BAD_REQUEST)
         except Exception as e: 
-            print(e)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def netid_login(request):
+    if(request.method == 'POST'):
+        try: 
+            # Calling Collab Gets
+            url = 'https://api.colab.duke.edu/identity/v1/'
+            headers = {'x-api-key':'hypo-meals',"Authorization":'Bearer '+request.data['access_token']}
+            r = requests.get(url,headers=headers)
+            data= r.json()
+            username = data['netid']
+            password = '(*124aqtn13Qsmt'
+            user = User.objects.filter(username=username)
+            if(len(user)==0):
+                newuser = User.objects.create_user(username,'', password)
+                newuser.save()
+            # CSRF Token And Logging Into Django
+            csrf_client = Client(enforce_csrf_checks=True)
+            url = '/accounts/login/?next=/'
+            csrf_client.get(url)
+            csrftoken = csrf_client.cookies['csrftoken']
+            login_data = dict(username=username, password=password, csrfmiddlewaretoken=csrftoken.value, next='/')
+            return csrf_client.post(url, data=login_data, headers=dict(Referer=url))
+        except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 
