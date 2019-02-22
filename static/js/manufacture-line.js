@@ -14,6 +14,8 @@ new Vue({
      has_paginated:false,
      upload_errors: '',
      short_name_errors: '',
+     short_name_errors1: '',
+     error:'',
    },
    mounted: function() {
        this.getManufactureLines();
@@ -67,10 +69,19 @@ new Vue({
            })
        },
        addManufactureLine: function() {
+        this.short_name_errors = null;
+        this.error = null;
          this.loading = true;
          if(this.newManufactureLine.ml_short_name.indexOf(' ') >= 0 || this.newManufactureLine.ml_short_name.length > 5){
             this.short_name_errors = "short name invalid"
+            return;
          }
+         for (let index = 0; index < this.manufacture_lines.length; index++) {
+            if (this.newManufactureLine.ml_short_name.toLowerCase() === this.manufacture_lines[index].ml_short_name.toLowerCase()) {
+              this.short_name_errors1 = "short name already exists"
+              return;
+            }
+          }
          this.$http.post('/api/manufacture_line/',this.newManufactureLine)
            .then((response) => {
          $("#addManufactureLineModal").modal('hide');
@@ -82,6 +93,7 @@ new Vue({
          })
            .catch((err) => {
          this.loading = false;
+         this.error = err.bodyText;
          this.message = err.data;
          console.log(err.bodyText);
        })
@@ -123,6 +135,7 @@ new Vue({
          })
            .catch((err) => {
          this.loading = false;
+         this.error = err.bodyText;
          console.log(err);
         })
       },

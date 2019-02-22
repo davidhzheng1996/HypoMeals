@@ -31,6 +31,8 @@ new Vue({
             { 'id': true },
           ],
       upload_errors: '',
+      name_error: '',
+      error:'',
    },
    mounted: function() {
        this.getFormulas();
@@ -142,6 +144,12 @@ new Vue({
     },
        addFormula: function() {
          this.loading = true;
+         for (let index = 0; index < this.formulas.length; index++) {
+            if (this.newFormula.formula_name.toLowerCase() === this.formulas[index].formula_name.toLowerCase()) {
+              this.name_error = "name exists"
+              return;
+            }
+          }
          this.$http.post('/api/formula/',this.newFormula)
            .then((response) => {
          $("#addFormulaModal").modal('hide');
@@ -160,6 +168,7 @@ new Vue({
          })
            .catch((err) => {
          this.loading = false;
+         this.error = err.bodyText;
          console.log(err);
        })
        },
@@ -174,6 +183,7 @@ new Vue({
          })
            .catch((err) => {
          this.loading = false;
+         this.error = err.bodyText;
          console.log(err);
        })
    },

@@ -37,6 +37,7 @@ new Vue({
       upload_errors: '',
       case_upc_errors: '',
      unit_upc_errors: '',
+     error: '',
    },
    mounted: function() {
        this.getSkus();
@@ -196,6 +197,7 @@ new Vue({
          })
            .catch((err) => {
          this.loading = false;
+         this.error = err.bodyText;
          console.log(err);
        })
        },
@@ -218,10 +220,14 @@ new Vue({
          })
            .catch((err) => {
          this.loading = false;
+         this.error = err.bodyText;
          console.log(err);
        })
    },
       upcCheck: function(upcnum) {
+        if(upcnum.length != 12){
+          return false;
+        }
         if(upcnum.charAt(0)==="2" || upcnum.charAt(0) === "3" || upcnum.charAt(0) === "4" || upcnum.charAt(0) ==="5"){
           return false;
         } 

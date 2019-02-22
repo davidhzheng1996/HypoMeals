@@ -46,6 +46,8 @@
                </button>
             </div>
             <p class="error" v-if="short_name_errors">${ short_name_errors }</p>
+            <p class="error" v-if="short_name_errors1">${ short_name_errors1 }</p>
+            <p class="error" v-if="error">${ error }</p>
             <form v-on:submit.prevent="addManufactureLine()">
                <div class="modal-body">
                   <div class="form-group">
@@ -95,6 +97,7 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
+            <p class="error" v-if="error">${ error }</p>
             <form v-on:submit.prevent="updateManufactureLine()">
                <div class="modal-body">
                   <div class="form-group">
@@ -106,7 +109,7 @@
                         v-model="currentManufactureLine.ml_name"
                         required="required" >
                   </div>
-                  </div><div class="form-group">
+                  <div class="form-group">
                      <label>Manufacture Line Short Name*</label>
                      <input
                         type="text"

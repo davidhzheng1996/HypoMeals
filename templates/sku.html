@@ -75,6 +75,7 @@
             </div>
             <p class="error" v-if="case_upc_errors">${ case_upc_errors }</p>
             <p class="error" v-if="unit_upc_errors">${ unit_upc_errors }</p>
+            <p class="error" v-if="error">${ error }</p>
             <form v-on:submit.prevent="addSku()">
                <div class="modal-body">
                   <div class="form-group">
@@ -200,6 +201,7 @@
             </div>
             <p class="error" v-if="case_upc_errors">${ case_upc_errors }</p>
             <p class="error" v-if="unit_upc_errors">${ unit_upc_errors }</p>
+            <p class="error" v-if="error">${ error }</p>
             <form v-on:submit.prevent="updateSku()">
                <div class="modal-body">
                   <div class="form-group">

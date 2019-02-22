@@ -15,6 +15,7 @@ var vm = new Vue({
      search_input: '',
      //COUPLED WITH BACKEND DO NOT REMOVE BELOW
      newGoal: { 'goal_sku_name': '', 'desired_quantity': 0, 'user': null, 'sku': null, 'name':-1},
+     error:'',
    },
    mounted: function() {
     $("#sku_search_input").autocomplete({
@@ -184,6 +185,7 @@ var vm = new Vue({
          })
            .catch((err) => {
          this.loading = false;
+         this.error = err.bodyText;
          console.log(err);
        })
        },
@@ -225,6 +227,7 @@ var vm = new Vue({
          })
            .catch((err) => {
          this.loading = false;
+         this.error = err.bodyText;
          console.log(err);
        })
    },

@@ -41,6 +41,7 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
+            <p class="error" v-if="error">${ error }</p>
             <form v-on:submit.prevent="addIngredient('{{formulaid}}')">
                <div class="modal-body">
                   <div class="form-group">
@@ -81,6 +82,7 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
+            <p class="error" v-if="error">${ error }</p>
             <form v-on:submit.prevent="updateIngredient('{{formulaid}}',currentIngredient.id)">
                <div class="modal-body">
                   <div class="form-group">

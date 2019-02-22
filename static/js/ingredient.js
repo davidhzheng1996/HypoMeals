@@ -27,6 +27,8 @@ new Vue({
     ],
     // File Upload Errors
     upload_errors: '',
+    name_error: '',
+    error:'',
   },
   mounted: function () {
     this.getIngredients();
@@ -118,16 +120,16 @@ new Vue({
     },
     addIngredient: function () {
       this.loading = true;
+       for (let index = 0; index < this.ingredients.length; index++) {
+            if (this.newIngredient.ingredient_name.toLowerCase() === this.ingredients[index].ingredient_name.toLowerCase()) {
+              this.name_error = "name exists"
+              return;
+            }
+          }
       this.$http.post('/api/ingredient/', this.newIngredient)
         .then((response) => {
           $("#addIngredientModal").modal('hide');
           this.loading = false;
-          for (let index = 0; index < this.ingredients.length; index++) {
-            if (this.newIngredient.ingredient_name.toLowerCase() === this.ingredients[index].ingredient_name.toLowerCase()) {
-              console.log("Already exists");
-              return;
-            }
-          }
           if ((this.ingredients.length % this.perPage) == 0) {
             this.addPage();
           }
@@ -136,6 +138,7 @@ new Vue({
         })
         .catch((err) => {
           this.loading = false;
+          this.error = err.bodyText;
           console.log(err);
         })
     },
@@ -149,7 +152,8 @@ new Vue({
           this.getIngredients();
         })
         .catch((err) => {
-          this.loading = false;
+          this.loading = false; 
+          this.error = err.bodyText;
           console.log(err);
         })
     },

@@ -15,6 +15,7 @@ var vm = new Vue({
       'ingredient_name': '',
       'quantity': 0
     },
+    error:'',
   },
   mounted: function () {},
   methods: {
@@ -79,6 +80,7 @@ var vm = new Vue({
         })
         .catch((err) => {
           this.loading = false;
+          this.error = err.bodyText;
           console.log(err);
         })
     },
@@ -92,6 +94,7 @@ var vm = new Vue({
         })
           .catch((err) => {
         this.loading = false;
+        this.error = err.bodyText;
         console.log(err);
       })
     },
