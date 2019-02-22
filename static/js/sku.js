@@ -35,6 +35,8 @@ new Vue({
             {'manufacture_rate': true},
           ],
       upload_errors: '',
+      // [['ml_short_name': ml_short_name, 'ml_name': ml_name, 'comment': comment, 'status': all/partial/none] x num_ml]
+      manufacture_lines: [],
    },
    mounted: function() {
        this.getSkus();
@@ -100,7 +102,13 @@ new Vue({
            this.loading = true;
            this.$http.get(api_url)
                .then((response) => {
-                   this.skus = response.data;
+                  // user selection status
+                  this.skus = response.data.map((sku) => {
+                    // make 'active' property reactive 
+                    // https://vuejs.org/v2/guide/reactivity.html#Change-Detection-Caveats
+                    Vue.set(sku, 'active', false);
+                    return sku;
+                  });
                    this.loading = false;
                    if(!this.has_paginated){
                       this.setPages();
@@ -360,9 +368,17 @@ new Vue({
           this.newSku.productline = event.target.value
       },
 
+      // store manufacture lines states based on active SKUs
+      getManufactureLines: function(event) {
+        // Pass the list of active SKUs to api 
+        
+      },
+
+      updateManufactureLines: function(event) {
+
+      },
    
    },
-
 
   computed: {
     displayedSkus () {

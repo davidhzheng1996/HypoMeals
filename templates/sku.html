@@ -1,310 +1,250 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 <div id="starting">
-   <div class="container">
-      <div class="row">
-         <h1>List of SKUs
-            <button class="btn btn-success" data-toggle="modal" data-target="#addSkuModal">Add Sku</button>
-            <input class="btn btn-success" type="file" @change="selectSkuCSV">
-            <button class="btn btn-success" type="submit" @click="uploadSkuCSV">Upload Sku</button>
-<!--             <input class="btn btn-success" type="file" @change="selectFormulaCSV">
+      <div class="container">
+            <div class="row">
+                  <h1>List of SKUs
+                        <button class="btn btn-success" data-toggle="modal" data-target="#addSkuModal">Add Sku</button>
+                        <input class="btn btn-success" type="file" @change="selectSkuCSV">
+                        <button class="btn btn-success" type="submit" @click="uploadSkuCSV">Upload Sku</button>
+                        <!--             <input class="btn btn-success" type="file" @change="selectFormulaCSV">
             <button class="btn btn-success" type="submit" @click="uploadFormulaCSV">Upload Formula</button> -->
-            <p class="error" v-if="upload_errors">${ upload_errors }</p>
-            <button class="btn btn-success" type="submit" @click="exportSkuCSV">Export Sku</button>
-            <!-- <button class="btn btn-success" type="submit" @click="exportFormula()">Export Formulas</button> -->
-         </h1>
-         <div class="form-inline my-2 my-lg-0">
-            <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" autocomplete="on" aria-label="Search" @blur="onBlur">
-            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getSkus()">Search</button>
-        </div>
-         <table class="table">
-            <thead>
-               <tr>
-                  <th v-on:click="sortBy('id')" scope="col">ID</th>
-                  <th v-on:click="sortBy('sku_name')" scope="col">Name</th>
-                  <th v-on:click="sortBy('unitupc')" scope="col">Unit UPC</th>
-                  <th v-on:click="sortBy('caseupc')" scope="col">Case UPC</th>
-                  <th v-on:click="sortBy('productline')" scope="col">Productline</th>
-                  <th v-on:click="sortBy('unit_size')" scope="col">Unit Size</th>
-                  <th v-on:click="sortBy('count')" scope="col">Count</th>
-                  <th v-on:click="sortBy('formula')" scope="col">Formula</th>
-                  <th v-on:click="sortBy('formula scale factor')" scope="col">Formula Scale</th>
-                  <th v-on:click="sortBy('manufacture_rate')" scope="col">Manufacture Rate</th>
-                  <th scope="col">Actions</th>
-               </tr>
-            </thead>
-            <tbody>
-               <tr v-for="sku in displayedSkus">
-                  <th scope="row">${sku.id}</th>
-                  <td>${sku.sku_name}</td>
-                  <td>${sku.unitupc}</td>
-                  <td>${sku.caseupc}</td>
-                  <td>${sku.productline}</td>
-                  <td>${sku.unit_size}</td>
-                  <td>${sku.count}</td>
-                  <td>${sku.formula}</td>
-                  <td>${sku.formula_scale_factor}</td>
-                  <td>${sku.manufacture_rate}</td>
-                  <td>
-                     <button class="btn btn-primary" v-on:click="viewFormula(sku.formula)">View Formula</button>
-                     <button class="btn btn-info" v-on:click="getSku(sku.id)">Edit</button>
-                     <button class="btn btn-danger" v-on:click="deleteSku(sku.id)">Delete</button>
-                  </td>
-               </tr>
-            </tbody>
-         </table>
-      </div>
-      <div class="clearfix btn-group col-md-2 offset-md-5">
-            <button type="button" class="btn btn-sm btn-outline-secondary" v-if="page != 1" @click="page--"> << </button>
-            <!-- <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> ${pageNumber} </button> -->
-            <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>
-            <button type="button" @click="page++" v-if="page < pages.length" class="btn btn-sm btn-outline-secondary"> >> </button>
-          </div>
-   </div>
-   <div class="loading" v-if="loading===true">Loading&#8230;</div>
-   <!-- Add Article Modal -->
-   <div class="modal fade" id="addSkuModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-         <div class="modal-content">
-            <div class="modal-header">
-               <h5 class="modal-title" id="exampleModalLongTitle">Add Sku</h5>
-               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-               <span aria-hidden="true">&times;</span>
-               </button>
+                        <p class="error" v-if="upload_errors">${ upload_errors }</p>
+                        <button class="btn btn-success" type="submit" @click="exportSkuCSV">Export Sku</button>
+                        <!-- <button class="btn btn-success" type="submit" @click="exportFormula()">Export Formulas</button> -->
+                  </h1>
+                  <div class="form-inline my-2 my-lg-0">
+                        <input id="search_input" class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" autocomplete="on"
+                              aria-label="Search" @blur="onBlur">
+                        <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getSkus()">Search</button>
+                  </div>
+                  <div class="form-inline my-2 my-lg-0">
+                        <button class="btn btn-success" data-toggle="modal" data-target="#updateMLModal" v-on:click.prevent="getManufactureLines()">View Manufacturing Lines</button>
+                  </div>
+                  <table class="table">
+                        <thead>
+                              <tr>
+                                    <th></th>
+                                    <th v-on:click="sortBy('id')" scope="col">ID</th>
+                                    <th v-on:click="sortBy('sku_name')" scope="col">Name</th>
+                                    <th v-on:click="sortBy('unitupc')" scope="col">Unit UPC</th>
+                                    <th v-on:click="sortBy('caseupc')" scope="col">Case UPC</th>
+                                    <th v-on:click="sortBy('productline')" scope="col">Productline</th>
+                                    <th v-on:click="sortBy('unit_size')" scope="col">Unit Size</th>
+                                    <th v-on:click="sortBy('count')" scope="col">Count</th>
+                                    <th v-on:click="sortBy('formula')" scope="col">Formula</th>
+                                    <th v-on:click="sortBy('formula scale factor')" scope="col">Formula Scale</th>
+                                    <th v-on:click="sortBy('manufacture_rate')" scope="col">Manufacture Rate</th>
+                                    <th scope="col">Actions</th>
+                              </tr>
+                        </thead>
+                        <tbody>
+                              <tr v-for="sku in displayedSkus">
+                                    <td>
+                                          <input type="checkbox" v-model="sku.active">
+                                    </td>
+                                    <td>${sku.id}</td>
+                                    <td>${sku.sku_name}</td>
+                                    <td>${sku.unitupc}</td>
+                                    <td>${sku.caseupc}</td>
+                                    <td>${sku.productline}</td>
+                                    <td>${sku.unit_size}</td>
+                                    <td>${sku.count}</td>
+                                    <td>${sku.formula}</td>
+                                    <td>${sku.formula_scale_factor}</td>
+                                    <td>${sku.manufacture_rate}</td>
+                                    <td>
+                                          <button class="btn btn-primary" v-on:click="viewFormula(sku.formula)">View Formula</button>
+                                          <button class="btn btn-info" v-on:click="getSku(sku.id)">Edit</button>
+                                          <button class="btn btn-danger" v-on:click="deleteSku(sku.id)">Delete</button>
+                                    </td>
+                              </tr>
+                        </tbody>
+                  </table>
             </div>
-            <form v-on:submit.prevent="addSku()">
-               <div class="modal-body">
-                  <div class="form-group">
-                     <label>SKU Name*</label>
-                     <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter Sku Name"
-                        v-model="newSku.sku_name"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>(Optional) SKU ID</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Optional SKU#"
-                        v-model="newSku.id">
-                  </div>
-                  <div class="form-group">
-                     <label>SKU Productline*</label>
-                     <input
-                        id="product_line_search_input"
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter Sku Productline"
-                        v-model="newSku.productline"
-                        required="required" 
-                        autocomplete="on"
-                        @blur="onBlurProductLine">
-                  </div>
-                  <div class="form-group">
-                     <label>Case UPC*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Case UPC"
-                        v-model="newSku.caseupc"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Unit UPC*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Unit UPC"
-                        v-model="newSku.unitupc"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Unit Size*</label>
-                     <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter Unit Size"
-                        v-model="newSku.unit_size"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Count per Case*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Count per Case"
-                        v-model="newSku.count"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Formula*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Formula#"
-                        v-model="newSku.formula"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Formula Scale Factor*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Formula Scale Factor"
-                        v-model="newSku.formula_scale_factor"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Manufacturing Rate*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Manufacturing Rate"
-                        v-model="newSku.manufacture_rate"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>(Optional) Comment</label>
-                     <input
-                        class="form-control"
-                        placeholder="Enter Optional Comment"
-                        v-model="newSku.comment"
-                        rows="3">
-                  </div>
-               </div>
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-               </div>
-            </form>
-         </div>
+            <div class="clearfix btn-group col-md-2 offset-md-5">
+                  <button type="button" class="btn btn-sm btn-outline-secondary" v-if="page != 1" @click="page--">
+                        << </button>
+                              <!-- <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> ${pageNumber} </button> -->
+                              <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>
+                              <button type="button" @click="page++" v-if="page < pages.length" class="btn btn-sm btn-outline-secondary"> >> </button>
+            </div>
       </div>
       <div class="loading" v-if="loading===true">Loading&#8230;</div>
-   </div>
-   <!-- End of add article modal -->
-   <!-- Edit Article Modal -->
-   <div class="modal fade" id="editSkuModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-         <div class="modal-content">
-            <div class="modal-header">
-               <h5 class="modal-title" id="exampleModalLongTitle">Edit Sku</h5>
-               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-               <span aria-hidden="true">&times;</span>
-               </button>
+      <!-- Add Article Modal -->
+      <div class="modal fade" id="addSkuModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                        <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">Add Sku</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                              </button>
+                        </div>
+                        <form v-on:submit.prevent="addSku()">
+                              <div class="modal-body">
+                                    <div class="form-group">
+                                          <label>SKU Name*</label>
+                                          <input type="text" class="form-control" placeholder="Enter Sku Name" v-model="newSku.sku_name" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>(Optional) SKU ID</label>
+                                          <input type="number" class="form-control" placeholder="Enter Optional SKU#" v-model="newSku.id">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>SKU Productline*</label>
+                                          <input id="product_line_search_input" type="text" class="form-control" placeholder="Enter Sku Productline" v-model="newSku.productline"
+                                                required="required" autocomplete="on" @blur="onBlurProductLine">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>Case UPC*</label>
+                                          <input type="number" class="form-control" placeholder="Enter Case UPC" v-model="newSku.caseupc" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>Unit UPC*</label>
+                                          <input type="number" class="form-control" placeholder="Enter Unit UPC" v-model="newSku.unitupc" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>Unit Size*</label>
+                                          <input type="text" class="form-control" placeholder="Enter Unit Size" v-model="newSku.unit_size" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>Count per Case*</label>
+                                          <input type="number" class="form-control" placeholder="Enter Count per Case" v-model="newSku.count" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>Formula*</label>
+                                          <input type="number" class="form-control" placeholder="Enter Formula#" v-model="newSku.formula" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>Formula Scale Factor*</label>
+                                          <input type="number" class="form-control" placeholder="Enter Formula Scale Factor" v-model="newSku.formula_scale_factor"
+                                                required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>Manufacturing Rate*</label>
+                                          <input type="number" class="form-control" placeholder="Enter Manufacturing Rate" v-model="newSku.manufacture_rate" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>(Optional) Comment</label>
+                                          <input class="form-control" placeholder="Enter Optional Comment" v-model="newSku.comment" rows="3">
+                                    </div>
+                              </div>
+                              <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                              </div>
+                        </form>
+                  </div>
             </div>
-            <form v-on:submit.prevent="updateSku()">
-               <div class="modal-body">
-                  <div class="form-group">
-                     <label>SKU Name*</label>
-                     <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter Sku Name"
-                        v-model="currentSku.sku_name"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>(Optional) SKU ID</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Optional SKU#"
-                        v-model="currentSku.id">
-                  </div>
-                  <div class="form-group">
-                     <label>SKU Productline*</label>
-                     <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter Sku Productline"
-                        v-model="currentSku.productline"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Case UPC*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Case UPC"
-                        v-model="currentSku.caseupc"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Unit UPC*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Unit UPC"
-                        v-model="currentSku.unitupc"
-                        required="required" >
-                  </div>
-                   <div class="form-group">
-                     <label>Unit Size*</label>
-                     <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter Unit Size"
-                        v-model="currentSku.unit_size"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Count per Case*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Count per Case"
-                        v-model="currentSku.count"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Formula*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Formula#"
-                        v-model="currentSku.formula"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Formula Scale Factor*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Formula Scale Factor"
-                        v-model="currentSku.formula_scale_factor"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Manufacturing Rate*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Manufacturing Rate"
-                        v-model="currentSku.manufacture_rate"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>(Optional) Comment</label>
-                     <input
-                        class="form-control"
-                        placeholder="Enter Optional Comment"
-                        v-model="currentSku.comment"
-                        rows="3">
-                  </div>
-               </div>
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-               </div>
-            </form>
-         </div>
+            <div class="loading" v-if="loading===true">Loading&#8230;</div>
       </div>
-      <div class="loading" v-if="loading===true">Loading&#8230;</div>
-   </div>
-   <!-- End of edit article modal -->
+      <!-- End of add article modal -->
+      <!-- Edit Article Modal -->
+      <div class="modal fade" id="editSkuModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                        <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">Edit Sku</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                              </button>
+                        </div>
+                        <form v-on:submit.prevent="updateSku()">
+                              <div class="modal-body">
+                                    <div class="form-group">
+                                          <label>SKU Name*</label>
+                                          <input type="text" class="form-control" placeholder="Enter Sku Name" v-model="currentSku.sku_name" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>(Optional) SKU ID</label>
+                                          <input type="number" class="form-control" placeholder="Enter Optional SKU#" v-model="currentSku.id">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>SKU Productline*</label>
+                                          <input type="text" class="form-control" placeholder="Enter Sku Productline" v-model="currentSku.productline" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>Case UPC*</label>
+                                          <input type="number" class="form-control" placeholder="Enter Case UPC" v-model="currentSku.caseupc" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>Unit UPC*</label>
+                                          <input type="number" class="form-control" placeholder="Enter Unit UPC" v-model="currentSku.unitupc" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>Unit Size*</label>
+                                          <input type="text" class="form-control" placeholder="Enter Unit Size" v-model="currentSku.unit_size" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>Count per Case*</label>
+                                          <input type="number" class="form-control" placeholder="Enter Count per Case" v-model="currentSku.count" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>Formula*</label>
+                                          <input type="number" class="form-control" placeholder="Enter Formula#" v-model="currentSku.formula" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>Formula Scale Factor*</label>
+                                          <input type="number" class="form-control" placeholder="Enter Formula Scale Factor" v-model="currentSku.formula_scale_factor"
+                                                required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>Manufacturing Rate*</label>
+                                          <input type="number" class="form-control" placeholder="Enter Manufacturing Rate" v-model="currentSku.manufacture_rate" required="required">
+                                    </div>
+                                    <div class="form-group">
+                                          <label>(Optional) Comment</label>
+                                          <input class="form-control" placeholder="Enter Optional Comment" v-model="currentSku.comment" rows="3">
+                                    </div>
+                              </div>
+                              <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                              </div>
+                        </form>
+                  </div>
+            </div>
+            <div class="loading" v-if="loading===true">Loading&#8230;</div>
+      </div>
+      <!-- End of edit article modal -->
+      <!-- Begining of edit manufacturing line modal -->
+      <div class="modal fade" id="updateMLModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                        <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">Current Manufacturing Lines</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                              </button>
+                        </div>
+                        <form v-on:submit.prevent="updateManufactureLines()">
+                              <div class="modal-body">
+                                    <table class="table">
+                                          <thead>
+                                                <tr>
+                                                      <th></th>
+                                                      <th>Manufacturing Lines</th>
+                                                </tr>
+                                          </thead>
+                                          <tbody>
+                                                <tr v-for="ml in manufacture_lines">
+                                                      <td>
+                                                            <input type="checkbox" :indeterminate.prop="true">
+                                                      </td>
+                                                      <td>${ml.ml_name}</td>
+                                                </tr>
+                                          </tbody>
+                                    </table>
+                              </div>
+                              <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                              </div>
+                        </form>
+                  </div>
+            </div>
+            <div class="loading" v-if="loading===true">Loading&#8230;</div>
+      </div>
+
 </div>
-<script src="../static/js/sku.js"></script>
-{% endblock %}
+<script src="../static/js/sku.js"></script> {% endblock %}
