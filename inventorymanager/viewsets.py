@@ -134,6 +134,20 @@ def skus_to_ingredient(request,ingredientid):
 
 @login_required(login_url='/accounts/login/')
 @api_view(['GET','POST'])
+def skus_to_formula(request,formulaid):
+    if(request.method == 'GET'):
+        try: 
+            skus = Sku.objects.filter(formula=formulaid)
+            response = []
+            for sku in skus:
+                serializer = SkuSerializer(sku)
+                response.append(serializer.data)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['GET','POST'])
 def formula_to_sku(request,formulaid):
     if(request.method == 'GET'):
         try: 
@@ -389,7 +403,7 @@ def update_goal(request,id,goalid):
     if(request.method == 'POST'):
         try: 
             goal = Goal.objects.get(user = id, id=goalid)
-            serializer = GoalSerializer(goal,{'goalname':request.data['goalname']},partial=True)
+            serializer = GoalSerializer(goal,{'goalname':request.data['goalname'],'deadline':request.data['deadline']},partial=True)
             if(serializer.is_valid()):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)

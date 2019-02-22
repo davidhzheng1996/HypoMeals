@@ -27,6 +27,7 @@
                   <th scope="row">${formula.formula_name}</th>
                   <td>${formula.id}</td>
                   <td>
+                     <button class="btn btn-primary" v-on:click="viewSku(formula.id)">View SKUs</button>
                      <button class="btn btn-primary" v-on:click="viewFormula(formula.id)">View Ingredients</button>
                      <button class="btn btn-info" v-on:click="getFormula(formula.id)">Edit</button>
                      <button class="btn btn-danger" v-on:click="deleteFormula(formula.id)">Delete</button>

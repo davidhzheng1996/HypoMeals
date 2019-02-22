@@ -13,7 +13,7 @@ new Vue({
      page:1,
      perPage: 10,
      pages:[],
-     newSku: { 'sku_name': '','productline': '', 'id': null, 'caseupc': 1234,'unitupc': 1234, 'unit_size': 0, 'count': 0, 'formula':0,
+     newSku: { 'sku_name': '','productline': '', 'id': null, 'caseupc': 100000000000,'unitupc': 100000000000, 'unit_size': 0, 'count': 0, 'formula':0,
      'formula_scale_factor':0, 'manufacture_rate':0,'comment': null},
      skuFile: null,
      formulaFile: null,
@@ -35,6 +35,8 @@ new Vue({
             {'manufacture_rate': true},
           ],
       upload_errors: '',
+      case_upc_errors: '',
+     unit_upc_errors: '',
    },
    mounted: function() {
        this.getSkus();
@@ -174,16 +176,19 @@ new Vue({
     },
        addSku: function() {
          this.loading = true;
+         if(!this.upcCheck(this.newSku.caseupc)){
+          this.case_upc_errors = "case upc not up to format";
+          return;
+         }
+         if(!this.upcCheck(this.newSku.unitupc)){
+          this.unit_upc_errors = "unit upc not up to format";
+          return;
+         }
          this.$http.post('/api/sku/',this.newSku)
            .then((response) => {
          $("#addSkuModal").modal('hide');
+         this.case_upc_errors = "";
          this.loading = false;
-         // for(let index = 0; index<this.skus.length; index++){
-         //    if(this.newSku.sku_name.toLowerCase()===this.skus[index].sku_name.toLowerCase()){
-         //        console.log("Already exists");
-         //        return;
-         //    }
-         //  }
          if((this.skus.length%this.perPage)==0){
             this.addPage();
          }
@@ -196,6 +201,14 @@ new Vue({
        },
        updateSku: function() {
          this.loading = true;
+         if(!this.upcCheck(this.currentSku.caseupc)){
+          this.case_upc_errors = "case upc not up to format";
+          return;
+         }
+         if(!this.upcCheck(this.currentSku.unitupc)){
+          this.unit_upc_errors = "unit upc not up to format";
+          return;
+         }
          this.$http.put('/api/sku/'+ this.currentSku.id + '/',     this.currentSku)
            .then((response) => {
              $("#editSkuModal").modal('hide');
@@ -208,7 +221,12 @@ new Vue({
          console.log(err);
        })
    },
-
+      upcCheck: function(upcnum) {
+        if(upcnum.charAt(0)==="2" || upcnum.charAt(0) === "3" || upcnum.charAt(0) === "4" || upcnum.charAt(0) ==="5"){
+          return false;
+        } 
+        return true;
+      },
       selectSkuCSV: function(event) {
         this.skuFile = event.target.files[0]
       },
@@ -234,30 +252,30 @@ new Vue({
         })
       },
 
-      selectFormulaCSV: function(event) {
-        this.formulaFile = event.target.files[0]
-      },
+      // selectFormulaCSV: function(event) {
+      //   this.formulaFile = event.target.files[0]
+      // },
         
-      uploadFormulaCSV: function() {
-        this.loading = true;
-        // upload this.ingredientCSV to REST api in FormData
-        const formData = new FormData()
-        // https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
-        formData.append('file', this.formulaFile, this.formulaFile.name)
-        this.$http.post('/api/sku_formula_import/', formData)
-           .then((response) => {
-            this.upload_errors = response.data['errors'].join('\n') + response.data['warnings'].join('\n')
-            console.log(this.upload_errors)
-         this.loading = false;
-         this.csv_uploaded=true;
-         this.getSkus();
-         })
-           .catch((err) => {
-            this.upload_errors = err.data['errors'].join('\n') + err.data['warnings'].join('\n')
-         this.loading = false;
-         console.log(err);
-        })
-      },
+      // uploadFormulaCSV: function() {
+      //   this.loading = true;
+      //   // upload this.ingredientCSV to REST api in FormData
+      //   const formData = new FormData()
+      //   // https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
+      //   formData.append('file', this.formulaFile, this.formulaFile.name)
+      //   this.$http.post('/api/sku_formula_import/', formData)
+      //      .then((response) => {
+      //       this.upload_errors = response.data['errors'].join('\n') + response.data['warnings'].join('\n')
+      //       console.log(this.upload_errors)
+      //    this.loading = false;
+      //    this.csv_uploaded=true;
+      //    this.getSkus();
+      //    })
+      //      .catch((err) => {
+      //       this.upload_errors = err.data['errors'].join('\n') + err.data['warnings'].join('\n')
+      //    this.loading = false;
+      //    console.log(err);
+      //   })
+      // },
 
       exportSkuCSV: function() {
         this.loading = true;
@@ -297,48 +315,48 @@ new Vue({
         //   })
       },
 
-      exportFormula: function(){
-        this.loading = true;
-        // Export all current ingredients to a csv file
-        // https://codepen.io/dimaZubkov/pen/eKGdxN
-        let csvContent = "data:text/csv;charset=utf-8,";
+      // exportFormula: function(){
+      //   this.loading = true;
+      //   // Export all current ingredients to a csv file
+      //   // https://codepen.io/dimaZubkov/pen/eKGdxN
+      //   let csvContent = "data:text/csv;charset=utf-8,";
 
-        csvContent+=[["Sku ID", "Ingr ID", "Quantity"].join(",")+'\n'];
-        let c = 0
-        //console.log(csvContent);
-        for (let i = 0; i < this.skus.length; i++) {
-                //console.log(this.ingredients[key].ingredient_name)
-                this.$http.get('/api/ingredients_to_sku/'+this.skus[i].id)
-               .then((response) => {
-                  c = c + 1;
-                   var ingredients = [];
-                   this.ingredients = response.data;
-                   for(let j = 0; j < this.ingredients.length; j++){
-                        csvContent+=[[this.skus[i].id,this.ingredients[j].id, this.ingredients[j].quantity].join(",")+'\n'];
+      //   csvContent+=[["Sku ID", "Ingr ID", "Quantity"].join(",")+'\n'];
+      //   let c = 0
+      //   //console.log(csvContent);
+      //   for (let i = 0; i < this.skus.length; i++) {
+      //           //console.log(this.ingredients[key].ingredient_name)
+      //           this.$http.get('/api/ingredients_to_sku/'+this.skus[i].id)
+      //          .then((response) => {
+      //             c = c + 1;
+      //              var ingredients = [];
+      //              this.ingredients = response.data;
+      //              for(let j = 0; j < this.ingredients.length; j++){
+      //                   csvContent+=[[this.skus[i].id,this.ingredients[j].id, this.ingredients[j].quantity].join(",")+'\n'];
                       
-                   }
-                  // this.finished();
-                  if(c==this.skus.length){
-                     console.log(csvContent);
+      //              }
+      //             // this.finished();
+      //             if(c==this.skus.length){
+      //                console.log(csvContent);
                    
-                     const url = encodeURI(csvContent);
-                      const link = document.createElement("a");
-                     link.setAttribute("href", url);
-                     link.setAttribute("download", "formulas.csv");
-                     link.click();
-                 }
-                   this.loading = false;
-                   //this.has_called = true; 
-               })
-               .catch((err) => {
-                   this.loading = false;
-                   console.log(err);
-               })
+      //                const url = encodeURI(csvContent);
+      //                 const link = document.createElement("a");
+      //                link.setAttribute("href", url);
+      //                link.setAttribute("download", "formulas.csv");
+      //                link.click();
+      //            }
+      //              this.loading = false;
+      //              //this.has_called = true; 
+      //          })
+      //          .catch((err) => {
+      //              this.loading = false;
+      //              console.log(err);
+      //          })
 
-        } 
+      //   } 
       
 
-      },
+      // },
 
         sortBy: function(key) {
         this.sortKey = key

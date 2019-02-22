@@ -11,7 +11,8 @@ var vm = new Vue({
      pages:[],
      has_paginated:false,
      //COUPLED WITH BACKEND DO NOT REMOVE BELOW
-     newGoal: { 'goalname': '', 'user':null },
+     newGoal: { 'goalname': '', 'user':null, 'deadline':'' },
+     dateError:'',
    },
    mounted: function() {},
    methods: {
@@ -39,7 +40,8 @@ var vm = new Vue({
             if(this.goals.hasOwnProperty(key)){
             // console.log(this.goals[key].id)
               if(this.goals[key].id == goalid){
-                this.currentGoal = {'id':this.goals[key].id,'goalname':this.goals[key].goalname,'user':this.goals[key].user}
+                this.currentGoal = {'id':this.goals[key].id,'goalname':this.goals[key].goalname,'user':this.goals[key].user, 
+                'deadline':this.goals[key].deadline}
                 $("#editGoalModal").modal('show');
               }
             }
@@ -87,6 +89,12 @@ var vm = new Vue({
        },
        addGoal: function(userid) {
          this.newGoal.user = parseInt(userid,10)
+         var now = new Date();
+         var date = new Date(this.newGoal.deadline);
+         if(date < now){
+            this.dateError = "Deadline cannot be in the past!"
+            return;
+         }
          this.loading = true;
          this.$http.post('/api/goal/'+userid,this.newGoal)
            .then((response) => {
@@ -104,6 +112,12 @@ var vm = new Vue({
        },
        updateGoal: function(userid,goalid) {
          this.loading = true;
+         var now = new Date();
+         var date = new Date(this.currentGoal.deadline);
+         if(date < now){
+            this.dateError = "Deadline cannot be in the past!"
+            return;
+         }
          this.$http.post('/api/update_goal/'+ userid + '/'+goalid, this.currentGoal)
            .then((response) => {
              $("#editGoalModal").modal('hide');

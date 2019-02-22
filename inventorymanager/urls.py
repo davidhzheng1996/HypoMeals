@@ -17,6 +17,7 @@ urlpatterns = [
     path('goal/<int:goalid>',views.manufacture_goal),
     path('sku/<int:formulaid>',views.formula_to_sku),
     path('formula/<int:formulaid>',views.ingredients_to_formula),
+    path('show_formula/<int:formulaid>',views.skus_to_formula),
     path('ingredient/<int:ingredientid>',views.skus_to_ingredients),
     path('calculate_goal/<int:goalid>',views.calculate_goal),
     # ingredient file upload endpoint
@@ -27,6 +28,7 @@ urlpatterns = [
     path('api/calculate_goal/<int:goalid>',viewsets.calculate_goal),
     path('api/skus_to_ingredient/<int:ingredientid>',viewsets.skus_to_ingredient),
     path('api/netid',viewsets.netid_login),
+    path('api/skus_to_formula/<int:formulaid>',viewsets.skus_to_formula),
     path('api/formula_to_sku/<int:formulaid>',viewsets.formula_to_sku),
     # path('api/calculate_goal/<int:id>/<int:goalid>',viewsets.calculate_ingredient),
     path('api/ingredients_to_sku/<int:skuid>',viewsets.ingredients_to_sku),
