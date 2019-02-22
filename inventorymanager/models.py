@@ -16,8 +16,9 @@ class Formula(models.Model):
 class Sku(models.Model):
 	id = models.BigIntegerField(primary_key=True, unique=True, null=False)
 	caseupc = models.CharField(null=False, default=100000000000,unique=True, 
-		max_length=12, validators=[RegexValidator(r'^\d{12,12}$')])
-	unitupc = models.BigIntegerField(null=False, default=100000000000)
+		max_length=12, validators=[RegexValidator(r'^\d{12,12}$', message="UPC not 12 digits", code = "invalid UPC")])
+	unitupc = models.CharField(null=False, default=100000000000,
+		max_length=12, validators=[RegexValidator(r'^\d{12,12}$', message="UPC not 12 digits", code = "invalid UPC")])
 	sku_name = models.CharField(max_length=32, null=False, default='')
 	count = models.PositiveIntegerField(null=False, default=0) 
 	unit_size = models.CharField(max_length=128, null=False, default='')
@@ -83,7 +84,8 @@ class Manufacture_Goal(models.Model):
 
 class Manufacture_line(models.Model):
 	ml_name = models.CharField(max_length=32, null=False, default='')
-	ml_short_name = models.CharField(primary_key = True, max_length=5, null=False, unique=True)
+	ml_short_name = models.CharField(primary_key = True, max_length=5, null=False, unique=True,
+		validators=[RegexValidator(r'^[a-zA-Z0-9\S]{1,5}$', message="Short name can have only Alphabets and Numbers", code = "invalid Short name")])
 	comment = models.TextField(null=True)
 
 class Sku_To_Ml_Shortname(models.Model):

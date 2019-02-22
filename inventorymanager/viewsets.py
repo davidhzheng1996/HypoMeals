@@ -297,6 +297,7 @@ def mls_to_sku(request,skuid):
 
 @api_view(['GET','POST'])
 def add_ml_to_sku(request,skuid,mlshortname):
+    # need to check for ml short name uniqueness.
     if(request.method == 'POST'):
         try: 
             sku = Sku.objects.get(id=skuid)
