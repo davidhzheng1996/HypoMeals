@@ -221,6 +221,7 @@ class SkuImportView(APIView):
 					errors.append(val_error)
 					break
 				product_line = Product_Line.objects.get(product_line_name=sku_dict['Product Line Name'])
+				formula = Formula.objects.get(id=sku_dict['Formula#'])
 				sku = Sku(
 						id=sku_dict['SKU#'],
 						productline=product_line,
@@ -229,6 +230,9 @@ class SkuImportView(APIView):
 						sku_name=sku_dict['Name'],
 						count=sku_dict['Count per case'],
 						unit_size=sku_dict['Unit size'],
+						formula=formula,
+						formula_scale_factor=sku_dict['Formula Factor'],
+						manufacture_rate=sku_dict['Rate'],
 						comment=sku_dict['Comment'])
 				# save without commit, as later validation might fail 
 				sku.save()
@@ -239,7 +243,7 @@ class SkuImportView(APIView):
 		return errors, warnings
 
 	def validate_header(self, headers):
-		if headers != ['SKU#','Name','Case UPC','Unit UPC','Unit size','Count per case', 'Product Line Name', 'Comment']:
+		if headers != ['SKU#','Name','Case UPC','Unit UPC','Unit size','Count per case','Product Line Name','Formula#','Formula Factor','Rate','Comment']:
 			return 'File headers not compliant to standard', ''
 		return '', ''
 
@@ -247,6 +251,8 @@ class SkuImportView(APIView):
 	def validate_sku(self, sku_dict):
 		error = ''
 		warning = ''
+		case_upc = self.validate_case_upc(sku_dict)
+		unit_upc = self.validate_unit_upc(sku_dict)
 		# if ingredient with same name exists, only update if id matches
 		if Sku.objects.filter(sku_name=sku_dict['Name']).exists():
 			same_name_sku = Sku.objects.get(sku_name=sku_dict['Name'])
@@ -255,6 +261,10 @@ class SkuImportView(APIView):
 			else:
 				# update other fields
 				warning = 'Update fields for %s' % same_name_sku.sku_name
+		elif not case_upc:
+			error = 'Case UPC invalid for %s' % sku_dict['Name']
+		elif not unit_upc:
+			 error = 'Unit UPC invalid for %s' % sku_dict['Name']
 		else:
 			# check if object with same id exists
 			if Sku.objects.filter(pk=sku_dict['SKU#']).exists():
@@ -266,6 +276,17 @@ class SkuImportView(APIView):
 			error = 'No product line named %s' % product_line_name
 		return error, warning
 
+	def validate_case_upc(self, sku_dict):
+		if sku_dict['Case UPC'][0] == '2' or sku_dict['Case UPC'][0] == '3' or sku_dict['Case UPC'][0] == '4' or sku_dict['Case UPC'][0] == '5':
+			return False
+
+		return True;
+
+	def validate_unit_upc(self, sku_dict):
+		if sku_dict['Unit UPC'][0] == '2' or sku_dict['Unit UPC'][0] == '3' or sku_dict['Unit UPC'][0] == '4' or sku_dict['Unit UPC'][0] == '5':
+			return False
+
+		return True;
 
 
 class SkuExportView(APIView):

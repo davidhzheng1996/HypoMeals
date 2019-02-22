@@ -12,6 +12,19 @@ var vm = new Vue({
      has_paginated:false,
      //COUPLED WITH BACKEND DO NOT REMOVE BELOW
      //newSku: { 'ingredient_name': '', 'quantity':0 },
+     sortKey: 'sku_name',
+     sortAsc: [
+            { 'sku_name': true },
+            { 'id': true },
+            { 'productline': true },
+            { 'caseupc': true },
+            {'unitupc': true},
+            {'unit_size': true},
+            {'count': true},
+            {'formula': true},
+            {'formula_scale_factor': true},
+            {'manufacture_rate': true},
+          ],
    },
    mounted: function() {},
    methods: {
@@ -44,6 +57,15 @@ var vm = new Vue({
       let to = (page * perPage);
       return  skus.slice(from, to);
     },
+    sortBy: function(key) {
+        this.sortKey = key
+        this.sortAsc[key] = !this.sortAsc[key]
+        if(!this.sortAsc[this.sortKey]){
+          this.skus = _.sortBy(this.skus, this.sortKey)
+        } else {
+          this.skus = _.sortBy(this.skus, this.sortKey).reverse()
+        }
+      },
    },
    computed: {
     displayedSkus () {
