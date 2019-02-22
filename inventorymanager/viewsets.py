@@ -87,6 +87,12 @@ class ProductLineViewSet(viewsets.ModelViewSet):
         productline.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_term = self.request.query_params.get('search', None)
+        if search_term:
+            queryset = Product_Line.objects.filter(product_line_name__icontains=search_term)
+        return queryset
 
 # Begin Explicit APIs
 @login_required(login_url='/accounts/login/')
@@ -125,6 +131,21 @@ def skus_to_ingredient(request,ingredientid):
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['GET','POST'])
+def formula_to_sku(request,formulaid):
+    if(request.method == 'GET'):
+        try: 
+            formulas = Formula.objects.filter(id=formulaid)
+            response=[]
+            for formula in formulas:
+                serializer = FormulaSerializer(formula)
+                response.append(serializer.data)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
 
 @login_required(login_url='/accounts/login/')
 @api_view(['GET','POST'])
