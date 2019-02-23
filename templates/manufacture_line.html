@@ -45,6 +45,7 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
+            <p class="error" v-if="short_name_errors">${ short_name_errors }</p>
             <form v-on:submit.prevent="addManufactureLine()">
                <div class="modal-body">
                   <div class="form-group">

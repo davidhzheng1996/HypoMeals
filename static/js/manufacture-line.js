@@ -12,7 +12,8 @@ new Vue({
      perPage: 10,
      pages:[],
      has_paginated:false,
-     upload_errors: ''
+     upload_errors: '',
+     short_name_errors: '',
    },
    mounted: function() {
        this.getManufactureLines();
@@ -67,16 +68,13 @@ new Vue({
        },
        addManufactureLine: function() {
          this.loading = true;
+         if(this.newManufactureLine.ml_short_name.indexOf(' ') >= 0 || this.newManufactureLine.ml_short_name.length > 5){
+            this.short_name_errors = "short name invalid"
+         }
          this.$http.post('/api/manufacture_line/',this.newManufactureLine)
            .then((response) => {
          $("#addManufactureLineModal").modal('hide');
          this.loading = false;
-         for(let index = 0; index<this.manufacture_lines.length; index++){
-            if(this.newManufactureLine.ml_short_name.toLowerCase()===this.manufacture_lines[index].ml_short_name.toLowerCase()){
-                console.log("Already exists");
-                return;
-            }
-          }
          if((this.manufacture_lines.length%this.perPage)==0){
             this.addPage();
          }
@@ -84,7 +82,8 @@ new Vue({
          })
            .catch((err) => {
          this.loading = false;
-         console.log(err);
+         this.message = err.data;
+         console.log(err.bodyText);
        })
        },
        setPages: function () {

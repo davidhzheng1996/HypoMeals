@@ -7,6 +7,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     # map /ingredient to ingredient.html
     path('ingredient',views.ingredient),
+    path('netid',views.netid),
     # map /sku to sku.html
     path('sku',views.sku),
     path('formula',views.formula),
@@ -16,6 +17,7 @@ urlpatterns = [
     path('goal/<int:goalid>',views.manufacture_goal),
     path('sku/<int:formulaid>',views.formula_to_sku),
     path('formula/<int:formulaid>',views.ingredients_to_formula),
+    path('show_formula/<int:formulaid>',views.skus_to_formula),
     path('ingredient/<int:ingredientid>',views.skus_to_ingredients),
     path('calculate_goal/<int:goalid>',views.calculate_goal),
     # ingredient file upload endpoint
@@ -25,7 +27,11 @@ urlpatterns = [
     path('api/ingredient_export/', IngredientExportView.as_view()),
     path('api/calculate_goal/<int:goalid>',viewsets.calculate_goal),
     path('api/skus_to_ingredient/<int:ingredientid>',viewsets.skus_to_ingredient),
+    path('api/netid',viewsets.netid_login),
+    path('api/skus_to_formula/<int:formulaid>',viewsets.skus_to_formula),
     path('api/formula_to_sku/<int:formulaid>',viewsets.formula_to_sku),
+    path('api/mls_to_sku/<int:skuid>',viewsets.mls_to_sku),
+    path('api/add_ml_to_sku/<int:skuid>/<int:mlshortname>',viewsets.add_ml_to_sku),
     # path('api/calculate_goal/<int:id>/<int:goalid>',viewsets.calculate_ingredient),
     path('api/ingredients_to_sku/<int:skuid>',viewsets.ingredients_to_sku),
     path('api/delete_ingredients_to_sku/<int:sku>/<int:ig>',viewsets.delete_ingredients_to_sku),
@@ -44,5 +50,6 @@ urlpatterns = [
     path('api/sku_export/', SkuExportView.as_view()),
     path('api/sku_formula_import/', SkuFormulaImportView.as_view()),
     path('api/product_line_import/', ProductLineImportView.as_view()),
-    path('api/active_manufacturing_lines/', viewsets.active_manufacturing_lines)
+    path('api/active_manufacturing_lines/', viewsets.active_manufacturing_lines),
+    path('api/bulk_match_manufacturing_lines/', viewsets.bulk_match_manufacturing_lines)
 ]

@@ -6,7 +6,12 @@ from .models import *
 from .serializers import *
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.middleware.csrf import CsrfViewMiddleware, get_token
+from django.test import Client
+from django.contrib.auth.models import User
 
+
+import requests
 
 
 # APIView is specific for handling REST API requests. User need to Explicitly describe  
@@ -92,29 +97,69 @@ class ProductLineViewSet(viewsets.ModelViewSet):
 # Begin Explicit APIs
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])
+# return list of all manufacturing lines with status 
 def active_manufacturing_lines(request):
     if(request.method=='POST'):
         try: 
-            active_skus = request.data
-            for sku in active_skus:
-                print(sku['sku_name'])
-            
-            # manufacture_goals = Manufacture_Goal.objects.filter(name = goalid)
-            # response = {}
-            # for goal in manufacture_goals:
-            #     skuid = goal.sku.id
-            #     ingredients = Sku_To_Ingredient.objects.filter(sku = skuid)
-            #     for ingredient in ingredients: 
-            #         package_amount = goal.desired_quantity * ingredient.quantity
-            #         if ingredient.ig.ingredient_name in response:
-            #             response[ingredient.ig.ingredient_name] = response[ingredient.ig.ingredient_name]+package_amount
-            #         else: 
-            #             response[ingredient.ig.ingredient_name] = package_amount
-            #     print(response)
-            #     return Response(response,status=status.HTTP_200_OK)
+            active_sku_ids = request.data
+            # ml_short_name -> num_active_sku
+            ml_active_skus_count = {}
+            for sku_id in active_sku_ids:
+                mls_to_formula = Sku_To_Ml_Shortname.objects.filter(sku=sku_id)
+                ml_short_names= mls_to_formula.values_list("ml_short_name",flat=True) 
+                for name in ml_short_names:
+                    if name in ml_active_skus_count.keys():
+                        ml_active_skus_count[name] += 1
+                    else:
+                        ml_active_skus_count[name] = 1
+            response = []
+            for ml in Manufacture_line.objects.all():
+                serializer = ManufactureLineSerializer(ml)
+                ml_data = serializer.data
+                short_name = ml_data['ml_short_name']
+                ml_data['all_active'] = False
+                ml_data['part_active'] = False
+                if short_name in ml_active_skus_count.keys():
+                    if len(active_sku_ids) == ml_active_skus_count[short_name]:
+                        ml_data['all_active'] = True
+                    else:
+                        ml_data['part_active'] = True
+                response.append(ml_data)
+            return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
+
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+# return list of all manufacturing lines with status 
+def bulk_match_manufacturing_lines(request):
+    if(request.method=='POST'):
+        try: 
+            active_sku_ids = request.data['active_sku_ids']
+            active_ml_short_names = request.data['active_ml_short_names']
+            all_ml_short_names = Manufacture_line.objects.all().values_list("ml_short_name",flat=True)
+            response = []
+            for sku_id in active_sku_ids:
+                for ml_short_name in all_ml_short_names:
+                    if ml_short_name in active_ml_short_names:
+                        sku = Sku.objects.get(id=sku_id)
+                        ml = Manufacture_line.objects.get(ml_short_name=ml_short_name)
+                        newrelation = {'sku':sku.id,'ml_short_name':ml.ml_short_name}
+                        serializer = ManufactureLineToSkuSerializer(data=newrelation)
+                        if(serializer.is_valid()):
+                            serializer.save()
+                            response.append(serializer.data)
+                        else:
+                            return Response(status=status.HTTP_400_BAD_REQUEST)
+                    # Also need to remove all relationship between active_skus and non_active_mls
+                    else:
+                        if Sku_To_Ml_Shortname.objects.filter(sku=sku_id,ml_short_name=ml_short_name).exists():
+                            delete_relation = Sku_To_Ml_Shortname.objects.get(sku=sku_id,ml_short_name=ml_short_name)
+                            delete_relation.delete()
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
 @api_view(['GET'])
@@ -145,6 +190,20 @@ def skus_to_ingredient(request,ingredientid):
             sku_to_ingredient = Sku_To_Ingredient.objects.filter(ig=ingredientid)
             ids= sku_to_ingredient.values_list("sku",flat=True)
             skus = Sku.objects.filter(id__in=ids)
+            response = []
+            for sku in skus:
+                serializer = SkuSerializer(sku)
+                response.append(serializer.data)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['GET','POST'])
+def skus_to_formula(request,formulaid):
+    if(request.method == 'GET'):
+        try: 
+            skus = Sku.objects.filter(formula=formulaid)
             response = []
             for sku in skus:
                 serializer = SkuSerializer(sku)
@@ -282,6 +341,40 @@ def update_ingredients_to_formula(request,formula,ig):
             print(e)
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
+@login_required(login_url='/accounts/login/')
+@api_view(['GET'])
+def mls_to_sku(request,skuid):
+    if(request.method == 'GET'):
+        try: 
+            mls_to_formula = Sku_To_Ml_Shortname.objects.filter(sku=skuid)
+            ml_short_names= mls_to_formula.values_list("ml_short_name",flat=True)
+            mls = Manufacture_line.objects.filter(ml_short_name__in=ml_short_names)
+            response = []
+            for ml in mls:
+                serializer = ManufactureLineSerializerSerializer(ml)
+                for relation in Sku_To_Ml_Shortname: 
+                    if(relation.ml_short_name.ml_short_name == ml.ml_short_name):
+                        data = serializer.data
+                        # data['quantity'] = relation.quantity
+                        response.append(data)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET','POST'])
+def add_ml_to_sku(request,skuid,mlshortname):
+    # need to check for ml short name uniqueness.
+    if(request.method == 'POST'):
+        try: 
+            sku = Sku.objects.get(id=skuid)
+            ml = Ingredient.objects.get(ml_short_name=mlshortname)
+            newrelation = {'sku':sku.id,'ml_short_name':ml.ml_short_name}
+            serializer = ManufactureLineToSkuSerializer(data=newrelation)
+            if(serializer.is_valid()):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])
@@ -410,13 +503,37 @@ def update_goal(request,id,goalid):
     if(request.method == 'POST'):
         try: 
             goal = Goal.objects.get(user = id, id=goalid)
-            serializer = GoalSerializer(goal,{'goalname':request.data['goalname']},partial=True)
+            serializer = GoalSerializer(goal,{'goalname':request.data['goalname'],'deadline':request.data['deadline']},partial=True)
             if(serializer.is_valid()):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
             return Response(status = status.HTTP_400_BAD_REQUEST)
         except Exception as e: 
-            print(e)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def netid_login(request):
+    if(request.method == 'POST'):
+        try: 
+            # Calling Collab Gets
+            url = 'https://api.colab.duke.edu/identity/v1/'
+            headers = {'x-api-key':'hypo-meals',"Authorization":'Bearer '+request.data['access_token']}
+            r = requests.get(url,headers=headers)
+            data= r.json()
+            username = data['netid']
+            password = '(*124aqtn13Qsmt'
+            user = User.objects.filter(username=username)
+            if(len(user)==0):
+                newuser = User.objects.create_user(username,'', password)
+                newuser.save()
+            # CSRF Token And Logging Into Django
+            csrf_client = Client(enforce_csrf_checks=True)
+            url = '/accounts/login/?next=/'
+            csrf_client.get(url)
+            csrftoken = csrf_client.cookies['csrftoken']
+            login_data = dict(username=username, password=password, csrfmiddlewaretoken=csrftoken.value, next='/')
+            return csrf_client.post(url, data=login_data, headers=dict(Referer=url))
+        except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 

@@ -1,23 +1,27 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 import uuid
+from datetime import date
 
 # product_line to sku is one to many. Each sku matches to exactly one product line
 class Product_Line(models.Model):
 	product_line_name = models.CharField(max_length=128, primary_key=True, unique=True, null=False)
 
 class Formula(models.Model):
-	formula_name = models.CharField(max_length=32, null=False, default='')
+	formula_name = models.CharField(max_length=32, unique=True, null=False, default='')
 	id = models.BigIntegerField(primary_key=True, null=False, unique=True)
 	comment = models.TextField(null=True)
 
 class Sku(models.Model):
 	id = models.BigIntegerField(primary_key=True, unique=True, null=False)
-	caseupc = models.FloatField(null=False, default=0)
-	unitupc = models.FloatField(null=True, default=0)
+	caseupc = models.CharField(null=False, default=100000000000,unique=True, 
+		max_length=12, validators=[RegexValidator(r'^\d{12,12}$', message="UPC not 12 digits", code = "invalid UPC")])
+	unitupc = models.CharField(null=False, default=100000000000,
+		max_length=12, validators=[RegexValidator(r'^\d{12,12}$', message="UPC not 12 digits", code = "invalid UPC")])
 	sku_name = models.CharField(max_length=32, null=False, default='')
-	count = models.PositiveIntegerField(null=True)
-	unit_size = models.CharField(max_length=128, null=True)
+	count = models.PositiveIntegerField(null=False, default=0) 
+	unit_size = models.CharField(max_length=128, null=False, default='')
 	comment = models.TextField(null=True)
 	productline = models.ForeignKey(Product_Line, on_delete=models.CASCADE, default='')
 	formula = models.ForeignKey(Formula, on_delete=models.CASCADE, default = 1)
@@ -34,7 +38,8 @@ class Ingredient(models.Model):
 
 class Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
-	goalname = models.CharField(max_length=128,null=False,default='')
+	goalname = models.CharField(max_length=128,unique=True,null=False,default='')
+	deadline = models.DateField(default=date.today, null=False, editable=True)
 
 
 class IngredientFile(models.Model):
@@ -79,7 +84,8 @@ class Manufacture_Goal(models.Model):
 
 class Manufacture_line(models.Model):
 	ml_name = models.CharField(max_length=32, null=False, default='')
-	ml_short_name = models.CharField(primary_key = True, max_length=5, null=False, unique=True)
+	ml_short_name = models.CharField(primary_key = True, max_length=5, null=False, unique=True,
+		validators=[RegexValidator(r'^[a-zA-Z0-9\S]{1,5}$', message="Short name can have only Alphabets and Numbers", code = "invalid Short name")])
 	comment = models.TextField(null=True)
 
 class Sku_To_Ml_Shortname(models.Model):
