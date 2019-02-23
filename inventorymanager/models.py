@@ -17,7 +17,7 @@ class Sku(models.Model):
 	id = models.BigIntegerField(primary_key=True, unique=True, null=False)
 	caseupc = models.CharField(null=False, default=100000000000,unique=True, 
 		max_length=12, validators=[RegexValidator(r'^\d{12,12}$', message="UPC not 12 digits", code = "invalid UPC")])
-	unitupc = models.CharField(null=False, default=100000000000,
+	unitupc = models.CharField(null=False, default=100000000000,unique=False,
 		max_length=12, validators=[RegexValidator(r'^\d{12,12}$', message="UPC not 12 digits", code = "invalid UPC")])
 	sku_name = models.CharField(max_length=32, null=False, default='')
 	count = models.PositiveIntegerField(null=False, default=0) 

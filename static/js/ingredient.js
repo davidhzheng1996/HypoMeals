@@ -152,6 +152,13 @@ new Vue({
     },
     updateIngredient: function () {
       this.loading = true;
+      var temp = this.currentIngredient.package_size;
+        temp = temp.replace(/\d/g,'').trim().toLowerCase();
+        temp = temp.replace('.','');
+        if(!this.unitCheck(temp)){
+            this.unit_error = "unit not compatible";
+            return;
+        }
       this.$http.put('/api/ingredient/' + this.currentIngredient.id + '/', this.currentIngredient)
         .then((response) => {
           $("#editIngredientModal").modal('hide');

@@ -178,11 +178,11 @@ new Vue({
        addSku: function() {
          this.loading = true;
          if(!this.upcCheck(this.newSku.caseupc)){
-          this.case_upc_errors = "case upc not up to format";
+          this.case_upc_errors = "case upc not up to format, make sure leading number or check digit is correct";
           return;
          }
          if(!this.upcCheck(this.newSku.unitupc)){
-          this.unit_upc_errors = "unit upc not up to format";
+          this.unit_upc_errors = "unit upc not up to format, make sure leading number or check digit is correct";
           return;
          }
          this.$http.post('/api/sku/',this.newSku)
@@ -204,11 +204,11 @@ new Vue({
        updateSku: function() {
          this.loading = true;
          if(!this.upcCheck(this.currentSku.caseupc)){
-          this.case_upc_errors = "case upc not up to format";
+          this.case_upc_errors = "case upc not up to format, make sure leading number or check digit is correct";
           return;
          }
          if(!this.upcCheck(this.currentSku.unitupc)){
-          this.unit_upc_errors = "unit upc not up to format";
+          this.unit_upc_errors = "unit upc not up to format, make sure leading number or check digit is correct";
           return;
          }
          this.$http.put('/api/sku/'+ this.currentSku.id + '/',     this.currentSku)
@@ -231,6 +231,20 @@ new Vue({
         if(upcnum.charAt(0)==="2" || upcnum.charAt(0) === "3" || upcnum.charAt(0) === "4" || upcnum.charAt(0) ==="5"){
           return false;
         } 
+        let odds = parseInt(upcnum.charAt(0)) + parseInt(upcnum.charAt(2)) + parseInt(upcnum.charAt(4)) + parseInt(upcnum.charAt(6))
+        + parseInt(upcnum.charAt(8))+ parseInt(upcnum.charAt(10));
+        odds = odds*3;
+        let evens = parseInt(upcnum.charAt(1)) + parseInt(upcnum.charAt(3)) + parseInt(upcnum.charAt(5)) + parseInt(upcnum.charAt(7))
+        + parseInt(upcnum.charAt(9));
+        let sum = odds + evens;
+        if(sum % 10 === 0 && upcnum.charAt(11) != 0){
+          return false;
+        } else{
+          let check = 10 - (sum % 10);
+          if(upcnum.charAt(11) != check){
+            return false;
+          }
+        }
         return true;
       },
       selectSkuCSV: function(event) {
