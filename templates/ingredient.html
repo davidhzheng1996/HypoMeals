@@ -62,6 +62,7 @@
                               </button>
                         </div>
                         <p class="error" v-if="name_error">${ name_error }</p>
+                        <p class="error" v-if="unit_error">${ unit_error }</p>
                         <p class="error" v-if="error">${ error }</p>
                         <form v-on:submit.prevent="addIngredient()">
                               <div class="modal-body">

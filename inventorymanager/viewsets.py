@@ -276,7 +276,7 @@ def update_ingredients_to_formula(request,formula,ig):
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
-@api_view(['GET','POST'])
+@api_view(['GET'])
 def mls_to_sku(request,skuid):
     if(request.method == 'GET'):
         try: 
@@ -295,7 +295,7 @@ def mls_to_sku(request,skuid):
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET','POST'])
+@api_view(['GET'])
 def add_ml_to_sku(request,skuid,mlshortname):
     # need to check for ml short name uniqueness.
     if(request.method == 'POST'):

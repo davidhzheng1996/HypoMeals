@@ -29,6 +29,7 @@ new Vue({
     upload_errors: '',
     name_error: '',
     error:'',
+    unit_error: '',
   },
   mounted: function () {
     this.getIngredients();
@@ -126,6 +127,13 @@ new Vue({
               return;
             }
           }
+        var temp = this.newIngredient.package_size;
+        temp = temp.replace(/\d/g,'').trim().toLowerCase();
+        temp = temp.replace('.','');
+        if(!this.unitCheck(temp)){
+            this.unit_error = "unit not compatible";
+            return;
+        }
       this.$http.post('/api/ingredient/', this.newIngredient)
         .then((response) => {
           $("#addIngredientModal").modal('hide');
@@ -156,6 +164,19 @@ new Vue({
           this.error = err.bodyText;
           console.log(err);
         })
+    },
+    unitCheck: function(temp){
+      let len = temp.length;
+      if(temp.charAt(len-1)==='s'){
+        temp = temp.substring(0, len-1);
+      }
+      if(temp === "oz" || temp === "ounce" || temp === "lb" || temp === "pound" || temp === "g" || temp === "gram" || temp === "kg" 
+        || temp === "kilogram" || temp === "ton" || temp === "floz" || temp === "fluidounce" || temp === "gal" || temp === "gallon" 
+        || temp === "pt" || temp === "pint" || temp === "qt" || temp === "quart" || temp === "ml" || temp === "milliliter" || 
+        temp === "l" || temp === "liter" || temp === "ct" || temp === "count"){
+        return true;
+      }
+      return false;
     },
     setPages: function () {
       let numberOfPages = Math.ceil(this.ingredients.length / this.perPage);

@@ -32,8 +32,9 @@ class Ingredient(models.Model):
 	id = models.BigIntegerField(primary_key=True, unique=True, null=False)
 	ingredient_name = models.CharField(max_length=128, unique=True, null=False, default='')
 	description = models.TextField(null=True) 
-	package_size = models.CharField(max_length=128,null=True)
-	cpp = models.FloatField(null=True)
+	package_size = models.CharField(max_length=128,null=False, default = '',
+		validators=[RegexValidator(r'^(\d*\.?\d+)\s*(\D.*|)$', message="Package size not up to standard", code = "invalid package_size")])
+	cpp = models.FloatField(null=False, default=1.0)
 	comment = models.TextField(null=True)
 
 class Goal(models.Model):
