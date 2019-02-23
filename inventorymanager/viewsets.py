@@ -143,6 +143,8 @@ def bulk_match_manufacturing_lines(request):
             for sku_id in active_sku_ids:
                 for ml_short_name in all_ml_short_names:
                     if ml_short_name in active_ml_short_names:
+                        if Sku_To_Ml_Shortname.objects.filter(sku=sku_id,ml_short_name=ml_short_name).exists():
+                            continue
                         sku = Sku.objects.get(id=sku_id)
                         ml = Manufacture_line.objects.get(ml_short_name=ml_short_name)
                         newrelation = {'sku':sku.id,'ml_short_name':ml.ml_short_name}

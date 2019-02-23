@@ -407,12 +407,12 @@ new Vue({
         let active_skus = this.skus.filter((sku) => {
           return sku.active;
         }).map((sku) => {
-          return sku.id
+          return sku.id;
         })
         let active_mls = this.ml_status.filter((ml) => {
           return ml['all_active'];
         }).map((ml) => {
-          return ml['ml_short_name']
+          return ml['ml_short_name'];
         })
         let request = {
           'active_sku_ids': active_skus,
@@ -420,12 +420,6 @@ new Vue({
         }
         this.$http.post('/api/bulk_match_manufacturing_lines/', request)
         .then((response) => {
-          this.ml_status.forEach((el, idx, array) => {
-            // if(active_mls.indexOf(el['ml_short_name']) > -1) {
-            //   array['part_active'] = false
-            //   array['all_active'] = true
-            // }
-          })
           $("#updateMLModal").modal('hide');
         })
         .catch((err) => {
@@ -433,6 +427,10 @@ new Vue({
         })
       },
    
+      ml_checkbox_click: function(ev, ml) {
+        ml['part_active'] = false;
+      }
+
    },
 
   computed: {

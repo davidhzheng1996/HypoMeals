@@ -231,7 +231,8 @@
                                           <tbody>
                                                 <tr v-for="ml in ml_status">
                                                       <td>
-                                                            <input type="checkbox" :indeterminate.prop="ml.part_active" v-model='ml.all_active'>
+                                                            <input type="checkbox" :indeterminate.prop="ml.part_active" v-model='ml.all_active'
+                                                                  v-on:click="ml_checkbox_click($event, ml)">
                                                       </td>
                                                       <td>${ml.ml_name}</td>
                                                 </tr>
