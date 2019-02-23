@@ -370,8 +370,18 @@ new Vue({
 
       // store manufacture lines states based on active SKUs
       getManufactureLines: function(event) {
-        // Pass the list of active SKUs to api 
-        
+        // Pass the set of active SKUs to API and obtain manufacturing lines status
+        let active_skus = this.skus.filter((sku) => {
+          return sku.active;
+        })
+        this.$http.post('/api/active_manufacturing_lines/', active_skus)
+        .then((response) => {
+            this.currentSku = response.data;
+            $("#editSkuModal").modal('show');
+        })
+        .catch((err) => {
+            console.log(err);
+        })
       },
 
       updateManufactureLines: function(event) {

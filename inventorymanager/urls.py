@@ -43,5 +43,6 @@ urlpatterns = [
     path('api/sku_import/', SkuImportView.as_view()),
     path('api/sku_export/', SkuExportView.as_view()),
     path('api/sku_formula_import/', SkuFormulaImportView.as_view()),
-    path('api/product_line_import/', ProductLineImportView.as_view())
+    path('api/product_line_import/', ProductLineImportView.as_view()),
+    path('api/active_manufacturing_lines/', viewsets.active_manufacturing_lines)
 ]
