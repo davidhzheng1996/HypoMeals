@@ -10,11 +10,14 @@
             <thead>
                <tr>
                   <th scope="col">Goal Name</th>
+                  <th scope="col">Deadline</th>
+                  <th scope="col">Actions</th>
                </tr>
             </thead>
             <tbody>
                <tr v-for="goal in displayedGoals">
                   <th scope="row">${goal.goalname}</th>
+                  <th scope="row">${goal.deadline}</th>
                   <td>
                      <button class="btn btn-primary" v-on:click="viewGoal(goal.id)">View Goal</button>
                      <button class="btn btn-info" v-on:click="getGoal(goal.id)">Edit</button>
@@ -44,6 +47,7 @@
                </button>
             </div>
             <!-- Not sure if this needs to be refactored.... jinja2 inside of vue? ew. -->
+            <p class="error" v-if="dateError">${ dateError }</p>
             <form v-on:submit.prevent="addGoal('{{user.id}}')">
                <div class="modal-body">
                   <div class="form-group">
@@ -53,6 +57,15 @@
                         class="form-control"
                         placeholder="Enter Goal Name"
                         v-model="newGoal.goalname"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
+                     <label>Deadline*</label>
+                     <input
+                        type="date"
+                        class="form-control"
+                        placeholder="Enter Deadline"
+                        v-model="newGoal.deadline"
                         required="required" >
                   </div>
                </div>
@@ -74,6 +87,7 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
+            <p class="error" v-if="dateError">${ dateError }</p>
             <form v-on:submit.prevent="updateGoal('{{user.id}}',currentGoal.id)">
                <div class="modal-body">
                   <div class="form-group">
@@ -83,6 +97,15 @@
                         class="form-control"
                         placeholder="Enter SKU Name"
                         v-model="currentGoal.goalname"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
+                     <label>Deadline*</label>
+                     <input
+                        type="date"
+                        class="form-control"
+                        placeholder="Enter Deadline"
+                        v-model="currentGoal.deadline"
                         required="required" >
                   </div>
                </div>

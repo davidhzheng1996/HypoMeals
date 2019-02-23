@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+<div id="starting">
+   <div class="container">
+      <div class="row">
+         <h1>SKUs for this Formula
+         </h1>
+         <table class="table">
+            <thead>
+               <tr>
+                  <th v-on:click="sortBy('id')" scope="col">ID</th>
+                  <th v-on:click="sortBy('sku_name')" scope="col">Name</th>
+                  <th v-on:click="sortBy('unitupc')" scope="col">Unit UPC</th>
+                  <th v-on:click="sortBy('caseupc')" scope="col">Case UPC</th>
+                  <th v-on:click="sortBy('productline')" scope="col">Productline</th>
+                  <th v-on:click="sortBy('unit_size')" scope="col">Unit Size</th>
+                  <th v-on:click="sortBy('count')" scope="col">Count</th>
+                  <th v-on:click="sortBy('formula')" scope="col">Formula</th>
+                  <th v-on:click="sortBy('formula scale factor')" scope="col">Formula Scale</th>
+                  <th v-on:click="sortBy('manufacture_rate')" scope="col">Manufacture Rate</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr v-for="sku in displayedSkus">
+                  <th scope="row">${sku.id}</th>
+                  <td>${sku.sku_name}</td>
+                  <td>${sku.unitupc}</td>
+                  <td>${sku.caseupc}</td>
+                  <td>${sku.productline}</td>
+                  <td>${sku.unit_size}</td>
+                  <td>${sku.count}</td>
+                  <td>${sku.formula}</td>
+                  <td>${sku.formula_scale_factor}</td>
+                  <td>${sku.manufacture_rate}</td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <div class="clearfix btn-group col-md-2 offset-md-5">
+            <button type="button" class="btn btn-sm btn-outline-secondary" v-if="page != 1" @click="page--"> << </button>
+            <!-- <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> ${pageNumber} </button> -->
+            <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>
+            <button type="button" @click="page++" v-if="page < pages.length" class="btn btn-sm btn-outline-secondary"> >> </button>
+          </div>
+   </div>
+</div>
+<script src="../static/js/skus_to_formula.js"></script>
+<!-- Not sure if there isn't a better solution -->
+<script>vm.getSkus({{formulaid}})</script>
+{% endblock %}

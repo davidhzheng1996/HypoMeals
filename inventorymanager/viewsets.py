@@ -134,6 +134,20 @@ def skus_to_ingredient(request,ingredientid):
 
 @login_required(login_url='/accounts/login/')
 @api_view(['GET','POST'])
+def skus_to_formula(request,formulaid):
+    if(request.method == 'GET'):
+        try: 
+            skus = Sku.objects.filter(formula=formulaid)
+            response = []
+            for sku in skus:
+                serializer = SkuSerializer(sku)
+                response.append(serializer.data)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['GET','POST'])
 def formula_to_sku(request,formulaid):
     if(request.method == 'GET'):
         try: 
@@ -261,6 +275,40 @@ def update_ingredients_to_formula(request,formula,ig):
             print(e)
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
+@login_required(login_url='/accounts/login/')
+@api_view(['GET','POST'])
+def mls_to_sku(request,skuid):
+    if(request.method == 'GET'):
+        try: 
+            mls_to_formula = Sku_To_Ml_Shortname.objects.filter(sku=skuid)
+            ml_short_names= mls_to_formula.values_list("ml_short_name",flat=True)
+            mls = Manufacture_line.objects.filter(ml_short_name__in=ml_short_names)
+            response = []
+            for ml in mls:
+                serializer = ManufactureLineSerializerSerializer(ml)
+                for relation in Sku_To_Ml_Shortname: 
+                    if(relation.ml_short_name.ml_short_name == ml.ml_short_name):
+                        data = serializer.data
+                        # data['quantity'] = relation.quantity
+                        response.append(data)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET','POST'])
+def add_ml_to_sku(request,skuid,mlshortname):
+    # need to check for ml short name uniqueness.
+    if(request.method == 'POST'):
+        try: 
+            sku = Sku.objects.get(id=skuid)
+            ml = Ingredient.objects.get(ml_short_name=mlshortname)
+            newrelation = {'sku':sku.id,'ml_short_name':ml.ml_short_name}
+            serializer = ManufactureLineToSkuSerializer(data=newrelation)
+            if(serializer.is_valid()):
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])
@@ -389,7 +437,7 @@ def update_goal(request,id,goalid):
     if(request.method == 'POST'):
         try: 
             goal = Goal.objects.get(user = id, id=goalid)
-            serializer = GoalSerializer(goal,{'goalname':request.data['goalname']},partial=True)
+            serializer = GoalSerializer(goal,{'goalname':request.data['goalname'],'deadline':request.data['deadline']},partial=True)
             if(serializer.is_valid()):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
