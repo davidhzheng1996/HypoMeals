@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 
 import requests
-
+import re
 
 # APIView is specific for handling REST API requests. User need to Explicitly describe  
 # the logic for post, get, delete, etc. If not described, action is not allowed. 
@@ -176,7 +176,20 @@ def calculate_goal(request,goalid):
                 formula = sku.formula
                 ingredients = Formula_To_Ingredients.objects.filter(formula = formula)
                 for ingredient in ingredients: 
-                    package_amount = goal.desired_quantity * ingredient.quantity
+                    package_size = re.findall(r'\d*\.?\d+', ingredient.ig.package_size)
+                    package_size_unit = re.sub(r'\d*\.?\d+', '', ingredient.ig.package_size)
+                    package_size_unit = package_size_unit.strip().replace('.','').lower()
+                    if(package_size_unit[len(package_size_unit)-1]=='s'):
+                        package_size_unit = package_size_unit[:-1]
+                    print(package_size_unit)
+                    float_package_size = float(package_size[0]) # from ingredient's package size
+                    ingredient_quantity = re.findall(r'\d*\.?\d+', ingredient.quantity)
+                    float_quantity = float(ingredient_quantity[0]) # from ingredient's quantity
+                    quantity_unit = re.sub(r'\d*\.?\d+', '', ingredient.quantity)
+                    quantity_unit = quantity_unit.strip().replace('.','').lower()
+                    if(quantity_unit[len(quantity_unit)-1]=='s'):
+                        quantity_unit = quantity_unit[:-1]
+                    package_amount = float(goal.desired_quantity) * float_quantity
                     if ingredient.ig.ingredient_name in response:
                         response[ingredient.ig.ingredient_name] = response[ingredient.ig.ingredient_name]+package_amount
                     else: 

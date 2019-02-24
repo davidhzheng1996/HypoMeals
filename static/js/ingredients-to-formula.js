@@ -77,7 +77,7 @@ var vm = new Vue({
               return;
             }
           }
-        var temp = this.newIngredient.package_size;
+        var temp = this.newIngredient.quantity;
         temp = temp.replace(/\d/g,'').trim().toLowerCase();
         temp = temp.replace('.','');
         if(!this.unitCheck(temp)){
@@ -101,7 +101,7 @@ var vm = new Vue({
     },
     updateIngredient: function (formulaid,ingredientid) {
       this.loading = true;
-        var temp = this.currentIngredient.package_size;
+        var temp = this.currentIngredient.quantity;
         temp = temp.replace(/\d/g,'').trim().toLowerCase();
         temp = temp.replace('.','');
         if(!this.unitCheck(temp)){
