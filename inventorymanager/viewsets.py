@@ -172,7 +172,9 @@ def calculate_goal(request,goalid):
             response = {}
             for goal in manufacture_goals:
                 skuid = goal.sku.id
-                ingredients = Sku_To_Ingredient.objects.filter(sku = skuid)
+                sku = Sku.objects.get(id = skuid)
+                formula = sku.formula
+                ingredients = Formula_To_Ingredients.objects.filter(formula = formula)
                 for ingredient in ingredients: 
                     package_amount = goal.desired_quantity * ingredient.quantity
                     if ingredient.ig.ingredient_name in response:
