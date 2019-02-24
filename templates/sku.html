@@ -4,12 +4,14 @@
    <div class="container">
       <div class="row">
          <h1>List of SKUs
+            {% if user.is_superuser %}
             <button class="btn btn-success" data-toggle="modal" data-target="#addSkuModal">Add Sku</button>
             <input class="btn btn-success" type="file" @change="selectSkuCSV">
             <button class="btn btn-success" type="submit" @click="uploadSkuCSV">Upload Sku</button>
 <!--             <input class="btn btn-success" type="file" @change="selectFormulaCSV">
             <button class="btn btn-success" type="submit" @click="uploadFormulaCSV">Upload Formula</button> -->
             <p class="error" v-if="upload_errors">${ upload_errors }</p>
+            {% endif %}
             <button class="btn btn-success" type="submit" @click="exportSkuCSV">Export Sku</button>
             <!-- <button class="btn btn-success" type="submit" @click="exportFormula()">Export Formulas</button> -->
          </h1>
@@ -47,8 +49,10 @@
                   <td>${sku.manufacture_rate}</td>
                   <td>
                      <button class="btn btn-primary" v-on:click="viewFormula(sku.formula)">View Formula</button>
+                     {% if user.is_superuser %}
                      <button class="btn btn-info" v-on:click="getSku(sku.id)">Edit</button>
                      <button class="btn btn-danger" v-on:click="deleteSku(sku.id)">Delete</button>
+                     {% endif %}
                   </td>
                </tr>
             </tbody>
@@ -63,6 +67,7 @@
    </div>
    <div class="loading" v-if="loading===true">Loading&#8230;</div>
    <!-- Add Article Modal -->
+   {% if user.is_superuser %}
    <div class="modal fade" id="addSkuModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
@@ -187,8 +192,10 @@
       </div>
       <div class="loading" v-if="loading===true">Loading&#8230;</div>
    </div>
+   {% endif %}
    <!-- End of add article modal -->
-   <!-- Edit Article Modal -->
+   <!-- Edit Article Modal -->               
+   {% if user.is_superuser %}
    <div class="modal fade" id="editSkuModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
@@ -309,6 +316,7 @@
       </div>
       <div class="loading" v-if="loading===true">Loading&#8230;</div>
    </div>
+   {% endif %}
    <!-- End of edit article modal -->
 </div>
 <script src="../static/js/sku.js"></script>
