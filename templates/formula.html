@@ -4,7 +4,9 @@
    <div class="container">
       <div class="row">
          <h1>List of Formulas
+            {% if user.is_superuser %}
             <button class="btn btn-success" data-toggle="modal" data-target="#addFormulaModal">Add Formula</button>
+            {% endif %}
 <!--             <input class="btn btn-success" type="file" @change="selectFormulaCSV">
             <button class="btn btn-success" type="submit" @click="uploadFormulaCSV">Upload Formula</button>
             <p class="error" v-if="upload_errors">${ upload_errors }</p>
@@ -29,8 +31,10 @@
                   <td>
                      <button class="btn btn-primary" v-on:click="viewSku(formula.id)">View SKUs</button>
                      <button class="btn btn-primary" v-on:click="viewFormula(formula.id)">View Ingredients</button>
+                     {% if user.is_superuser %}
                      <button class="btn btn-info" v-on:click="getFormula(formula.id)">Edit</button>
                      <button class="btn btn-danger" v-on:click="deleteFormula(formula.id)">Delete</button>
+                     {% endif %}
                   </td>
                </tr>
             </tbody>
@@ -45,6 +49,7 @@
    </div>
    <div class="loading" v-if="loading===true">Loading&#8230;</div>
    <!-- Add Article Modal -->
+   {% if user.is_superuser %}
    <div class="modal fade" id="addFormulaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
@@ -142,18 +147,9 @@
       </div>
       <div class="loading" v-if="loading===true">Loading&#8230;</div>
    </div>
+   {% endif %}
+
    <!-- End of edit article modal -->
 </div>
-<script>
-        var search_suggestions = []
-        // https://stackoverflow.com/questions/51104720/use-both-vue-js-and-jquery-autocomplete
-        $(function() {
-           $( "#search_input_id" ).autocomplete({
-              minLength:1,   
-              delay:500,   
-              source: search_suggestions
-           });
-        });
-</script>
 <script src="../static/js/formula.js"></script>
 {% endblock %}

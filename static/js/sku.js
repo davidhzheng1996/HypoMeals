@@ -35,6 +35,8 @@ new Vue({
             {'manufacture_rate': true},
           ],
       upload_errors: '',
+      // [['ml_short_name': ml_short_name, 'ml_name': ml_name, 'comment': comment, 'all_active': bool, 'part_active': bool] x num_ml]
+      ml_status: [],
       case_upc_errors: '',
      unit_upc_errors: '',
      error: '',
@@ -103,7 +105,13 @@ new Vue({
            this.loading = true;
            this.$http.get(api_url)
                .then((response) => {
-                   this.skus = response.data;
+                  // user selection status
+                  this.skus = response.data.map((sku) => {
+                    // make 'active' property reactive 
+                    // https://vuejs.org/v2/guide/reactivity.html#Change-Detection-Caveats
+                    Vue.set(sku, 'active', false);
+                    return sku;
+                  });
                    this.loading = false;
                    if(!this.has_paginated){
                       this.setPages();
@@ -398,9 +406,52 @@ new Vue({
           this.newSku.productline = event.target.value
       },
 
-   
-   },
+      // store manufacture lines states based on active SKUs
+      getManufactureLines: function(event) {
+        // Pass the set of active SKUs to API and obtain manufacturing lines status
+        let active_skus = this.skus.filter((sku) => {
+          return sku.active;
+        }).map((sku) => {
+          return sku.id
+        })
+        this.$http.post('/api/active_manufacturing_lines/', active_skus)
+        .then((response) => {
+            this.ml_status = response.data;
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+      },
 
+      updateManufactureLines: function(event) {
+        let active_skus = this.skus.filter((sku) => {
+          return sku.active;
+        }).map((sku) => {
+          return sku.id;
+        })
+        let active_mls = this.ml_status.filter((ml) => {
+          return ml['all_active'];
+        }).map((ml) => {
+          return ml['ml_short_name'];
+        })
+        let request = {
+          'active_sku_ids': active_skus,
+          'active_ml_short_names': active_mls
+        }
+        this.$http.post('/api/bulk_match_manufacturing_lines/', request)
+        .then((response) => {
+          $("#updateMLModal").modal('hide');
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+      },
+   
+      ml_checkbox_click: function(ev, ml) {
+        ml['part_active'] = false;
+      }
+
+   },
 
   computed: {
     displayedSkus () {

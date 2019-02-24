@@ -4,10 +4,12 @@
    <div class="container">
       <div class="row">
          <h1>List of Ingredients
+            {% if user.is_superuser %}
             <button class="btn btn-success" data-toggle="modal" data-target="#addIngredientModal">Add Ingredient</button>
             <input class="btn btn-success" type="file" @change="selectIngredientCSV">
             <button class="btn btn-success" type="submit" @click="uploadIngredientCSV">Upload</button>
             <p class="error" v-if="upload_errors">${ upload_errors }</p>
+            {%endif%}
             <button class="btn btn-success" type="submit" @click="exportIngredientCSV">Export</button>
             <button class="btn btn-success" type="submit" @click="createReport()">Create Dependency Report</button>
          </h1>
@@ -23,7 +25,9 @@
                   <th v-on:click="sortBy('package_size')" scope="col">Package Size</th>
                   <th v-on:click="sortBy('cpp')" scope="col">Cost per Package</th>
                   <th v-on:click="sortBy('description')" scope="col">Vendor Info</th>
+                  {% if user.is_superuser%}
                   <th scope="col">Actions</th>
+                  {% endif %}
                </tr>
             </thead>
             <tbody>
@@ -36,8 +40,10 @@
                   <td>${ingredient.description}</td>
                   <td>
                      <!-- <button class="btn btn-primary" v-on:click="viewIngredient(ingredient.id)">View Skus</button> -->
+                     {% if user.is_superuser %}
                      <button class="btn btn-info" v-on:click="getIngredient(ingredient.id)">Edit</button>
                      <button class="btn btn-danger" v-on:click="deleteIngredient(ingredient.id)">Delete</button>
+                     {% endif %}
                   </td>
                </tr>
             </tbody>
@@ -52,6 +58,7 @@
    </div>
    <div class="loading" v-if="loading===true">Loading&#8230;</div>
       <!-- Add Article Modal -->
+       {% if user.is_superuser %}
       <div class="modal fade" id="addIngredientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
             <div class="modal-dialog" role="document">
                   <div class="modal-content">
@@ -101,9 +108,11 @@
                   </div>
             </div>
       </div>
+      {% endif %}
       <!-- End of add article modal -->
 
       <!-- Edit Article Modal -->
+      {% if user.is_superuser %}
       <div class="modal fade" id="editIngredientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
             <div class="modal-dialog" role="document">
                   <div class="modal-content">
@@ -152,6 +161,7 @@
             </div>
             <div class="loading" v-if="loading===true">Loading&#8230;</div>
       </div>
+      {% endif %}
       <!-- End of edit article modal -->
 </div>
 <!-- <! — bootrtap js files → -->

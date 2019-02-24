@@ -4,7 +4,9 @@
    <div class="container">
       <div class="row">
          <h1>Ingredients for this Formula
+            {% if user.is_superuser %}
             <button class="btn btn-success" data-toggle="modal" data-target="#addIngredientModal">Add Ingredients</button>
+            {% endif %}
          </h1>
          <table class="table">
             <thead>
@@ -17,10 +19,12 @@
                <tr v-for="ingredient in displayedIngredients">
                   <th scope="row">${ingredient.ingredient_name}</th>
                   <th scope="row">${ingredient.quantity}</th>
+                  {% if user.is_superuser %}
                   <td>
                      <button class="btn btn-info" v-on:click="getIngredient(ingredient.id)">Edit</button>
                      <button class="btn btn-danger" v-on:click="deleteIngredient('{{formulaid}}',ingredient.id)">Delete</button> 
                   </td>
+                  {% endif %}
                </tr>
             </tbody>
          </table>
@@ -32,6 +36,7 @@
             <button type="button" @click="page++" v-if="page < pages.length" class="btn btn-sm btn-outline-secondary"> >> </button>
           </div>
    </div>
+   {% if user.is_superuser %}
    <div class="modal fade" id="addIngredientModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
@@ -116,6 +121,8 @@
       </div>
       <div class="loading" v-if="loading===true">Loading&#8230;</div>
    </div>
+   {% endif %}
+
 <!-- Add Goal Modal -->
 <!-- End of edit article modal -->
 </div>

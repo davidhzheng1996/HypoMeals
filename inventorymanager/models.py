@@ -28,6 +28,12 @@ class Sku(models.Model):
 	formula_scale_factor = models.FloatField(null=False, default=1.0)
 	manufacture_rate = models.FloatField(null=False, default=1.0)
 
+	# def clean_caseupc(self):
+	# 	caseupc = self.cleaned_data['caseupc']
+	# 	if caseupc[0] == '2' or caseupc[0] == '3' or caseupc[0] == '4' or caseupc[0] == '5':
+	# 		raise ValidationError('Leading number incorrect', code = 'invalid leading num')
+	# 	else:
+	# 		return caseupc
 
 class Ingredient(models.Model):
 	id = models.BigIntegerField(primary_key=True, unique=True, null=False)
