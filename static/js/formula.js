@@ -1,3 +1,13 @@
+ var search_suggestions = []
+        // https://stackoverflow.com/questions/51104720/use-both-vue-js-and-jquery-autocomplete
+        $(function() {
+           $( "#search_input_id" ).autocomplete({
+              minLength:1,   
+              delay:500,   
+              source: search_suggestions
+           });
+        });
+        
 Vue.filter('lowercase', function (value) {
    return value.toLowerCase()
 })

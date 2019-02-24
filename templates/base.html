@@ -40,26 +40,28 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
-       {% if user.is_superuser %}
       <li class="nav-item">
         <a class="nav-link" href="/ingredient">Ingredients</a>
       </li>
+      {% if user.is_superuser %}
       <li class="nav-item">
         <a class="nav-link" href="/product_line">Product Lines</a>
       </li>
+      {% endif %}
       <li class="nav-item">
         <a class="nav-link" href="/sku">SKUs</a>
       </li>
-      {% endif %}
       <li class="nav-item">
         <a class="nav-link" href="/goal">Goals</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/formula">Formulas</a>
       </li>
+      {% if user.is_superuser %}
       <li class="nav-item">
         <a class="nav-link" href="/manufacture_line">Manufacture Lines</a>
       </li>
+      {% endif %}
     </ul>
     <!-- <form class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
