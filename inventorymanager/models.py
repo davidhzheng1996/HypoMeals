@@ -99,7 +99,8 @@ class Sku_To_Ml_Shortname(models.Model):
 class Formula_To_Ingredients(models.Model):
 	formula = models.ForeignKey(Formula, on_delete=models.CASCADE)
 	ig = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-	quantity = models.CharField(null=False, max_length=32, default='')
+	quantity = models.CharField(max_length=128,null=False, default = '',
+		validators=[RegexValidator(r'^(\d*\.?\d+)\s*(\D.*|)$', message="quantity size not up to standard", code = "invalid quantity size")])
 
 	class Meta:
 		unique_together = (("formula","ig"),)
