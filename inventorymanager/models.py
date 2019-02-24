@@ -28,6 +28,7 @@ class Sku(models.Model):
 	formula_scale_factor = models.FloatField(null=False, default=1.0)
 	manufacture_rate = models.FloatField(null=False, default=1.0)
 
+
 class Ingredient(models.Model):
 	id = models.BigIntegerField(primary_key=True, unique=True, null=False)
 	ingredient_name = models.CharField(max_length=128, unique=True, null=False, default='')
