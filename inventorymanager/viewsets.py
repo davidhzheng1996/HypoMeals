@@ -96,6 +96,74 @@ class ProductLineViewSet(viewsets.ModelViewSet):
 
 # Begin Explicit APIs
 @login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+# return list of all manufacturing lines with status 
+def active_manufacturing_lines(request):
+    if(request.method=='POST'):
+        try: 
+            active_sku_ids = request.data
+            # ml_short_name -> num_active_sku
+            ml_active_skus_count = {}
+            for sku_id in active_sku_ids:
+                mls_to_formula = Sku_To_Ml_Shortname.objects.filter(sku=sku_id)
+                ml_short_names= mls_to_formula.values_list("ml_short_name",flat=True) 
+                for name in ml_short_names:
+                    if name in ml_active_skus_count.keys():
+                        ml_active_skus_count[name] += 1
+                    else:
+                        ml_active_skus_count[name] = 1
+            response = []
+            for ml in Manufacture_line.objects.all():
+                serializer = ManufactureLineSerializer(ml)
+                ml_data = serializer.data
+                short_name = ml_data['ml_short_name']
+                ml_data['all_active'] = False
+                ml_data['part_active'] = False
+                if short_name in ml_active_skus_count.keys():
+                    if len(active_sku_ids) == ml_active_skus_count[short_name]:
+                        ml_data['all_active'] = True
+                    else:
+                        ml_data['part_active'] = True
+                response.append(ml_data)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+# return list of all manufacturing lines with status 
+def bulk_match_manufacturing_lines(request):
+    if(request.method=='POST'):
+        try: 
+            active_sku_ids = request.data['active_sku_ids']
+            active_ml_short_names = request.data['active_ml_short_names']
+            all_ml_short_names = Manufacture_line.objects.all().values_list("ml_short_name",flat=True)
+            response = []
+            for sku_id in active_sku_ids:
+                for ml_short_name in all_ml_short_names:
+                    if ml_short_name in active_ml_short_names:
+                        if Sku_To_Ml_Shortname.objects.filter(sku=sku_id,ml_short_name=ml_short_name).exists():
+                            continue
+                        sku = Sku.objects.get(id=sku_id)
+                        ml = Manufacture_line.objects.get(ml_short_name=ml_short_name)
+                        newrelation = {'sku':sku.id,'ml_short_name':ml.ml_short_name}
+                        serializer = ManufactureLineToSkuSerializer(data=newrelation)
+                        if(serializer.is_valid()):
+                            serializer.save()
+                            response.append(serializer.data)
+                        else:
+                            return Response(status=status.HTTP_400_BAD_REQUEST)
+                    # Also need to remove all relationship between active_skus and non_active_mls
+                    else:
+                        if Sku_To_Ml_Shortname.objects.filter(sku=sku_id,ml_short_name=ml_short_name).exists():
+                            delete_relation = Sku_To_Ml_Shortname.objects.get(sku=sku_id,ml_short_name=ml_short_name)
+                            delete_relation.delete()
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
 @api_view(['GET'])
 def calculate_goal(request,goalid):
     if(request.method=='GET'):
@@ -276,7 +344,7 @@ def update_ingredients_to_formula(request,formula,ig):
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
-@api_view(['GET','POST'])
+@api_view(['GET'])
 def mls_to_sku(request,skuid):
     if(request.method == 'GET'):
         try: 
