@@ -46,6 +46,9 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
+            <p class="error" v-if="error">${ error }</p>
+            <p class="error" v-if="name_error">${ name_error }</p>
+            <p class="error" v-if="unit_error">${ unit_error }</p>
             <form v-on:submit.prevent="addIngredient('{{formulaid}}')">
                <div class="modal-body">
                   <div class="form-group">
@@ -86,6 +89,8 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
+            <p class="error" v-if="unit_error">${ unit_error }</p>
+            <p class="error" v-if="error">${ error }</p>
             <form v-on:submit.prevent="updateIngredient('{{formulaid}}',currentIngredient.id)">
                <div class="modal-body">
                   <div class="form-group">
@@ -100,7 +105,7 @@
                   <div class="form-group">
                      <label>Quantity*</label>
                      <input
-                        type="number"
+                        type="text"
                         class="form-control"
                         placeholder="Enter Desired Quantity"
                         v-model="currentIngredient.quantity"

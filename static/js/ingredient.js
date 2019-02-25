@@ -27,6 +27,9 @@ new Vue({
     ],
     // File Upload Errors
     upload_errors: '',
+    name_error: '',
+    error:'',
+    unit_error: '',
   },
   mounted: function () {
     this.getIngredients();
@@ -118,16 +121,23 @@ new Vue({
     },
     addIngredient: function () {
       this.loading = true;
+       for (let index = 0; index < this.ingredients.length; index++) {
+            if (this.newIngredient.ingredient_name.toLowerCase() === this.ingredients[index].ingredient_name.toLowerCase()) {
+              this.name_error = "name exists"
+              return;
+            }
+          }
+        var temp = this.newIngredient.package_size;
+        temp = temp.replace(/\d/g,'').replace(' ','').toLowerCase();
+        temp = temp.replace('.','');
+        if(!this.unitCheck(temp)){
+            this.unit_error = "unit not compatible";
+            return;
+        }
       this.$http.post('/api/ingredient/', this.newIngredient)
         .then((response) => {
           $("#addIngredientModal").modal('hide');
           this.loading = false;
-          for (let index = 0; index < this.ingredients.length; index++) {
-            if (this.newIngredient.ingredient_name.toLowerCase() === this.ingredients[index].ingredient_name.toLowerCase()) {
-              console.log("Already exists");
-              return;
-            }
-          }
           if ((this.ingredients.length % this.perPage) == 0) {
             this.addPage();
           }
@@ -136,11 +146,19 @@ new Vue({
         })
         .catch((err) => {
           this.loading = false;
+          this.error = err.bodyText;
           console.log(err);
         })
     },
     updateIngredient: function () {
       this.loading = true;
+      var temp = this.currentIngredient.package_size;
+        temp = temp.replace(/\d/g,'').replace(' ','').toLowerCase();
+        temp = temp.replace('.','');
+        if(!this.unitCheck(temp)){
+            this.unit_error = "unit not compatible";
+            return;
+        }
       this.$http.put('/api/ingredient/' + this.currentIngredient.id + '/', this.currentIngredient)
         .then((response) => {
           $("#editIngredientModal").modal('hide');
@@ -149,9 +167,23 @@ new Vue({
           this.getIngredients();
         })
         .catch((err) => {
-          this.loading = false;
+          this.loading = false; 
+          this.error = err.bodyText;
           console.log(err);
         })
+    },
+    unitCheck: function(temp){
+      let len = temp.length;
+      if(temp.charAt(len-1)==='s'){
+        temp = temp.substring(0, len-1);
+      }
+      if(temp === "oz" || temp === "ounce" || temp === "lb" || temp === "pound" || temp === "g" || temp === "gram" || temp === "kg" 
+        || temp === "kilogram" || temp === "ton" || temp === "floz" || temp === "fluidounce" || temp === "gal" || temp === "gallon" 
+        || temp === "pt" || temp === "pint" || temp === "qt" || temp === "quart" || temp === "ml" || temp === "milliliter" || 
+        temp === "l" || temp === "liter" || temp === "ct" || temp === "count"){
+        return true;
+      }
+      return false;
     },
     setPages: function () {
       let numberOfPages = Math.ceil(this.ingredients.length / this.perPage);

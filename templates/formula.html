@@ -7,9 +7,9 @@
             {% if user.is_superuser %}
             <button class="btn btn-success" data-toggle="modal" data-target="#addFormulaModal">Add Formula</button>
             <input class="btn btn-success" type="file" @change="selectFormulaCSV">
-            {% endif %}
-<!--             <input class="btn btn-success" type="file" @change="selectFormulaCSV">
             <button class="btn btn-success" type="submit" @click="uploadFormulaCSV">Upload Formula</button>
+            <button class="btn btn-success" type="submit" @click="exportFormulaCSV">Export Formula</button>
+            {% endif %}
          </h1>
          <div class="form-inline my-2 my-lg-0">
             <input id = "search_input_id" class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" autocomplete="on" aria-label="Search" @blur="onBlur">
@@ -41,7 +41,7 @@
       </div>
       <div class="clearfix btn-group col-md-2 offset-md-5">
             <button type="button" class="btn btn-sm btn-outline-secondary" v-if="page != 1" @click="page--"> << </button>
-            <!-- <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> ${pageNumber} </button> -->
+            <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> ${pageNumber} </button>
             <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>
             <button type="button" @click="page++" v-if="page < pages.length" class="btn btn-sm btn-outline-secondary"> >> </button>
           </div>
@@ -58,6 +58,8 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
+            <p class="error" v-if="name_error">${ name_error }</p>
+            <p class="error" v-if="error">${ error }</p>
             <form v-on:submit.prevent="addFormula()">
                <div class="modal-body">
                   <div class="form-group">
@@ -106,6 +108,7 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
+            <p class="error" v-if="error">${ error }</p>
             <form v-on:submit.prevent="updateFormula()">
                <div class="modal-body">
                   <div class="form-group">

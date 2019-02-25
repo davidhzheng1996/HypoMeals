@@ -15,6 +15,9 @@ var vm = new Vue({
       'ingredient_name': '',
       'quantity': 0
     },
+    error:'',
+    name_error: '',
+    unit_error: '',
   },
   mounted: function () {},
   methods: {
@@ -68,6 +71,19 @@ var vm = new Vue({
     },
     addIngredient: function (formulaid) {
       this.loading = true;
+       for (let index = 0; index < this.ingredients.length; index++) {
+            if (this.newIngredient.ingredient_name.toLowerCase() === this.ingredients[index].ingredient_name.toLowerCase()) {
+              this.name_error = "ingredient exists"
+              return;
+            }
+          }
+        var temp = this.newIngredient.quantity;
+        temp = temp.replace(/\d/g,'').replace(' ','').toLowerCase();
+        temp = temp.replace('.','');
+        if(!this.unitCheck(temp)){
+            this.unit_error = "unit not compatible";
+            return;
+        }
       this.$http.post('/api/ingredients_to_formula/' + formulaid, this.newIngredient)
         .then((response) => {
           $("#addIngredientModal").modal('hide');
@@ -79,11 +95,19 @@ var vm = new Vue({
         })
         .catch((err) => {
           this.loading = false;
+          this.error = err.bodyText;
           console.log(err);
         })
     },
     updateIngredient: function (formulaid,ingredientid) {
       this.loading = true;
+        var temp = this.currentIngredient.quantity;
+        temp = temp.replace(/\d/g,'').replace(' ','').toLowerCase();
+        temp = temp.replace('.','');
+        if(!this.unitCheck(temp)){
+            this.unit_error = "unit not compatible";
+            return;
+        }
         this.$http.post('../api/update_ingredients_to_formula/' + formulaid+ '/'+ingredientid,this.currentIngredient)
           .then((response) => {
             $("#editIngredientModal").modal('hide');
@@ -92,8 +116,22 @@ var vm = new Vue({
         })
           .catch((err) => {
         this.loading = false;
+        this.error = err.bodyText;
         console.log(err);
       })
+    },
+    unitCheck: function(temp){
+      let len = temp.length;
+      if(temp.charAt(len-1)==='s'){
+        temp = temp.substring(0, len-1);
+      }
+      if(temp === "oz" || temp === "ounce" || temp === "lb" || temp === "pound" || temp === "g" || temp === "gram" || temp === "kg" 
+        || temp === "kilogram" || temp === "ton" || temp === "floz" || temp === "fluidounce" || temp === "gal" || temp === "gallon" 
+        || temp === "pt" || temp === "pint" || temp === "qt" || temp === "quart" || temp === "ml" || temp === "milliliter" || 
+        temp === "l" || temp === "liter" || temp === "ct" || temp === "count"){
+        return true;
+      }
+      return false;
     },
     setPages: function () {
         let numberOfPages = Math.ceil(this.ingredients.length / this.perPage);

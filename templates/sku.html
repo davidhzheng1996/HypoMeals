@@ -1,74 +1,75 @@
 {% extends 'base.html' %}
 {% block content %}
 <div id="starting">
-      <div class="container">
-            <div class="row">
-                  <h1>List of SKUs
-                              {% if user.is_superuser %}
-                        <button class="btn btn-success" data-toggle="modal" data-target="#addSkuModal">Add Sku</button>
-                        <input class="btn btn-success" type="file" @change="selectSkuCSV">
-                        <button class="btn btn-success" type="submit" @click="uploadSkuCSV">Upload Sku</button>
-                        <p class="error" v-if="upload_errors">${ upload_errors }</p>
-                        <button class="btn btn-success" type="submit" @click="exportSkuCSV">Export Sku</button>
-                        {% endif %}
-                  </h1>
-                  <div class="form-inline my-2 my-lg-0">
-                        <input id="search_input" class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" autocomplete="on"
-                              aria-label="Search" @blur="onBlur">
-                        <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getSkus()">Search</button>
-                  </div>
-                  <div class="form-inline my-2 my-lg-0">
+   <div class="container">
+      <div class="row">
+         <h1>List of SKUs
+            {% if user.is_superuser %}
+            <button class="btn btn-success" data-toggle="modal" data-target="#addSkuModal">Add Sku</button>
+            <input class="btn btn-success" type="file" @change="selectSkuCSV">
+            <button class="btn btn-success" type="submit" @click="uploadSkuCSV">Upload Sku</button>
+<!--             <input class="btn btn-success" type="file" @change="selectFormulaCSV">
+            <button class="btn btn-success" type="submit" @click="uploadFormulaCSV">Upload Formula</button> -->
+            <p class="error" v-if="upload_errors">${ upload_errors }</p>
+            {% endif %}
+            <button class="btn btn-success" type="submit" @click="exportSkuCSV">Export Sku</button>
+            <!-- <button class="btn btn-success" type="submit" @click="exportFormula()">Export Formulas</button> -->
+         </h1>
+         <div class="form-inline my-2 my-lg-0">
+            <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" autocomplete="on" aria-label="Search" @blur="onBlur">
+            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getSkus()">Search</button>
+        </div>
+        <div class="form-inline my-2 my-lg-0">
                         <button class="btn btn-success" data-toggle="modal" data-target="#updateMLModal" v-on:click.prevent="getManufactureLines()">View Manufacturing Lines</button>
                   </div>
-                  <table class="table">
-                        <thead>
-                              <tr>
-                                    <th></th>
-                                    <th v-on:click="sortBy('id')" scope="col">ID</th>
-                                    <th v-on:click="sortBy('sku_name')" scope="col">Name</th>
-                                    <th v-on:click="sortBy('unitupc')" scope="col">Unit UPC</th>
-                                    <th v-on:click="sortBy('caseupc')" scope="col">Case UPC</th>
-                                    <th v-on:click="sortBy('productline')" scope="col">Productline</th>
-                                    <th v-on:click="sortBy('unit_size')" scope="col">Unit Size</th>
-                                    <th v-on:click="sortBy('count')" scope="col">Count</th>
-                                    <th v-on:click="sortBy('formula')" scope="col">Formula</th>
-                                    <th v-on:click="sortBy('formula scale factor')" scope="col">Formula Scale</th>
-                                    <th v-on:click="sortBy('manufacture_rate')" scope="col">Manufacture Rate</th>
-                                    <th scope="col">Actions</th>
-                              </tr>
-                        </thead>
-                        <tbody>
-                              <tr v-for="sku in displayedSkus">
-                                    <td>
+         <table class="table">
+            <thead>
+               <tr>
+                  <th></th>
+                  <th v-on:click="sortBy('id')" scope="col">ID</th>
+                  <th v-on:click="sortBy('sku_name')" scope="col">Name</th>
+                  <th v-on:click="sortBy('unitupc')" scope="col">Unit UPC</th>
+                  <th v-on:click="sortBy('caseupc')" scope="col">Case UPC</th>
+                  <th v-on:click="sortBy('productline')" scope="col">Productline</th>
+                  <th v-on:click="sortBy('unit_size')" scope="col">Unit Size</th>
+                  <th v-on:click="sortBy('count')" scope="col">Count</th>
+                  <th v-on:click="sortBy('formula')" scope="col">Formula</th>
+                  <th v-on:click="sortBy('formula scale factor')" scope="col">Formula Scale</th>
+                  <th v-on:click="sortBy('manufacture_rate')" scope="col">Manufacture Rate</th>
+                  <th scope="col">Actions</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr v-for="sku in displayedSkus">
+                  <td>
                                           <input type="checkbox" v-model="sku.active">
                                     </td>
-                                    <td>${sku.id}</td>
-                                    <td>${sku.sku_name}</td>
-                                    <td>${sku.unitupc}</td>
-                                    <td>${sku.caseupc}</td>
-                                    <td>${sku.productline}</td>
-                                    <td>${sku.unit_size}</td>
-                                    <td>${sku.count}</td>
-                                    <td>${sku.formula}</td>
-                                    <td>${sku.formula_scale_factor}</td>
-                                    <td>${sku.manufacture_rate}</td>
-                                    <td>
-                                          <button class="btn btn-primary" v-on:click="viewFormula(sku.formula)">View Formula</button>
-                                          {% if user.is_superuser %}                                          
-                                          <button class="btn btn-info" v-on:click="getSku(sku.id)">Edit</button>
-                                          <button class="btn btn-danger" v-on:click="deleteSku(sku.id)">Delete</button>
-                                          {% endif %}
-                                    </td>
-                              </tr>
-                        </tbody>
-                  </table>
-            </div>
-            <div class="clearfix btn-group col-md-2 offset-md-5">
-                  <button type="button" class="btn btn-sm btn-outline-secondary" v-if="page != 1" @click="page--">
-                        << </button>
-                              <!-- <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> ${pageNumber} </button> -->
-                              <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>
-                              <button type="button" @click="page++" v-if="page < pages.length" class="btn btn-sm btn-outline-secondary"> >> </button>
+                  <th scope="row">${sku.id}</th>
+                  <td>${sku.sku_name}</td>
+                  <td>${sku.unitupc}</td>
+                  <td>${sku.caseupc}</td>
+                  <td>${sku.productline}</td>
+                  <td>${sku.unit_size}</td>
+                  <td>${sku.count}</td>
+                  <td>${sku.formula}</td>
+                  <td>${sku.formula_scale_factor}</td>
+                  <td>${sku.manufacture_rate}</td>
+                  <td>
+                     <button class="btn btn-primary" v-on:click="viewFormula(sku.formula)">View Formula</button>
+                     {% if user.is_superuser %}
+                     <button class="btn btn-info" v-on:click="getSku(sku.id)">Edit</button>
+                     <button class="btn btn-danger" v-on:click="deleteSku(sku.id)">Delete</button>
+                     {% endif %}
+                  </td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+      <div class="clearfix btn-group col-md-2 offset-md-5">
+            <button type="button" class="btn btn-sm btn-outline-secondary" v-if="page != 1" @click="page--"> << </button>
+            <!-- <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> ${pageNumber} </button> -->
+            <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>
+            <button type="button" @click="page++" v-if="page < pages.length" class="btn btn-sm btn-outline-secondary"> >> </button>
           </div>
    </div>
    <div class="loading" v-if="loading===true">Loading&#8230;</div>
@@ -224,45 +225,6 @@
                         v-model="currentSku.sku_name"
                         required="required" >
                   </div>
-            </div>
-            <div class="loading" v-if="loading===true">Loading&#8230;</div>
-      </div>
-      <!-- End of edit article modal -->
-      <!-- Begining of edit manufacturing line modal -->
-      <div class="modal fade" id="updateMLModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                  <div class="modal-content">
-                        <div class="modal-header">
-                              <h5 class="modal-title" id="exampleModalLongTitle">Current Manufacturing Lines</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                              </button>
-                        </div>
-                        <form v-on:submit.prevent="updateManufactureLines()">
-                              <div class="modal-body">
-                                    <table class="table">
-                                          <thead>
-                                                <tr>
-                                                      <th></th>
-                                                      <th>Manufacturing Lines</th>
-                                                </tr>
-                                          </thead>
-                                          <tbody>
-                                                <tr v-for="ml in ml_status">
-                                                      <td>
-                                                            <input type="checkbox" :indeterminate.prop="ml.part_active" v-model='ml.all_active'
-                                                                  v-on:click="ml_checkbox_click($event, ml)">
-                                                      </td>
-                                                      <td>${ml.ml_short_name}</td>
-                                                </tr>
-                                          </tbody>
-                                    </table>
-                              </div>
-                              <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Save changes</button>
-                              </div>
-                        </form>
                   <div class="form-group">
                      <label>(Optional) SKU ID</label>
                      <input
@@ -363,6 +325,49 @@
    </div>
    {% endif %}
    <!-- End of edit article modal -->
+      <!-- End of edit article modal -->
+      <!-- Begining of edit manufacturing line modal -->
+      {% if user.is_superuser %}
+      <div class="modal fade" id="updateMLModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                        <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">Current Manufacturing Lines</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                              </button>
+                        </div>
+                        <form v-on:submit.prevent="updateManufactureLines()">
+                              <div class="modal-body">
+                                    <table class="table">
+                                          <thead>
+                                                <tr>
+                                                      <th></th>
+                                                      <th>Manufacturing Lines</th>
+                                                </tr>
+                                          </thead>
+                                          <tbody>
+                                                <tr v-for="ml in ml_status">
+                                                      <td>
+                                                            <input type="checkbox" :indeterminate.prop="ml.part_active" v-model='ml.all_active'
+                                                                  v-on:click="ml_checkbox_click($event, ml)">
+                                                      </td>
+                                                      <td>${ml.ml_short_name}</td>
+                                                </tr>
+                                          </tbody>
+                                    </table>
+                              </div>
+                              <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                              </div>
+                        </form>
+                  </div>
+            </div>
+            <div class="loading" v-if="loading===true">Loading&#8230;</div>
+      </div>
+      {% endif %}
+
 </div>
 <script src="../static/js/sku.js"></script>
 {% endblock %}

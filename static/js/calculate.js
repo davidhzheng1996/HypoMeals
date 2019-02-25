@@ -5,6 +5,7 @@ var vm = new Vue({
      ingredients: [],
      loading: false,
      message: null,
+     error:'',
    },
    mounted: function() {
        // this.getGoals();
@@ -23,6 +24,7 @@ var vm = new Vue({
                })
                .catch((err) => {
                    this.loading = false;
+                   this.error = err.bodyText;
                    console.log(err);
                })
        },
@@ -31,7 +33,7 @@ var vm = new Vue({
         // Export all current skus to a csv file
         // https://codepen.io/dimaZubkov/pen/eKGdxN
         let csvContent = "data:text/csv;charset=utf-8,";
-        csvContent+=[["Ingredient Name", "Quantity"].join(",")+'\n'];
+        csvContent+=[["Ingredient Name", "Unit Quantity", "Package Quantity"].join(",")+'\n'];
         for(key in this.ingredients){
           csvContent+=[[key, this.ingredients[key]].join(",")+'\n'];
         }

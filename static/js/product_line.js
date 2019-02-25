@@ -14,7 +14,10 @@ new Vue({
      has_paginated:false,
      csv_uploaded:false,
      productlineFile: null,
-     upload_errors: ''
+     upload_errors: '',
+     name_error:'',
+     error:'',
+
    },
    mounted: function() {
        this.getProductLines();
@@ -74,6 +77,12 @@ new Vue({
        },
        addProductLine: function() {
          this.loading = true;
+         for (let index = 0; index < this.product_lines.length; index++) {
+            if (this.newProductLine.product_line_name.toLowerCase() === this.product_lines[index].product_line_name.toLowerCase()) {
+              this.name_error = "name exists"
+              return;
+            }
+          }
          this.$http.post('/api/product_line/',this.newProductLine)
            .then((response) => {
          $("#addProductLineModal").modal('hide');
@@ -165,6 +174,7 @@ new Vue({
          })
            .catch((err) => {
          this.loading = false;
+         this.error = err.bodyText;
          console.log(err);
         })
       },

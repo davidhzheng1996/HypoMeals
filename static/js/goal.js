@@ -13,6 +13,7 @@ var vm = new Vue({
      //COUPLED WITH BACKEND DO NOT REMOVE BELOW
      newGoal: { 'goalname': '', 'user':null, 'deadline':'' },
      dateError:'',
+     error:'',
    },
    mounted: function() {},
    methods: {

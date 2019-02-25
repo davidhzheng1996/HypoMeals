@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views, viewsets
-from .views import IngredientImportView, IngredientExportView, SkuImportView, SkuExportView, FormulaImportView, ProductLineImportView
+from .views import IngredientImportView, IngredientExportView, SkuImportView, SkuExportView, FormulaImportView, FormulaExportView, ProductLineImportView
 
 # map url to views.view_class
 urlpatterns = [
@@ -50,6 +50,7 @@ urlpatterns = [
     path('api/sku_import/', SkuImportView.as_view()),
     path('api/sku_export/', SkuExportView.as_view()),
     path('api/formula_import/', FormulaImportView.as_view()),
+    path('api/formula_export/', FormulaExportView.as_view()),
     path('api/product_line_import/', ProductLineImportView.as_view()),
     path('api/active_manufacturing_lines/', viewsets.active_manufacturing_lines),
     path('api/bulk_match_manufacturing_lines/', viewsets.bulk_match_manufacturing_lines)

@@ -48,6 +48,7 @@
             </div>
             <!-- Not sure if this needs to be refactored.... jinja2 inside of vue? ew. -->
             <p class="error" v-if="dateError">${ dateError }</p>
+            <p class="error" v-if="error">${ error }</p>
             <form v-on:submit.prevent="addGoal('{{user.id}}')">
                <div class="modal-body">
                   <div class="form-group">
@@ -88,6 +89,7 @@
                </button>
             </div>
             <p class="error" v-if="dateError">${ dateError }</p>
+            <p class="error" v-if="error">${ error }</p>
             <form v-on:submit.prevent="updateGoal('{{user.id}}',currentGoal.id)">
                <div class="modal-body">
                   <div class="form-group">

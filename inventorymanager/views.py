@@ -413,6 +413,32 @@ class FormulaImportView(APIView):
 				warning = 'Overwrite object with id %s' % formula_dict['Formula#']
 		return error, warning
 
+class FormulaExportView(APIView):
+	def get(self, request, *args, **kwargs):
+		# https://docs.djangoproject.com/en/2.1/howto/outputting-csv/
+		# export all Ingredients into a csv file
+		response = HttpResponse(content_type='text/csv')
+		response['Content-Disposition'] = "attachment; filename=\"skus.csv\""
+		writer = csv.writer(response)
+		# Formula#,Name,Ingr#,Quantity,Comment
+		# for each formula, pull out all associated ingredients
+		header = ["Formula#","Name","Ingr#","Quantity","Comment"]
+		writer.writerow(header)
+		for formula in Formula.objects.all():
+			formula2ingrs = Formula_To_Ingredients.objects.filter(formula=formula.id)
+			for formula2ingr in formula2ingrs:
+				formula_row = [
+					formula.id,
+					formula.formula_name,
+					formula2ingr.ig.id,
+					formula2ingr.quantity,
+					formula.comment
+				]
+				writer.writerow(formula_row)
+		return response
+
+
+
 class ProductLineImportView(APIView):
 	# available parsers: https://www.django-rest-framework.org/api-guide/parsers/ 
 	# file sent should be in FormData

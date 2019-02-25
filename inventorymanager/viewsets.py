@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 
 
 import requests
-
+import re
 
 # APIView is specific for handling REST API requests. User need to Explicitly describe  
 # the logic for post, get, delete, etc. If not described, action is not allowed. 
@@ -173,11 +173,61 @@ def bulk_match_manufacturing_lines(request):
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
+
+
 @login_required(login_url='/accounts/login/')
 @api_view(['GET'])
 def calculate_goal(request,goalid):
+
+    def unit_handling(package_size_unit, quantity_unit, float_quantity, float_package_size, desired_quantity, formula_scale_factor):
+        mass = ['lb', 'pound', 'oz', 'ounce', 'ton', 'g', 'gram', 'kg', 'kilogram']
+        volume = ['floz', 'fluidounce', 'pt', 'pint', 'qt', 'quart', 'gal', 'gallon', 'ml', 'milliliter', 'l', 'liter']
+        count = ['ct', 'count']
+        mass_dict = {}
+        volume_dict = {}
+        mass_dict['lb'] = 2.20
+        mass_dict['pound'] = 2.20
+        mass_dict['oz'] = 35.27
+        mass_dict['ounce'] = 35.27
+        mass_dict['ton'] = 0.0011
+        mass_dict['g'] = 1000.00
+        mass_dict['gram'] = 1000.00
+        mass_dict['kg'] = 1.00
+        mass_dict['kilogram'] = 1.00
+        volume_dict['floz'] = 33.81
+        volume_dict['fluidounce'] = 33.81
+        volume_dict['pt'] = 2.11
+        volume_dict['pint'] = 2.11
+        volume_dict['qt'] = 1.06
+        volume_dict['quart'] = 1.06
+        volume_dict['gal'] = 0.26
+        volume_dict['gallon'] = 0.26
+        volume_dict['ml'] = 1000.00
+        volume_dict['milliliter'] = 1000.00
+        volume_dict['l'] = 1.00
+        volume_dict['liter'] = 1.00
+
+        num = desired_quantity*formula_scale_factor
+
+        if package_size_unit in count and quantity_unit in count:
+            res = num*float_quantity
+            return res
+        elif package_size_unit in mass and quantity_unit in mass:
+            mass_converted = (float_quantity/(mass_dict[quantity_unit]))*mass_dict[package_size_unit]
+            print("converted mass"+str(mass_converted))
+            res1 = num*mass_converted
+            return res1
+        elif package_size_unit in volume and quantity_unit in volume:
+            volume_converted = (float_quantity/(volume_dict[quantity_unit]))*volume_dict[package_size_unit]
+            res2 = num*volume_converted
+            return res2
+
+        return 0
+        
+
     if(request.method=='GET'):
         try: 
+            errors = []
             manufacture_goals = Manufacture_Goal.objects.filter(name = goalid)
             response = {}
             for goal in manufacture_goals:
@@ -186,15 +236,43 @@ def calculate_goal(request,goalid):
                 formula = sku.formula
                 ingredients = Formula_To_Ingredients.objects.filter(formula = formula)
                 for ingredient in ingredients: 
-                    package_amount = goal.desired_quantity * ingredient.quantity
+                    temp = []
+                    package_size = re.findall(r'\d*\.?\d+', ingredient.ig.package_size)
+                    package_size_unit0 = re.sub(r'\d*\.?\d+', '', ingredient.ig.package_size)
+                    package_size_unit = package_size_unit0.replace(' ', '').replace('.','').lower()
+                    if(package_size_unit[len(package_size_unit)-1]=='s'):
+                        package_size_unit = package_size_unit[:-1]
+                    float_package_size = float(package_size[0]) # from ingredient's package size
+                    ingredient_quantity = re.findall(r'\d*\.?\d+', ingredient.quantity)
+                    float_quantity = float(ingredient_quantity[0]) # from ingredient's quantity
+                    quantity_unit0 = re.sub(r'\d*\.?\d+', '', ingredient.quantity)
+                    quantity_unit = quantity_unit0.replace(' ', '').replace('.','').lower()
+                    if(quantity_unit[len(quantity_unit)-1]=='s'):
+                        quantity_unit = quantity_unit[:-1]
+                    # unit_amount = goal.desired_quantity * float_quantity * sku.formula_scale_factor
+                    # unit_amount_str = str(unit_amount) + ' ' + quantity_unit0
+                    unit_amount = unit_handling(package_size_unit, quantity_unit, float_quantity, float_package_size, goal.desired_quantity,
+                        sku.formula_scale_factor)
+                    unit_amount_str = str(round(unit_amount, 3)) + ' ' + package_size_unit0
+                    temp.append(unit_amount_str)
+                    package_amount = unit_amount/float_package_size
+                    package_amount_str = str(round(package_amount, 3)) + ' ' + 'packages'
+                    temp.append(package_amount_str)
+                    # if not unit_handling(package_size_unit, quantity_unit):
+                    #     errors.append('unit not compatible for %s' % ingredient.ig.ingredient_name)
+                    #     print(errors)
                     if ingredient.ig.ingredient_name in response:
-                        response[ingredient.ig.ingredient_name] = response[ingredient.ig.ingredient_name]+package_amount
+                        old_list = response[ingredient.ig.ingredient_name]
+                        old_list[0] = old_list[0] + temp[0]
+                        old_list[1] = old_list[1] + temp[1]
+                        response[ingredient.ig.ingredient_name] = old_list
                     else: 
-                        response[ingredient.ig.ingredient_name] = package_amount
+                        response[ingredient.ig.ingredient_name] = temp
                 print(response)
                 return Response(response,status=status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
+
 
 @login_required(login_url='/accounts/login/')
 @api_view(['GET','POST'])
@@ -317,10 +395,41 @@ def ingredients_to_formula(request,formulaid):
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
+
+    def validate_unit(ingredient_quantity_unit, quantity_unit):
+        mass = ['lb', 'pound', 'oz', 'ounce', 'ton', 'g', 'gram', 'kg', 'kilogram']
+        volume = ['floz', 'fluidounce', 'pt', 'pint', 'qt', 'quart', 'gal', 'gallon', 'ml', 'milliliter', 'l', 'liter']
+        count = ['ct', 'count']
+        if ingredient_quantity_unit in mass and quantity_unit in mass:
+            return True;
+        
+        if ingredient_quantity_unit in volume and quantity_unit in volume:
+            return True
+
+        if ingredient_quantity_unit in count and quantity_unit in count:
+            return True
+
+        return False
+
     if(request.method == 'POST'):
         try: 
+            errors = []
             formula = Formula.objects.get(id=formulaid)
             ingredient = Ingredient.objects.get(ingredient_name=request.data['ingredient_name'])
+            ingredient_quantity = ingredient.package_size
+            quantity = request.data['quantity']
+            ingredient_quantity_unit = re.sub(r'\d*\.?\d+', '', ingredient_quantity)
+            ingredient_quantity_unit = ingredient_quantity_unit.replace(' ', '').replace('.','').lower()
+            if(ingredient_quantity_unit[len(ingredient_quantity_unit)-1]=='s'):
+               ingredient_quantity_unit = ingredient_quantity_unit[:-1]
+            quantity_unit = re.sub(r'\d*\.?\d+', '', quantity)
+            quantity_unit = quantity_unit.replace(' ', '').replace('.','').lower()
+            if(quantity_unit[len(quantity_unit)-1]=='s'):
+                quantity_unit = quantity_unit[:-1]
+            if not validate_unit(ingredient_quantity_unit, quantity_unit):
+                errors.append('unit not compatible for %s' % ingredient.ingredient_name)
+                post_result = {'errors': errors}
+                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
             newrelation = {'formula':formula.id,'ig':ingredient.id,'quantity':request.data['quantity']}
             serializer = IngredientToFormulaSerializer(data=newrelation)
             if(serializer.is_valid()):
@@ -375,7 +484,7 @@ def mls_to_sku(request,skuid):
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET','POST'])
+@api_view(['GET'])
 def add_ml_to_sku(request,skuid,mlshortname):
     # need to check for ml short name uniqueness.
     if(request.method == 'POST'):

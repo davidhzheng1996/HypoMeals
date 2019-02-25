@@ -48,6 +48,7 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
+            <p class="error" v-if="error">${ error }</p>
             <!-- Not sure if this needs to be refactored.... jinja2 inside of vue? ew. -->
             <form v-on:submit.prevent="addGoal('{{user.id}}','{{goalid}}')">
                <div class="modal-body">
@@ -92,6 +93,7 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
+            <p class="error" v-if="error">${ error }</p>
             <form v-on:submit.prevent="updateGoal('{{user.id}}','{{goalid}}')">
                <div class="modal-body">
                   <div class="form-group">

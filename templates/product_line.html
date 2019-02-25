@@ -46,6 +46,7 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
+            <p class="error" v-if="name_error">${ name_error }</p>
             <form v-on:submit.prevent="addProductLine()">
                <div class="modal-body">
                   <div class="form-group">
@@ -79,6 +80,7 @@
                <span aria-hidden="true">&times;</span>
                </button>
             </div>
+            <p class="error" v-if="error">${ error }</p>
             <form v-on:submit.prevent="updateProductLine()">
                <div class="modal-body">
                   <div class="form-group">

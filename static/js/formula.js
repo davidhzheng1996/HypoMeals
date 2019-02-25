@@ -40,6 +40,9 @@ new Vue({
             { 'id': true },
           ],
       upload_errors: '',
+      name_error: '',
+      error:'',
+      test:'',
    },
    mounted: function() {
        this.getFormulas();
@@ -151,6 +154,12 @@ new Vue({
     },
        addFormula: function() {
          this.loading = true;
+         for (let index = 0; index < this.formulas.length; index++) {
+            if (this.newFormula.formula_name.toLowerCase() === this.formulas[index].formula_name.toLowerCase()) {
+              this.name_error = "name exists"
+              return;
+            }
+          }
          this.$http.post('/api/formula/',this.newFormula)
            .then((response) => {
          $("#addFormulaModal").modal('hide');
@@ -169,6 +178,7 @@ new Vue({
          })
            .catch((err) => {
          this.loading = false;
+         this.error = err.bodyText;
          console.log(err);
        })
        },
@@ -183,6 +193,7 @@ new Vue({
          })
            .catch((err) => {
          this.loading = false;
+         this.error = err.bodyText;
          console.log(err);
        })
    },
@@ -215,48 +226,31 @@ new Vue({
         })
       },
 
-      // exportFormula: function(){
-      //   this.loading = true;
-      //   // Export all current ingredients to a csv file
-      //   // https://codepen.io/dimaZubkov/pen/eKGdxN
-      //   let csvContent = "data:text/csv;charset=utf-8,";
+      exportFormulaCSV: function() {
+        // Export all current skus to a csv file
+        // https://codepen.io/dimaZubkov/pen/eKGdxN
+        // let csvContent = "data:text/csv;charset=utf-8,";
+        // csvContent += [
+        //   Object.keys(this.skus[0]).join(","),
+        //   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+        //   ...this.skus.map(key => Object.values(key).join(","))
+        // ].join("\n");
 
-      //   csvContent+=[["Formula ID", "Ingr ID", "Quantity"].join(",")+'\n'];
-      //   let c = 0
-      //   //console.log(csvContent);
-      //   for (let i = 0; i < this.formulas.length; i++) {
-      //           //console.log(this.ingredients[key].ingredient_name)
-      //           this.$http.get('/api/ingredients_to_formula/'+this.formulas[i].id)
-      //          .then((response) => {
-      //             c = c + 1;
-      //              var ingredients = [];
-      //              this.ingredients = response.data;
-      //              for(let j = 0; j < this.ingredients.length; j++){
-      //                   csvContent+=[[this.formulas[i].id,this.ingredients[j].id, this.ingredients[j].quantity].join(",")+'\n'];
-                      
-      //              }
-      //             // this.finished();
-      //             if(c==this.formulas.length){
-      //                console.log(csvContent);
-                   
-      //                const url = encodeURI(csvContent);
-      //                 const link = document.createElement("a");
-      //                link.setAttribute("href", url);
-      //                link.setAttribute("download", "formulas.csv");
-      //                link.click();
-      //            }
-      //              this.loading = false;
-      //              //this.has_called = true; 
-      //          })
-      //          .catch((err) => {
-      //              this.loading = false;
-      //              console.log(err);
-      //          })
-
-      //   } 
-      
-
-      // },
+        this.$http.get('/api/formula_export/')
+        .then((response) => {
+          let csvContent = "data:text/csv;charset=utf-8,";
+         let url = encodeURIComponent(response.data);
+         url = csvContent + url;
+         const link = document.createElement("a");
+         link.setAttribute("href", url);
+         link.setAttribute("download", "formula.csv");
+         link.click();
+        })
+          .catch((err) => {
+        this.loading = false;
+        console.log(err);
+        })        
+      },
 
         sortBy: function(key) {
         this.sortKey = key
