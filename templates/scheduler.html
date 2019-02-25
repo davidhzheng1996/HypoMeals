@@ -3,7 +3,41 @@
 <script src="../static/js/vis.min.js"></script>
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/vis.min.css' %}">
-<div id="visualization"></div>
-<button onclick="test()">Click me</button>
+<link rel="stylesheet" href="{% static 'css/scheduler.css' %}">
+<div id="starting">
+	<h1> Scheduler</h1>
+	<div id="visualization"></div>
+	<div class="row">
+         <div class="form-inline my-2 my-lg-0">
+            <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" autocomplete="on" v-model="search_term"  aria-label="Search" @blur="onBlur">
+            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="">Search</button>
+        </div>
+    </div>
+	<button onclick="test()">Click me</button>
+	<div class='items-panel'>
+	    <div class='side' style="max-width:350px;overflow:auto">
+	        <h3>Last item just been dragged on timeline:</h3>
+	        <pre id="output"></pre>
+	    </div>
+	    <div class='side'>
+	        <h3>Items:</h3>
+	        <ul class="items">
+	            <li draggable="true" class="item">
+	                item 1 - box
+	            </li>
+	            <li draggable="true" class="item">
+	                item 2 - point
+	            </li>
+	            <li draggable="true" class="item">
+	                item 3 - range
+	            </li>
+	            <li draggable="true" class="item">
+	                item 3 - range - fixed times -
+	                <br> (start: now, end: now + 10 min)
+	            </li>
+	        </ul>
+	    </div>
+	</div>
+</div>
 <script src="../static/js/scheduler.js"></script>
 {% endblock %}
