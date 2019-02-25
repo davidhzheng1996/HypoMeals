@@ -31,7 +31,7 @@ class SkuViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     def list(self, request, *args, **kwargs):
-        queryset = Sku.objects.all()
+        queryset = self.get_queryset()
         serializer = self.get_serializer(queryset,many=True)
         # attach a cell of ml_short_names to skus
         for sku in serializer.data:
@@ -69,6 +69,14 @@ class FormulaViewSet(viewsets.ModelViewSet):
     queryset = Formula.objects.all()
     serializer_class = FormulaSerializer
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        search_term = self.request.query_params.get('search', None)
+        if search_term:
+            # search by formula name, id or ingredient used 
+            queryset = Formula.objects.filter(Q(formula_name__icontains=search_term) | Q(id__icontains=search_term))
+        return queryset
+
 class CustomerViewSet(viewsets.ModelViewSet):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
@@ -76,10 +84,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
 class ManufactureGoalViewSet(viewsets.ModelViewSet):
     queryset = Manufacture_Goal.objects.all()
     serializer_class = ManufactureGoalSerializer
-    # filter_backends = (filters.SearchFilter, )
-    # # notice that we could also filter on foreign key's fields
-    # search_fields = ('goal_sku_name')
-
+    
 class ManufactureLineViewSet(viewsets.ModelViewSet):
     queryset = Manufacture_line.objects.all()
     serializer_class = ManufactureLineSerializer
@@ -462,6 +467,30 @@ def update_ingredients_to_formula(request,formula,ig):
             return Response(status = status.HTTP_400_BAD_REQUEST)
         except Exception as e: 
             print(e)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['GET'])
+def mg_to_skus(request,goal_name):
+    if(request.method == 'GET'):
+        try: 
+            response = {}
+            # get skus associated with the goal: Manufacture_Goal
+            sku_ids = Manufacture_Goal.objects.filter(name__goalname=goal_name).values_list('sku', flat=True)
+            skus = Sku.objects.filter(id__in=sku_ids)
+            for sku in skus:
+                # get mls for each sku: Sku_To_Ml_Shortname
+                ml_short_names = Sku_To_Ml_Shortname.objects.filter(sku=sku.id).values_list("ml_short_name",flat=True)
+                # get time needed for each sku: Sku, Manufacture_Goal
+                manufacture_rate = sku.manufacture_rate
+                desired_quantity = Manufacture_Goal.objects.get(sku=sku.id, name__goalname=goal_name).desired_quantity
+                hours_needed = desired_quantity / manufacture_rate
+                response[sku.sku_name] = {
+                    'manufacturing_lines': list(ml_short_names),
+                    'hours_needed': hours_needed
+                }
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
