@@ -27,7 +27,6 @@ new Vue({
      formulaFile: null,
      has_paginated:false,
      csv_uploaded:false,
-
      search_term: '',
      search_suggestions: search_suggestions,
      search_input: '',
@@ -193,6 +192,9 @@ new Vue({
       },
         
       uploadFormulaCSV: function() {
+        if (this.formulaFile === null) {
+          return;
+        }
         this.loading = true;
         // upload this.ingredientCSV to REST api in FormData
         const formData = new FormData()

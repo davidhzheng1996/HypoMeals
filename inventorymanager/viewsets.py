@@ -29,6 +29,16 @@ class SkuViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+    
+    def list(self, request, *args, **kwargs):
+        queryset = Sku.objects.all()
+        serializer = self.get_serializer(queryset,many=True)
+        # attach a cell of ml_short_names to skus
+        for sku in serializer.data:
+            ml_short_names = Sku_To_Ml_Shortname.objects.filter(sku=sku['id']).values_list("ml_short_name",flat=True)
+            cell = ','.join(list(ml_short_names))
+            sku['ml_short_names'] = '"%s"' % cell
+        return Response(serializer.data)
 
     def get_queryset(self):
         queryset = super().get_queryset()
