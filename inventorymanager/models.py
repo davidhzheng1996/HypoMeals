@@ -86,7 +86,7 @@ class Manufacture_Goal(models.Model):
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
 	name = models.ForeignKey(Goal,on_delete=models.CASCADE)
 	goal_sku_name = models.CharField(max_length=128, null=False, default='')
-	desired_quantity = models.FloatField()
+	desired_quantity = models.PositiveIntegerField()
 
 	class Meta: 
 		unique_together = (("name","sku"),)
