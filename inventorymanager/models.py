@@ -10,11 +10,19 @@ class Product_Line(models.Model):
 
 class Formula(models.Model):
 	formula_name = models.CharField(max_length=32, unique=True, null=False, default='')
-	id = models.BigIntegerField(primary_key=True, null=False, unique=True)
+	id = models.BigIntegerField(primary_key=True)
 	comment = models.TextField(null=True)
 
+	def save(self, *args, **kwargs):
+		if self.id == 0:
+			if not self.__class__.objects.all():
+				self.id = 1
+			else:
+				self.id =  self.__class__.objects.all().order_by("-id")[0].id + 1
+		super(self.__class__, self).save(*args, **kwargs)
+
 class Sku(models.Model):
-	id = models.BigIntegerField(primary_key=True, unique=True, null=False)
+	id = models.BigIntegerField(unique = True, primary_key=True)
 	caseupc = models.CharField(null=False, default=100000000000,unique=True, 
 		max_length=12, validators=[RegexValidator(r'^\d{12,12}$', message="UPC not 12 digits", code = "invalid UPC")])
 	unitupc = models.CharField(null=False, default=100000000000,
@@ -28,13 +36,29 @@ class Sku(models.Model):
 	formula_scale_factor = models.FloatField(null=False, default=1.0)
 	manufacture_rate = models.FloatField(null=False, default=1.0)
 
+	def save(self, *args, **kwargs):
+		if self.id == 0:
+			if not self.__class__.objects.all():
+				self.id = 1
+			else:
+				self.id =  self.__class__.objects.all().order_by("-id")[0].id + 1
+		super(self.__class__, self).save(*args, **kwargs)
+
 class Ingredient(models.Model):
-	id = models.BigIntegerField(primary_key=True, unique=True, null=False)
+	id = models.BigIntegerField(primary_key=True)
 	ingredient_name = models.CharField(max_length=128, unique=True, null=False, default='')
 	description = models.TextField(null=True) 
 	package_size = models.CharField(max_length=128,null=True)
 	cpp = models.FloatField(null=True)
 	comment = models.TextField(null=True)
+
+	def save(self, *args, **kwargs):
+		if self.id == 0:
+			if not self.__class__.objects.all():
+				self.id = 1
+			else:
+				self.id =  self.__class__.objects.all().order_by("-id")[0].id + 1
+		super(self.__class__, self).save(*args, **kwargs)
 
 class Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -78,6 +102,8 @@ class Manufacture_Goal(models.Model):
 	name = models.ForeignKey(Goal,on_delete=models.CASCADE)
 	goal_sku_name = models.CharField(max_length=128, null=False, default='')
 	desired_quantity = models.IntegerField()
+	desired_quantity = models.PositiveIntegerField()
+
 
 	class Meta: 
 		unique_together = (("name","sku"),)

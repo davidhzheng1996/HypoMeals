@@ -13,7 +13,7 @@ new Vue({
      page:1,
      perPage: 10,
      pages:[],
-     newFormula: { 'formula_name': '', 'id': null, 'comment': null},
+     newFormula: { 'formula_name': '', 'id': 0, 'comment': null},
      formulaFile: null,
      has_paginated:false,
      csv_uploaded:false,
