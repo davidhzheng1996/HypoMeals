@@ -40,6 +40,11 @@
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
+      {% if user.is_superuser %}
+      <li class="nav-item">
+        <a class="nav-link" href="/scheduler">Scheduler</a>
+      </li>
+      {% endif %}
       <li class="nav-item">
         <a class="nav-link" href="/ingredient">Ingredients</a>
       </li>

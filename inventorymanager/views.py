@@ -41,6 +41,10 @@ def formula(request):
 def manufacture_goal(request,goalid):
 	return render(request, "manufacturing.html",{'goalid':goalid})
 
+@login_required(login_url='/accounts/login/')
+def scheduler(request):
+	return render(request,"scheduler.html")
+
 # @login_required(login_url='/accounts/login/')
 # def ingredients_to_sku(request,skuid):
 # 	return render(request, "ingredients_to_sku.html",{'skuid':skuid})

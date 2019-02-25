@@ -19,6 +19,7 @@ urlpatterns = [
     path('formula/<int:formulaid>',views.ingredients_to_formula),
     path('show_formula/<int:formulaid>',views.skus_to_formula),
     path('ingredient/<int:ingredientid>',views.skus_to_ingredients),
+    path('scheduler',views.scheduler),
     path('calculate_goal/<int:goalid>',views.calculate_goal),
     # ingredient file upload endpoint
     # TODO how to integrate this with router's url patterns?

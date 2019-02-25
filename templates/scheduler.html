@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<script src="../static/js/vis.min.js"></script>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/vis.min.css' %}">
+<div id="visualization"></div>
+<button onclick="test()">Click me</button>
+<script src="../static/js/scheduler.js"></script>
+{% endblock %}
