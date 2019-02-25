@@ -33,7 +33,7 @@ var vm = new Vue({
         // Export all current skus to a csv file
         // https://codepen.io/dimaZubkov/pen/eKGdxN
         let csvContent = "data:text/csv;charset=utf-8,";
-        csvContent+=[["Ingredient Name", "Quantity"].join(",")+'\n'];
+        csvContent+=[["Ingredient Name", "Unit Quantity", "Package Quantity"].join(",")+'\n'];
         for(key in this.ingredients){
           csvContent+=[[key, this.ingredients[key]].join(",")+'\n'];
         }
