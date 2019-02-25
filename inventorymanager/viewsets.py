@@ -207,7 +207,7 @@ def calculate_goal(request,goalid):
         volume_dict['l'] = 1.00
         volume_dict['liter'] = 1.00
 
-        num = desired_quantity*formula_scale_factor
+        num = float(desired_quantity)*formula_scale_factor
 
         if package_size_unit in count and quantity_unit in count:
             res = num*float_quantity
