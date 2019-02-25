@@ -37,6 +37,40 @@ var starting = new Vue({
             this.groups.add({"id":value,"content":value})
         }
     }
+    search_term:'',
+  },
+  mounted: function () {
+    $("#search_input").autocomplete({
+        minLength: 2,
+        delay: 100,
+        // https://stackoverflow.com/questions/9656523/jquery-autocomplete-with-callback-ajax-json
+        source: function (request, response) {
+          $.ajax({
+            url: "/api/manufacture_goal/",
+            dataType: "json",
+            data: {
+              // attach '?search=request.term' to the url 
+              search: request.term
+            },
+            success: function (data) {
+              ingr_names = $.map(data, function (item) {
+                return [item.ingredient_name];
+              })
+              response(ingr_names);
+            }
+          });
+        },
+        messages: {
+          noResults: '',
+          results: function() {}
+        }
+      });
+  },
+  methods: {
+    onBlur: function (event) {
+        if (event && this.search_term !== event.target.value)
+          this.search_term = event.target.value
+    },
   }
 });
 

@@ -134,11 +134,15 @@ class IngredientImportView(APIView):
 				return errors, warnings
 			for ingr_dict in reader:
 				ingr_val_error, ingr_val_warning = self.validate_ingredient(ingr_dict)
+				unit_error = self.validate_unit(ingr_dict)
 				if ingr_val_warning:
 					warnings.append(ingr_val_warning)
 				if ingr_val_error:
 					errors.append(ingr_val_error)
 					break
+				if not unit_error:
+					errors.append("package size unit incorrect for %s" % ingr_dict['Name'])
+					break;
 				ingredient = Ingredient(id=ingr_dict['Ingr#'],
 										ingredient_name=ingr_dict['Name'].lower(), 
 										description=ingr_dict['Vendor Info'],
@@ -176,6 +180,17 @@ class IngredientImportView(APIView):
 				# overwrite existing object
 				warning = 'Overwrite object with id %s' % ingredient_dict['Ingr#']
 		return error, warning
+
+	def validate_unit(self, ingredient_dict):
+		units = ['lb', 'pound', 'oz', 'ounce', 'ton', 'g', 'gram', 'kg', 'kilogram', 'floz', 'fluidounce', 'pt', 'pint', 'qt', 'quart', 'gal', 'gallon', 'ml', 'milliliter', 'l', 'liter', 'ct', 'count']
+		size = ingredient_dict['Size']
+		size_unit = re.sub(r'\d*\.?\d+', '', size)
+		size_unit = size_unit.replace(' ', '').replace('.','').lower()
+		if len(size_unit) > 1 and (size_unit[len(size_unit)-1]=='s'):
+			size_unit = size_unit[:-1]
+		if size_unit not in units:
+			return False
+		return True
 
 class IngredientExportView(APIView):
         def get(self, request, *args, **kwargs):
@@ -230,8 +245,12 @@ class SkuImportView(APIView):
 					break
 				product_line = Product_Line.objects.get(product_line_name=sku_dict['PL Name'])
 				formula = Formula.objects.get(id=sku_dict['Formula#'])
+				if not sku_dict['SKU#']:
+					default_id = 0
+				else:
+					default_id = sku_dict['SKU#']
 				sku = Sku(
-						id=sku_dict['SKU#'],
+						id=default_id,
 						productline=product_line,
 						caseupc=sku_dict['Case UPC'],
 						unitupc=sku_dict['Unit UPC'],
@@ -242,8 +261,9 @@ class SkuImportView(APIView):
 						formula_scale_factor=sku_dict['Formula factor'],
 						manufacture_rate=sku_dict['Rate'],
 						comment=sku_dict['Comment'])
-				# save without commit, as later validation might fail 
-				sku.save()
+				serializer = SkuSerializer(data=sku)
+				if serializer.is_valid():
+					serializer.save()
 				# save all manufacturing lines associated with sku
 				ml_shortnames = sku_dict['ML Shortnames'].strip('"').split(',')
 				for ml_shortname in ml_shortnames:
@@ -303,13 +323,31 @@ class SkuImportView(APIView):
 	def validate_case_upc(self, sku_dict):
 		if sku_dict['Case UPC'][0] == '2' or sku_dict['Case UPC'][0] == '3' or sku_dict['Case UPC'][0] == '4' or sku_dict['Case UPC'][0] == '5':
 			return False
+		odds = int(sku_dict['Case UPC'][0]) + int(sku_dict['Case UPC'][2]) + int(sku_dict['Case UPC'][4]) + int(sku_dict['Case UPC'][6]) + int(sku_dict['Case UPC'][8])+ int(sku_dict['Case UPC'][10])
+		evens = int(sku_dict['Case UPC'][1]) + int(sku_dict['Case UPC'][3]) + int(sku_dict['Case UPC'][5]) + int(sku_dict['Case UPC'][7]) + int(sku_dict['Case UPC'][9])
+		sumNum = odds*3 + evens
+		# if sumNum % 10 == 0 and int(sku_dict['Case UPC'][11]) != 0:
+		# 	return False
+		# else:
+		# 	check = 10 - (sumNum % 10)
+		# 	if int(sku_dict['Case UPC'][11]) != check:
+		# 		return False
 
 		return True;
 
 	def validate_unit_upc(self, sku_dict):
 		if sku_dict['Unit UPC'][0] == '2' or sku_dict['Unit UPC'][0] == '3' or sku_dict['Unit UPC'][0] == '4' or sku_dict['Unit UPC'][0] == '5':
 			return False
-
+		odds = int(sku_dict['Unit UPC'][0]) + int(sku_dict['Unit UPC'][2]) + int(sku_dict['Unit UPC'][4]) + int(sku_dict['Unit UPC'][6]) + int(sku_dict['Unit UPC'][8])+ int(sku_dict['Unit UPC'][10])
+		odds = odds*3
+		evens = int(sku_dict['Unit UPC'][1]) + int(sku_dict['Unit UPC'][3]) + int(sku_dict['Unit UPC'][5]) + int(sku_dict['Unit UPC'][7]) + int(sku_dict['Unit UPC'][9])
+		sumNum = odds + evens
+		# if sumNum % 10 == 0 and int(sku_dict['Unit UPC'][11]) != 0:
+		# 	return False
+		# else:
+		# 	check = 10 - (sumNum % 10)
+		# 	if int(sku_dict['Unit UPC'][11]) != check:
+		# 		return False
 		return True;
 
 
@@ -359,11 +397,15 @@ class FormulaImportView(APIView):
 				return errors, warnings
 			for formula_dict in reader:
 				val_error, val_warning = self.validate_formula(formula_dict)
+				unit_error = self.validate_unit(formula_dict)
 				if val_warning:
 					warnings.append(val_warning)
 				if val_error:
 					errors.append(val_error)
 					break
+				if not unit_error:
+					errors.append("package size unit incorrect for %s" % formula_dict['Name'])
+					break;
 				# store formula first if not exist 
 				if not Formula.objects.filter(formula_name=formula_dict['Name'], id=formula_dict['Formula#']).exists():
 					formula = Formula(formula_name=formula_dict['Name'],
@@ -413,6 +455,33 @@ class FormulaImportView(APIView):
 				warning = 'Overwrite object with id %s' % formula_dict['Formula#']
 		return error, warning
 
+	def validate_unit(self, formula_dict):
+		ingr = Ingredient.objects.get(id=formula_dict['Ingr#'])
+		package_size = ingr.package_size
+		units = ['lb', 'pound', 'oz', 'ounce', 'ton', 'g', 'gram', 'kg', 'kilogram', 'floz', 'fluidounce', 'pt', 'pint', 'qt', 'quart', 'gal', 'gallon', 'ml', 'milliliter', 'l', 'liter', 'ct', 'count']
+		mass = ['lb', 'pound', 'oz', 'ounce', 'ton', 'g', 'gram', 'kg', 'kilogram']
+		volume = ['floz', 'fluidounce', 'pt', 'pint', 'qt', 'quart', 'gal', 'gallon', 'ml', 'milliliter', 'l', 'liter']
+		count = ['ct', 'count']
+		size = formula_dict['Quantity']
+		size_unit = re.sub(r'\d*\.?\d+', '', size)
+		size_unit = size_unit.replace(' ', '').replace('.','').lower()
+		package_size_unit = re.sub(r'\d*\.?\d+', '', package_size)
+		package_size_unit = package_size_unit.replace(' ', '').replace('.','').lower()
+		if len(size_unit) > 1 and (size_unit[len(size_unit)-1]=='s'):
+			size_unit = size_unit[:-1]
+		if size_unit not in units:
+			return False
+		if len(package_size_unit) > 1 and (package_size_unit[len(package_size_unit)-1]=='s'):
+			package_size_unit = package_size_unit[:-1]
+		if package_size_unit in mass and size_unit not in mass:
+			return False
+		if package_size_unit in volume and size_unit not in volume:
+			return False
+		if package_size_unit in count and size_unit not in count:
+			return False
+
+		return True
+
 class FormulaExportView(APIView):
 	def get(self, request, *args, **kwargs):
 		# https://docs.djangoproject.com/en/2.1/howto/outputting-csv/
@@ -436,8 +505,6 @@ class FormulaExportView(APIView):
 				]
 				writer.writerow(formula_row)
 		return response
-
-
 
 class ProductLineImportView(APIView):
 	# available parsers: https://www.django-rest-framework.org/api-guide/parsers/ 

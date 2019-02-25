@@ -10,7 +10,7 @@ new Vue({
     page: 1,
     perPage: 10,
     pages: [],
-    newIngredient: { 'ingredient_name': '', 'id': null, 'description': null, 'package_size': '', 'cpp': 0, 'comment': null, },
+    newIngredient: { 'ingredient_name': '', 'id': 0, 'description': null, 'package_size': '', 'cpp': 0, 'comment': null, },
     ingredientFile: null,
     search_term: '',
     search_input: '',

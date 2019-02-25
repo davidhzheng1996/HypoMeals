@@ -20,6 +20,7 @@
                   <td>${manufacture_line.ml_short_name}</td>
                   <td>${manufacture_line.comment}</td>
                   <td>
+                    <!--  <button class="btn btn-info" v-on:click="">View Manufacture Schedule</button> -->
                      <button class="btn btn-info" v-on:click="getManufactureLine(manufacture_line.ml_short_name)">Edit</button>
                      <button class="btn btn-danger" v-on:click="deleteManufactureLine(manufacture_line.ml_short_name)">Delete</button>
                   </td>
