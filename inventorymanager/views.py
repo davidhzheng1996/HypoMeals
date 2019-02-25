@@ -262,9 +262,8 @@ class SkuImportView(APIView):
 						manufacture_rate=sku_dict['Rate'],
 						comment=sku_dict['Comment'])
 				serializer = SkuSerializer(data=sku)
-                if serializer.is_valid():
-					# save without commit, as later validation might fail 
-                    serializer.save()
+				if serializer.is_valid():
+					serializer.save()
 				# save all manufacturing lines associated with sku
 				ml_shortnames = sku_dict['ML Shortnames'].strip('"').split(',')
 				for ml_shortname in ml_shortnames:
