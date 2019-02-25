@@ -237,42 +237,36 @@ class SkuImportView(APIView):
 				errors.append(header_val_error)
 				return errors, warnings
 			for sku_dict in reader:
-				val_error, val_warning = self.validate_sku(sku_dict)
+				if not sku_dict['SKU#']:
+					if not Sku.objects.all():
+						default_id = 1
+					else:
+						default_id =  Sku.objects.all().order_by("-id")[0].id + 1
+				else:
+					default_id = int(sku_dict['SKU#'])
+				val_error, val_warning = self.validate_sku(sku_dict, default_id)
 				if val_warning:
 					warnings.append(val_warning)
 				if val_error:
 					errors.append(val_error)
 					break
 				product_line = Product_Line.objects.get(product_line_name=sku_dict['PL Name'])
-				formula = Formula.objects.get(id=sku_dict['Formula#'])
-				if not sku_dict['SKU#']:
-					default_id = 0
-				else:
-					default_id = sku_dict['SKU#']
-				sku = Sku(
-						id=default_id,
-						productline=product_line,
-						caseupc=sku_dict['Case UPC'],
-						unitupc=sku_dict['Unit UPC'],
-						sku_name=sku_dict['Name'],
-						count=sku_dict['Count per case'],
-						unit_size=sku_dict['Unit size'],
-						formula=formula,
-						formula_scale_factor=sku_dict['Formula factor'],
-						manufacture_rate=sku_dict['Rate'],
-						comment=sku_dict['Comment'])
-				serializer = SkuSerializer(data=sku)
+				formula = Formula.objects.get(id=int(sku_dict['Formula#']))
+				serializer = SkuSerializer(data={'id':default_id,'productline':product_line.product_line_name,'caseupc':sku_dict['Case UPC'],'unitupc':sku_dict['Unit UPC'],'sku_name':sku_dict['Name'],'count':sku_dict['Count per case'],'unit_size':sku_dict['Unit size'],'formula':formula.id,'formula_scale_factor':sku_dict['Formula factor'],'manufacture_rate':sku_dict['Rate'],'comment':sku_dict['Comment']})
 				if serializer.is_valid():
 					serializer.save()
+				print(serializer.errors)
 				# save all manufacturing lines associated with sku
 				ml_shortnames = sku_dict['ML Shortnames'].strip('"').split(',')
 				for ml_shortname in ml_shortnames:
-					if Sku_To_Ml_Shortname.objects.filter(sku=sku_dict['SKU#'],ml_short_name=ml_shortname).exists():
+					if Sku_To_Ml_Shortname.objects.filter(sku=default_id,ml_short_name=ml_shortname).exists():
 						continue
-					sku_object = Sku.objects.get(id=sku_dict['SKU#'])
+					sku_object = Sku.objects.get(id=default_id)
 					ml_short_name_object = Manufacture_line.objects.get(ml_short_name=ml_shortname)
-					sku2ml = Sku_To_Ml_Shortname(sku=sku_object,ml_short_name=ml_short_name_object)
-					sku2ml.save()
+					sku2ml = ManufactureLineToSkuSerializer(data={'sku':sku_object.id,'ml_short_name':ml_short_name_object.ml_short_name})
+					if(sku2ml.is_valid()):
+						sku2ml.save()
+						print(sku2ml.errors)
 
 		if errors != []:
 			transaction.savepoint_rollback(transaction_savepoint)
@@ -286,7 +280,7 @@ class SkuImportView(APIView):
 		return '', ''
 
 	# validation conforms to https://piazza.com/class/jpvlvyxg51d1nc?cid=52
-	def validate_sku(self, sku_dict):
+	def validate_sku(self, sku_dict, default_id):
 		error = ''
 		warning = ''
 		case_upc = self.validate_case_upc(sku_dict)
@@ -294,7 +288,7 @@ class SkuImportView(APIView):
 		# if ingredient with same name exists, only update if id matches
 		if Sku.objects.filter(sku_name=sku_dict['Name']).exists():
 			same_name_sku = Sku.objects.get(sku_name=sku_dict['Name'])
-			if same_name_sku.pk != int(sku_dict['SKU#']):
+			if same_name_sku.pk != int(default_id):
 				error = 'Ambiguous record for %s' % same_name_sku.sku_name
 			else:
 				# update other fields
@@ -305,9 +299,9 @@ class SkuImportView(APIView):
 			 error = 'Unit UPC invalid for %s' % sku_dict['Name']
 		else:
 			# check if object with same id exists
-			if Sku.objects.filter(pk=sku_dict['SKU#']).exists():
+			if Sku.objects.filter(pk=default_id).exists():
 				# overwrite existing object
-				warning = 'Overwrite object with id %s' % sku_dict['Ingr#']
+				warning = 'Overwrite object with id %s' % str(default_id)
 		# check if product line exists
 		product_line_name = sku_dict['PL Name']
 		if not Product_Line.objects.filter(product_line_name=product_line_name).exists():
