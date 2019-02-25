@@ -78,7 +78,7 @@ var vm = new Vue({
             }
           }
         var temp = this.newIngredient.quantity;
-        temp = temp.replace(/\d/g,'').trim().toLowerCase();
+        temp = temp.replace(/\d/g,'').replace(' ','').toLowerCase();
         temp = temp.replace('.','');
         if(!this.unitCheck(temp)){
             this.unit_error = "unit not compatible";
@@ -102,7 +102,7 @@ var vm = new Vue({
     updateIngredient: function (formulaid,ingredientid) {
       this.loading = true;
         var temp = this.currentIngredient.quantity;
-        temp = temp.replace(/\d/g,'').trim().toLowerCase();
+        temp = temp.replace(/\d/g,'').replace(' ','').toLowerCase();
         temp = temp.replace('.','');
         if(!this.unitCheck(temp)){
             this.unit_error = "unit not compatible";

@@ -7,6 +7,7 @@
             <button class="btn btn-success" type="submit" @click="exportCSV()">Export</button>
             <button class="btn btn-success" type="submit" @click="exportPDF()">Export to PDF</button>
          </h1>
+         <p class="error" v-if="error">${ error }</p>
          <!-- <div class="form-inline my-2 my-lg-0">
             <input id = "search_input_id" class="form-control mr-sm-2" type="text" placeholder="Search" autocomplete="on" v-model="search_term"  aria-label="Search">
             <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="search_input_changed()">Search</button>
@@ -15,14 +16,17 @@
             <thead>
                <tr>
                   <th scope="col">Ingredient Name</th>
-                  <th scope="col">Quantity</th>
+                  <th scope="col">Unit Quantity</th>
+                  <th scope="col">Package Quantity</th>
                </tr>
             </thead>
             <tbody>
                <tr v-for="(value,key) in ingredients">
                   <th scope="row">${key}</th>
-                  <td>${value}</td>
-               </tr>
+               <template v-for="elements in value">
+                  <td>${elements}</td>
+               </template>
+            </tr>
             </tbody>
          </table>
       </div>

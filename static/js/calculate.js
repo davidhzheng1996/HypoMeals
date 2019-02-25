@@ -5,6 +5,7 @@ var vm = new Vue({
      ingredients: [],
      loading: false,
      message: null,
+     error:'',
    },
    mounted: function() {
        // this.getGoals();
@@ -23,6 +24,7 @@ var vm = new Vue({
                })
                .catch((err) => {
                    this.loading = false;
+                   this.error = err.bodyText;
                    console.log(err);
                })
        },
