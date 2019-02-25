@@ -269,9 +269,6 @@ def calculate_goal(request,goalid):
                     else: 
                         response[ingredient.ig.ingredient_name] = temp
                 print(response)
-                # post_result = {'errors': errors}
-                # if errors != []:
-                #     return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
                 return Response(response,status=status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
