@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 import uuid
-import re
 from datetime import date
 
 # product_line to sku is one to many. Each sku matches to exactly one product line
@@ -26,7 +25,7 @@ class Sku(models.Model):
 	id = models.BigIntegerField(unique = True, primary_key=True)
 	caseupc = models.CharField(null=False, default=100000000000,unique=True, 
 		max_length=12, validators=[RegexValidator(r'^\d{12,12}$', message="UPC not 12 digits", code = "invalid UPC")])
-	unitupc = models.CharField(null=False, default=100000000000,unique=False,
+	unitupc = models.CharField(null=False, default=100000000000,
 		max_length=12, validators=[RegexValidator(r'^\d{12,12}$', message="UPC not 12 digits", code = "invalid UPC")])
 	sku_name = models.CharField(max_length=32, null=False, default='')
 	count = models.PositiveIntegerField(null=False, default=0) 
@@ -45,14 +44,12 @@ class Sku(models.Model):
 				self.id =  self.__class__.objects.all().order_by("-id")[0].id + 1
 		super(self.__class__, self).save(*args, **kwargs)
 
-
 class Ingredient(models.Model):
 	id = models.BigIntegerField(primary_key=True)
 	ingredient_name = models.CharField(max_length=128, unique=True, null=False, default='')
 	description = models.TextField(null=True) 
-	package_size = models.CharField(max_length=128,null=False, default = '',
-		validators=[RegexValidator(r'^(\d*\.?\d+)\s*(\D.*|)$', message="Package size not up to standard", code = "invalid package_size")])
-	cpp = models.FloatField(null=False, default=1.0)
+	package_size = models.CharField(max_length=128,null=True)
+	cpp = models.FloatField(null=True)
 	comment = models.TextField(null=True)
 
 	def save(self, *args, **kwargs):
@@ -104,7 +101,9 @@ class Manufacture_Goal(models.Model):
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
 	name = models.ForeignKey(Goal,on_delete=models.CASCADE)
 	goal_sku_name = models.CharField(max_length=128, null=False, default='')
+	desired_quantity = models.IntegerField()
 	desired_quantity = models.PositiveIntegerField()
+
 
 	class Meta: 
 		unique_together = (("name","sku"),)
@@ -125,8 +124,7 @@ class Sku_To_Ml_Shortname(models.Model):
 class Formula_To_Ingredients(models.Model):
 	formula = models.ForeignKey(Formula, on_delete=models.CASCADE)
 	ig = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-	quantity = models.CharField(max_length=128,null=False, default = '',
-		validators=[RegexValidator(r'^(\d*\.?\d+)\s*(\D.*|)$', message="quantity size not up to standard", code = "invalid quantity size")])
+	quantity = models.CharField(null=False, max_length=32, default='')
 
 	class Meta:
 		unique_together = (("formula","ig"),)

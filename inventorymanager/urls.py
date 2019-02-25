@@ -32,7 +32,7 @@ urlpatterns = [
     path('api/skus_to_formula/<int:formulaid>',viewsets.skus_to_formula),
     path('api/formula_to_sku/<int:formulaid>',viewsets.formula_to_sku),
     path('api/mls_to_sku/<int:skuid>',viewsets.mls_to_sku),
-    path('api/add_ml_to_sku/<int:skuid>/<int:mlshortname>',viewsets.add_ml_to_sku),
+    path('api/add_ml_to_sku/<int:skuid>/<str:mlshortname>',viewsets.add_ml_to_sku),
     # path('api/calculate_goal/<int:id>/<int:goalid>',viewsets.calculate_ingredient),
     path('api/ingredients_to_sku/<int:skuid>',viewsets.ingredients_to_sku),
     path('api/delete_ingredients_to_sku/<int:sku>/<int:ig>',viewsets.delete_ingredients_to_sku),
@@ -53,5 +53,6 @@ urlpatterns = [
     path('api/formula_export/', FormulaExportView.as_view()),
     path('api/product_line_import/', ProductLineImportView.as_view()),
     path('api/active_manufacturing_lines/', viewsets.active_manufacturing_lines),
-    path('api/bulk_match_manufacturing_lines/', viewsets.bulk_match_manufacturing_lines)
+    path('api/bulk_match_manufacturing_lines/', viewsets.bulk_match_manufacturing_lines),
+    path('api/mg_to_skus/<str:goal_name>', viewsets.mg_to_skus)
 ]

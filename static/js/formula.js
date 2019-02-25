@@ -1,13 +1,3 @@
- var search_suggestions = []
-        // https://stackoverflow.com/questions/51104720/use-both-vue-js-and-jquery-autocomplete
-        $(function() {
-           $( "#search_input_id" ).autocomplete({
-              minLength:1,   
-              delay:500,   
-              source: search_suggestions
-           });
-        });
-        
 Vue.filter('lowercase', function (value) {
    return value.toLowerCase()
 })
@@ -28,10 +18,7 @@ new Vue({
      has_paginated:false,
      csv_uploaded:false,
      search_term: '',
-     search_suggestions: search_suggestions,
      search_input: '',
-     has_searched: false,
-
      suggestionAttribute: 'original_title',
 
      sortKey: 'forumla_name',
@@ -46,6 +33,29 @@ new Vue({
    },
    mounted: function() {
        this.getFormulas();
+       $("#search_input_id").autocomplete({
+        minLength: 2,
+        delay: 100,
+        source: function (request, response) {
+          $.ajax({
+            url: "/api/formula",
+            dataType: "json",
+            data: {
+              search: request.term
+            },
+            success: function (data) {
+              formula_names = $.map(data, function (item) {
+                return [item.formula_name];
+              })
+              response(formula_names);
+            }
+          });
+        },
+        messages: {
+          noResults: '',
+          results: function() {}
+        }
+      });
    },
    methods: {
        getFormulas: function(){
@@ -68,24 +78,6 @@ new Vue({
                       this.setPages();
                       this.csv_uploaded=false;
                     }
-
-                    if(!this.has_searched) {
-                      let allTerms = []
-                      for(key in this.formulas){
-                        if(this.formulas.hasOwnProperty(key)){
-                          allTerms.push(this.formulas[key].formula_name)
-                         this.has_searched = true;
-                        }
-                      }
-                        $( "#search_input_id" ).autocomplete({
-                        minLength:1,   
-                        delay:500,   
-                        source: allTerms,
-                        select: function(event,ui){
-                          this.search_term = ui.item.value
-                        }
-                          });
-                     }
        
 
                })
@@ -164,7 +156,6 @@ new Vue({
            .then((response) => {
          $("#addFormulaModal").modal('hide');
          this.loading = false;
-         this.has_searched = false;
          // for(let index = 0; index<this.skus.length; index++){
          //    if(this.newSku.sku_name.toLowerCase()===this.skus[index].sku_name.toLowerCase()){
          //        console.log("Already exists");
