@@ -230,8 +230,12 @@ class SkuImportView(APIView):
 					break
 				product_line = Product_Line.objects.get(product_line_name=sku_dict['PL Name'])
 				formula = Formula.objects.get(id=sku_dict['Formula#'])
+				if not sku_dict['SKU#']:
+					default_id = 0
+				else:
+					default_id = sku_dict['SKU#']
 				sku = Sku(
-						id=sku_dict['SKU#'],
+						id=default_id,
 						productline=product_line,
 						caseupc=sku_dict['Case UPC'],
 						unitupc=sku_dict['Unit UPC'],
@@ -242,8 +246,10 @@ class SkuImportView(APIView):
 						formula_scale_factor=sku_dict['Formula factor'],
 						manufacture_rate=sku_dict['Rate'],
 						comment=sku_dict['Comment'])
-				# save without commit, as later validation might fail 
-				sku.save()
+				serializer = SkuSerializer(data=sku)
+                if serializer.is_valid():
+					# save without commit, as later validation might fail 
+                    serializer.save()
 				# save all manufacturing lines associated with sku
 				ml_shortnames = sku_dict['ML Shortnames'].strip('"').split(',')
 				for ml_shortname in ml_shortnames:
@@ -436,8 +442,6 @@ class FormulaExportView(APIView):
 				]
 				writer.writerow(formula_row)
 		return response
-
-
 
 class ProductLineImportView(APIView):
 	# available parsers: https://www.django-rest-framework.org/api-guide/parsers/ 
