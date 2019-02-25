@@ -5,7 +5,8 @@ var starting = new Vue({
     manufacturing_lines: new Set(),
     goals:[],
     groups: new vis.DataSet(),
-    items: new vis.DataSet()
+    items: new vis.DataSet(),
+    search_term:''
   },
   methods: {
     addGoal: function() {
@@ -36,8 +37,29 @@ var starting = new Vue({
         for(let value of this.manufacturing_lines){
             this.groups.add({"id":value,"content":value})
         }
+        
+    },
+    onBlur: function (event) {
+        if (event && this.search_term !== event.target.value)
+          this.search_term = event.target.value
+    },
+    handleDragStart: function(list_index,goal,sku,event){
+        var dragSrcEl = event.target;
+        event.dataTransfer.effectAllowed = 'move';
+        var item = {
+            id: new Date(),
+            content: event.target.innerHTML,
+            goal:goal,
+            manufacturing_lines:this.goals[list_index][goal][sku].manufacturing_lines,
+            time_needed:this.goals[list_index][goal][sku].time_needed
+        };
+        // set event.target ID with item ID
+        event.target.id = new Date(item.id).toISOString();
+        event.dataTransfer.setData("text", JSON.stringify(item));
+
+        // Trigger on from the new item dragged when this item drag is finish
+        // event.target.addEventListener('dragend', handleDragEnd.bind(this), false);
     }
-    search_term:'',
   },
   mounted: function () {
     $("#search_input").autocomplete({
@@ -65,12 +87,6 @@ var starting = new Vue({
           results: function() {}
         }
       });
-  },
-  methods: {
-    onBlur: function (event) {
-        if (event && this.search_term !== event.target.value)
-          this.search_term = event.target.value
-    },
   }
 });
 
@@ -100,10 +116,9 @@ var options = {
         alert('dropped object with content: "' + objectData.content + '" to item: "' + item.content + '"');
     },
     onAdd:function(item,callback){
-        console.log(item)
-        activity ={id: item.id, content: 'Drag Added', start: item.start,  end:new Date(item.start.getTime()+3600000*50),group:item.group}
+        activity ={id: item.id, content: item.content, start: item.start,  end:new Date(item.start.getTime()+3600000*item.time_needed),group:item.group}
         if(item.content!="new item"){
-            stuff.add(activity)
+            starting.items.add(activity)
         }
     }
 };
@@ -112,40 +127,24 @@ var options = {
 var container = document.getElementById('visualization');
 timeline1 = new vis.Timeline(container, starting.items, starting.groups, options);
 
-function handleDragStart(event) {
-    var dragSrcEl = event.target;
 
-    event.dataTransfer.effectAllowed = 'move';
-    var itemType = event.target.innerHTML.split('-')[1].trim();
-    var item = {
-        id: new Date(),
-        content: event.target.innerHTML.split('-')[0].trim()
-    };
-    // set event.target ID with item ID
-    event.target.id = new Date(item.id).toISOString();
-    event.dataTransfer.setData("text", JSON.stringify(item));
+// function handleDragEnd(event) {
+//     // Last item that just been dragged, its ID is the same of event.target
+//     var newItem_dropped = timeline1.itemsData.get(event.target.id);
 
-    // Trigger on from the new item dragged when this item drag is finish
-    event.target.addEventListener('dragend', handleDragEnd.bind(this), false);
-}
+//     var html = "<b>id: </b>" + newItem_dropped.id + "<br>";
+//     html += "<b>content: </b>" + newItem_dropped.content + "<br>";
+//     html += "<b>start: </b>" + newItem_dropped.start + "<br>";
+//     html += "<b>end: </b>" + newItem_dropped.end + "<br>";
+//     document.getElementById('output').innerHTML = html;
+// }
 
-function handleDragEnd(event) {
-    // Last item that just been dragged, its ID is the same of event.target
-    var newItem_dropped = timeline1.itemsData.get(event.target.id);
-
-    var html = "<b>id: </b>" + newItem_dropped.id + "<br>";
-    html += "<b>content: </b>" + newItem_dropped.content + "<br>";
-    html += "<b>start: </b>" + newItem_dropped.start + "<br>";
-    html += "<b>end: </b>" + newItem_dropped.end + "<br>";
-    document.getElementById('output').innerHTML = html;
-}
-
-var items = document.querySelectorAll('.items .item');
+// var items = document.querySelectorAll('.items .item');
 
 
-for (var i = items.length - 1; i >= 0; i--) {
-    var item = items[i];
-    item.addEventListener('dragstart', handleDragStart.bind(this), false);
-}
+// for (var i = items.length - 1; i >= 0; i--) {
+//     var item = items[i];
+//     item.addEventListener('dragstart', handleDragStart.bind(this), false);
+// }
 
 

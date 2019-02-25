@@ -19,9 +19,16 @@
 	        <pre id="output"></pre>
 	    </div>
 	    <div class='side'>
-	    	<template v-for="goal in goals">
+	    	<template v-for="(goal,list_index) in goals">
 	    		<template v-for="(value,index) in goal">
-	    			<h1>${ indexs }</h1>
+	    			<h1>${ index }</h1>
+	    			<ul class="items">
+		    			<template v-for="(value2,index2) in value">
+		    				<li draggable="true" class="item" v-on:dragStart="handleDragStart(list_index,index,index2,$event)">
+	                			${index2}
+	            			</li>
+		    			</template>
+	    			</ul>
 	    		</template>
 	     <!--    <h3>Goals:</h3>
 	        <ul class="items">
