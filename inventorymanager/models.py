@@ -14,6 +14,14 @@ class Formula(models.Model):
 	id = models.BigIntegerField(primary_key=True)
 	comment = models.TextField(null=True)
 
+	def save(self, *args, **kwargs):
+		if self.id == 0:
+			if not self.__class__.objects.all():
+				self.id = 1
+			else:
+				self.id =  self.__class__.objects.all().order_by("-id")[0].id + 1
+		super(self.__class__, self).save(*args, **kwargs)
+
 class Sku(models.Model):
 	id = models.BigIntegerField(unique = True, primary_key=True)
 	caseupc = models.CharField(null=False, default=100000000000,unique=True, 
@@ -46,6 +54,14 @@ class Ingredient(models.Model):
 		validators=[RegexValidator(r'^(\d*\.?\d+)\s*(\D.*|)$', message="Package size not up to standard", code = "invalid package_size")])
 	cpp = models.FloatField(null=False, default=1.0)
 	comment = models.TextField(null=True)
+
+	def save(self, *args, **kwargs):
+		if self.id == 0:
+			if not self.__class__.objects.all():
+				self.id = 1
+			else:
+				self.id =  self.__class__.objects.all().order_by("-id")[0].id + 1
+		super(self.__class__, self).save(*args, **kwargs)
 
 class Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
