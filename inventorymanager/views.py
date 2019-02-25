@@ -224,7 +224,7 @@ class SkuImportView(APIView):
 				if val_error:
 					errors.append(val_error)
 					break
-				product_line = Product_Line.objects.get(product_line_name=sku_dict['Product Line Name'])
+				product_line = Product_Line.objects.get(product_line_name=sku_dict['PL Name'])
 				formula = Formula.objects.get(id=sku_dict['Formula#'])
 				sku = Sku(
 						id=sku_dict['SKU#'],
@@ -235,11 +235,21 @@ class SkuImportView(APIView):
 						count=sku_dict['Count per case'],
 						unit_size=sku_dict['Unit size'],
 						formula=formula,
-						formula_scale_factor=sku_dict['Formula Factor'],
+						formula_scale_factor=sku_dict['Formula factor'],
 						manufacture_rate=sku_dict['Rate'],
 						comment=sku_dict['Comment'])
 				# save without commit, as later validation might fail 
 				sku.save()
+				# save all manufacturing lines associated with sku
+				ml_shortnames = sku_dict['ML Shortnames'].strip('"').split(',')
+				for ml_shortname in ml_shortnames:
+					if Sku_To_Ml_Shortname.objects.filter(sku=sku_dict['SKU#'],ml_short_name=ml_shortname).exists():
+						continue
+					sku_object = Sku.objects.get(id=sku_dict['SKU#'])
+					ml_short_name_object = Manufacture_line.objects.get(ml_short_name=ml_shortname)
+					sku2ml = Sku_To_Ml_Shortname(sku=sku_object,ml_short_name=ml_short_name_object)
+					sku2ml.save()
+
 		if errors != []:
 			transaction.savepoint_rollback(transaction_savepoint)
 		else:
@@ -247,7 +257,7 @@ class SkuImportView(APIView):
 		return errors, warnings
 
 	def validate_header(self, headers):
-		if headers != ['SKU#','Name','Case UPC','Unit UPC','Unit size','Count per case','Product Line Name','Formula#','Formula Factor','Rate','Comment']:
+		if headers != ['SKU#','Name','Case UPC','Unit UPC','Unit size','Count per case','PL Name','Formula#','Formula factor', 'ML Shortnames', 'Rate','Comment']:
 			return 'File headers not compliant to standard', ''
 		return '', ''
 
@@ -275,9 +285,15 @@ class SkuImportView(APIView):
 				# overwrite existing object
 				warning = 'Overwrite object with id %s' % sku_dict['Ingr#']
 		# check if product line exists
-		product_line_name = sku_dict['Product Line Name']
+		product_line_name = sku_dict['PL Name']
 		if not Product_Line.objects.filter(product_line_name=product_line_name).exists():
 			error = 'No product line named %s' % product_line_name
+		# check if manufacturing lines exist 
+		ml_shortnames = sku_dict['ML Shortnames'].strip('"').split(',')
+		for ml_shortname in ml_shortnames:
+			if not Manufacture_line.objects.filter(ml_short_name=ml_shortname).exists():
+				error = 'No manufacturing line named %s' % ml_shortname
+				break
 		return error, warning
 
 	def validate_case_upc(self, sku_dict):
@@ -313,7 +329,7 @@ class SkuExportView(APIView):
                 return response
 
 
-class SkuFormulaImportView(APIView):
+class FormulaImportView(APIView):
 	# available parsers: https://www.django-rest-framework.org/api-guide/parsers/ 
 	# file sent should be in FormData
 	parser_classes = (MultiPartParser, FormParser)
@@ -344,14 +360,22 @@ class SkuFormulaImportView(APIView):
 				if val_error:
 					errors.append(val_error)
 					break
-				sku = Sku.objects.get(id=formula_dict['SKU#'])
+				# store formula first if not exist 
+				if not Formula.objects.filter(formula_name=formula_dict['Name'], id=formula_dict['Formula#']).exists():
+					formula = Formula(formula_name=formula_dict['Name'],
+									  id=formula_dict['Formula#'],
+									  comment=formula_dict['Comment'])
+					formula.save()
+				# add to Formula_To_Ingredients table if not exist
+				formula = Formula.objects.get(formula_name=formula_dict['Name'])
 				ingr = Ingredient.objects.get(id=formula_dict['Ingr#'])
-				sku_to_ingr = Sku_To_Ingredient(
-						sku=sku,
+				if not Formula_To_Ingredients.objects.filter(formula=formula.id, ig=ingr.id).exists():
+					formula_to_ingr = Formula_To_Ingredients(
+						formula=formula,
 						ig=ingr,
 						quantity=formula_dict['Quantity'])
-				# save without commit, as later validation might fail 
-				sku_to_ingr.save()
+					# save without commit, as later validation might fail 
+					formula_to_ingr.save()
 		if errors != []:
 			transaction.savepoint_rollback(transaction_savepoint)
 		else:
@@ -359,7 +383,7 @@ class SkuFormulaImportView(APIView):
 		return errors, warnings
 
 	def validate_header(self, headers):
-		if headers != ['SKU#','Ingr#','Quantity']:
+		if headers != ['Formula#','Name','Ingr#','Quantity','Comment']:
 			return 'File headers not compliant to standard', ''
 		return '', ''
 
@@ -367,10 +391,22 @@ class SkuFormulaImportView(APIView):
 	def validate_formula(self, formula_dict):
 		error = ''
 		warning = ''
-		if not Sku.objects.filter(id=formula_dict['SKU#']).exists():
-			error = 'No Sku with id %s' % formula_dict['SKU#']
 		if not Ingredient.objects.filter(id=formula_dict['Ingr#']).exists():
 			error = 'No ingredient with id %s' % formula_dict['Ingr#']
+		# check if formula exist
+		# if formula name exists but a different id, error
+		if Formula.objects.filter(formula_name=formula_dict['Name']).exists():
+			same_name_formua = Formula.objects.get(formula_name=formula_dict['Name'])
+			if same_name_formua.pk != int(formula_dict['Formula#']):
+				error = 'Ambiguous record for %s' % same_name_formua.formula_name
+			else:
+				# update other fields
+				if same_name_formua.formula_name != formula_dict['Name']:
+					warning = 'Update fields for %s' % same_name_formua.formula_name
+		# if formula id exists but a different name, replace
+		elif Formula.objects.filter(pk=formula_dict['Formula#']).exists():
+				# overwrite existing object
+				warning = 'Overwrite object with id %s' % formula_dict['Formula#']
 		return error, warning
 
 class ProductLineImportView(APIView):
