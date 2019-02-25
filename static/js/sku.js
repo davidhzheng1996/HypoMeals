@@ -13,7 +13,7 @@ new Vue({
      page:1,
      perPage: 10,
      pages:[],
-     newSku: { 'sku_name': '','productline': '', 'id': null, 'caseupc': 100000000000,'unitupc': 100000000000, 'unit_size': 0, 'count': 0, 'formula':0,
+     newSku: { 'sku_name': '','productline': '', 'id': 0, 'caseupc': 100000000000,'unitupc': 100000000000, 'unit_size': 0, 'count': 0, 'formula':0,
      'formula_scale_factor':0, 'manufacture_rate':0,'comment': null},
      skuFile: null,
      formulaFile: null,
