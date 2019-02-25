@@ -2,5 +2,3 @@ SKU#,Name,Case UPC,Unit UPC,Unit size,Count per case,PL Name,Formula#,Formula fa
 88,test11,900000000000,000000000003,0,0,test,1,5,"fd,mac,BMP14",2,
 199,test,100000000007,100000000007,2,24,test,1,4,"BMP14,fd,mac",8,
 99,cookies,700000000000,800000000001,2,1,test,1,90,"mac,fd,BMP14",5,
-10,salad,001738949937,001738949937,2,3,chinese food,1,2,"BMP14,fd",5, makes you slim
-11,chocolate,709942848571,709942848571,2,3,milkis,1,18,"BMP14,fd",3,
