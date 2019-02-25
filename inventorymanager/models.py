@@ -11,7 +11,7 @@ class Product_Line(models.Model):
 class Formula(models.Model):
 	formula_name = models.CharField(max_length=32, unique=True, null=False, default='')
 	id = models.BigIntegerField(primary_key=True)
-	comment = models.TextField(null=True)
+	comment = models.TextField(null=True, blank = True)
 
 	def save(self, *args, **kwargs):
 		if self.id == 0:
@@ -30,7 +30,7 @@ class Sku(models.Model):
 	sku_name = models.CharField(max_length=32, null=False, default='')
 	count = models.PositiveIntegerField(null=False, default=0) 
 	unit_size = models.CharField(max_length=128, null=False, default='')
-	comment = models.TextField(null=True)
+	comment = models.TextField(null=True, blank = True)
 	productline = models.ForeignKey(Product_Line, on_delete=models.CASCADE, default='')
 	formula = models.ForeignKey(Formula, on_delete=models.CASCADE, default = 1)
 	formula_scale_factor = models.FloatField(null=False, default=1.0)
@@ -50,7 +50,7 @@ class Ingredient(models.Model):
 	description = models.TextField(null=True) 
 	package_size = models.CharField(max_length=128,null=True)
 	cpp = models.FloatField(null=True)
-	comment = models.TextField(null=True)
+	comment = models.TextField(null=True, blank = True)
 
 	def save(self, *args, **kwargs):
 		if self.id == 0:
@@ -101,7 +101,6 @@ class Manufacture_Goal(models.Model):
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
 	name = models.ForeignKey(Goal,on_delete=models.CASCADE)
 	goal_sku_name = models.CharField(max_length=128, null=False, default='')
-	desired_quantity = models.IntegerField()
 	desired_quantity = models.PositiveIntegerField()
 
 
