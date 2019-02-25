@@ -9,18 +9,21 @@
 	<div id="visualization"></div>
 	<div class="row">
          <div class="form-inline my-2 my-lg-0">
-            <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" autocomplete="on" v-model="search_term"  aria-label="Search" @blur="onBlur">
-            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="">Search</button>
+          <!--   <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" autocomplete="on" v-model="search_term"  aria-label="Search" @blur="onBlur"> -->
+            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="addGoal()">Add Goal</button>
         </div>
     </div>
-	<button onclick="test()">Click me</button>
 	<div class='items-panel'>
 	    <div class='side' style="max-width:350px;overflow:auto">
 	        <h3>Last item just been dragged on timeline:</h3>
 	        <pre id="output"></pre>
 	    </div>
 	    <div class='side'>
-	        <h3>Items:</h3>
+	    	<template v-for="goal in goals">
+	    		<template v-for="(value,index) in goal">
+	    			<h1>${ indexs }</h1>
+	    		</template>
+	     <!--    <h3>Goals:</h3>
 	        <ul class="items">
 	            <li draggable="true" class="item">
 	                item 1 - box
@@ -36,6 +39,7 @@
 	                <br> (start: now, end: now + 10 min)
 	            </li>
 	        </ul>
+ -->	    </template>
 	    </div>
 	</div>
 </div>

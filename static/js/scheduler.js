@@ -1,51 +1,82 @@
-new Vue({
+var starting = new Vue({
   el: '#starting',
+  delimiters: ['${', '}'],
   data: {
-  },
-  mounted: function () {
-    
+    manufacturing_lines: new Set(),
+    goals:[],
+    groups: new vis.DataSet(),
+    items: new vis.DataSet()
   },
   methods: {
+    addGoal: function() {
+        data = {"Kingdom Hearts 3":
+                            {   "Cases":
+                                    {   "manufacturing_lines":["man 1","man 2"],
+                                        "time_needed":19
+                                    },
+                                "Disks":
+                                    {
+                                        "manufacturing_lines":["man 2","man 3"],
+                                        "time_needed":30
+                                    }
+                            }
+               }
+        this.goals.push(data)
+        for(key in data){
+            if(data.hasOwnProperty(key)){
+                for(key2 in data[key]){
+                    if(data[key].hasOwnProperty(key2)){
+                        for(key3 in data[key][key2].manufacturing_lines){
+                            this.manufacturing_lines.add(data[key][key2].manufacturing_lines[key3])
+                        }
+                    }
+                }
+            }
+        }
+        for(let value of this.manufacturing_lines){
+            this.groups.add({"id":value,"content":value})
+        }
+    }
   }
 });
 
-var stuff = new vis.DataSet([
-    {id: 1, content: 'item 1', start: '2013-04-20',group:1},
-    {id: 2, content: 'item 2', start: '2013-04-14',group:1},
-    {id: 3, content: 'item 3', start: '2013-04-18',group:1},
-    {id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19',group:2},
-    {id: 5, content: 'item 5', start: '2013-04-25',group:2},
-    {id: 6, content: 'item 6', start: '2013-04-27',group:2}
-  ]);
+// 
+//  var items = new vis.DataSet([
+//     {id: 1, content: 'item 1', start: '2013-04-20'},
+//     {id: 2, content: 'item 2', start: '2013-04-14'},
+//     {id: 3, content: 'item 3', start: '2013-04-18'},
+//     {id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19'},
+//     {id: 5, content: 'item 5', start: '2013-04-25'},
+//     {id: 6, content: 'item 6', start: '2013-04-27'}
+//   ]);
 
-var groups = new vis.DataSet([
-  {
-    id: 1,
-    content: 'Group 1'
-  },
-  {
-    id:2,
-    content:'Group 2'
-  }
-]);
-
-function test(){
-    groups.add({id:3,content:'Group 3'})
-}
+var timenow = new Date()
+var timeend = new Date(timenow.getTime()+3600000*24)
+timenow = timenow.toISOString()
+timeend = timeend.toISOString()
 
 var options = {
     stack: true,
     editable: true,
     orientation: 'top',
+    start:timenow,
+    end:timeend,
     onDropObjectOnItem: function(objectData, item, callback) {
         if (!item) { return; }
         alert('dropped object with content: "' + objectData.content + '" to item: "' + item.content + '"');
+    },
+    onAdd:function(item,callback){
+        console.log(item)
+        activity ={id: item.id, content: 'Drag Added', start: item.start,  end:new Date(item.start.getTime()+3600000*50),group:item.group}
+        if(item.content!="new item"){
+            stuff.add(activity)
+        }
     }
 };
 
 // create a Timeline
 var container = document.getElementById('visualization');
-timeline1 = new vis.Timeline(container, stuff, groups, options);
+timeline1 = new vis.Timeline(container, starting.items, starting.groups, options);
 
 function handleDragStart(event) {
     var dragSrcEl = event.target;
@@ -54,17 +85,10 @@ function handleDragStart(event) {
     var itemType = event.target.innerHTML.split('-')[1].trim();
     var item = {
         id: new Date(),
-        type: itemType,
         content: event.target.innerHTML.split('-')[0].trim()
     };
     // set event.target ID with item ID
     event.target.id = new Date(item.id).toISOString();
-
-    var isFixedTimes = (event.target.innerHTML.split('-')[2] && event.target.innerHTML.split('-')[2].trim() == 'fixed times')
-    if (isFixedTimes) {
-        item.start = new Date();
-        item.end = new Date(1000 * 60 * 10 + (new Date()).valueOf());
-    }
     event.dataTransfer.setData("text", JSON.stringify(item));
 
     // Trigger on from the new item dragged when this item drag is finish
