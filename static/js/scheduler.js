@@ -1,93 +1,132 @@
 var starting = new Vue({
-  el: '#starting',
-  delimiters: ['${', '}'],
-  data: {
-    manufacturing_lines: new Set(),
-    goals:[],
-    groups: new vis.DataSet(),
-    items: new vis.DataSet(),
-    search_term:''
-  },
-  methods: {
-    addGoal: function() {
-        data = {"Kingdom Hearts 3":
-                            {   "Cases":
-                                    {   "manufacturing_lines":["man 1","man 2"],
-                                        "time_needed":19
-                                    },
-                                "Disks":
-                                    {
-                                        "manufacturing_lines":["man 2","man 3"],
-                                        "time_needed":30
-                                    }
+    el: '#starting',
+    delimiters: ['${', '}'],
+    data: {
+        manufacturing_lines: new Set(),
+        // unscheduled goals with skus
+        goals: [],
+        // manufacturing lines
+        groups: new vis.DataSet(),
+        // skus
+        items: new vis.DataSet(),
+        search_term: '',
+        error_message: ''
+    },
+    methods: {
+        addGoal: function () {
+            data = {
+                "Kingdom Hearts 3":
+                {
+                    "Cases":
+                    {
+                        "manufacturing_lines": ["man 1", "man 2"],
+                        "time_needed": 7
+                    },
+                    "Disks":
+                    {
+                        "manufacturing_lines": ["man 2", "man 3"],
+                        "time_needed": 10
+                    }
+                }
+            }
+            this.goals.push(data)
+            for (key in data) {
+                if (data.hasOwnProperty(key)) {
+                    for (key2 in data[key]) {
+                        if (data[key].hasOwnProperty(key2)) {
+                            for (key3 in data[key][key2].manufacturing_lines) {
+                                this.manufacturing_lines.add(data[key][key2].manufacturing_lines[key3])
                             }
-               }
-        this.goals.push(data)
-        for(key in data){
-            if(data.hasOwnProperty(key)){
-                for(key2 in data[key]){
-                    if(data[key].hasOwnProperty(key2)){
-                        for(key3 in data[key][key2].manufacturing_lines){
-                            this.manufacturing_lines.add(data[key][key2].manufacturing_lines[key3])
                         }
                     }
                 }
             }
-        }
-        for(let value of this.manufacturing_lines){
-            this.groups.add({"id":value,"content":value})
-        }
-        
-    },
-    onBlur: function (event) {
-        if (event && this.search_term !== event.target.value)
-          this.search_term = event.target.value
-    },
-    handleDragStart: function(list_index,goal,sku,event){
-        var dragSrcEl = event.target;
-        event.dataTransfer.effectAllowed = 'move';
-        var item = {
-            id: new Date(),
-            content: event.target.innerHTML,
-            goal:goal,
-            manufacturing_lines:this.goals[list_index][goal][sku].manufacturing_lines,
-            time_needed:this.goals[list_index][goal][sku].time_needed
-        };
-        // set event.target ID with item ID
-        event.target.id = new Date(item.id).toISOString();
-        event.dataTransfer.setData("text", JSON.stringify(item));
-
-        // Trigger on from the new item dragged when this item drag is finish
-        // event.target.addEventListener('dragend', handleDragEnd.bind(this), false);
-    }
-  },
-  mounted: function () {
-    $("#search_input").autocomplete({
-        minLength: 2,
-        delay: 100,
-        // https://stackoverflow.com/questions/9656523/jquery-autocomplete-with-callback-ajax-json
-        source: function (request, response) {
-          $.ajax({
-            url: "/api/manufacture_goal/",
-            dataType: "json",
-            data: {
-              // attach '?search=request.term' to the url 
-              search: request.term
-            },
-            success: function (data) {
-              ingr_names = $.map(data, function (item) {
-                return [item.ingredient_name];
-              })
-              response(ingr_names);
+            for (let value of this.manufacturing_lines) {
+                this.groups.add({ "id": value, "content": value })
             }
-          });
+            // THIS HAS NOT BEEN SET UP YET 
+            // let userid = 0;
+            // let api_url = '/api/manufacture_goal/' + userid;
+            // if (this.search_term !== '' && this.search_term !== null) {
+            //     api_url += '?search=' + this.search_term
+            // }
+            // this.$http.get(api_url)
+            //     .then((response) => {
+            //         let data = reponse.data
+            //         this.goals.push(data)
+            //         for (key in data) {
+            //             if (data.hasOwnProperty(key)) {
+            //                 for (key2 in data[key]) {
+            //                     if (data[key].hasOwnProperty(key2)) {
+            //                         for (key3 in data[key][key2].manufacturing_lines) {
+            //                             this.manufacturing_lines.add(data[key][key2].manufacturing_lines[key3])
+            //                         }
+            //                     }
+            //                 }
+            //             }
+            //         }
+            //         for (let value of this.manufacturing_lines) {
+            //             this.groups.add({ "id": value, "content": value })
+            //         }
+            //     })
+            //     .catch((err) => {
+            //         console.log(err);
+            //     })
+
+
+
+
         },
-        messages: {
-          noResults: '',
-          results: function() {}
+        onBlur: function (event) {
+            if (event && this.search_term !== event.target.value)
+                this.search_term = event.target.value
+        },
+        handleDragStart: function (list_index, goal, sku, event) {
+            var dragSrcEl = event.target;
+            event.dataTransfer.effectAllowed = 'move';
+            // sku
+            var item = {
+                id: new Date(),
+                content: event.target.innerHTML,
+                goal: goal,
+                manufacturing_lines: this.goals[list_index][goal][sku].manufacturing_lines,
+                time_needed: this.goals[list_index][goal][sku].time_needed,
+            };
+            // set event.target ID with item ID
+            event.target.id = new Date(item.id).toISOString();
+            event.dataTransfer.setData("text", JSON.stringify(item));
+
+            // Trigger on from the new item dragged when this item drag is finish
+            // event.target.addEventListener('dragend', handleDragEnd.bind(this), false);
         }
-      });
-  }
+    },
+    mounted: function () {
+        $("#search_input").autocomplete({
+            minLength: 2,
+            delay: 100,
+            // https://stackoverflow.com/questions/9656523/jquery-autocomplete-with-callback-ajax-json
+            source: function (request, response) {
+                $.ajax({
+                    url: "/api/manufacture_goal/",
+                    dataType: "json",
+                    data: {
+                        // attach '?search=request.term' to the url 
+                        search: request.term
+                    },
+                    success: function (data) {
+                        ingr_names = $.map(data, function (item) {
+                            return [item.ingredient_name];
+                        })
+                        response(ingr_names);
+                    }
+                });
+            },
+            messages: {
+                noResults: '',
+                results: function () { }
+            }
+        });
+    }
 });
 
 // 
@@ -101,7 +140,7 @@ var starting = new Vue({
 //   ]);
 
 var timenow = new Date()
-var timeend = new Date(timenow.getTime()+3600000*24)
+var timeend = new Date(timenow.getTime() + 3600000 * 24)
 timenow = timenow.toISOString()
 timeend = timeend.toISOString()
 
@@ -109,17 +148,81 @@ var options = {
     stack: true,
     editable: true,
     orientation: 'top',
-    start:timenow,
-    end:timeend,
-    onDropObjectOnItem: function(objectData, item, callback) {
+    start: timenow,
+    end: timeend,
+    onDropObjectOnItem: function (objectData, item, callback) {
         if (!item) { return; }
         alert('dropped object with content: "' + objectData.content + '" to item: "' + item.content + '"');
     },
-    onAdd:function(item,callback){
-        activity ={id: item.id, content: item.content, start: item.start,  end:new Date(item.start.getTime()+3600000*item.time_needed),group:item.group}
-        if(item.content!="new item"){
+    onAdd: function (item, callback) {
+        error_message = ''
+        // DO VALIDATIONS HERE
+        // item is sku, group is manufacturing line
+        // validate the time is within 8am to 6pm 
+        if (item.start.getHours() < 7 || item.start.getHours() > 17) {
+            error_message = 'scheduled starting time outside of operation hours.'
+            return 
+        }
+        // calculate actual hours needed with night time 
+        actualTimeNeeded = function (start_time, hours_needed) {
+            // in mili
+            let time_needed = hours_needed * 3600000
+            let actual_time = 0
+            let start_day_end_time = new Date(start_time.getUTCFullYear(), 
+                                              start_time.getUTCMonth(), 
+                                              start_time.getUTCDate(),
+                                              17, 
+                                              0, 
+                                              0, 
+                                              0)
+            actual_time += start_day_end_time - start_time
+            time_needed -= start_day_end_time - start_time
+            if (time_needed !== 0) {
+                // night time of the day
+                actual_time += 3600000 * 14
+            }
+            let full_days = Math.floor(time_needed / (3600000*10))
+            actual_time += full_days * 3600000*24
+            time_needed -= full_days * 3600000*10
+            actual_time += time_needed
+            // console.log(hours_needed)
+            // console.log(start_time.toTimeString())
+            // console.log((new Date(start_time.getTime() + actual_time)).toTimeString())
+            return actual_time
+        }
+        let actual_time_needed = actualTimeNeeded(item.start, item.time_needed);
+        // check if manufacturing line can make this sku
+        if(item.manufacturing_lines.indexOf(item.group) === -1){
+            error_message = 'sku cannot be made on this manufacturing line.'
+            return
+        } 
+        activity = { id: item.id, content: item.content, start: item.start, end: new Date(item.start.getTime() + actual_time_needed), group: item.group }
+        if (item.content != "new item") {
             starting.items.add(activity)
         }
+        // store to backend 
+        // remove sku from unscheduled list
+        // console.log(starting.goals)
+        // console.log(item.goal)
+        // starting.goals.filter((goal) => {
+        //     return item.goal in goal
+        // }).filter((sku) => {
+        //     console.log(sku)
+        //     return sku.content !== item.content;
+        // })
+        starting.goals.forEach((goal) => {
+            // check if item.goal is the key 
+            if(item.goal in goal) {
+                // goal[item.goal]: {sku-> {ml,time_needed}}
+                // how to grab the sku name? 
+            }
+        })
+        // visualize exceeding deadline 
+    },
+    
+    onRemove: function (item, callback) {
+        // put back item 
+        console.log(item)
     }
 };
 

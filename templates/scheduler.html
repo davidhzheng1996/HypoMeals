@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="{% static 'css/scheduler.css' %}">
 <div id="starting">
 	<h1> Scheduler</h1>
+	<h3 class="error" v-if="error_message"> ${error_message} </h3>
 	<div id="visualization"></div>
 	<div class="row">
          <div class="form-inline my-2 my-lg-0">
@@ -24,6 +25,7 @@
 	    			<h1>${ index }</h1>
 	    			<ul class="items">
 		    			<template v-for="(value2,index2) in value">
+							<!-- list_index is index for goal (i.e 0,1,2), index is goalname, index2 is sku names for that goal -->
 		    				<li draggable="true" class="item" v-on:dragStart="handleDragStart(list_index,index,index2,$event)">
 	                			${index2}
 	            			</li>
