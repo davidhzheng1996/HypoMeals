@@ -47,7 +47,7 @@ class Sku(models.Model):
 class Ingredient(models.Model):
 	id = models.BigIntegerField(primary_key=True)
 	ingredient_name = models.CharField(max_length=128, unique=True, null=False, default='')
-	description = models.TextField(null=True) 
+	description = models.TextField(null=True, blank = True) 
 	package_size = models.CharField(max_length=128,null=True)
 	cpp = models.FloatField(null=True)
 	comment = models.TextField(null=True, blank = True)

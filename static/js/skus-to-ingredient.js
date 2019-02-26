@@ -33,6 +33,7 @@ var vm = new Vue({
            this.$http.get('/api/skus_to_ingredient/'+ingredientid)
                .then((response) => {
                    this.skus = response.data;
+                   console.log(this.skus)
                    this.loading = false;
                    if(!this.has_paginated){
                       this.setPages();

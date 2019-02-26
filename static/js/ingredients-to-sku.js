@@ -15,6 +15,14 @@ var vm = new Vue({
       'ingredient_name': '',
       'quantity': 0
     },
+    sortKey: 'ingredient_name',
+    sortAsc: [
+      { 'ingredient_name': true },
+      { 'package_size': true },
+      { 'cpp': true },
+      { 'description': true },
+      { 'id': true }
+    ],
     error:'',
   },
   mounted: function () {},
@@ -123,6 +131,15 @@ var vm = new Vue({
       let from = (page * perPage) - perPage;
       let to = (page * perPage);
       return  ingredients.slice(from, to);
+    },
+    sortBy: function (key) {
+      this.sortKey = key
+      this.sortAsc[key] = !this.sortAsc[key]
+      if (!this.sortAsc[this.sortKey]) {
+        this.ingredients = _.sortBy(this.ingredients, this.sortKey)
+      } else {
+        this.ingredients = _.sortBy(this.ingredients, this.sortKey).reverse()
+      }
     },
   },
   computed: {
