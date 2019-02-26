@@ -15,6 +15,7 @@ from datetime import date
 
 import csv
 import io
+import re
 
 # Create your views here.
 @login_required(login_url='/accounts/login/')
@@ -133,7 +134,19 @@ class IngredientImportView(APIView):
 				errors.append(header_val_error)
 				return errors, warnings
 			for ingr_dict in reader:
-				ingr_val_error, ingr_val_warning = self.validate_ingredient(ingr_dict)
+				if not ingr_dict['Ingr#']:
+					if not Ingredient.objects.all():
+						default_id = 1
+					else:
+						default_id =  Ingredient.objects.all().order_by("-id")[0].id + 1
+				else:
+					try:
+						int(ingr_dict['Ingr#'])
+					except ValueError:
+						errors.append(ingr_dict['Ingr#'] + " is not a number,")
+						continue
+					default_id = int(ingr_dict['Ingr#'])
+				ingr_val_error, ingr_val_warning = self.validate_ingredient(ingr_dict, default_id)
 				unit_error = self.validate_unit(ingr_dict)
 				if ingr_val_warning:
 					warnings.append(ingr_val_warning)
@@ -141,16 +154,32 @@ class IngredientImportView(APIView):
 					errors.append(ingr_val_error)
 					break
 				if not unit_error:
-					errors.append("package size unit incorrect for %s" % ingr_dict['Name'])
-					break;
-				ingredient = Ingredient(id=ingr_dict['Ingr#'],
-										ingredient_name=ingr_dict['Name'].lower(), 
-										description=ingr_dict['Vendor Info'],
-										package_size=ingr_dict['Size'],
-										cpp=ingr_dict['Cost'],
-										comment=ingr_dict['Comment'])
-				# save without commit, as later validation might fail 
-				ingredient.save()
+					errors.append("package size unit incorrect for %s," % ingr_dict['Name'])
+					break
+				# ingredient = Ingredient(id=default_id,
+				# 						ingredient_name=ingr_dict['Name'].lower(), 
+				# 						description=ingr_dict['Vendor Info'],
+				# 						package_size=ingr_dict['Size'],
+				# 						cpp=ingr_dict['Cost'],
+				# 						comment=ingr_dict['Comment'])
+				if not Ingredient.objects.filter(id=default_id).exists():
+					serializer = IngredientSerializer(data={'id':default_id,'ingredient_name':ingr_dict['Name'].lower(),'description':ingr_dict['Vendor Info'],'package_size':ingr_dict['Size'],'cpp':ingr_dict['Cost'],'comment':ingr_dict['Comment']})
+					if(serializer.is_valid()):
+						serializer.save()
+				else:
+					ingr = Ingredient.objects.get(id=default_id)
+					s = IngredientSerializer(ingr)
+					s_data = s.data
+					ingr.delete()
+					s_data['ingredient_name']=ingr_dict['Name'].lower()
+					s_data['description']=ingr_dict['Vendor Info']
+					s_data['package_size']=ingr_dict['Size']
+					s_data['cpp']=ingr_dict['Cost']
+					s_data['comment']=ingr_dict['Comment']
+					serializer = IngredientSerializer(data=s_data)
+					print(serializer)
+					if(serializer.is_valid()):
+						serializer.save()
 		if errors != []:
 			transaction.savepoint_rollback(transaction_savepoint)
 		else:
@@ -163,22 +192,22 @@ class IngredientImportView(APIView):
 		return '', ''
 
 	# validation conforms to https://piazza.com/class/jpvlvyxg51d1nc?cid=52
-	def validate_ingredient(self, ingredient_dict):
+	def validate_ingredient(self, ingredient_dict, default_id):
 		error = ''
 		warning = ''
 		# if ingredient with same name exists, only update if id matches
 		if Ingredient.objects.filter(ingredient_name=ingredient_dict['Name']).exists():
 			same_name_ingr = Ingredient.objects.get(ingredient_name=ingredient_dict['Name'])
-			if same_name_ingr.pk != int(ingredient_dict['Ingr#']):
-				error = 'Ambiguous record for %s' % same_name_ingr.ingredient_name
+			if same_name_ingr.pk != default_id:
+				error = 'Ambiguous record for %s,' % same_name_ingr.ingredient_name
 			else:
 				# update other fields
-				warning = 'Update fields for %s' % same_name_ingr.ingredient_name
+				warning = 'Update fields for %s,' % same_name_ingr.ingredient_name
 		else:
 			# check if object with same id exists
-			if Ingredient.objects.filter(pk=ingredient_dict['Ingr#']).exists():
+			if Ingredient.objects.filter(pk=default_id).exists():
 				# overwrite existing object
-				warning = 'Overwrite object with id %s' % ingredient_dict['Ingr#']
+				warning = 'Overwrite object with id %s' % str(default_id)
 		return error, warning
 
 	def validate_unit(self, ingredient_dict):
@@ -186,6 +215,7 @@ class IngredientImportView(APIView):
 		size = ingredient_dict['Size']
 		size_unit = re.sub(r'\d*\.?\d+', '', size)
 		size_unit = size_unit.replace(' ', '').replace('.','').lower()
+		print(size_unit)
 		if len(size_unit) > 1 and (size_unit[len(size_unit)-1]=='s'):
 			size_unit = size_unit[:-1]
 		if size_unit not in units:
@@ -243,6 +273,11 @@ class SkuImportView(APIView):
 					else:
 						default_id =  Sku.objects.all().order_by("-id")[0].id + 1
 				else:
+					try:
+						int(sku_dict['SKU#'])
+					except ValueError:
+						errors.append(sku_dict['SKU#'] + " is not a number,")
+						continue
 					default_id = int(sku_dict['SKU#'])
 				val_error, val_warning = self.validate_sku(sku_dict, default_id)
 				if val_warning:
@@ -252,10 +287,44 @@ class SkuImportView(APIView):
 					break
 				product_line = Product_Line.objects.get(product_line_name=sku_dict['PL Name'])
 				formula = Formula.objects.get(id=int(sku_dict['Formula#']))
-				serializer = SkuSerializer(data={'id':default_id,'productline':product_line.product_line_name,'caseupc':sku_dict['Case UPC'],'unitupc':sku_dict['Unit UPC'],'sku_name':sku_dict['Name'],'count':sku_dict['Count per case'],'unit_size':sku_dict['Unit size'],'formula':formula.id,'formula_scale_factor':sku_dict['Formula factor'],'manufacture_rate':sku_dict['Rate'],'comment':sku_dict['Comment']})
-				if serializer.is_valid():
-					serializer.save()
-				print(serializer.errors)
+				# sku = Sku(
+				# 		id=default_id,
+				# 		productline=product_line.product_line_name,
+				# 		caseupc=sku_dict['Case UPC'],
+				# 		unitupc=sku_dict['Unit UPC'],
+				# 		sku_name=sku_dict['Name'],
+				# 		count=sku_dict['Count per case'],
+				# 		unit_size=sku_dict['Unit size'],
+				# 		formula=formula.id,
+				# 		formula_scale_factor=sku_dict['Formula factor'],
+				# 		manufacture_rate=sku_dict['Rate'],
+				# 		comment=sku_dict['Comment'])
+				if not Sku.objects.filter(id=default_id).exists():
+					serializer = SkuSerializer(data={'id':default_id,'productline':product_line.product_line_name,'caseupc':sku_dict['Case UPC'],'unitupc':sku_dict['Unit UPC'],'sku_name':sku_dict['Name'],'count':sku_dict['Count per case'],'unit_size':sku_dict['Unit size'],'formula':formula.id,'formula_scale_factor':sku_dict['Formula factor'],'manufacture_rate':sku_dict['Rate'],'comment':sku_dict['Comment']})
+					if serializer.is_valid():
+						serializer.save()
+				else:
+					sku = Sku.objects.get(id=default_id)
+					skutoml = Sku_To_Ml_Shortname.objects.filter(sku=default_id)
+					for s in skutoml:
+						s.delete()
+					s = SkuSerializer(sku)
+					s_data = s.data
+					sku.delete()
+					s_data['sku_name']=sku_dict['Name']
+					s_data['productline']=product_line.product_line_name
+					s_data['caseupc']=sku_dict['Case UPC']
+					s_data['unitupc']=sku_dict['Unit UPC']
+					s_data['count']=sku_dict['Count per case']
+					s_data['unit_size']=sku_dict['Unit size']
+					s_data['formula']=formula.id
+					s_data['formula_scale_factor']=sku_dict['Formula factor']
+					s_data['manufacture_rate']=sku_dict['Rate']
+					s_data['comment']=sku_dict['Comment']
+					serializer = SkuSerializer(data=s_data)
+					print(serializer)
+					if(serializer.is_valid()):
+						serializer.save()
 				# save all manufacturing lines associated with sku
 				ml_shortnames = sku_dict['ML Shortnames'].strip('"').split(',')
 				for ml_shortname in ml_shortnames:
@@ -288,15 +357,15 @@ class SkuImportView(APIView):
 		# if ingredient with same name exists, only update if id matches
 		if Sku.objects.filter(sku_name=sku_dict['Name']).exists():
 			same_name_sku = Sku.objects.get(sku_name=sku_dict['Name'])
-			if same_name_sku.pk != int(default_id):
-				error = 'Ambiguous record for %s' % same_name_sku.sku_name
+			if same_name_sku.pk != default_id:
+				error = 'Ambiguous record for %s,' % same_name_sku.sku_name
 			else:
 				# update other fields
-				warning = 'Update fields for %s' % same_name_sku.sku_name
+				warning = 'Update fields for %s,' % same_name_sku.sku_name
 		elif not case_upc:
-			error = 'Case UPC invalid for %s' % sku_dict['Name']
+			error = 'Case UPC invalid for %s,' % sku_dict['Name']
 		elif not unit_upc:
-			 error = 'Unit UPC invalid for %s' % sku_dict['Name']
+			 error = 'Unit UPC invalid for %s,' % sku_dict['Name']
 		else:
 			# check if object with same id exists
 			if Sku.objects.filter(pk=default_id).exists():
@@ -305,12 +374,12 @@ class SkuImportView(APIView):
 		# check if product line exists
 		product_line_name = sku_dict['PL Name']
 		if not Product_Line.objects.filter(product_line_name=product_line_name).exists():
-			error = 'No product line named %s' % product_line_name
+			error = 'No product line named %s,' % product_line_name
 		# check if manufacturing lines exist 
 		ml_shortnames = sku_dict['ML Shortnames'].strip('"').split(',')
 		for ml_shortname in ml_shortnames:
 			if not Manufacture_line.objects.filter(ml_short_name=ml_shortname).exists():
-				error = 'No manufacturing line named %s' % ml_shortname
+				error = 'No manufacturing line named %s,' % ml_shortname
 				break
 		return error, warning
 
@@ -385,12 +454,52 @@ class FormulaImportView(APIView):
 		transaction_savepoint = transaction.savepoint()
 		with open(formula_file.name) as f:
 			reader = csv.DictReader(f)
+			readers = list(reader)
 			header_val_error, _ = self.validate_header(reader.fieldnames)
 			if header_val_error:
 				errors.append(header_val_error)
 				return errors, warnings
-			for formula_dict in reader:
-				val_error, val_warning = self.validate_formula(formula_dict)
+			ids = []
+			for formula_dict in readers:
+				if not formula_dict['Formula#'] and not Formula.objects.filter(formula_name=formula_dict['Name']).exists():
+					if not Formula.objects.all():
+						default_id = 1
+					else:
+						default_id =  Formula.objects.all().order_by("-id")[0].id + 1
+				elif formula_dict['Formula#']:
+					try:
+						int(formula_dict['Formula#'])
+					except ValueError:
+						errors.append(formula_dict['Formula#'] + " is not a number,")
+						continue
+					default_id = int(formula_dict['Formula#'])
+				elif not formula_dict['Formula#'] and Formula.objects.filter(formula_name=formula_dict['Name']).exists():
+					formula_exist = Formula.objects.get(formula_name=formula_dict['Name'])
+					default_id = formula_exist.id
+				if Formula.objects.filter(id=default_id).exists():
+					formula1 = Formula.objects.get(id=default_id)
+					ingrtoformula1 = Formula_To_Ingredients.objects.filter(formula=formula1.id)
+					for entry in ingrtoformula1:
+						entry.delete()
+					formula1.delete()
+			first = True
+			for formula_dict in readers:
+				if not formula_dict['Formula#'] and not Formula.objects.filter(formula_name=formula_dict['Name']).exists():
+					if not Formula.objects.all():
+						default_id = 1
+					else:
+						default_id =  Formula.objects.all().order_by("-id")[0].id + 1
+				elif formula_dict['Formula#']:
+					try:
+						int(formula_dict['Formula#'])
+					except ValueError:
+						errors.append(formula_dict['Formula#'] + " is not a number,")
+						continue
+					default_id = int(formula_dict['Formula#'])
+				elif not formula_dict['Formula#'] and Formula.objects.filter(formula_name=formula_dict['Name']).exists():
+					formula_exist = Formula.objects.get(formula_name=formula_dict['Name'])
+					default_id = formula_exist.id
+				val_error, val_warning = self.validate_formula(formula_dict, default_id)
 				unit_error = self.validate_unit(formula_dict)
 				if val_warning:
 					warnings.append(val_warning)
@@ -401,21 +510,38 @@ class FormulaImportView(APIView):
 					errors.append("package size unit incorrect for %s" % formula_dict['Name'])
 					break;
 				# store formula first if not exist 
-				if not Formula.objects.filter(formula_name=formula_dict['Name'], id=formula_dict['Formula#']).exists():
-					formula = Formula(formula_name=formula_dict['Name'],
-									  id=formula_dict['Formula#'],
-									  comment=formula_dict['Comment'])
-					formula.save()
+				if not Formula.objects.filter(id=default_id).exists():
+					# formula = Formula(formula_name=formula_dict['Name'],
+					# 				  id=formula_dict['Formula#'],
+					# 				  comment=formula_dict['Comment'])
+					serializer = FormulaSerializer(data={'formula_name':formula_dict['Name'],'id':default_id,'comment':formula_dict['Comment']})
+					if(serializer.is_valid()):
+						serializer.save()
+				# elif Formula.objects.filter(id=default_id).exists()
+				# 	formula = Formula.objects.get(id=default_id)
+				# 	s = FormulaSerializer(formula)
+				# 	s_data = s.data
+				# 	s_data['formula_name']=formula_dict['Name']
+				# 	serializer = FormulaSerializer(data=s_data)
+				# 	print(serializer.data)
+				# 	if(serializer.is_valid()):
+				# 		first = False
+				# 		serializer.save()
+
 				# add to Formula_To_Ingredients table if not exist
-				formula = Formula.objects.get(formula_name=formula_dict['Name'])
+				formula = Formula.objects.get(id=default_id)
 				ingr = Ingredient.objects.get(id=formula_dict['Ingr#'])
 				if not Formula_To_Ingredients.objects.filter(formula=formula.id, ig=ingr.id).exists():
-					formula_to_ingr = Formula_To_Ingredients(
-						formula=formula,
-						ig=ingr,
-						quantity=formula_dict['Quantity'])
+					# formula_to_ingr = Formula_To_Ingredients(
+					# 	formula=formula,
+					# 	ig=ingr,
+					# 	quantity=formula_dict['Quantity'])
+					serializer = IngredientToFormulaSerializer(data={'formula':default_id,'ig':ingr.id,'quantity':formula_dict['Quantity']})
 					# save without commit, as later validation might fail 
-					formula_to_ingr.save()
+					# print(serializer.is_valid())
+					# print(serializer.data)
+					if(serializer.is_valid()):
+						serializer.save()
 		if errors != []:
 			transaction.savepoint_rollback(transaction_savepoint)
 		else:
@@ -428,25 +554,25 @@ class FormulaImportView(APIView):
 		return '', ''
 
 	# validation conforms to https://piazza.com/class/jpvlvyxg51d1nc?cid=52
-	def validate_formula(self, formula_dict):
+	def validate_formula(self, formula_dict,default_id):
 		error = ''
 		warning = ''
 		if not Ingredient.objects.filter(id=formula_dict['Ingr#']).exists():
-			error = 'No ingredient with id %s' % formula_dict['Ingr#']
+			error = 'No ingredient with id %s,' % formula_dict['Ingr#']
 		# check if formula exist
 		# if formula name exists but a different id, error
 		if Formula.objects.filter(formula_name=formula_dict['Name']).exists():
 			same_name_formua = Formula.objects.get(formula_name=formula_dict['Name'])
-			if same_name_formua.pk != int(formula_dict['Formula#']):
-				error = 'Ambiguous record for %s' % same_name_formua.formula_name
+			if same_name_formua.pk != default_id:
+				error = 'Ambiguous record for %s,' % same_name_formua.formula_name
 			else:
 				# update other fields
 				if same_name_formua.formula_name != formula_dict['Name']:
-					warning = 'Update fields for %s' % same_name_formua.formula_name
+					warning = 'Update fields for %s,' % same_name_formua.formula_name
 		# if formula id exists but a different name, replace
-		elif Formula.objects.filter(pk=formula_dict['Formula#']).exists():
+		elif Formula.objects.filter(pk=default_id).exists():
 				# overwrite existing object
-				warning = 'Overwrite object with id %s' % formula_dict['Formula#']
+				warning = 'Overwrite object with id %s,' % str(default_id)
 		return error, warning
 
 	def validate_unit(self, formula_dict):
@@ -481,7 +607,7 @@ class FormulaExportView(APIView):
 		# https://docs.djangoproject.com/en/2.1/howto/outputting-csv/
 		# export all Ingredients into a csv file
 		response = HttpResponse(content_type='text/csv')
-		response['Content-Disposition'] = "attachment; filename=\"skus.csv\""
+		response['Content-Disposition'] = "attachment; filename=\"formulas.csv\""
 		writer = csv.writer(response)
 		# Formula#,Name,Ingr#,Quantity,Comment
 		# for each formula, pull out all associated ingredients
@@ -550,5 +676,5 @@ class ProductLineImportView(APIView):
 		error = ''
 		warning = ''
 		if Product_Line.objects.filter(product_line_name=product_line_dict['Name']).exists():
-			warning = 'Exsiting product line: %s' % product_line_dict['Name']
+			warning = 'Exsiting product line: %s,' % product_line_dict['Name']
 		return error, warning
