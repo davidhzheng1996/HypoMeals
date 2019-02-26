@@ -44,7 +44,7 @@ new Vue({
    mounted: function() {
        this.getSkus();
        $("#search_input").autocomplete({
-        minLength: 2,
+        minLength: 1,
         delay: 100,
         // https://stackoverflow.com/questions/9656523/jquery-autocomplete-with-callback-ajax-json
         source: function (request, response) {
@@ -69,7 +69,7 @@ new Vue({
         }
       });
       $("#product_line_search_input").autocomplete({
-        minLength: 2,
+        minLength: 1,
         delay: 100,
         // https://stackoverflow.com/questions/9656523/jquery-autocomplete-with-callback-ajax-json
         source: function (request, response) {
@@ -165,6 +165,9 @@ new Vue({
       },
       viewFormula: function(formulaid){
         window.location.href = '/sku/'+formulaid
+      },
+      viewIngr: function(skuid){
+        window.location.href = '/get_sku/'+skuid
       },
       addPage: function (){
           this.pages.push(Math.ceil(this.skus.length / this.perPage)+1);

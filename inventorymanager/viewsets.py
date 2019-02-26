@@ -284,13 +284,13 @@ def calculate_goal(request,goalid):
 def skus_to_ingredient(request,ingredientid):
     if(request.method == 'GET'):
         try: 
-            sku_to_ingredient = Sku_To_Ingredient.objects.filter(ig=ingredientid)
-            ids= sku_to_ingredient.values_list("sku",flat=True)
-            skus = Sku.objects.filter(id__in=ids)
+            formula2ing = Formula_To_Ingredients.objects.filter(ig=ingredientid)
             response = []
-            for sku in skus:
-                serializer = SkuSerializer(sku)
-                response.append(serializer.data)
+            for f in formula2ing:
+                skus = Sku.objects.filter(formula=f.formula)
+                for sku in skus:
+                    serializer = SkuSerializer(sku)
+                    response.append(serializer.data)
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
@@ -329,17 +329,20 @@ def formula_to_sku(request,formulaid):
 def ingredients_to_sku(request,skuid):
     if(request.method == 'GET'):
         try: 
-            ingredients_to_sku = Sku_To_Ingredient.objects.filter(sku=skuid)
-            ids= ingredients_to_sku.values_list("ig",flat=True)
-            ingredients = Ingredient.objects.filter(id__in=ids)
+            # ingredients_to_sku = Sku_To_Ingredient.objects.filter(sku=skuid)
+            # ids= ingredients_to_sku.values_list("ig",flat=True)
+            # ingredients = Ingredient.objects.filter(id__in=ids)
             response = []
-            for ingredient in ingredients:
-                serializer = IngredientSerializer(ingredient)
-                for relation in ingredients_to_sku: 
-                    if(relation.ig.id == ingredient.id):
-                        data = serializer.data
-                        data['quantity'] = relation.quantity
-                        response.append(data)
+            sku_object = Sku.objects.get(id=skuid)
+            formula_object = Formula.objects.get(id=sku_object.formula.id)
+            formula2ingr = Formula_To_Ingredients.objects.filter(formula=formula_object.id)
+            # print(formula2ingr)
+            for ingr in formula2ingr:
+                ingredients = Ingredient.objects.filter(id=ingr.ig.id)
+                # print(ingredients)
+                for ing in ingredients:
+                    serializer = IngredientSerializer(ing)
+                    response.append(serializer.data)
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)

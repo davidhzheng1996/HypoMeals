@@ -16,9 +16,10 @@ urlpatterns = [
     path('goal',views.goal),
     path('goal/<int:goalid>',views.manufacture_goal),
     path('sku/<int:formulaid>',views.formula_to_sku),
+    path('get_sku/<int:skuid>',views.ingredients_to_sku),
     path('formula/<int:formulaid>',views.ingredients_to_formula),
     path('show_formula/<int:formulaid>',views.skus_to_formula),
-    path('ingredient/<int:ingredientid>',views.skus_to_ingredients),
+    path('ingredient/<int:ingredientid>',views.skus_to_ingredient),
     path('scheduler',views.scheduler),
     path('calculate_goal/<int:goalid>',views.calculate_goal),
     # ingredient file upload endpoint

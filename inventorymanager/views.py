@@ -46,9 +46,9 @@ def manufacture_goal(request,goalid):
 def scheduler(request):
 	return render(request,"scheduler.html")
 
-# @login_required(login_url='/accounts/login/')
-# def ingredients_to_sku(request,skuid):
-# 	return render(request, "ingredients_to_sku.html",{'skuid':skuid})
+@login_required(login_url='/accounts/login/')
+def ingredients_to_sku(request,skuid):
+	return render(request, "ingredients_to_sku.html",{'skuid':skuid})
 
 @login_required(login_url='/accounts/login/')
 def formula_to_sku(request,formulaid):
@@ -67,7 +67,7 @@ def ingredients_to_formula(request,formulaid):
 	return render(request, "ingredients_to_formula.html",{'formulaid':formulaid})
 
 @login_required(login_url='/accounts/login/')
-def skus_to_ingredients(request,ingredientid):
+def skus_to_ingredient(request,ingredientid):
 	return render(request, "skus_to_ingredient.html",{'ingredientid':ingredientid})
 
 @login_required(login_url='/accounts/login/')
