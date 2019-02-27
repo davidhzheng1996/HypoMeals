@@ -33,6 +33,9 @@ var starting = new Vue({
             }); 
 
         },
+        saveTimeline: function(){
+
+        },
         onBlur: function (event) {
             if (event && this.search_term !== event.target.value)
                 this.search_term = event.target.value
