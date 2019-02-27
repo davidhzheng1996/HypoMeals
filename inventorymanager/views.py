@@ -216,14 +216,13 @@ class IngredientImportView(APIView):
 					s_data['cpp']=ingr_dict['Cost']
 					s_data['comment']=ingr_dict['Comment']
 					serializer = IngredientSerializer(data=s_data)
-					print(serializer)
+					# print(serializer)
 					if(serializer.is_valid()):
 						serializer.save()
 		if errors != []:
 			transaction.savepoint_rollback(transaction_savepoint)
 		else:
 			transaction.savepoint_commit(transaction_savepoint)
-		print(errors)
 		return errors, warnings
 	
 	def validate_header(self, headers):
@@ -235,14 +234,15 @@ class IngredientImportView(APIView):
 	def validate_ingredient(self, ingredient_dict, default_id):
 		error = ''
 		warning = ''
-		print(default_id)
 		# if ingredient with same name exists, only update if id matches
-		print(ingredient_dict['Name'])
 		# print(Ingredient.objects.get(ingredient_name=ingredient_dict['Name']).exists())
+		print(ingredient_dict['Name'])
 		if Ingredient.objects.filter(ingredient_name=ingredient_dict['Name']).exists():
 			same_name_ingr = Ingredient.objects.get(ingredient_name=ingredient_dict['Name'])
+			print(same_name_ingr)
 			# print(Ingredient.objects.get(ingredient_name=ingredient_dict['Name']))
 			if same_name_ingr.pk != default_id:
+				print('hit')
 				error = 'Ambiguous record for %s,' % same_name_ingr.ingredient_name
 			else:
 				# update other fields
@@ -443,9 +443,11 @@ class SkuImportView(APIView):
 		odds = int(sku_dict['Case UPC'][0]) + int(sku_dict['Case UPC'][2]) + int(sku_dict['Case UPC'][4]) + int(sku_dict['Case UPC'][6]) + int(sku_dict['Case UPC'][8])+ int(sku_dict['Case UPC'][10])
 		evens = int(sku_dict['Case UPC'][1]) + int(sku_dict['Case UPC'][3]) + int(sku_dict['Case UPC'][5]) + int(sku_dict['Case UPC'][7]) + int(sku_dict['Case UPC'][9])
 		sumNum = odds*3 + evens
+		print(sumNum)
+		print(sku_dict['Case UPC'][11])
 		if sumNum % 10 == 0 and int(sku_dict['Case UPC'][11]) != 0:
 			return False
-		else:
+		elif sumNum % 10 != 0:
 			check = 10 - (sumNum % 10)
 			if int(sku_dict['Case UPC'][11]) != check:
 				return False
@@ -461,7 +463,7 @@ class SkuImportView(APIView):
 		sumNum = odds + evens
 		if sumNum % 10 == 0 and int(sku_dict['Unit UPC'][11]) != 0:
 			return False
-		else:
+		elif sumNum % 10 != 0:
 			check = 10 - (sumNum % 10)
 			if int(sku_dict['Unit UPC'][11]) != check:
 				return False
