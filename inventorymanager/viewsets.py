@@ -42,11 +42,24 @@ class SkuViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        search_term = self.request.query_params.get('search', None)
-        if search_term:
-            queryset = Sku.objects.filter(Q(sku_name__icontains=search_term) | Q(productline__product_line_name__icontains=search_term)|Q(id__icontains=search_term)|Q(caseupc__icontains=search_term)|Q(unitupc__icontains=search_term))
+        search_terms = self.request.query_params.get('search', None)
+        if search_terms and ',' in search_terms:
+            search_terms = search_terms.split(',')
+            first = True
+            for search_term in search_terms:
+                search_term.strip(',')
+                if first:
+                    queryset = Sku.objects.filter(Q(sku_name__icontains=search_term) | Q(productline__product_line_name__icontains=search_term)|Q(id__icontains=search_term)|Q(caseupc__icontains=search_term)|Q(unitupc__icontains=search_term))
+                    first = False
+                else:
+                    queryset |= Sku.objects.filter(Q(sku_name__icontains=search_term) | Q(productline__product_line_name__icontains=search_term)|Q(id__icontains=search_term)|Q(caseupc__icontains=search_term)|Q(unitupc__icontains=search_term))
             # obtain all skus whose ingredient names include search_term
-            formula_ids = Formula_To_Ingredients.objects.filter(ig__ingredient_name__icontains=search_term).values('formula')
+                formula_ids = Formula_To_Ingredients.objects.filter(ig__ingredient_name__icontains=search_term).values('formula')
+                sku_ids = Sku.objects.filter(formula__id__in=formula_ids).values('id')
+                queryset |= Sku.objects.filter(id__in=sku_ids)
+        elif search_terms:
+            queryset = Sku.objects.filter(Q(sku_name__icontains=search_terms) | Q(productline__product_line_name__icontains=search_terms)|Q(id__icontains=search_terms)|Q(caseupc__icontains=search_terms)|Q(unitupc__icontains=search_terms))
+            formula_ids = Formula_To_Ingredients.objects.filter(ig__ingredient_name__icontains=search_terms).values('formula')
             sku_ids = Sku.objects.filter(formula__id__in=formula_ids).values('id')
             queryset |= Sku.objects.filter(id__in=sku_ids)
         return queryset
@@ -57,12 +70,25 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
     # https://www.django-rest-framework.org/api-guide/filtering/#filtering-against-query-parameters
     def get_queryset(self):
-        queryset = super().get_queryset()
-        search_term = self.request.query_params.get('search', None)
-        if search_term:
-            queryset = Ingredient.objects.filter(Q(ingredient_name__icontains=search_term) | Q(id__icontains=search_term))
-            # obtain all ingrs whose name contain search_term
-            formula_ids = Sku.objects.filter(sku_name__icontains=search_term).values('formula')
+        queryset = super().get_queryset() 
+        search_terms = self.request.query_params.get('search', None)
+        if search_terms and ',' in search_terms:
+            search_terms = search_terms.split(',')
+            first = True
+            for search_term in search_terms:
+                search_term.strip(' ')
+                if first: 
+                    queryset = Ingredient.objects.filter(Q(ingredient_name__icontains=search_term) | Q(id__icontains=search_term))
+                    first = False;
+                else:
+                    queryset |= Ingredient.objects.filter(Q(ingredient_name__icontains=search_term) | Q(id__icontains=search_term))
+                # obtain all ingrs whose name contain search_term
+                formula_ids = Sku.objects.filter(sku_name__icontains=search_term).values('formula')
+                ingr_ids = Formula_To_Ingredients.objects.filter(formula__in=formula_ids).values('ig')
+                queryset |= Ingredient.objects.filter(id__in=ingr_ids)
+        elif search_terms:
+            queryset = Ingredient.objects.filter(Q(ingredient_name__icontains=search_terms) | Q(id__icontains=search_terms))
+            formula_ids = Sku.objects.filter(sku_name__icontains=search_terms).values('formula')
             ingr_ids = Formula_To_Ingredients.objects.filter(formula__in=formula_ids).values('ig')
             queryset |= Ingredient.objects.filter(id__in=ingr_ids)
         return queryset
@@ -73,11 +99,23 @@ class FormulaViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        search_term = self.request.query_params.get('search', None)
-        if search_term:
+        search_terms = self.request.query_params.get('search', None)
+        if search_terms and ',' in search_terms:
+            search_terms = search_terms.split(',')
+            first = True
+            for search_term in search_terms:
+                search_term.strip(',')
+                if first:
+                    queryset = Formula.objects.filter(Q(formula_name__icontains=search_term) | Q(id__icontains=search_term))
+                    first = False
+                else:
+                    queryset |= Formula.objects.filter(Q(formula_name__icontains=search_term) | Q(id__icontains=search_term))
+                formula_ids = Formula_To_Ingredients.objects.filter(ig__ingredient_name__icontains=search_term).values('formula')
+                queryset |= Formula.objects.filter(id__in=formula_ids)
+        elif search_terms:
             # search by formula name, id or ingredient used 
-            queryset = Formula.objects.filter(Q(formula_name__icontains=search_term) | Q(id__icontains=search_term))
-            formula_ids = Formula_To_Ingredients.objects.filter(ig__ingredient_name__icontains=search_term).values('formula')
+            queryset = Formula.objects.filter(Q(formula_name__icontains=search_terms) | Q(id__icontains=search_terms))
+            formula_ids = Formula_To_Ingredients.objects.filter(ig__ingredient_name__icontains=search_terms).values('formula')
             queryset |= Formula.objects.filter(id__in=formula_ids)
         return queryset
 
