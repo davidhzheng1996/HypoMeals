@@ -10,40 +10,14 @@ var starting = new Vue({
         // skus
         items: new vis.DataSet(),
         search_term: '',
-        error_message: ''
+        message: ''
     },
     methods: {
         addGoal: function () {
-            // data = {
-            //     "Kingdom Hearts 3":
-            //     {
-            //         "Cases":
-            //         {
-            //             "manufacturing_lines": ["man 1", "man 2"],
-            //             "time_needed": 7
-            //         },
-            //         "Disks":
-            //         {
-            //             "manufacturing_lines": ["man 2", "man 3"],
-            //             "time_needed": 10
-            //         }
-            //     }
-            // }
-            // this.unscheduled_goals.push(data)
-            // for (key in data) {
-            //     if (data.hasOwnProperty(key)) {
-            //         for (key2 in data[key]) {
-            //             if (data[key].hasOwnProperty(key2)) {
-            //                 for (key3 in data[key][key2].manufacturing_lines) {
-            //                     this.manufacturing_lines.add(data[key][key2].manufacturing_lines[key3])}}}}}
-                                
-            //                     for (let value of this.manufacturing_lines) {
-            //                         this.groups.add({ "id": value, "content": value })
-            //                     }
             $.get('api/mg_to_skus/'+this.search_term,(data)=>{
-                console.log(data)
+                // add all skus to unscheduled goals
                 this.unscheduled_goals.push(data)
-                console.log(this.unscheduled_goals)
+                // add all new manufacturing lines 
                 for (key in data) {
                     if (data.hasOwnProperty(key)) {
                         for (key2 in data[key]) {
@@ -55,12 +29,32 @@ var starting = new Vue({
                         }
                     }
                 }
-                console.log(this.manufacturing_lines)
+                group_ids = this.groups.getIds()
                 for (let value of this.manufacturing_lines) {
-                    this.groups.add({ "id": value, "content": value })
+                    if(!group_ids.includes(value)){
+                        this.groups.add({ "id": value, "content": value })
+                    }
                 }
-                console.log(this.groups)
             }); 
+        },
+
+        removeGoal: function(goal_name) {
+            // remove scheduled skus on Timeline 
+            scheduled_goal_items = []
+            this.items.forEach((item) => {
+                if(item.goal === goal_name) {
+                    // item.style = "background-color: gray;"
+                    scheduled_goal_items.push(item)
+                }
+            })
+            this.items.remove(scheduled_goal_items)
+            // remove goal from both scheduled and unscheduled goal list
+            this.unscheduled_goals = this.unscheduled_goals.filter((unscheduled_goal) => {
+                return (!goal_name in unscheduled_goal)
+            })
+            this.scheduled_goals = this.scheduled_goals.filter((scheduled_goal) => {
+                return (!goal_name in scheduled_goal)
+            })
         },
 
         onBlur: function (event) {
@@ -77,7 +71,8 @@ var starting = new Vue({
                 goal: goal,
                 sku: sku,
                 manufacturing_lines: this.unscheduled_goals[list_index][goal][sku].manufacturing_lines,
-                time_needed: this.unscheduled_goals[list_index][goal][sku].time_needed,
+                time_needed: this.unscheduled_goals[list_index][goal][sku].hours_needed,
+                deadline: this.unscheduled_goals[list_index][goal].deadline,
             };
             // set event.target ID with item ID
             event.target.id = new Date(item.id).toISOString();
@@ -163,29 +158,32 @@ var options = {
         alert('dropped object with content: "' + objectData.content + '" to item: "' + item.content + '"');
     },
     onAdd: function (item, callback) {
-        error_message = ''
+        starting.message = ''
         // DO VALIDATIONS HERE
         // item is sku, group is manufacturing line
         // validate the time is within 8am to 6pm 
         if (item.start.getHours() < 7 || item.start.getHours() > 17) {
-            error_message = 'scheduled starting time outside of operation hours.'
+            starting.message = 'scheduled starting time outside of operation hours.'
             return 
         }
         // check if manufacturing line can make this sku
         if(!item.manufacturing_lines.includes(item.group)){
-            error_message = 'sku cannot be made on this manufacturing line.'
+            starting.message = 'sku cannot be made on this manufacturing line.'
             return
         } 
         // calculate actual hours needed with night time 
         let actual_time_needed = actualTimeNeeded(item.start, item.time_needed);
-        activity = { id: item.id, content: item.content, start: item.start, end: new Date(item.start.getTime() + actual_time_needed), group: item.group }
-        // visualize exceeding deadline
-        // let deadline = new Date(item.deadline)
-        // if (deadline > activity.end) {
-        //     error_message = 'sku ' + item.sku + ' completion time exceeds deadline ' + deadline.toTimeString()
-        //     activity.style = "background-color: red;"
-        // }
         item.end = new Date(item.start.getTime() + actual_time_needed)
+        // visualize exceeding deadline
+        let deadline = new Date(item.deadline)
+        if (deadline < item.end) {
+            starting.message = 'sku ' + item.sku + ' completion time exceeds deadline ' + deadline.toString()
+            item.style = "background-color: red;"
+        } else {
+            starting.message = 'start time: ' + item.start.toString() + '\n duration: ' + (actual_time_needed/3600000) + ' hours\n ' 
+                                + 'deadline: ' + deadline.toString()
+            item.style = "background-color: green;"
+        }
         delete item.type
         starting.items.add(item)
         // store to backend 
@@ -227,6 +225,16 @@ var options = {
         // calculate actual hours needed with night time 
         let actual_time_needed = actualTimeNeeded(item.start, item.time_needed);
         item.end = new Date(item.start.getTime() + actual_time_needed)
+        // visualize exceeding deadline
+        let deadline = new Date(item.deadline)
+        if (deadline < item.end) {
+            starting.message = 'sku ' + item.sku + ' completion time exceeds deadline ' + deadline.toString()
+            item.style = "background-color: red;"
+        } else {
+            starting.message = 'start time: ' + item.start.toString() + ' duration: ' + (actual_time_needed/3600000) + ' hours ' 
+                                + 'deadline: ' + deadline.toString()
+            item.style = "background-color: green;"
+        }
         callback(item)
     },
     

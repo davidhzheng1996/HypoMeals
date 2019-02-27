@@ -55,11 +55,13 @@
                      <label>Ingredient Name</label>
                      <input
                         type="text"
-                        id="name"
+                        id="search_input"
                         class="form-control"
                         placeholder="Enter Ingredient Name"
                         v-model="newIngredient.ingredient_name"
-                        required="required" >
+                        required="required"
+                        autocomplete="on"
+                        @blur="onBlur" >
                   </div>
                   <div class="form-group">
                      <label>Quantity</label>

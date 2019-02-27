@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="{% static 'css/scheduler.css' %}">
 <div id="starting">
 	<h1> Scheduler</h1>
-	<h3 class="error" v-if="error_message"> ${error_message} </h3>
+	<h3 class="error" v-if="message"> ${message} </h3>
 	<div id="visualization"></div>
 	<div class="row">
          <div class="form-inline my-2 my-lg-0">
@@ -16,13 +16,14 @@
     </div>
 	<div class='items-panel'>
 	    <div class='side' style="max-width:350px;overflow:auto">
-	        <h3>Last item just been dragged on timeline:</h3>
 	        <pre id="output"></pre>
 	    </div>
 	    <div class='side'>
 	    	<template v-for="(goal,list_index) in unscheduled_goals">
 	    		<template v-for="(value,index) in goal">
-	    			<h1>${ index }</h1>
+					<tbody>
+					<th><h1>${ index }</h1></th>
+					<th><button class="btn btn-danger" v-on:click="removeGoal(index)">Remove</button></th>
 	    			<ul class="items">
 		    			<template v-for="(value2,index2) in value">
 							<!-- list_index is index for goal (i.e 0,1,2), index is goalname, index2 is sku names for that goal -->
@@ -32,7 +33,8 @@
 		            			</li>
 	            			</template>
 		    			</template>
-	    			</ul>
+					</ul>
+				</tbody>
 	    		</template>
 	     <!--    <h3>Goals:</h3>
 	        <ul class="items">

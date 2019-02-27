@@ -18,8 +18,36 @@ var vm = new Vue({
     error:'',
     name_error: '',
     unit_error: '',
+    search_term: '',
   },
-  mounted: function () {},
+  mounted: function () {
+    $("#search_input").autocomplete({
+      minLength: 1,
+      delay: 100,
+      // https://stackoverflow.com/questions/9656523/jquery-autocomplete-with-callback-ajax-json
+      source: function (request, response) {
+        $.ajax({
+          url: "/api/ingredient",
+          dataType: "json",
+          data: {
+            // attach '?search=request.term' to the url 
+            search: request.term
+          },
+          success: function (data) {
+            ingr_names = $.map(data, function (item) {
+              return [item.ingredient_name];
+            })
+            response(ingr_names);
+          }
+        });
+      },
+      appendTo: "#addIngredientModal",
+      messages: {
+        noResults: '',
+        results: function() {}
+      }
+    });
+  },
   methods: {
     getIngredients: function (formulaid) {
       this.loading = true;
@@ -156,6 +184,10 @@ var vm = new Vue({
       let from = (page * perPage) - perPage;
       let to = (page * perPage);
       return  ingredients.slice(from, to);
+    },
+    onBlur: function (event) {
+      if (event && this.newIngredient.ingredient_name !== event.target.value)
+        this.newIngredient.ingredient_name = event.target.value
     },
   },
   computed: {
