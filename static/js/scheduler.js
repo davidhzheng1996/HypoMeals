@@ -37,6 +37,9 @@ var starting = new Vue({
                 }
             }); 
         },
+        saveTimeline: function(){
+
+        },
 
         removeGoal: function(goal_name) {
             // remove scheduled skus on Timeline 

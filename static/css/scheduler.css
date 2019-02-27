@@ -52,5 +52,16 @@ li.object-item:before {
 }
 
 .row{
+    margin-top: 2%;
     margin-left:2%;
+    margin-bottom:2%;
+}
+
+.schedule-button{
+    margin-left:.5%;
+    margin-right:.5%;
+}
+
+#search_input{
+    width:20%;
 }

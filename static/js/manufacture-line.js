@@ -125,7 +125,7 @@ new Vue({
         
        updateManufactureLine: function() {
          this.loading = true;
-         this.$http.put('/api/manufacture_line/'+ this.currentManufactureLine.manufacture_line_name + '/',     this.currentManufactureLine)
+         this.$http.put('/api/manufacture_line/'+ this.currentManufactureLine.ml_short_name + '/',     this.currentManufactureLine)
            .then((response) => {
              $("#editManufactureLineModal").modal('hide');
          this.loading = false;

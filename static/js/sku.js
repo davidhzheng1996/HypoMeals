@@ -222,6 +222,7 @@ new Vue({
           this.unit_upc_errors = "unit upc not up to format, make sure leading number or check digit is correct";
           return;
          }
+         console.log(this.currentSku.id)
          this.$http.put('/api/sku/'+ this.currentSku.id + '/',     this.currentSku)
            .then((response) => {
              $("#editSkuModal").modal('hide');
@@ -248,14 +249,14 @@ new Vue({
         let evens = parseInt(upcnum.charAt(1)) + parseInt(upcnum.charAt(3)) + parseInt(upcnum.charAt(5)) + parseInt(upcnum.charAt(7))
         + parseInt(upcnum.charAt(9));
         let sum = odds + evens;
-        // if(sum % 10 === 0 && upcnum.charAt(11) != 0){
-        //   return false;
-        // } else{
-        //   let check = 10 - (sum % 10);
-        //   if(upcnum.charAt(11) != check){
-        //     return false;
-        //   }
-        // }
+        if(sum % 10 === 0 && upcnum.charAt(11) != 0){
+          return false;
+        } else{
+          let check = 10 - (sum % 10);
+          if(upcnum.charAt(11) != check){
+            return false;
+          }
+        }
         return true;
       },
       selectSkuCSV: function(event) {

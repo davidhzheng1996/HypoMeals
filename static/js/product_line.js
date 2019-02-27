@@ -13,6 +13,7 @@ new Vue({
      pages:[],
      has_paginated:false,
      csv_uploaded:false,
+     csv_data:'',
      productlineFile: null,
      upload_errors: '',
      name_error:'',
@@ -123,27 +124,40 @@ new Vue({
     },
        selectCSV: function(event) {
         this.productlineFile = event.target.files[0]
+        console.log(this.productlineFile)
       },
         
       uploadCSV: function() {
         this.loading = true;
+
+        var reader = new FileReader();
+        reader.readAsText(this.productlineFile)
+        reader.onload = (event)=> {
+                this.csvData = event.target.result;
+                $.post('/api/product_line_import/', {'data':this.csvData}, (response)=>{
+                     this.loading = false;
+                     this.csv_uploaded=true;
+                     this.getProductLines();
+                 });
+                // console.log(this.csvData)
+                // data = $.csv.toArrays(csvData);
+                // if (data && data.length > 0) {
+                //   alert('Imported -' + data.length + '- rows successfully!');
+                // } else {
+                //     alert('No data to import!');
+                // }
+        };
+        reader.onerror = function() {
+            alert('Unable to read ' + file.fileName);
+        };
         // upload this.ingredientCSV to REST api in FormData
-        const formData = new FormData()
-        // https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
-        formData.append('file', this.productlineFile, this.productlineFile.name)
-        this.$http.post('/api/product_line_import/', formData)
-           .then((response) => {
-            this.upload_errors = response.data['errors'].join('\n') + response.data['warnings'].join('\n')
-         this.loading = false;
-         this.csv_uploaded=true;
-         this.getProductLines();
-         })
-           .catch((err) => {
-             console.log(err)
-            this.upload_errors = err.data['errors'].join('\n') + err.data['warnings'].join('\n')
-         this.loading = false;
-         console.log(err);
-        })
+        // console.log(this.csvData)
+        // console.log(typeof this.csvData)
+        // const formData = new FormData()
+        // // https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
+        // console.log(this.productlineFile)
+        // formData.append('file', this.productlineFile, this.productlineFile.name)
+        
       },
 
        exportCSV: function(){
