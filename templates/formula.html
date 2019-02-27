@@ -103,7 +103,7 @@
       <div class="modal-dialog" role="document">
          <div class="modal-content">
             <div class="modal-header">
-               <h5 class="modal-title" id="exampleModalLongTitle">Edit Formula</h5>
+               <h5 class="modal-title" id="exampleModalLongTitle">Edit Formula for Formula #${currentFormula.id}</h5>
                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                <span aria-hidden="true">&times;</span>
                </button>
@@ -120,14 +120,14 @@
                         v-model="currentFormula.formula_name"
                         required="required" >
                   </div>
-                  <div class="form-group">
+                  <!-- <div class="form-group">
                      <label>(Optional) Formula ID</label>
                      <input
                         type="number"
                         class="form-control"
                         placeholder="Enter Optional Formula ID"
                         v-model="currentFormula.id">
-                  </div>
+                  </div> -->
                   <div class="form-group">
                      <label>(Optional) Comment</label>
                      <input

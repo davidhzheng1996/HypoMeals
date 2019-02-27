@@ -222,6 +222,7 @@ new Vue({
           this.unit_upc_errors = "unit upc not up to format, make sure leading number or check digit is correct";
           return;
          }
+         console.log(this.currentSku.id)
          this.$http.put('/api/sku/'+ this.currentSku.id + '/',     this.currentSku)
            .then((response) => {
              $("#editSkuModal").modal('hide');

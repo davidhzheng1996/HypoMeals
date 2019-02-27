@@ -117,7 +117,7 @@
             <div class="modal-dialog" role="document">
                   <div class="modal-content">
                         <div class="modal-header">
-                              <h5 class="modal-title" id="exampleModalLongTitle">Edit Ingredient</h5>
+                              <h5 class="modal-title" id="exampleModalLongTitle">Edit Ingredient for Ingredient #${currentIngredient.id}</h5>
                               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                               </button>
@@ -143,10 +143,10 @@
                                           <label>(Optional) Vender Info</label>
                                           <textarea class="form-control" placeholder="Enter Optional Vender Info" v-model="currentIngredient.description" rows="3"></textarea>
                                     </div>
-                                    <div class="form-group">
+                                    <!-- <div class="form-group">
                                           <label>(Optional) Ingredient ID</label>
                                           <input type="number" class="form-control" placeholder="Enter Optional Ingredient ID" v-model="currentIngredient.id">
-                                    </div>
+                                    </div> -->
                                     <div class="form-group">
                                           <label>(Optional) Comment</label>
                                           <input class="form-control" placeholder="Enter Optional Comment" v-model="currentIngredient.comment" rows="3">
