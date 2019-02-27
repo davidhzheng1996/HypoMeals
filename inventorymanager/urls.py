@@ -46,6 +46,7 @@ urlpatterns = [
     path('api/delete_manufacture_goal/<int:specificgoal>',viewsets.delete_manufacture_goal),
     path('api/update_manufacture_goal/',viewsets.update_manufacture_goal),
     path('api/goal/<int:id>', viewsets.goal),
+    path('api/search_goals/<str:search>',viewsets.search_goals),
     path('api/delete_goal/<int:id>/<int:goalid>', viewsets.delete_goal),
     path('api/update_goal/<int:id>/<int:goalid>', viewsets.update_goal),
     path('api/sku_import/', SkuImportView.as_view()),

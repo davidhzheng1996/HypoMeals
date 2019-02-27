@@ -71,7 +71,7 @@ var vm = new Vue({
       },
 
        getGoals: function(userid,goalid){
-            let api_url = '/api/manufacture_goal/'+userid+'/'+goalid;
+           let api_url = '/api/manufacture_goal/'+userid+'/'+goalid;
            if(this.search_term !== '' && this.search_term !== null) {
                 api_url += '?search=' + this.search_term
            }
