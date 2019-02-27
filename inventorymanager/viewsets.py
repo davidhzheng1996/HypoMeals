@@ -9,7 +9,7 @@ from django.db.models import Q
 from django.middleware.csrf import CsrfViewMiddleware, get_token
 from django.test import Client
 from django.contrib.auth.models import User
-
+import math
 
 import requests
 import re
@@ -520,9 +520,12 @@ def mg_to_skus(request,goal_name):
     if(request.method == 'GET'):
         try: 
             response = {}
+            response[goal_name]={}
             # get skus associated with the goal: Manufacture_Goal
             sku_ids = Manufacture_Goal.objects.filter(name__goalname=goal_name).values_list('sku', flat=True)
             skus = Sku.objects.filter(id__in=sku_ids)
+            goal = Goal.objects.get(goalname=goal_name)
+            response[goal_name]['deadline'] = goal.deadline
             for sku in skus:
                 # get mls for each sku: Sku_To_Ml_Shortname
                 ml_short_names = Sku_To_Ml_Shortname.objects.filter(sku=sku.id).values_list("ml_short_name",flat=True)
@@ -530,9 +533,9 @@ def mg_to_skus(request,goal_name):
                 manufacture_rate = sku.manufacture_rate
                 desired_quantity = Manufacture_Goal.objects.get(sku=sku.id, name__goalname=goal_name).desired_quantity
                 hours_needed = desired_quantity / manufacture_rate
-                response[sku.sku_name] = {
+                response[goal_name][sku.sku_name] = {
                     'manufacturing_lines': list(ml_short_names),
-                    'hours_needed': hours_needed
+                    'hours_needed': math.ceil(hours_needed),
                 }
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
@@ -681,6 +684,19 @@ def goal(request,id):
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(status = status.HTTP_400_BAD_REQUEST)
         except Exception as e:
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['GET'])
+def search_goals(request,search):
+    if(request.method == 'GET'):
+        try:
+            allgoals = Goal.objects.filter(goalname__icontains=search)
+            response = []
+            for goal in allgoals: 
+                response.append(goal.goalname)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')

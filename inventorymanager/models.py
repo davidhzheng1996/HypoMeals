@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 import uuid
 from datetime import date
+from jsonfield import JSONField
+
 
 # product_line to sku is one to many. Each sku matches to exactly one product line
 class Product_Line(models.Model):
@@ -127,6 +129,9 @@ class Formula_To_Ingredients(models.Model):
 
 	class Meta:
 		unique_together = (("formula","ig"),)
+
+class Scheduler(models.Model):
+	data = JSONField(null=False,default='')
 
 		
 
