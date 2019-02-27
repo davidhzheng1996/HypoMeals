@@ -11,9 +11,12 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
 import os
-from config import secrets 
 # from django.conf.global_settings import TEMPLATES
-
+import dj_database_url
+DATABASES = {
+     'default': -1
+}
+DATABASES['default'] =  dj_database_url.config()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -32,7 +35,7 @@ SECRET_KEY = '=i@fl14(e7-xz-ej3ifpn)hotxei-#fifyixz8+l@*xjut8vc2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1','localhost','0.0.0.0','hypomeals-dev.herokuapp.com','testserver']
+ALLOWED_HOSTS = ['127.0.0.1','localhost','0.0.0.0','hypomeals-dev.herokuapp.com','hypomeals.herokuapp.com']
 
 
 # Application definition
@@ -56,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'hypomeals.urls'
@@ -82,16 +86,7 @@ WSGI_APPLICATION = 'hypomeals.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': secrets['default_name'],
-        'USER': secrets['default_user'],
-        'PASSWORD': secrets['default_password'],
-        'HOST': secrets['default_host'],
-        'PORT': os.environ.get("PORT",secrets['default_port'])
-    }
-}
+
 
 
 # Password validation
@@ -138,7 +133,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT="./"
+
 LOGIN_REDIRECT_URL = '/'
 
 LOGOUT_REDIRECT_URL = '/'
+
 
