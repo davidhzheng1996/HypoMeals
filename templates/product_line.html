@@ -21,7 +21,7 @@
                <tr v-for="product_line in displayedProductLines">
                   <th scope="row">${product_line.product_line_name}</th>
                   <td>
-                     <button class="btn btn-info" v-on:click="getProductLine(product_line.product_line_name)">Edit</button>
+                     <!-- <button class="btn btn-info" v-on:click="getProductLine(product_line.product_line_name)">Edit</button> -->
                      <button class="btn btn-danger" v-on:click="deleteProductLine(product_line.product_line_name)">Delete</button>
                   </td>
                </tr>

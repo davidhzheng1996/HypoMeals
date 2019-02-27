@@ -3,10 +3,12 @@ from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 import uuid
 from datetime import date
+from jsonfield import JSONField
+
 
 # product_line to sku is one to many. Each sku matches to exactly one product line
 class Product_Line(models.Model):
-	product_line_name = models.CharField(max_length=128, primary_key=True, unique=True, null=False)
+	product_line_name = models.CharField(max_length=128, primary_key=True, unique=True, null=False, editable = True)
 
 class Formula(models.Model):
 	formula_name = models.CharField(max_length=32, unique=True, null=False, default='')
@@ -109,7 +111,7 @@ class Manufacture_Goal(models.Model):
 
 class Manufacture_line(models.Model):
 	ml_name = models.CharField(max_length=32, null=False, default='')
-	ml_short_name = models.CharField(primary_key = True, max_length=5, null=False, unique=True,
+	ml_short_name = models.CharField(primary_key = True, max_length=5, null=False, unique=True, editable = True,
 		validators=[RegexValidator(r'^[a-zA-Z0-9\S]{1,5}$', message="Short name can have only Alphabets and Numbers", code = "invalid Short name")])
 	comment = models.TextField(null=True)
 
@@ -128,5 +130,11 @@ class Formula_To_Ingredients(models.Model):
 	class Meta:
 		unique_together = (("formula","ig"),)
 
+class Scheduler(models.Model):
+	items = models.TextField(null=False,default='')
+	groups = models.TextField(null=False,default='')
+	scheduled_goals = models.TextField(null=False,default='')
+	unscheduled_goals = models.TextField(null=False,default='')
+	manufacturing_lines = models.TextField(null=False,default='')
 		
 

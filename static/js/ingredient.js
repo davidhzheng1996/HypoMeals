@@ -19,6 +19,7 @@ new Vue({
     // sorting variables
     sortKey: 'ingredient_name',
     sortAsc: [
+      {'id': true},
       { 'ingredient_name': true },
       { 'package_size': true },
       { 'cpp': true },
@@ -34,7 +35,7 @@ new Vue({
   mounted: function () {
     this.getIngredients();
     $("#search_input").autocomplete({
-      minLength: 2,
+      minLength: 1,
       delay: 100,
       // https://stackoverflow.com/questions/9656523/jquery-autocomplete-with-callback-ajax-json
       source: function (request, response) {

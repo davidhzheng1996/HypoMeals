@@ -9,10 +9,9 @@
 	<h3 class="error" v-if="message"> ${message} </h3>
 	<div id="visualization"></div>
 	<div class="row">
-         <div class="form-inline my-2 my-lg-0">
-            <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" autocomplete="on" v-model="search_term"  aria-label="Search" @blur="onBlur">
-            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="addGoal()">Add Goal</button>
-        </div>
+        <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" autocomplete="on" v-model="search_term"  aria-label="Search" @blur="onBlur">
+        <button class="btn btn-outline-success my-2 my-sm-0 schedule-button" v-on:click.prevent="addGoal()">Add Goal</button>
+        <button class="btn btn-outline-success my-2 my-sm-0 schedule-button" v-on:click.prevent="saveTimeline()">Save Timeline</button>
     </div>
 	<div class='items-panel'>
 	    <div class='side' style="max-width:350px;overflow:auto">

@@ -56,5 +56,7 @@ urlpatterns = [
     path('api/product_line_import/', ProductLineImportView.as_view()),
     path('api/active_manufacturing_lines/', viewsets.active_manufacturing_lines),
     path('api/bulk_match_manufacturing_lines/', viewsets.bulk_match_manufacturing_lines),
+    path('api/save_scheduler',viewsets.save_scheduler),
+    path('api/get_scheduler',viewsets.get_scheduler),
     path('api/mg_to_skus/<str:goal_name>', viewsets.mg_to_skus)
 ]
