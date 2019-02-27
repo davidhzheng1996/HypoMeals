@@ -46,7 +46,8 @@ class SkuViewSet(viewsets.ModelViewSet):
         if search_term:
             queryset = Sku.objects.filter(Q(sku_name__icontains=search_term) | Q(productline__product_line_name__icontains=search_term)|Q(id__icontains=search_term)|Q(caseupc__icontains=search_term)|Q(unitupc__icontains=search_term))
             # obtain all skus whose ingredient names include search_term
-            sku_ids = Sku_To_Ingredient.objects.filter(ig__ingredient_name__icontains=search_term).values('sku')
+            formula_ids = Formula_To_Ingredients.objects.filter(ig__ingredient_name__icontains=search_term).values('formula')
+            sku_ids = Sku.objects.filter(formula__id__in=formula_ids).values('id')
             queryset |= Sku.objects.filter(id__in=sku_ids)
         return queryset
 
@@ -61,7 +62,8 @@ class IngredientViewSet(viewsets.ModelViewSet):
         if search_term:
             queryset = Ingredient.objects.filter(Q(ingredient_name__icontains=search_term) | Q(id__icontains=search_term))
             # obtain all ingrs whose name contain search_term
-            ingr_ids = Sku_To_Ingredient.objects.filter(sku__sku_name__icontains=search_term).values('ig')
+            formula_ids = Sku.objects.filter(sku_name__icontains=search_term).values('formula')
+            ingr_ids = Formula_To_Ingredients.objects.filter(formula__in=formula_ids).values('ig')
             queryset |= Ingredient.objects.filter(id__in=ingr_ids)
         return queryset
 
@@ -75,6 +77,8 @@ class FormulaViewSet(viewsets.ModelViewSet):
         if search_term:
             # search by formula name, id or ingredient used 
             queryset = Formula.objects.filter(Q(formula_name__icontains=search_term) | Q(id__icontains=search_term))
+            formula_ids = Formula_To_Ingredients.objects.filter(ig__ingredient_name__icontains=search_term).values('formula')
+            queryset |= Formula.objects.filter(id__in=formula_ids)
         return queryset
 
 class CustomerViewSet(viewsets.ModelViewSet):
