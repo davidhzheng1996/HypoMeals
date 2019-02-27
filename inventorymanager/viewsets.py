@@ -754,7 +754,7 @@ def netid_login(request):
 def save_scheduler(request):
     if(request.method == 'POST'):
         try:
-            timeline_data = Scheduler.objects.filter(id=1)
+            timeline_data = Scheduler.objects.all()
             if(len(timeline_data)==0):
                 serializer = SchedulerSerializer(data=request.data)
                 if(serializer.is_valid()):

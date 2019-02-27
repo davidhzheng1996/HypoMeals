@@ -50,6 +50,10 @@ li.object-item:before {
     display: flex;
     justify-content: space-around;
 }
+.pane{
+    margin-left:2%;
+    margin-right:2%;
+}
 
 .row{
     margin-top: 2%;
@@ -64,4 +68,8 @@ li.object-item:before {
 
 #search_input{
     width:20%;
+}
+
+.column{
+    display:inline;
 }
