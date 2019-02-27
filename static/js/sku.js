@@ -265,23 +265,24 @@ new Vue({
         
       uploadSkuCSV: function() {
         this.loading = true;
-        // upload this.ingredientCSV to REST api in FormData
-        const formData = new FormData()
-        // https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
-        formData.append('file', this.skuFile, this.skuFile.name)
-        this.$http.post('/api/sku_import/', formData)
-           .then((response) => {
-            this.upload_errors = response.data['errors'].join('\n') + response.data['warnings'].join('\n')
-            console.log(this.upload_errors)
-         this.loading = false;
-         this.csv_uploaded=true;
-         this.getSkus();
-         })
-           .catch((err) => {
-            this.upload_errors = err.data['errors'].join('\n') + err.data['warnings'].join('\n')
-         this.loading = false;
-         console.log(err);
-        })
+        var reader = new FileReader();
+        reader.readAsText(this.skuFile)
+        reader.onload = (event)=> {
+                this.csvData = event.target.result;
+                $.post('/api/sku_import/', {'data':this.csvData}).done((response)=>{
+                     this.loading = false;
+                     this.csv_uploaded=true;
+                     this.upload_errors = response['errors'].join('\n') + response['warnings'].join('\n')
+                     this.getSkus();
+                 }).fail((err)=>{
+                  this.upload_errors = err.responseText
+                  this.loading = false;
+                  console.log(err)
+                })
+        };
+        reader.onerror = function() {
+            alert('Unable to read ' + file.fileName);
+        };
       },
 
       exportSkuCSV: function() {

@@ -134,10 +134,16 @@ new Vue({
         reader.readAsText(this.productlineFile)
         reader.onload = (event)=> {
                 this.csvData = event.target.result;
-                $.post('/api/product_line_import/', {'data':this.csvData}, (response)=>{
+                $.post('/api/product_line_import/', {'data':this.csvData}).done((response)=>{
                      this.loading = false;
                      this.csv_uploaded=true;
+                     console.log(response)
+                     this.upload_errors = response['errors'].join('\n') + response['warnings'].join('\n')
                      this.getProductLines();
+                 }).fail((err)=>{
+                      console.log(err.responseText)
+                      this.upload_errors = err.responseText
+                      // this.upload_errors = err.responseText['errors'].join('\n') + err.responseText['warnings'].join('\n')
                  });
                 // console.log(this.csvData)
                 // data = $.csv.toArrays(csvData);
