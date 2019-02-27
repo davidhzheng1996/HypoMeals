@@ -14,69 +14,55 @@ var starting = new Vue({
     },
     methods: {
         addGoal: function () {
-            data = {
-                "Kingdom Hearts 3":
-                {
-                    "Cases":
-                    {
-                        "manufacturing_lines": ["man 1", "man 2"],
-                        "time_needed": 7
-                    },
-                    "Disks":
-                    {
-                        "manufacturing_lines": ["man 2", "man 3"],
-                        "time_needed": 10
-                    }
-                }
-            }
-            this.unscheduled_goals.push(data)
-            for (key in data) {
-                if (data.hasOwnProperty(key)) {
-                    for (key2 in data[key]) {
-                        if (data[key].hasOwnProperty(key2)) {
-                            for (key3 in data[key][key2].manufacturing_lines) {
-                                this.manufacturing_lines.add(data[key][key2].manufacturing_lines[key3])
+            // data = {
+            //     "Kingdom Hearts 3":
+            //     {
+            //         "Cases":
+            //         {
+            //             "manufacturing_lines": ["man 1", "man 2"],
+            //             "time_needed": 7
+            //         },
+            //         "Disks":
+            //         {
+            //             "manufacturing_lines": ["man 2", "man 3"],
+            //             "time_needed": 10
+            //         }
+            //     }
+            // }
+            // this.unscheduled_goals.push(data)
+            // for (key in data) {
+            //     if (data.hasOwnProperty(key)) {
+            //         for (key2 in data[key]) {
+            //             if (data[key].hasOwnProperty(key2)) {
+            //                 for (key3 in data[key][key2].manufacturing_lines) {
+            //                     this.manufacturing_lines.add(data[key][key2].manufacturing_lines[key3])}}}}}
+                                
+            //                     for (let value of this.manufacturing_lines) {
+            //                         this.groups.add({ "id": value, "content": value })
+            //                     }
+            $.get('api/mg_to_skus/'+this.search_term,(data)=>{
+                console.log(data)
+                this.unscheduled_goals.push(data)
+                console.log(this.unscheduled_goals)
+                for (key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        for (key2 in data[key]) {
+                            if (data[key].hasOwnProperty(key2)&&key2!='deadline') {
+                                for (key3 in data[key][key2].manufacturing_lines) {
+                                    this.manufacturing_lines.add(data[key][key2].manufacturing_lines[key3])
+                                }
                             }
                         }
                     }
                 }
-            }
-            for (let value of this.manufacturing_lines) {
-                this.groups.add({ "id": value, "content": value })
-            }
-            // THIS HAS NOT BEEN SET UP YET 
-            // let userid = 0;
-            // let api_url = '/api/manufacture_goal/' + userid;
-            // if (this.search_term !== '' && this.search_term !== null) {
-            //     api_url += '?search=' + this.search_term
-            // }
-            // this.$http.get(api_url)
-            //     .then((response) => {
-            //         let data = reponse.data
-            //         this.goals.push(data)
-            //         for (key in data) {
-            //             if (data.hasOwnProperty(key)) {
-            //                 for (key2 in data[key]) {
-            //                     if (data[key].hasOwnProperty(key2)) {
-            //                         for (key3 in data[key][key2].manufacturing_lines) {
-            //                             this.manufacturing_lines.add(data[key][key2].manufacturing_lines[key3])
-            //                         }
-            //                     }
-            //                 }
-            //             }
-            //         }
-            //         for (let value of this.manufacturing_lines) {
-            //             this.groups.add({ "id": value, "content": value })
-            //         }
-            //     })
-            //     .catch((err) => {
-            //         console.log(err);
-            //     })
-
-
-
-
+                console.log(this.manufacturing_lines)
+                for (let value of this.manufacturing_lines) {
+                    this.groups.add({ "id": value, "content": value })
+                }
+                console.log(this.groups)
+            }); 
         },
+
         onBlur: function (event) {
             if (event && this.search_term !== event.target.value)
                 this.search_term = event.target.value
@@ -108,17 +94,11 @@ var starting = new Vue({
             // https://stackoverflow.com/questions/9656523/jquery-autocomplete-with-callback-ajax-json
             source: function (request, response) {
                 $.ajax({
-                    url: "/api/manufacture_goal/",
+                    url: "/api/search_goals/"+request.term,
+                    type:'GET',
                     dataType: "json",
-                    data: {
-                        // attach '?search=request.term' to the url 
-                        search: request.term
-                    },
                     success: function (data) {
-                        ingr_names = $.map(data, function (item) {
-                            return [item.ingredient_name];
-                        })
-                        response(ingr_names);
+                        response(data)
                     }
                 });
             },
