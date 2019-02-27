@@ -19,6 +19,7 @@ new Vue({
     // sorting variables
     sortKey: 'ingredient_name',
     sortAsc: [
+      {'id': true},
       { 'ingredient_name': true },
       { 'package_size': true },
       { 'cpp': true },

@@ -16,6 +16,7 @@ from datetime import date
 import csv
 import io
 import re
+import os
 
 # Create your views here.
 @login_required(login_url='/accounts/login/')
@@ -631,7 +632,21 @@ class ProductLineImportView(APIView):
 	# file sent should be in FormData
 	parser_classes = (MultiPartParser, FormParser)
 	def post(self, request, *args, **kwargs):
-		csv_file = request.data['file']
+		csv_file = request.data['data']
+		# print(csv_file)
+		directory = os.getcwd()
+		print(directory)
+		# response = HttpResponse(content_type='text/csv')
+		# response['Content-Disposition'] = "attachment; filename=\"product_line.csv\""f
+		csv_file = csv_file.split('\n')
+		headers =csv_file[0].split(',')
+		writer = csv.writer(open(directory+"/output.csv", 'w'))
+		writer.writerow(headers)
+		for i in range(1, len(csv_file)):
+			row = csv_file[i].split(',')
+			writer.writerow(row)
+			# b = bytes(line, 'utf-8')
+		# print(response)
 		errors, warnings = self.save(csv_file)
 		post_result = {'errors': errors, 'warnings': warnings}
 		if errors != []:
@@ -644,8 +659,10 @@ class ProductLineImportView(APIView):
 		warnings = []
 		# https://docs.djangoproject.com/en/1.9/topics/db/transactions/#savepoint-rollback
 		transaction_savepoint = transaction.savepoint()
-		with open(product_line_file.name) as f:
-			reader = csv.DictReader(f)
+		directory = os.getcwd()
+		with open(directory+"/output.csv") as f:
+			reader = csv.DictReader(product_line_file)
+			print(reader.fieldnames)
 			header_val_error, _ = self.validate_header(reader.fieldnames)
 			if header_val_error:
 				errors.append(header_val_error)

@@ -20,7 +20,7 @@
          <table class="table">
             <thead>
                <tr>
-                  <th scope="col">id</th>
+                  <th v-on:click="sortBy('id')" scope="col">id</th>
                   <th v-on:click="sortBy('ingredient_name')" scope="col">Name</th>
                   <th v-on:click="sortBy('package_size')" scope="col">Package Size</th>
                   <th v-on:click="sortBy('cpp')" scope="col">Cost per Package</th>
