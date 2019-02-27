@@ -3,8 +3,8 @@ var starting = new Vue({
     delimiters: ['${', '}'],
     data: {
         manufacturing_lines: new Set(),
-        // unscheduled goals with skus
-        goals: [],
+        unscheduled_goals: [],
+        scheduled_goals: [],        
         // manufacturing lines
         groups: new vis.DataSet(),
         // skus
@@ -29,7 +29,7 @@ var starting = new Vue({
                     }
                 }
             }
-            this.goals.push(data)
+            this.unscheduled_goals.push(data)
             for (key in data) {
                 if (data.hasOwnProperty(key)) {
                     for (key2 in data[key]) {
@@ -89,8 +89,9 @@ var starting = new Vue({
                 id: new Date(),
                 content: event.target.innerHTML,
                 goal: goal,
-                manufacturing_lines: this.goals[list_index][goal][sku].manufacturing_lines,
-                time_needed: this.goals[list_index][goal][sku].time_needed,
+                sku: sku,
+                manufacturing_lines: this.unscheduled_goals[list_index][goal][sku].manufacturing_lines,
+                time_needed: this.unscheduled_goals[list_index][goal][sku].time_needed,
             };
             // set event.target ID with item ID
             event.target.id = new Date(item.id).toISOString();
@@ -144,6 +145,33 @@ var timeend = new Date(timenow.getTime() + 3600000 * 24)
 timenow = timenow.toISOString()
 timeend = timeend.toISOString()
 
+actualTimeNeeded = function (start_time, hours_needed) {
+    // in mili
+    let time_needed = hours_needed * 3600000
+    let actual_time = 0
+    let start_day_end_time = new Date(start_time.getUTCFullYear(), 
+                                      start_time.getUTCMonth(), 
+                                      start_time.getUTCDate(),
+                                      17, 
+                                      0, 
+                                      0, 
+                                      0)
+    actual_time += start_day_end_time - start_time
+    time_needed -= start_day_end_time - start_time
+    if (time_needed !== 0) {
+        // night time of the day
+        actual_time += 3600000 * 14
+    }
+    let full_days = Math.floor(time_needed / (3600000*10))
+    actual_time += full_days * 3600000*24
+    time_needed -= full_days * 3600000*10
+    actual_time += time_needed
+    // console.log(hours_needed)
+    // console.log(start_time.toTimeString())
+    // console.log((new Date(start_time.getTime() + actual_time)).toTimeString())
+    return actual_time
+}
+
 var options = {
     stack: true,
     editable: true,
@@ -163,73 +191,86 @@ var options = {
             error_message = 'scheduled starting time outside of operation hours.'
             return 
         }
-        // calculate actual hours needed with night time 
-        actualTimeNeeded = function (start_time, hours_needed) {
-            // in mili
-            let time_needed = hours_needed * 3600000
-            let actual_time = 0
-            let start_day_end_time = new Date(start_time.getUTCFullYear(), 
-                                              start_time.getUTCMonth(), 
-                                              start_time.getUTCDate(),
-                                              17, 
-                                              0, 
-                                              0, 
-                                              0)
-            actual_time += start_day_end_time - start_time
-            time_needed -= start_day_end_time - start_time
-            if (time_needed !== 0) {
-                // night time of the day
-                actual_time += 3600000 * 14
-            }
-            let full_days = Math.floor(time_needed / (3600000*10))
-            actual_time += full_days * 3600000*24
-            time_needed -= full_days * 3600000*10
-            actual_time += time_needed
-            // console.log(hours_needed)
-            // console.log(start_time.toTimeString())
-            // console.log((new Date(start_time.getTime() + actual_time)).toTimeString())
-            return actual_time
-        }
-        let actual_time_needed = actualTimeNeeded(item.start, item.time_needed);
         // check if manufacturing line can make this sku
-        if(item.manufacturing_lines.indexOf(item.group) === -1){
+        if(!item.manufacturing_lines.includes(item.group)){
             error_message = 'sku cannot be made on this manufacturing line.'
             return
         } 
+        // calculate actual hours needed with night time 
+        let actual_time_needed = actualTimeNeeded(item.start, item.time_needed);
         activity = { id: item.id, content: item.content, start: item.start, end: new Date(item.start.getTime() + actual_time_needed), group: item.group }
-        if (item.content != "new item") {
-            starting.items.add(activity)
-        }
+        // visualize exceeding deadline
+        // let deadline = new Date(item.deadline)
+        // if (deadline > activity.end) {
+        //     error_message = 'sku ' + item.sku + ' completion time exceeds deadline ' + deadline.toTimeString()
+        //     activity.style = "background-color: red;"
+        // }
+        item.end = new Date(item.start.getTime() + actual_time_needed)
+        delete item.type
+        starting.items.add(item)
         // store to backend 
-        // remove sku from unscheduled list
-        // console.log(starting.goals)
-        // console.log(item.goal)
-        // starting.goals.filter((goal) => {
-        //     return item.goal in goal
-        // }).filter((sku) => {
-        //     console.log(sku)
-        //     return sku.content !== item.content;
-        // })
-        starting.goals.forEach((goal) => {
+        // move sku from unscheduled list to scheduled list
+        starting.unscheduled_goals.forEach((unscheduled_goal) => {
             // check if item.goal is the key 
-            if(item.goal in goal) {
+            if(item.goal in unscheduled_goal) {
                 // goal[item.goal]: {sku-> {ml,time_needed}}
-                // how to grab the sku name? 
+                // add sku to scheduled goals
+                let goal_existing = false
+                starting.scheduled_goals.forEach((goal) => {
+                    if(item.goal in goal) {
+                        goal_existing = true
+                    }
+                })
+                // add new scheduled goal to scheduled goals 
+                if(!goal_existing) {
+                    let new_goal = {
+                        [item.goal]: {}
+                    }
+                    starting.scheduled_goals.push(new_goal)
+                }
+                starting.scheduled_goals.forEach((scheduled_goal) => {
+                    if(item.goal in scheduled_goal) {
+                        Vue.set(scheduled_goal[item.goal], item.sku, unscheduled_goal[item.goal][item.sku])
+                    }
+                })
+                // remove sku from unscheduled goals
+                Vue.delete(unscheduled_goal[item.goal], item.sku)
             }
         })
-        // visualize exceeding deadline 
+    },
+
+    onMoving: function (item, callback) {
+        if (item.start.getHours() < 7 || item.start.getHours() > 17) {
+            callback(null)
+            return
+        }
+        // calculate actual hours needed with night time 
+        let actual_time_needed = actualTimeNeeded(item.start, item.time_needed);
+        item.end = new Date(item.start.getTime() + actual_time_needed)
+        callback(item)
     },
     
     onRemove: function (item, callback) {
-        // put back item 
-        console.log(item)
+        // move item from scheduled to unscheduled 
+        starting.scheduled_goals.forEach((scheduled_goal) => {
+            if(item.goal in scheduled_goal){
+                let scheduled_sku = scheduled_goal[item.goal][item.sku]
+                starting.unscheduled_goals.forEach((unscheduled_goal) => {
+                    if(item.goal in unscheduled_goal) {
+                        Vue.set(unscheduled_goal[item.goal], item.sku, scheduled_sku)
+                    }
+                })
+                Vue.delete(scheduled_goal[item.goal], item.sku)
+            }
+        })
+        starting.items.remove(item)
     }
 };
 
 // create a Timeline
 var container = document.getElementById('visualization');
 timeline1 = new vis.Timeline(container, starting.items, starting.groups, options);
-
+timeline1.on('doubleClick', function (properties) {});
 
 // function handleDragEnd(event) {
 //     // Last item that just been dragged, its ID is the same of event.target
