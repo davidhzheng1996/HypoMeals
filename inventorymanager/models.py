@@ -131,7 +131,10 @@ class Formula_To_Ingredients(models.Model):
 		unique_together = (("formula","ig"),)
 
 class Scheduler(models.Model):
-	data = JSONField(null=False,default='')
-
+	items = models.TextField(null=False,default='')
+	groups = models.TextField(null=False,default='')
+	scheduled_goals = models.TextField(null=False,default='')
+	unscheduled_goals = models.TextField(null=False,default='')
+	manufacturing_lines = models.TextField(null=False,default='')
 		
 

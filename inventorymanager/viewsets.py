@@ -749,4 +749,45 @@ def netid_login(request):
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+def save_scheduler(request):
+    if(request.method == 'POST'):
+        try:
+            timeline_data = Scheduler.objects.filter(id=1)
+            if(len(timeline_data)==0):
+                serializer = SchedulerSerializer(data=request.data)
+                if(serializer.is_valid()):
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+            else: 
+                first = timeline_data.first()
+                serializer = SchedulerSerializer(first,request.data)
+                if(serializer.is_valid()):
+                    serializer.save()
+                    return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['GET'])
+def get_scheduler(request):
+    if(request.method=='GET'):
+        try:
+            timeline_data = Scheduler.objects.all()
+            if(len(timeline_data)!=0):
+                first = timeline_data.first()
+                response = {}
+                response['items'] = first.items
+                response['groups'] = first.groups
+                response['scheduled_goals'] = first.scheduled_goals
+                response['unscheduled_goals'] = first.unscheduled_goals
+                response['manufacturing_lines'] = first.manufacturing_lines
+                return Response(response,status = status.HTTP_200_OK)
+            else:
+                response = {}
+                response = {'init':'yes'}
+                return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
 
