@@ -6,3 +6,5 @@ djangorestframework
 reportlab
 requests
 jsonfield
+whitenoise
+dj-database-url
