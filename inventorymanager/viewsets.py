@@ -44,7 +44,7 @@ class SkuViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset()
         search_term = self.request.query_params.get('search', None)
         if search_term:
-            queryset = Sku.objects.filter(Q(sku_name__icontains=search_term) | Q(productline__product_line_name__icontains=search_term))
+            queryset = Sku.objects.filter(Q(sku_name__icontains=search_term) | Q(productline__product_line_name__icontains=search_term)|Q(id__icontains=search_term)|Q(caseupc__icontains=search_term)|Q(unitupc__icontains=search_term))
             # obtain all skus whose ingredient names include search_term
             sku_ids = Sku_To_Ingredient.objects.filter(ig__ingredient_name__icontains=search_term).values('sku')
             queryset |= Sku.objects.filter(id__in=sku_ids)
@@ -59,7 +59,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
         queryset = super().get_queryset()
         search_term = self.request.query_params.get('search', None)
         if search_term:
-            queryset = Ingredient.objects.filter(Q(ingredient_name__icontains=search_term) | Q(description__icontains=search_term))
+            queryset = Ingredient.objects.filter(Q(ingredient_name__icontains=search_term) | Q(id__icontains=search_term))
             # obtain all ingrs whose name contain search_term
             ingr_ids = Sku_To_Ingredient.objects.filter(sku__sku_name__icontains=search_term).values('ig')
             queryset |= Ingredient.objects.filter(id__in=ingr_ids)

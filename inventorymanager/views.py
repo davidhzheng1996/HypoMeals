@@ -389,12 +389,12 @@ class SkuImportView(APIView):
 		odds = int(sku_dict['Case UPC'][0]) + int(sku_dict['Case UPC'][2]) + int(sku_dict['Case UPC'][4]) + int(sku_dict['Case UPC'][6]) + int(sku_dict['Case UPC'][8])+ int(sku_dict['Case UPC'][10])
 		evens = int(sku_dict['Case UPC'][1]) + int(sku_dict['Case UPC'][3]) + int(sku_dict['Case UPC'][5]) + int(sku_dict['Case UPC'][7]) + int(sku_dict['Case UPC'][9])
 		sumNum = odds*3 + evens
-		# if sumNum % 10 == 0 and int(sku_dict['Case UPC'][11]) != 0:
-		# 	return False
-		# else:
-		# 	check = 10 - (sumNum % 10)
-		# 	if int(sku_dict['Case UPC'][11]) != check:
-		# 		return False
+		if sumNum % 10 == 0 and int(sku_dict['Case UPC'][11]) != 0:
+			return False
+		else:
+			check = 10 - (sumNum % 10)
+			if int(sku_dict['Case UPC'][11]) != check:
+				return False
 
 		return True;
 
@@ -405,12 +405,12 @@ class SkuImportView(APIView):
 		odds = odds*3
 		evens = int(sku_dict['Unit UPC'][1]) + int(sku_dict['Unit UPC'][3]) + int(sku_dict['Unit UPC'][5]) + int(sku_dict['Unit UPC'][7]) + int(sku_dict['Unit UPC'][9])
 		sumNum = odds + evens
-		# if sumNum % 10 == 0 and int(sku_dict['Unit UPC'][11]) != 0:
-		# 	return False
-		# else:
-		# 	check = 10 - (sumNum % 10)
-		# 	if int(sku_dict['Unit UPC'][11]) != check:
-		# 		return False
+		if sumNum % 10 == 0 and int(sku_dict['Unit UPC'][11]) != 0:
+			return False
+		else:
+			check = 10 - (sumNum % 10)
+			if int(sku_dict['Unit UPC'][11]) != check:
+				return False
 		return True;
 
 

@@ -19,15 +19,15 @@
          <table class="table">
             <thead>
                <tr>
-                  <th v-on:click="sortBy('formula_name')" scope="col">Name</th>
                   <th v-on:click="sortBy('id')" scope="col">ID</th>
+                  <th v-on:click="sortBy('formula_name')" scope="col">Name</th>
                   <th scope="col">Actions</th>
                </tr>
             </thead>
             <tbody>
                <tr v-for="formula in displayedFormulas">
-                  <th scope="row">${formula.formula_name}</th>
-                  <td>${formula.id}</td>
+                  <th scope="row">${formula.id}</th>
+                  <td>${formula.formula_name}</td>
                   <td>
                      <button class="btn btn-primary" v-on:click="viewSku(formula.id)">View SKUs</button>
                      <button class="btn btn-primary" v-on:click="viewFormula(formula.id)">View Ingredients</button>
