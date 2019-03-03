@@ -103,13 +103,46 @@ class IngredientImportView(APIView):
 	def post(self, request, *args, **kwargs):
 		# https://stackoverflow.com/questions/28545553/django-rest-frameworks-request-post-vs-request-data
 		# request.data is more flexible than request.FILES
-		csv_file = request.data['file']
-		errors, warnings = self.save(csv_file)
-		post_result = {'errors': errors, 'warnings': warnings}
-		if errors != []:
-			return Response(post_result, status.HTTP_400_BAD_REQUEST)
-		return Response(post_result, status.HTTP_201_CREATED)
+		try:
+			csv_file = request.data['data']
+			# print(csv_file)
+			directory = os.getcwd()
 
+			# response = HttpResponse(content_type='text/csv')
+			# response['Content-Disposition'] = "attachment; filename=\"product_line.csv\""f
+			# f = io.StringIO(csv_file)
+			# csv_file = csv_file.split('\n')
+			# headers =csv_file[0].split(',')
+			# writer = csv.writer(open(directory+"/outputIngredient.csv", 'w'))
+			# writer.writerow(headers)
+			# print(len(csv_file))
+			# for i in range(1, len(csv_file)):
+			# 	# if(',' in csv_file[i]):
+			# 	row = csv_file[i].split(',')
+			# 	if(len(row)<len(headers)):
+			# 		print('hi')
+			# 		prevRow = csv_file[i-1].split(',')
+			# 		print(prevRow[len(headers)-1])
+			# 		prevRow[len(headers)-1]+ " " + row
+			# 		print(prevRow)
+			# 		continue
+			# 	print(row)
+			# 	# row1=''
+			# 	# for i in range(0, len(headers)):
+			# 	# 	row1 = row[i]+','
+			# 	# print(row1)
+			# 	writer.writerow(row)
+			# reader = csv.reader(f, delimiter=',')
+			# for row in reader:
+			# 	print('\t'.join(row))
+			# print(f)
+			errors, warnings = self.save(csv_file)
+			post_result = {'errors': errors, 'warnings': warnings}
+			if errors != []:
+				return Response(post_result, status.HTTP_400_BAD_REQUEST)
+			return Response(post_result, status.HTTP_201_CREATED)
+		except Exception as e: 
+			return Response(status = status.HTTP_400_BAD_REQUEST)
 		# file_serializer = IngredientFileSerializer(data=request.data)
 		# if file_serializer.is_valid():
 			# file_serializer.save()
@@ -128,13 +161,23 @@ class IngredientImportView(APIView):
 		warnings = []
 		# https://docs.djangoproject.com/en/1.9/topics/db/transactions/#savepoint-rollback
 		transaction_savepoint = transaction.savepoint()
-		with open(csv_file.name) as f:
-			reader = csv.DictReader(f)
-			header_val_error, _ = self.validate_header(reader.fieldnames)
-			if header_val_error:
-				errors.append(header_val_error)
-				return errors, warnings
-			for ingr_dict in reader:
+		f = io.StringIO(csv_file)
+		reader = csv.reader(f, delimiter=',')
+		first = True
+		ingr_dict = {}
+		for ingr_row in reader:
+			if first:
+				header = ingr_row
+				header_val_error, _ = self.validate_header(header)
+				if header_val_error:
+					errors.append(header_val_error)
+					return errors, warnings
+				first = False
+				continue
+			else:
+				# {Ingr#: ingr, Name: ingr_name, etc.} for each ingredient 
+				for idx, ele in enumerate(ingr_row):
+					ingr_dict[header[idx]] = ele
 				if not ingr_dict['Ingr#']:
 					if not Ingredient.objects.all():
 						default_id = 1
@@ -157,14 +200,9 @@ class IngredientImportView(APIView):
 				if not unit_error:
 					errors.append("package size unit incorrect for %s," % ingr_dict['Name'])
 					break
-				# ingredient = Ingredient(id=default_id,
-				# 						ingredient_name=ingr_dict['Name'].lower(), 
-				# 						description=ingr_dict['Vendor Info'],
-				# 						package_size=ingr_dict['Size'],
-				# 						cpp=ingr_dict['Cost'],
-				# 						comment=ingr_dict['Comment'])
 				if not Ingredient.objects.filter(id=default_id).exists():
 					serializer = IngredientSerializer(data={'id':default_id,'ingredient_name':ingr_dict['Name'].lower(),'description':ingr_dict['Vendor Info'],'package_size':ingr_dict['Size'],'cpp':ingr_dict['Cost'],'comment':ingr_dict['Comment']})
+					# print(serializer.data)
 					if(serializer.is_valid()):
 						serializer.save()
 				else:
@@ -178,7 +216,7 @@ class IngredientImportView(APIView):
 					s_data['cpp']=ingr_dict['Cost']
 					s_data['comment']=ingr_dict['Comment']
 					serializer = IngredientSerializer(data=s_data)
-					print(serializer)
+					# print(serializer)
 					if(serializer.is_valid()):
 						serializer.save()
 		if errors != []:
@@ -197,9 +235,14 @@ class IngredientImportView(APIView):
 		error = ''
 		warning = ''
 		# if ingredient with same name exists, only update if id matches
+		# print(Ingredient.objects.get(ingredient_name=ingredient_dict['Name']).exists())
+		print(ingredient_dict['Name'])
 		if Ingredient.objects.filter(ingredient_name=ingredient_dict['Name']).exists():
 			same_name_ingr = Ingredient.objects.get(ingredient_name=ingredient_dict['Name'])
+			print(same_name_ingr)
+			# print(Ingredient.objects.get(ingredient_name=ingredient_dict['Name']))
 			if same_name_ingr.pk != default_id:
+				print('hit')
 				error = 'Ambiguous record for %s,' % same_name_ingr.ingredient_name
 			else:
 				# update other fields
@@ -216,7 +259,6 @@ class IngredientImportView(APIView):
 		size = ingredient_dict['Size']
 		size_unit = re.sub(r'\d*\.?\d+', '', size)
 		size_unit = size_unit.replace(' ', '').replace('.','').lower()
-		print(size_unit)
 		if len(size_unit) > 1 and (size_unit[len(size_unit)-1]=='s'):
 			size_unit = size_unit[:-1]
 		if size_unit not in units:
@@ -243,17 +285,22 @@ class IngredientExportView(APIView):
                         writer.writerow(ingredient_row)
                 return response
 
+
 class SkuImportView(APIView):
 	# available parsers: https://www.django-rest-framework.org/api-guide/parsers/ 
 	# file sent should be in FormData
 	parser_classes = (MultiPartParser, FormParser)
 	def post(self, request, *args, **kwargs):
-		csv_file = request.data['file']
-		errors, warnings = self.save(csv_file)
-		post_result = {'errors': errors, 'warnings': warnings}
-		if errors != []:
-			return Response(post_result, status.HTTP_400_BAD_REQUEST)
-		return Response(post_result, status.HTTP_201_CREATED)
+		try:
+			csv_file = request.data['data']
+			errors, warnings = self.save(csv_file)
+			post_result = {'errors': errors, 'warnings': warnings}
+			if errors != []:
+				return Response(post_result, status.HTTP_400_BAD_REQUEST)
+			return Response(post_result, status.HTTP_201_CREATED)
+		except Exception as e: 
+			return Response(status = status.HTTP_400_BAD_REQUEST)
+		
 		
 	@transaction.atomic
 	def save(self, csv_file):
@@ -261,13 +308,23 @@ class SkuImportView(APIView):
 		warnings = []
 		# https://docs.djangoproject.com/en/1.9/topics/db/transactions/#savepoint-rollback
 		transaction_savepoint = transaction.savepoint()
-		with open(csv_file.name) as f:
-			reader = csv.DictReader(f)
-			header_val_error, _ = self.validate_header(reader.fieldnames)
-			if header_val_error:
-				errors.append(header_val_error)
-				return errors, warnings
-			for sku_dict in reader:
+		f = io.StringIO(csv_file)
+		reader = csv.reader(f, delimiter=',')
+		first = True
+		sku_dict = {}
+		for sku_row in reader:
+			if first:
+				header = sku_row
+				header_val_error, _ = self.validate_header(header)
+				if header_val_error:
+					errors.append(header_val_error)
+					return errors, warnings
+				first = False
+				continue
+			else:
+				# {Ingr#: ingr, Name: ingr_name, etc.} for each ingredient 
+				for idx, ele in enumerate(sku_row):
+						sku_dict[header[idx]] = ele
 				if not sku_dict['SKU#']:
 					if not Sku.objects.all():
 						default_id = 1
@@ -288,19 +345,8 @@ class SkuImportView(APIView):
 					break
 				product_line = Product_Line.objects.get(product_line_name=sku_dict['PL Name'])
 				formula = Formula.objects.get(id=int(sku_dict['Formula#']))
-				# sku = Sku(
-				# 		id=default_id,
-				# 		productline=product_line.product_line_name,
-				# 		caseupc=sku_dict['Case UPC'],
-				# 		unitupc=sku_dict['Unit UPC'],
-				# 		sku_name=sku_dict['Name'],
-				# 		count=sku_dict['Count per case'],
-				# 		unit_size=sku_dict['Unit size'],
-				# 		formula=formula.id,
-				# 		formula_scale_factor=sku_dict['Formula factor'],
-				# 		manufacture_rate=sku_dict['Rate'],
-				# 		comment=sku_dict['Comment'])
 				if not Sku.objects.filter(id=default_id).exists():
+					print('hi')
 					serializer = SkuSerializer(data={'id':default_id,'productline':product_line.product_line_name,'caseupc':sku_dict['Case UPC'],'unitupc':sku_dict['Unit UPC'],'sku_name':sku_dict['Name'],'count':sku_dict['Count per case'],'unit_size':sku_dict['Unit size'],'formula':formula.id,'formula_scale_factor':sku_dict['Formula factor'],'manufacture_rate':sku_dict['Rate'],'comment':sku_dict['Comment']})
 					if serializer.is_valid():
 						serializer.save()
@@ -323,7 +369,7 @@ class SkuImportView(APIView):
 					s_data['manufacture_rate']=sku_dict['Rate']
 					s_data['comment']=sku_dict['Comment']
 					serializer = SkuSerializer(data=s_data)
-					print(serializer)
+					# print(serializer)
 					if(serializer.is_valid()):
 						serializer.save()
 				# save all manufacturing lines associated with sku
@@ -355,6 +401,7 @@ class SkuImportView(APIView):
 		warning = ''
 		case_upc = self.validate_case_upc(sku_dict)
 		unit_upc = self.validate_unit_upc(sku_dict)
+		print(sku_dict['Name'])
 		# if ingredient with same name exists, only update if id matches
 		if Sku.objects.filter(sku_name=sku_dict['Name']).exists():
 			same_name_sku = Sku.objects.get(sku_name=sku_dict['Name'])
@@ -376,12 +423,18 @@ class SkuImportView(APIView):
 		product_line_name = sku_dict['PL Name']
 		if not Product_Line.objects.filter(product_line_name=product_line_name).exists():
 			error = 'No product line named %s,' % product_line_name
+		# check if formula exists
+		formula = sku_dict['Formula#']
+		if not Formula.objects.filter(id=formula).exists():
+			print('bad formula')
+			error = 'No Formula# %s,' % str(formula)
 		# check if manufacturing lines exist 
 		ml_shortnames = sku_dict['ML Shortnames'].strip('"').split(',')
 		for ml_shortname in ml_shortnames:
 			if not Manufacture_line.objects.filter(ml_short_name=ml_shortname).exists():
 				error = 'No manufacturing line named %s,' % ml_shortname
 				break
+		print(sku_dict['Name'])
 		return error, warning
 
 	def validate_case_upc(self, sku_dict):
@@ -390,9 +443,11 @@ class SkuImportView(APIView):
 		odds = int(sku_dict['Case UPC'][0]) + int(sku_dict['Case UPC'][2]) + int(sku_dict['Case UPC'][4]) + int(sku_dict['Case UPC'][6]) + int(sku_dict['Case UPC'][8])+ int(sku_dict['Case UPC'][10])
 		evens = int(sku_dict['Case UPC'][1]) + int(sku_dict['Case UPC'][3]) + int(sku_dict['Case UPC'][5]) + int(sku_dict['Case UPC'][7]) + int(sku_dict['Case UPC'][9])
 		sumNum = odds*3 + evens
+		print(sumNum)
+		print(sku_dict['Case UPC'][11])
 		if sumNum % 10 == 0 and int(sku_dict['Case UPC'][11]) != 0:
 			return False
-		else:
+		elif sumNum % 10 != 0:
 			check = 10 - (sumNum % 10)
 			if int(sku_dict['Case UPC'][11]) != check:
 				return False
@@ -408,7 +463,7 @@ class SkuImportView(APIView):
 		sumNum = odds + evens
 		if sumNum % 10 == 0 and int(sku_dict['Unit UPC'][11]) != 0:
 			return False
-		else:
+		elif sumNum % 10 != 0:
 			check = 10 - (sumNum % 10)
 			if int(sku_dict['Unit UPC'][11]) != check:
 				return False
@@ -440,12 +495,16 @@ class FormulaImportView(APIView):
 	# file sent should be in FormData
 	parser_classes = (MultiPartParser, FormParser)
 	def post(self, request, *args, **kwargs):
-		csv_file = request.data['file']
-		errors, warnings = self.save(csv_file)
-		post_result = {'errors': errors, 'warnings': warnings}
-		if errors != []:
-			return Response(post_result, status.HTTP_400_BAD_REQUEST)
-		return Response(post_result, status.HTTP_201_CREATED)
+		try:
+			csv_file = request.data['data']
+			errors, warnings = self.save(csv_file)
+			post_result = {'errors': errors, 'warnings': warnings}
+			if errors != []:
+				return Response(post_result, status.HTTP_400_BAD_REQUEST)
+			return Response(post_result, status.HTTP_201_CREATED)
+		except Exception as e: 
+			return Response(status = status.HTTP_400_BAD_REQUEST)
+
 		
 	@transaction.atomic
 	def save(self, formula_file):
@@ -453,91 +512,109 @@ class FormulaImportView(APIView):
 		warnings = []
 		# https://docs.djangoproject.com/en/1.9/topics/db/transactions/#savepoint-rollback
 		transaction_savepoint = transaction.savepoint()
-		with open(formula_file.name) as f:
-			reader = csv.DictReader(f)
-			readers = list(reader)
-			header_val_error, _ = self.validate_header(reader.fieldnames)
-			if header_val_error:
-				errors.append(header_val_error)
-				return errors, warnings
-			ids = []
-			for formula_dict in readers:
-				if not formula_dict['Formula#'] and not Formula.objects.filter(formula_name=formula_dict['Name']).exists():
-					if not Formula.objects.all():
-						default_id = 1
-					else:
-						default_id =  Formula.objects.all().order_by("-id")[0].id + 1
-				elif formula_dict['Formula#']:
-					try:
-						int(formula_dict['Formula#'])
-					except ValueError:
-						errors.append(formula_dict['Formula#'] + " is not a number,")
-						continue
-					default_id = int(formula_dict['Formula#'])
-				elif not formula_dict['Formula#'] and Formula.objects.filter(formula_name=formula_dict['Name']).exists():
-					formula_exist = Formula.objects.get(formula_name=formula_dict['Name'])
-					default_id = formula_exist.id
-				if Formula.objects.filter(id=default_id).exists():
-					formula1 = Formula.objects.get(id=default_id)
-					ingrtoformula1 = Formula_To_Ingredients.objects.filter(formula=formula1.id)
-					for entry in ingrtoformula1:
-						entry.delete()
-					formula1.delete()
-			first = True
-			for formula_dict in readers:
-				if not formula_dict['Formula#'] and not Formula.objects.filter(formula_name=formula_dict['Name']).exists():
-					if not Formula.objects.all():
-						default_id = 1
-					else:
-						default_id =  Formula.objects.all().order_by("-id")[0].id + 1
-				elif formula_dict['Formula#']:
-					try:
-						int(formula_dict['Formula#'])
-					except ValueError:
-						errors.append(formula_dict['Formula#'] + " is not a number,")
-						continue
-					default_id = int(formula_dict['Formula#'])
-				elif not formula_dict['Formula#'] and Formula.objects.filter(formula_name=formula_dict['Name']).exists():
-					formula_exist = Formula.objects.get(formula_name=formula_dict['Name'])
-					default_id = formula_exist.id
-				val_error, val_warning = self.validate_formula(formula_dict, default_id)
-				unit_error = self.validate_unit(formula_dict)
+		f = io.StringIO(formula_file)
+		reader = csv.reader(f, delimiter=',')
+		firstA = True
+		formula_dict = {}
+		readers = list(reader)
+		# print(readers)
+		for formula_row in readers:
+			if firstA:
+				header = formula_row
+				header_val_error, _ = self.validate_header(header)
+				if header_val_error:
+					errors.append(header_val_error)
+					return errors, warnings
+				firstA = False
+				continue
+			else:
+				# {Ingr#: ingr, Name: ingr_name, etc.} for each ingredient 
+				for idx, ele in enumerate(formula_row):
+					formula_dict[header[idx]] = ele
+					if not formula_dict['Formula#'] and not Formula.objects.filter(formula_name=formula_dict['Name']).exists():
+						if not Formula.objects.all():
+							default_id = 1
+						else:
+							default_id =  Formula.objects.all().order_by("-id")[0].id + 1
+					elif formula_dict['Formula#']:
+						try:
+							int(formula_dict['Formula#'])
+						except ValueError:
+							errors.append(formula_dict['Formula#'] + " is not a number,")
+							continue
+						default_id = int(formula_dict['Formula#'])
+					elif not formula_dict['Formula#'] and Formula.objects.filter(formula_name=formula_dict['Name']).exists():
+						formula_exist = Formula.objects.get(formula_name=formula_dict['Name'])
+						default_id = formula_exist.id
+					if Formula.objects.filter(id=default_id).exists():
+						formula1 = Formula.objects.get(id=default_id)
+						ingrtoformula1 = Formula_To_Ingredients.objects.filter(formula=formula1.id)
+						for entry in ingrtoformula1:
+							entry.delete()
+						formula1.delete()
+		formula_dictA = {}
+		first = True
+		print('60')
+		for formula_rowA in readers:
+			if first:
+				header = formula_rowA
+				first = False
+				continue
+			else:
+				for idx1, ele1 in enumerate(formula_rowA):
+					print("*********")
+					print(formula_rowA)
+					print(header[idx1])
+					formula_dictA[header[idx1]] = ele1
+					# print(formula_dictA['Name'])
+					print('61')
+					if not formula_dictA['Formula#'] and not Formula.objects.filter(formula_name=formula_dictA['Name']).exists():
+						if not Formula.objects.all():
+							default_idA = 1
+						else:
+							default_idA =  Formula.objects.all().order_by("-id")[0].id + 1
+					elif formula_dictA['Formula#']:
+						print('61')
+						try:
+							int(formula_dictA['Formula#'])
+							print("here")
+						except ValueError:
+							errors.append(formula_dictA['Formula#'] + " is not a number,")
+							print("cont")
+							continue
+						default_idA = int(formula_dictA['Formula#'])
+					elif not formula_dictA['Formula#'] and Formula.objects.filter(formula_name=formula_dictA['Name']).exists():
+						formula_exist = Formula.objects.get(formula_name=formula_dictA['Name'])
+						default_idA = formula_exist.id
+				val_error, val_warning = self.validate_formula(formula_dictA, default_idA)
+				unit_error = self.validate_unit(formula_dictA)
+				# print('666')
 				if val_warning:
 					warnings.append(val_warning)
 				if val_error:
 					errors.append(val_error)
+					print("break")
 					break
 				if not unit_error:
-					errors.append("package size unit incorrect for %s" % formula_dict['Name'])
-					break;
+					errors.append("package size unit incorrect for %s" % formula_dictA['Name'])
+					print('break')
+					break
 				# store formula first if not exist 
-				if not Formula.objects.filter(id=default_id).exists():
+				print('666')
+				if not Formula.objects.filter(id=default_idA).exists():
 					# formula = Formula(formula_name=formula_dict['Name'],
 					# 				  id=formula_dict['Formula#'],
 					# 				  comment=formula_dict['Comment'])
-					serializer = FormulaSerializer(data={'formula_name':formula_dict['Name'],'id':default_id,'comment':formula_dict['Comment']})
+					serializer = FormulaSerializer(data={'formula_name':formula_dictA['Name'],'id':default_idA,'comment':formula_dictA['Comment']})
 					if(serializer.is_valid()):
 						serializer.save()
-				# elif Formula.objects.filter(id=default_id).exists()
-				# 	formula = Formula.objects.get(id=default_id)
-				# 	s = FormulaSerializer(formula)
-				# 	s_data = s.data
-				# 	s_data['formula_name']=formula_dict['Name']
-				# 	serializer = FormulaSerializer(data=s_data)
-				# 	print(serializer.data)
-				# 	if(serializer.is_valid()):
-				# 		first = False
-				# 		serializer.save()
+
 
 				# add to Formula_To_Ingredients table if not exist
-				formula = Formula.objects.get(id=default_id)
-				ingr = Ingredient.objects.get(id=formula_dict['Ingr#'])
+				formula = Formula.objects.get(id=default_idA)
+				ingr = Ingredient.objects.get(id=formula_dictA['Ingr#'])
 				if not Formula_To_Ingredients.objects.filter(formula=formula.id, ig=ingr.id).exists():
-					# formula_to_ingr = Formula_To_Ingredients(
-					# 	formula=formula,
-					# 	ig=ingr,
-					# 	quantity=formula_dict['Quantity'])
-					serializer = IngredientToFormulaSerializer(data={'formula':default_id,'ig':ingr.id,'quantity':formula_dict['Quantity']})
+					serializer = IngredientToFormulaSerializer(data={'formula':default_idA,'ig':ingr.id,'quantity':formula_dictA['Quantity']})
 					# save without commit, as later validation might fail 
 					# print(serializer.is_valid())
 					# print(serializer.data)
@@ -555,25 +632,30 @@ class FormulaImportView(APIView):
 		return '', ''
 
 	# validation conforms to https://piazza.com/class/jpvlvyxg51d1nc?cid=52
-	def validate_formula(self, formula_dict,default_id):
+	def validate_formula(self, formula_dictA,default_idA):
 		error = ''
 		warning = ''
-		if not Ingredient.objects.filter(id=formula_dict['Ingr#']).exists():
-			error = 'No ingredient with id %s,' % formula_dict['Ingr#']
+		print('66')
+		print('77')
+		print(formula_dictA['Ingr#'])
+		if not Ingredient.objects.filter(id=formula_dictA['Ingr#']).exists():
+			error = 'No ingredient with id %s,' % formula_dictA['Ingr#']
+		print('99')
 		# check if formula exist
 		# if formula name exists but a different id, error
-		if Formula.objects.filter(formula_name=formula_dict['Name']).exists():
-			same_name_formua = Formula.objects.get(formula_name=formula_dict['Name'])
-			if same_name_formua.pk != default_id:
-				error = 'Ambiguous record for %s,' % same_name_formua.formula_name
+		if Formula.objects.filter(formula_name=formula_dictA['Name']).exists():
+			same_name_formula = Formula.objects.get(formula_name=formula_dictA['Name'])
+			if same_name_formula.pk != default_idA:
+				error = 'Ambiguous record for %s,' % same_name_formula.formula_name
 			else:
 				# update other fields
-				if same_name_formua.formula_name != formula_dict['Name']:
-					warning = 'Update fields for %s,' % same_name_formua.formula_name
+				if same_name_formula.formula_name != formula_dictA['Name']:
+					warning = 'Update fields for %s,' % same_name_formula.formula_name
 		# if formula id exists but a different name, replace
-		elif Formula.objects.filter(pk=default_id).exists():
+		elif Formula.objects.filter(pk=default_idA).exists():
 				# overwrite existing object
-				warning = 'Overwrite object with id %s,' % str(default_id)
+				warning = 'Overwrite object with id %s,' % str(default_idA)
+		print('88')
 		return error, warning
 
 	def validate_unit(self, formula_dict):
@@ -632,27 +714,29 @@ class ProductLineImportView(APIView):
 	# file sent should be in FormData
 	parser_classes = (MultiPartParser, FormParser)
 	def post(self, request, *args, **kwargs):
-		csv_file = request.data['data']
-		# print(csv_file)
-		directory = os.getcwd()
-		print(directory)
-		# response = HttpResponse(content_type='text/csv')
-		# response['Content-Disposition'] = "attachment; filename=\"product_line.csv\""f
-		csv_file = csv_file.split('\n')
-		headers =csv_file[0].split(',')
-		writer = csv.writer(open(directory+"/output.csv", 'w'))
-		writer.writerow(headers)
-		for i in range(1, len(csv_file)):
-			row = csv_file[i].split(',')
-			writer.writerow(row)
-			# b = bytes(line, 'utf-8')
-		# print(response)
-		errors, warnings = self.save(csv_file)
-		post_result = {'errors': errors, 'warnings': warnings}
-		if errors != []:
-			return Response(post_result, status.HTTP_400_BAD_REQUEST)
-		return Response(post_result, status.HTTP_201_CREATED)
-		
+		try:
+			csv_file = request.data['data']
+			# print(csv_file)
+			directory = os.getcwd()
+			# response = HttpResponse(content_type='text/csv')
+			# response['Content-Disposition'] = "attachment; filename=\"product_line.csv\""f
+			csv_file = csv_file.split('\n')
+			headers =csv_file[0].split(',')
+			writer = csv.writer(open(directory+"/outputpl.csv", 'w'))
+			writer.writerow(headers)
+			for i in range(1, len(csv_file)):
+				row = csv_file[i].split(',')
+				writer.writerow(row)
+				# b = bytes(line, 'utf-8')
+			# print(response)
+			errors, warnings = self.save(csv_file)
+			post_result = {'errors': errors, 'warnings': warnings}
+			if errors != []:
+				return Response(post_result, status.HTTP_400_BAD_REQUEST)
+			return Response(post_result, status.HTTP_201_CREATED)
+		except Exception as e: 
+			return Response(status = status.HTTP_400_BAD_REQUEST)
+
 	@transaction.atomic
 	def save(self, product_line_file):
 		errors = []
@@ -660,7 +744,7 @@ class ProductLineImportView(APIView):
 		# https://docs.djangoproject.com/en/1.9/topics/db/transactions/#savepoint-rollback
 		transaction_savepoint = transaction.savepoint()
 		directory = os.getcwd()
-		with open(directory+"/output.csv") as f:
+		with open(directory+"/outputpl.csv") as f:
 			reader = csv.DictReader(product_line_file)
 			print(reader.fieldnames)
 			header_val_error, _ = self.validate_header(reader.fieldnames)
@@ -693,5 +777,5 @@ class ProductLineImportView(APIView):
 		error = ''
 		warning = ''
 		if Product_Line.objects.filter(product_line_name=product_line_dict['Name']).exists():
-			warning = 'Exsiting product line: %s,' % product_line_dict['Name']
+			error = 'Existing product line: %s,' % product_line_dict['Name']
 		return error, warning

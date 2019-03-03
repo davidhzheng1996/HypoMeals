@@ -50,6 +50,7 @@ var starting = new Vue({
 
         removeGoal: function(goal_name) {
             // remove scheduled skus on Timeline 
+            console.log(goal_name)
             scheduled_goal_items = []
             this.items.forEach((item) => {
                 if(item.goal === goal_name) {
@@ -59,12 +60,29 @@ var starting = new Vue({
             })
             this.items.remove(scheduled_goal_items)
             // remove goal from both scheduled and unscheduled goal list
-            this.unscheduled_goals = this.unscheduled_goals.filter((unscheduled_goal) => {
-                return (!goal_name in unscheduled_goal)
-            })
-            this.scheduled_goals = this.scheduled_goals.filter((scheduled_goal) => {
-                return (!goal_name in scheduled_goal)
-            })
+            var length = this.unscheduled_goals.length-1
+            while(length>=0){
+                if(Object.keys(this.unscheduled_goals[length])[0]==goal_name){
+                    this.unscheduled_goals.splice(length,1)
+                }
+                length = length-1
+            }
+
+            var length = this.scheduled_goals.length-1
+            while(length>=0){
+                if(Object.keys(this.scheduled_goals[length])[0]==goal_name){
+                    this.scheduled_goals.splice(length,1)
+                }
+                length = length-1
+            }
+            // console.log(length)
+            // this.unscheduled_goals = this.unscheduled_goals.filter((unscheduled_goal) => {
+            //     return (!goal_name in unscheduled_goal)
+            // })
+            // console.log(this.unscheduled_goals)
+            // this.scheduled_goals = this.scheduled_goals.filter((scheduled_goal) => {
+            //     return (!goal_name in scheduled_goal)
+            // })
         },
 
         onBlur: function (event) {
