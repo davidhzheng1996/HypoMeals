@@ -99,6 +99,7 @@
                      <input
                         type="text"
                         class="form-control"
+                        accept-charset="ISO-8859-1"
                         placeholder="Enter Sku Name"
                         v-model="newSku.sku_name"
                         required="required" >
@@ -117,6 +118,7 @@
                         id="product_line_search_input"
                         type="text"
                         class="form-control"
+                        accept-charset="ISO-8859-1"
                         placeholder="Enter Sku Productline"
                         v-model="newSku.productline"
                         required="required" 
@@ -192,7 +194,7 @@
                      <label>Manufacturing Setup Cost*</label>
                      <input
                         type="number"
-                        step = "any"
+                        step = "0.01"
                         class="form-control"
                         placeholder="Enter Manufacturing Rate"
                         v-model="newSku.manufacture_setup_cost"
@@ -202,7 +204,7 @@
                      <label>Manufacturing Run Cost*</label>
                      <input
                         type="number"
-                        step = "any"
+                        step = "0.01"
                         class="form-control"
                         placeholder="Enter Manufacturing Rate"
                         v-model="newSku.manufacture_run_cost"
@@ -248,6 +250,7 @@
                      <input
                         type="text"
                         class="form-control"
+                        accept-charset="ISO-8859-1"
                         placeholder="Enter Sku Name"
                         v-model="currentSku.sku_name"
                         required="required" >
@@ -265,6 +268,7 @@
                      <input
                         type="text"
                         class="form-control"
+                        accept-charset="ISO-8859-1"
                         placeholder="Enter Sku Productline"
                         v-model="currentSku.productline"
                         required="required" >
@@ -338,7 +342,7 @@
                      <label>Manufacturing Setup Cost*</label>
                      <input
                         type="number"
-                        step = "any"
+                        step = "0.01"
                         class="form-control"
                         placeholder="Enter Manufacturing Rate"
                         v-model="currentSku.manufacture_setup_cost"
@@ -348,7 +352,7 @@
                      <label>Manufacturing Run Cost*</label>
                      <input
                         type="number"
-                        step = "any"
+                        step = "0.01"
                         class="form-control"
                         placeholder="Enter Manufacturing Rate"
                         v-model="currentSku.manufacture_run_cost"

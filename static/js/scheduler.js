@@ -11,7 +11,7 @@ var starting = new Vue({
         items: new vis.DataSet(),
         search_term: '',
         message: '',
-        report: {'manufacture_line':'', 'start_date':'', 'end_date':''},
+        report: {'manufacture_line':'', 'start_date':'', 'end_date':'',user:''},
     },
     methods: {
         addGoal: function () {
@@ -86,7 +86,8 @@ var starting = new Vue({
             // })
         },
         createReport: function(userid) {
-         this.$http.post('/api/report/'+userid,this.newSku)
+            this.report.user = parseInt(userid)
+         this.$http.post('/api/manufacture_schedule_report/',this.report)
            .then((response) => {
          $("#createReportModal").modal('hide');
          this.loading = false;
@@ -97,8 +98,8 @@ var starting = new Vue({
          console.log(err);
        })
        },
-       viewReport: function(userid){
-        window.location.href = '/report/'+userid
+       viewReport: function(){
+        window.location.href = '/scheduler_report/'
       },
         onBlur: function (event) {
             if (event && this.search_term !== event.target.value)

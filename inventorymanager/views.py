@@ -80,6 +80,10 @@ def manufacture_line(request):
 	return render(request, "manufacture_line.html")
 
 @login_required(login_url='/accounts/login/')
+def scheduler_report(request):
+	return render(request, "manufacture_report.html")
+
+@login_required(login_url='/accounts/login/')
 def goal(request):
 	return render(request, "goal.html")
 

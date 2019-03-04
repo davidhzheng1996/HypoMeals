@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{% static 'css/vis.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/scheduler.css' %}">
 <div id="starting">
+   {% if user.is_superuser %}
 	<h1> Scheduler 
 		<button class="btn btn-success" data-toggle="modal" data-target="#createReportModal">Create Schedule Report</button>
 	</h1>
@@ -93,5 +94,6 @@
    </div>
 
 </div>
+{% endif %}
 <script src="../static/js/scheduler.js"></script>
 {% endblock %}

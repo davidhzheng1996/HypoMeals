@@ -86,7 +86,7 @@ DATABASES = {
         'USER': secrets['default_user'],
         'PASSWORD': secrets['default_password'],
         'HOST': secrets['default_host'],
-        'PORT': os.environ.get("PORT",secrets['default_port'])
+        'PORT': os.environ.get("PORT",secrets['default_port']),
     }
 }
 
