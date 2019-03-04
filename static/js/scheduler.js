@@ -10,7 +10,8 @@ var starting = new Vue({
         // skus
         items: new vis.DataSet(),
         search_term: '',
-        message: ''
+        message: '',
+        report: {'manufacture_line':'', 'start_date':'', 'end_date':''},
     },
     methods: {
         addGoal: function () {
@@ -84,7 +85,21 @@ var starting = new Vue({
             //     return (!goal_name in scheduled_goal)
             // })
         },
-
+        createReport: function(userid) {
+         this.$http.post('/api/report/'+userid,this.newSku)
+           .then((response) => {
+         $("#createReportModal").modal('hide');
+         this.loading = false;
+         this.viewReport();
+         })
+           .catch((err) => {
+         this.loading = false;
+         console.log(err);
+       })
+       },
+       viewReport: function(userid){
+        window.location.href = '/report/'+userid
+      },
         onBlur: function (event) {
             if (event && this.search_term !== event.target.value)
                 this.search_term = event.target.value

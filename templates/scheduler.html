@@ -5,7 +5,10 @@
 <link rel="stylesheet" href="{% static 'css/vis.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/scheduler.css' %}">
 <div id="starting">
-	<h1> Scheduler</h1>
+	<h1> Scheduler 
+		<button class="btn btn-success" data-toggle="modal" data-target="#createReportModal">Create Schedule Report</button>
+	</h1>
+
 	<h3 class="error" v-if="message"> ${message} </h3>
 	<div id="visualization"></div>
 	<div class="row">
@@ -40,6 +43,55 @@
 	   	    </template>
 	    </div>
 	</div>
+
+	<div class="modal fade" id="createReportModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLongTitle">Create Manufacture Schedule Report</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            <form v-on:submit.prevent="createReport('{{user.id}}')">
+               <div class="modal-body">
+                  <div class="form-group">
+                     <label>Manufacturing line*</label>
+                     <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Manufacture Line Name"
+                        v-model="report.manufacture_line"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
+                     <label>Start Date*</label>
+                     <input
+                        type="date"
+                        class="form-control"
+                        placeholder="Enter Start Date"
+                        v-model="report.start_date"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
+                     <label>End Date*</label>
+                     <input
+                        type="date"
+                        class="form-control"
+                        placeholder="Enter End Date"
+                        v-model="report.end_date"
+                        required="required" >
+                  </div>
+               </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Create Report</button>
+               </div>
+            </form>
+         </div>
+      </div>
+   </div>
+
 </div>
 <script src="../static/js/scheduler.js"></script>
 {% endblock %}
