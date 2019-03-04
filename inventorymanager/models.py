@@ -3,25 +3,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 import uuid
 from datetime import date
-from jsonfield import JSONField
-
-# Keep track of sku status on manufacture lines 
-class Manufacture_Line_Skus(models.Model):
-	user = models.ForeignKey(User,on_delete=models.CASCADE)
-	manufacture_line_short_name = models.ForeignKey(Manufacture_line,on_delete=models.CASCADE)
-	sku_id = models.ForeignKey(Sku,on_delete=models.CASCADE)
-	goal_name = models.ForeignKey(Goal, on_delete=models.CASCADE, to_field='goalname')
-	start = models.DateTimeField(auto_now_add=False)
-	end = models.DateTimeField(auto_now_add=False)
-	duration = models.PositiveIntegerField(null=False, default=0) 
-	MONTH_CHOICES = [(str(i), calendar.month_name[i]) for i in range(1,13)]
-	# active if the associated manufacture goal is being scheduled 
-	STATUS_CHOICES = ['active', 'orphaned']
-	status = CharField(max_length=20, choices=STATUS_CHOICES, default='active')
-
-	class Meta:
-		unique_together = (("user","sku_id", 'goal_name'),)
-	
+from jsonfield import JSONField	
 
 # product_line to sku is one to many. Each sku matches to exactly one product line
 class Product_Line(models.Model):
@@ -154,4 +136,18 @@ class Scheduler(models.Model):
 	unscheduled_goals = models.TextField(null=False,default='')
 	manufacturing_lines = models.TextField(null=False,default='')
 		
+# Keep track of sku status on manufacture lines 
+class Manufacture_Line_Skus(models.Model):
+	user = models.ForeignKey(User,on_delete=models.CASCADE)
+	manufacture_line_short_name = models.ForeignKey(Manufacture_line,on_delete=models.CASCADE)
+	sku_id = models.ForeignKey(Sku,on_delete=models.CASCADE)
+	goal_name = models.ForeignKey(Goal, on_delete=models.CASCADE, to_field='goalname')
+	start = models.DateTimeField(auto_now_add=False)
+	end = models.DateTimeField(auto_now_add=False)
+	duration = models.PositiveIntegerField(null=False, default=0) 
+	# # active if the associated manufacture goal is being scheduled 
+	# STATUS_CHOICES = ['active', 'orphaned']
+	# status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
 
+	class Meta:
+		unique_together = (("user","sku_id", 'goal_name'),)

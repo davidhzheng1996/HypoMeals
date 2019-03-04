@@ -176,10 +176,9 @@ def manufacture_schedule_report(request):
             #  }
             result = {'skus': []}
             # schedule_sku_ids could contain duplicated skus 
-            schedule_sku_ids = Manufacture_Line_Skus.objects.filter(user=request_info['user'], 
-                        manufacture_line_short_name=request_info['manufacture_line_short_name'],
-                        Q(start__range=[start_date, end_date]) | Q(end__range=[start_date, end_date]))
-                        .values_list('id', flat=True)
+            schedule_sku_ids = Manufacture_Line_Skus.objects.filter(Q(user=request_info['user']),
+                        Q(manufacture_line_short_name=request_info['manufacture_line_short_name']),
+                        Q(start__range=[start_date, end_date]) | Q(end__range=[start_date, end_date])).values_list('id', flat=True)
             for schedule_sku_id in schedule_sku_ids:
                 schedule_sku = Manufacture_Line_Skus.objects.get(pk=schedule_sku_id)
                 sku_name = Sku.objects.get(pk=schedule_sku.sku_id).sku_name
