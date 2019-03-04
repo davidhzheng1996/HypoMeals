@@ -36,6 +36,8 @@
                   <th v-on:click="sortBy('formula')" scope="col">Formula</th>
                   <th v-on:click="sortBy('formula scale factor')" scope="col">Formula Scale</th>
                   <th v-on:click="sortBy('manufacture_rate')" scope="col">Manufacture Rate</th>
+                  <th v-on:click="sortBy('manufacture_setup_cost')" scope="col">Manufacture Setup Cost</th>
+                  <th v-on:click="sortBy('manufacture_run_cost')" scope="col">Manufacture Run Cost</th>
                   <th scope="col">Actions</th>
                </tr>
             </thead>
@@ -54,6 +56,8 @@
                   <td>${sku.formula}</td>
                   <td>${sku.formula_scale_factor}</td>
                   <td>${sku.manufacture_rate}</td>
+                  <td>${sku.manufacture_setup_cost}</td>
+                  <td>${sku.manufacture_run_cost}</td>
                   <td>
                      <!-- <button class="btn btn-primary" v-on:click="viewIngr(sku.id)">View Ingrs</button> -->
                      <button class="btn btn-primary" v-on:click="viewFormula(sku.formula)">View Formula</button>
@@ -168,6 +172,7 @@
                      <label>Formula Scale Factor*</label>
                      <input
                         type="number"
+                        step = "any"
                         class="form-control"
                         placeholder="Enter Formula Scale Factor"
                         v-model="newSku.formula_scale_factor"
@@ -177,9 +182,30 @@
                      <label>Manufacturing Rate*</label>
                      <input
                         type="number"
+                        step = "any"
                         class="form-control"
                         placeholder="Enter Manufacturing Rate"
                         v-model="newSku.manufacture_rate"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
+                     <label>Manufacturing Setup Cost*</label>
+                     <input
+                        type="number"
+                        step = "any"
+                        class="form-control"
+                        placeholder="Enter Manufacturing Rate"
+                        v-model="newSku.manufacture_setup_cost"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
+                     <label>Manufacturing Run Cost*</label>
+                     <input
+                        type="number"
+                        step = "any"
+                        class="form-control"
+                        placeholder="Enter Manufacturing Rate"
+                        v-model="newSku.manufacture_run_cost"
                         required="required" >
                   </div>
                   <div class="form-group">
@@ -292,6 +318,7 @@
                      <label>Formula Scale Factor*</label>
                      <input
                         type="number"
+                        step = "any"
                         class="form-control"
                         placeholder="Enter Formula Scale Factor"
                         v-model="currentSku.formula_scale_factor"
@@ -301,9 +328,30 @@
                      <label>Manufacturing Rate*</label>
                      <input
                         type="number"
+                        step = "any"
                         class="form-control"
                         placeholder="Enter Manufacturing Rate"
                         v-model="currentSku.manufacture_rate"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
+                     <label>Manufacturing Setup Cost*</label>
+                     <input
+                        type="number"
+                        step = "any"
+                        class="form-control"
+                        placeholder="Enter Manufacturing Rate"
+                        v-model="currentSku.manufacture_setup_cost"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
+                     <label>Manufacturing Run Cost*</label>
+                     <input
+                        type="number"
+                        step = "any"
+                        class="form-control"
+                        placeholder="Enter Manufacturing Rate"
+                        v-model="currentSku.manufacture_run_cost"
                         required="required" >
                   </div>
                   <div class="form-group">

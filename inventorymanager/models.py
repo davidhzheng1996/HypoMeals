@@ -36,6 +36,8 @@ class Sku(models.Model):
 	formula = models.ForeignKey(Formula, on_delete=models.CASCADE, default = 1)
 	formula_scale_factor = models.FloatField(null=False, default=1.0)
 	manufacture_rate = models.FloatField(null=False, default=1.0)
+	manufacture_setup_cost = models.FloatField(null=False, default=1.0)
+	manufacture_run_cost = models.FloatField(null=False, default=1.0)
 
 	def save(self, *args, **kwargs):
 		if self.id == 0:

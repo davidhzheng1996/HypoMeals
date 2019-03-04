@@ -14,7 +14,7 @@ new Vue({
      perPage: 10,
      pages:[],
      newSku: { 'sku_name': '','productline': '', 'id': 0, 'caseupc': 100000000000,'unitupc': 100000000000, 'unit_size': 0, 'count': 0, 'formula':0,
-     'formula_scale_factor':0, 'manufacture_rate':0,'comment': null},
+     'formula_scale_factor':0, 'manufacture_rate':0,'manufacture_setup_cost':0,'manufacture_run_cost':0,'comment': null},
      skuFile: null,
      formulaFile: null,
      has_paginated:false,
@@ -33,6 +33,8 @@ new Vue({
             {'formula': true},
             {'formula_scale_factor': true},
             {'manufacture_rate': true},
+            {'manufacture_setup_cost': true},
+            {'manufacture_run_cost': true},
           ],
       upload_errors: '',
       // [['ml_short_name': ml_short_name, 'ml_name': ml_name, 'comment': comment, 'all_active': bool, 'part_active': bool] x num_ml]
