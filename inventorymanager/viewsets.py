@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.middleware.csrf import CsrfViewMiddleware, get_token
 from django.test import Client
 from django.contrib.auth.models import User
+import datetime
 import math
 
 import requests
@@ -152,6 +153,61 @@ class ProductLineViewSet(viewsets.ModelViewSet):
         return queryset
 
 # Begin Explicit APIs
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+# return a report on manufacture status
+def manufacture_schedule_report(request):
+    if(request.method=='POST'):
+        try: 
+            # {'user': user, 'manufacture_line_short_name': ml, 'start_date': start_date, 'end_date': end_date}
+            request_info = request.data
+            # TODO: parse start and end date
+            start_date = request_info['start_date']
+            end_date = request_info['end_date']
+            # {'skus': [
+            # {'sku_name': sku_name, 
+            # 'case_quantity': quantity, 
+            # 'start': start, 
+            # 'end' : end, 
+            # 'duration': duration, 
+            # 'ingredient_info': ['ingr_name': name, 'ingr_quantity': qty]},
+            #  {}
+            #  ]
+            #  }
+            result = {'skus': []}
+            # schedule_sku_ids could contain duplicated skus 
+            schedule_sku_ids = Manufacture_Line_Skus.objects.filter(user=request_info['user'], 
+                        manufacture_line_short_name=request_info['manufacture_line_short_name'],
+                        Q(start__range=[start_date, end_date]) | Q(end__range=[start_date, end_date]))
+                        .values_list('id', flat=True)
+            for schedule_sku_id in schedule_sku_ids:
+                schedule_sku = Manufacture_Line_Skus.objects.get(pk=schedule_sku_id)
+                sku_name = Sku.objects.get(pk=schedule_sku.sku_id).sku_name
+                case_quantity = Manufacture_Goal.objects.get(sku=schedule_sku.id, name=schedule_sku.goal_name).desired_quantity
+                start = schedule_sku.start
+                end = schedule_sku.end
+                duration = schedule_sku.duration
+                ingredient_info = []
+                sku2ingrs = Sku_To_Ingredient.objects.filter(sku=schedule_sku.sku_id)
+                for sku2ingr in sku2ingrs:
+                    ingr_name = Ingredient.objects.get(pk=sku2ingr.ig).ingredient_name
+                    ingredient_info.append({
+                        'ingr_name': ingr_name,
+                        'ingr_quantity': sku2ingr.quantity
+                    })
+                sku_info = {
+                    'sku_name': sku_name,
+                    'case_quantity': case_quantity,
+                    'start': start,
+                    'end': end,
+                    'duration': duration,
+                    'ingredient_info': ingredient_info
+                }
+                result['sku'].append(sku_info)
+            return Response(result,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])
 # return list of all manufacturing lines with status 

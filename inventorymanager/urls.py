@@ -58,5 +58,6 @@ urlpatterns = [
     path('api/bulk_match_manufacturing_lines/', viewsets.bulk_match_manufacturing_lines),
     path('api/save_scheduler',viewsets.save_scheduler),
     path('api/get_scheduler',viewsets.get_scheduler),
-    path('api/mg_to_skus/<str:goal_name>', viewsets.mg_to_skus)
+    path('api/mg_to_skus/<str:goal_name>', viewsets.mg_to_skus),
+    path('api/manufacture_schedule_report', viewsets.manufacture_schedule_report)
 ]
