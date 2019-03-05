@@ -13,14 +13,18 @@
             <p class="error" v-if="upload_errors">${ upload_errors }</p>
             {% endif %}
             <button class="btn btn-success" type="submit" @click="exportSkuCSV">Export Sku</button>
+            <button class="btn btn-success" type="submit" @click="disablePage">Full Listing</button>
             <!-- <button class="btn btn-success" type="submit" @click="exportFormula()">Export Formulas</button> -->
          </h1>
          <div class="form-inline my-2 my-lg-0">
             <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" autocomplete="on" aria-label="Search" @blur="onBlur">
             <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getSkus()">Search</button>
         </div>
-        <div class="form-inline my-2 my-lg-0">
+        <div class="form-inline my-2 ml-2 mr-2 my-lg-0">
                         <button class="btn btn-success" data-toggle="modal" data-target="#updateMLModal" v-on:click.prevent="getManufactureLines()">View Manufacturing Lines</button>
+                  </div>
+         <div class="form-inline my-2 ml-2 mr-2 my-lg-0">
+                                    <button class="btn btn-success" type="submit" @click="disablePage">See Full Listing</button>
                   </div>
          <table class="table">
             <thead>
@@ -34,10 +38,6 @@
                   <th v-on:click="sortBy('unit_size')" scope="col">Unit Size</th>
                   <th v-on:click="sortBy('count')" scope="col">Count</th>
                   <th v-on:click="sortBy('formula')" scope="col">Formula</th>
-                  <th v-on:click="sortBy('formula scale factor')" scope="col">Formula Scale</th>
-                  <th v-on:click="sortBy('manufacture_rate')" scope="col">Manufacture Rate</th>
-                  <th v-on:click="sortBy('manufacture_setup_cost')" scope="col">Manufacture Setup Cost</th>
-                  <th v-on:click="sortBy('manufacture_run_cost')" scope="col">Manufacture Run Cost</th>
                   <th scope="col">Actions</th>
                </tr>
             </thead>
@@ -54,10 +54,6 @@
                   <td>${sku.unit_size}</td>
                   <td>${sku.count}</td>
                   <td>${sku.formula}</td>
-                  <td>${sku.formula_scale_factor}</td>
-                  <td>${sku.manufacture_rate}</td>
-                  <td>${sku.manufacture_setup_cost}</td>
-                  <td>${sku.manufacture_run_cost}</td>
                   <td>
                      <!-- <button class="btn btn-primary" v-on:click="viewIngr(sku.id)">View Ingrs</button> -->
                      <button class="btn btn-primary" v-on:click="viewFormula(sku.formula)">View Formula</button>
@@ -70,7 +66,7 @@
             </tbody>
          </table>
       </div>
-      <div class="clearfix btn-group col-md-2 offset-md-5">
+      <div id = "pagination" class="clearfix btn-group col-md-2 offset-md-5">
             <button type="button" class="btn btn-sm btn-outline-secondary" v-if="page != 1" @click="page--"> << </button>
             <!-- <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> ${pageNumber} </button> -->
             <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>

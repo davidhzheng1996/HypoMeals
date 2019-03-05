@@ -19,6 +19,7 @@ new Vue({
      formulaFile: null,
      has_paginated:false,
      csv_uploaded:false,
+     disable_paginate: false,
      search_term: '',
      search_input: '',
      sortKey: 'sku_name',
@@ -364,6 +365,10 @@ new Vue({
             console.log(err);
         })
       },
+
+      disablePage: function(){
+        this.disable_paginate = true;
+      },
    
       ml_checkbox_click: function(ev, ml) {
         ml['part_active'] = false;
@@ -373,7 +378,16 @@ new Vue({
 
   computed: {
     displayedSkus () {
-      return this.paginate(this.skus);
+      var x = document.getElementById("pagination");
+      if(this.disable_paginate){
+        // var x = document.getElementById("pagination");
+        console.log(x)
+        x.style.display = "none";
+        return this.skus;
+      } else{
+         x.style.display = "block";
+         return this.paginate(this.skus);
+    }
     }
   },
 

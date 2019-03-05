@@ -92,7 +92,7 @@ class Sku_To_Ingredient(models.Model):
 		unique_together = (("sku","ig"),)
 
 class Customer(models.Model):
-	name = models.CharField(max_length=128)
+	name = models.CharField(max_length=128, unique = True)
 
 class Sku_To_Customer(models.Model):
 	id = models.BigIntegerField(primary_key=True, null=False)
@@ -101,6 +101,14 @@ class Sku_To_Customer(models.Model):
 
 	class Meta:
 		unique_together = (("sku","customer"),)
+
+class Sale_Record(models.Model):
+	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
+	sale_date = models.DateField(default=date.today, null=False, editable=True)
+	customer_id = models.ForeignKey(Customer,on_delete=models.CASCADE)
+	customer_name = models.CharField(max_length=128,unique=True,null=False,default='')
+	sales = models.PositiveIntegerField()
+	price_per_case = models.DecimalField(null=False,max_digits=12, decimal_places=2, default=1.0)
 
 class Manufacture_Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
