@@ -16,6 +16,7 @@ new Vue({
     search_input: '',
     has_paginated: false,
     csv_uploaded: false,
+    disable_paginate: false,
     // sorting variables
     sortKey: 'ingredient_name',
     sortAsc: [
@@ -359,11 +360,22 @@ new Vue({
       }
     },
 
+    disablePage: function(){
+        this.disable_paginate = true;
+      },
+
   },
 
   computed: {
     displayedIngredients() {
-      return this.paginate(this.ingredients);
+      var x = document.getElementById("pagination");
+      if(this.disable_paginate){
+          x.style.display = "none";
+        return this.ingredients;
+      } else{
+        x.style.display = "block";
+         return this.paginate(this.ingredients);
+    }
     }
   },
 

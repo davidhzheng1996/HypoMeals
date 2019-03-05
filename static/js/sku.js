@@ -167,7 +167,7 @@ new Vue({
         }
       },
       viewFormula: function(formulaid){
-        window.location.href = '/sku/'+formulaid
+        window.location.href = '/formula/'+formulaid
       },
       viewIngr: function(skuid){
         window.location.href = '/get_sku/'+skuid
@@ -380,8 +380,6 @@ new Vue({
     displayedSkus () {
       var x = document.getElementById("pagination");
       if(this.disable_paginate){
-        // var x = document.getElementById("pagination");
-        console.log(x)
         x.style.display = "none";
         return this.skus;
       } else{
