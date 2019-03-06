@@ -3,11 +3,14 @@
 <div id="starting">
    <div class="container">
       <div class="row">
-         <h1>Ingredients for this Formula
+         <h1>Ingredients for this Formula 
             {% if user.is_superuser %}
             <button class="btn btn-success" data-toggle="modal" data-target="#addIngredientModal">Add Ingredients</button>
             {% endif %}
          </h1>
+         <div class="form-inline my-2 ml-2 mr-2 my-lg-0">
+                                    <button class="btn btn-success" type="submit" @click="disablePage">See Full Listing</button>
+                  </div>
          <table class="table">
             <thead>
                <tr>
@@ -29,7 +32,7 @@
             </tbody>
          </table>
       </div>
-      <div class="clearfix btn-group col-md-2 offset-md-5">
+      <div id = "pagination" class="clearfix btn-group col-md-2 offset-md-5">
             <button type="button" class="btn btn-sm btn-outline-secondary" v-if="page != 1" @click="page--"> << </button>
             <!-- <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> ${pageNumber} </button> -->
             <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>
@@ -57,6 +60,7 @@
                         type="text"
                         id="search_input"
                         class="form-control"
+                        accept-charset="ISO-8859-1"
                         placeholder="Enter Ingredient Name"
                         v-model="newIngredient.ingredient_name"
                         required="required"
@@ -100,6 +104,7 @@
                      <input
                         type="text"
                         class="form-control"
+                        accept-charset="ISO-8859-1"
                         placeholder="Enter Ingredient Name"
                         v-model="currentIngredient.ingredient_name"
                         readonly >

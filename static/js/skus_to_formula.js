@@ -57,6 +57,9 @@ var vm = new Vue({
       let to = (page * perPage);
       return  skus.slice(from, to);
     },
+    disablePage: function(){
+        this.disable_paginate = true;
+      },
     sortBy: function(key) {
         this.sortKey = key
         this.sortAsc[key] = !this.sortAsc[key]
@@ -69,7 +72,14 @@ var vm = new Vue({
    },
    computed: {
     displayedSkus () {
-      return this.paginate(this.skus);
+      var x = document.getElementById("pagination");
+      if(this.disable_paginate){
+          x.style.display = "none";
+        return this.skus;
+      } else{
+        x.style.display = "block";
+         return this.paginate(this.skus);
+    }
     }
   },
    });

@@ -36,14 +36,16 @@ class Sku(models.Model):
 	formula = models.ForeignKey(Formula, on_delete=models.CASCADE, default = 1)
 	formula_scale_factor = models.FloatField(null=False, default=1.0)
 	manufacture_rate = models.FloatField(null=False, default=1.0)
+	manufacture_setup_cost = models.DecimalField(null=False, decimal_places=2, max_digits=32, default=1.0)
+	manufacture_run_cost = models.DecimalField(null=False, decimal_places=2, max_digits=32, default=1.0)
 
-	def save(self, *args, **kwargs):
-		if self.id == 0:
-			if not self.__class__.objects.all():
-				self.id = 1
-			else:
-				self.id =  self.__class__.objects.all().order_by("-id")[0].id + 1
-		super(self.__class__, self).save(*args, **kwargs)
+	# def save(self, *args, **kwargs):
+	# 	if self.id == 0:
+	# 		if not self.__class__.objects.all():
+	# 			self.id = 1
+	# 		else:
+	# 			self.id =  self.__class__.objects.all().order_by("-id")[0].id + 1
+	# 	super(self.__class__, self).save(*args, **kwargs)
 
 class Ingredient(models.Model):
 	id = models.BigIntegerField(primary_key=True)
@@ -53,13 +55,16 @@ class Ingredient(models.Model):
 	cpp = models.FloatField(null=True)
 	comment = models.TextField(null=True, blank = True)
 
-	def save(self, *args, **kwargs):
-		if self.id == 0:
-			if not self.__class__.objects.all():
-				self.id = 1
-			else:
-				self.id =  self.__class__.objects.all().order_by("-id")[0].id + 1
-		super(self.__class__, self).save(*args, **kwargs)
+	# def __unicode__(self):
+ #        return u'%s %s' % (self.first_name, self.last_name)
+
+	# def save(self, *args, **kwargs):
+	# 	if self.id == 0:
+	# 		if not self.__class__.objects.all():
+	# 			self.id = 1
+	# 		else:
+	# 			self.id =  self.__class__.objects.all().order_by("-id")[0].id + 1
+	# 	super(self.__class__, self).save(*args, **kwargs)
 
 class Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -87,7 +92,7 @@ class Sku_To_Ingredient(models.Model):
 		unique_together = (("sku","ig"),)
 
 class Customer(models.Model):
-	name = models.CharField(max_length=128)
+	name = models.CharField(max_length=128, unique = True)
 
 class Sku_To_Customer(models.Model):
 	id = models.BigIntegerField(primary_key=True, null=False)
@@ -96,6 +101,14 @@ class Sku_To_Customer(models.Model):
 
 	class Meta:
 		unique_together = (("sku","customer"),)
+
+class Sale_Record(models.Model):
+	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
+	sale_date = models.DateField(default=date.today, null=False, editable=True)
+	customer_id = models.ForeignKey(Customer,on_delete=models.CASCADE)
+	customer_name = models.CharField(max_length=128,unique=True,null=False,default='')
+	sales = models.PositiveIntegerField()
+	price_per_case = models.DecimalField(null=False,max_digits=12, decimal_places=2, default=1.0)
 
 class Manufacture_Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)

@@ -156,7 +156,7 @@ class ProductLineViewSet(viewsets.ModelViewSet):
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])
 # return a report on manufacture status
-def manufacture_schedule_report(request):
+def manufacture_schedule_report(request, userid):
     if(request.method=='POST'):
         try: 
             # {'user': user, 'manufacture_line_short_name': ml, 'start_date': start_date, 'end_date': end_date}
@@ -181,18 +181,19 @@ def manufacture_schedule_report(request):
                         Q(start__range=[start_date, end_date]) | Q(end__range=[start_date, end_date])).values_list('id', flat=True)
             for schedule_sku_id in schedule_sku_ids:
                 schedule_sku = Manufacture_Line_Skus.objects.get(pk=schedule_sku_id)
-                sku_name = Sku.objects.get(pk=schedule_sku.sku_id).sku_name
+                sku = Sku.objects.get(pk=schedule_sku.sku_id)
+                sku_name=sku.sku_name
                 case_quantity = Manufacture_Goal.objects.get(sku=schedule_sku.id, name=schedule_sku.goal_name).desired_quantity
                 start = schedule_sku.start
                 end = schedule_sku.end
                 duration = schedule_sku.duration
                 ingredient_info = []
-                sku2ingrs = Sku_To_Ingredient.objects.filter(sku=schedule_sku.sku_id)
+                sku2ingrs = Formula_To_Ingredients.objects.filter(formula=sku.formula)
                 for sku2ingr in sku2ingrs:
-                    ingr_name = Ingredient.objects.get(pk=sku2ingr.ig).ingredient_name
+                    ingr_name = Ingredient.objects.get(pk=sku2ingr.ig.id).ingredient_name
                     ingredient_info.append({
                         'ingr_name': ingr_name,
-                        'ingr_quantity': sku2ingr.quantity
+                        'ingr_quantity': float(sku2ingr.quantity)*sku.formula_scale_factor
                     })
                 sku_info = {
                     'sku_name': sku_name,
@@ -557,9 +558,42 @@ def delete_ingredients_to_formula(request,formula,ig):
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])
 def update_ingredients_to_formula(request,formula,ig):
+    def validate_unit(ingredient_quantity_unit, quantity_unit):
+        mass = ['lb', 'pound', 'oz', 'ounce', 'ton', 'g', 'gram', 'kg', 'kilogram']
+        volume = ['floz', 'fluidounce', 'pt', 'pint', 'qt', 'quart', 'gal', 'gallon', 'ml', 'milliliter', 'l', 'liter']
+        count = ['ct', 'count']
+        if ingredient_quantity_unit in mass and quantity_unit in mass:
+            return True;
+        
+        if ingredient_quantity_unit in volume and quantity_unit in volume:
+            return True
+
+        if ingredient_quantity_unit in count and quantity_unit in count:
+            return True
+
+        return False
+    
     if(request.method == 'POST'):
         try: 
+            errors = []
+            formula = Formula.objects.get(id=formula)
+            ingredient = Ingredient.objects.get(id=ig)
+            ingredient_quantity = ingredient.package_size
+            quantity = request.data['quantity']
+            ingredient_quantity_unit = re.sub(r'\d*\.?\d+', '', ingredient_quantity)
+            ingredient_quantity_unit = ingredient_quantity_unit.replace(' ', '').replace('.','').lower()
+            if(ingredient_quantity_unit[len(ingredient_quantity_unit)-1]=='s'):
+               ingredient_quantity_unit = ingredient_quantity_unit[:-1]
+            quantity_unit = re.sub(r'\d*\.?\d+', '', quantity)
+            quantity_unit = quantity_unit.replace(' ', '').replace('.','').lower()
+            if(quantity_unit[len(quantity_unit)-1]=='s'):
+                quantity_unit = quantity_unit[:-1]
+            if not validate_unit(ingredient_quantity_unit, quantity_unit):
+                errors.append('unit not compatible for %s' % ingredient.ingredient_name)
+                post_result = {'errors': errors}
+                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
             relation = Formula_To_Ingredients.objects.get(formula = formula, ig=ig)
+            quantity = request.data['quantity']
             serializer = IngredientToFormulaSerializer(relation,{'quantity':request.data['quantity']},partial=True)
             if(serializer.is_valid()):
                 serializer.save()

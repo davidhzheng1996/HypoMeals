@@ -21,6 +21,7 @@ urlpatterns = [
     path('show_formula/<int:formulaid>',views.skus_to_formula),
     path('ingredient/<int:ingredientid>',views.skus_to_ingredient),
     path('scheduler',views.scheduler),
+    path('scheduler_report',views.scheduler_report),
     path('calculate_goal/<int:goalid>',views.calculate_goal),
     # ingredient file upload endpoint
     # TODO how to integrate this with router's url patterns?
@@ -59,5 +60,5 @@ urlpatterns = [
     path('api/save_scheduler',viewsets.save_scheduler),
     path('api/get_scheduler',viewsets.get_scheduler),
     path('api/mg_to_skus/<str:goal_name>', viewsets.mg_to_skus),
-    path('api/manufacture_schedule_report', viewsets.manufacture_schedule_report)
+    path('api/manufacture_schedule_report/', viewsets.manufacture_schedule_report)
 ]
