@@ -15,7 +15,7 @@
          </h1>
          <div class="form-inline my-2 my-lg-0">
             <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" autocomplete="on" v-model="search_term"  aria-label="Search" @blur="onBlur">
-            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="search_input_changed()">Search</button>
+            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="search_input_changed()" title="To search by multiple ingredients, separate each ingredient by comma. E.g. 'lettuce,tomato'">Search</button>
         </div>
          <table class="table">
             <thead>

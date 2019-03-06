@@ -1,4 +1,4 @@
 SKU#,Name,Case UPC,Unit UPC,Unit size,Count per case,PL Name,Formula#,Formula factor,ML Shortnames,Rate,Comment
-,salad,001738949937,001738949937,3 pounds,2,test,1,2.0,"BMP14,fd",3.0,makes you slim
-15,test,100000000008,100000000008,2,24,test,1,4,"BMP14,fd",8,
-16,chocolate,709942848571,709942848571,3 oz,2,test,1,2.0,"BMP14",3.0,makes you slim
+,salad,042272010264,001738949937,3 pounds,2,test,3001,2.0,MP2,3.0,makes you slim
+15,test,100000000008,100000000008,2,24,test,3001,4,MP1,8,
+16,chocolate,709942848571,709942848571,3 oz,2,test,3001,2.0,MP1,3.0,makes you slim

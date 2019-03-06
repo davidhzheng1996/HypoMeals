@@ -17,7 +17,7 @@
          </h1>
          <div class="form-inline my-2 my-lg-0">
             <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" autocomplete="on" aria-label="Search" @blur="onBlur">
-            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getSkus()">Search</button>
+            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getSkus()" title="To search by multiple Skus, separate each ingredient by comma. E.g. 'burger,coke'">Search</button>
         </div>
         <div class="form-inline my-2 my-lg-0">
                         <button class="btn btn-success" data-toggle="modal" data-target="#updateMLModal" v-on:click.prevent="getManufactureLines()">View Manufacturing Lines</button>
