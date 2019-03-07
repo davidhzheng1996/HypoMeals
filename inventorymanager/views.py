@@ -358,7 +358,8 @@ class SkuImportView(APIView):
 				product_line = Product_Line.objects.get(product_line_name=sku_dict['PL Name'])
 				formula = Formula.objects.get(id=int(sku_dict['Formula#']))
 				if not Sku.objects.filter(id=default_id).exists():
-					serializer = SkuSerializer(data={'id':default_id,'productline':product_line.product_line_name,'caseupc':sku_dict['Case UPC'],'unitupc':sku_dict['Unit UPC'],'sku_name':sku_dict['Name'],'count':sku_dict['Count per case'],'unit_size':sku_dict['Unit size'],'formula':formula.id,'formula_scale_factor':sku_dict['Formula factor'],'manufacture_rate':sku_dict['Rate'],'comment':sku_dict['Comment']})
+					serializer = SkuSerializer(data={'id':default_id,'productline':product_line.product_line_name,'caseupc':sku_dict['Case UPC'],'unitupc':sku_dict['Unit UPC'],'sku_name':sku_dict['Name'],'count':sku_dict['Count per case'],'unit_size':sku_dict['Unit size'],'formula':formula.id,'formula_scale_factor':sku_dict['Formula factor'],'manufacture_rate':sku_dict['Rate'],
+						'manufacture_setup_cost':sku_dict['Mfg setup cost'], 'manufacture_run_cost':sku_dict['Mfg run cost'],'comment':sku_dict['Comment']})
 					if serializer.is_valid():
 						serializer.save()
 					else:
@@ -382,6 +383,8 @@ class SkuImportView(APIView):
 					s_data['formula']=formula.id
 					s_data['formula_scale_factor']=sku_dict['Formula factor']
 					s_data['manufacture_rate']=sku_dict['Rate']
+					s_data['manufacture_setup_cost']=sku_dict['Mfg setup cost']
+					s_data['manufacture_run_cost']=sku_dict['Mfg run cost']
 					s_data['comment']=sku_dict['Comment']
 					serializer = SkuSerializer(data=s_data)
 					# print(serializer)
@@ -410,7 +413,7 @@ class SkuImportView(APIView):
 		return errors, warnings
 
 	def validate_header(self, headers):
-		if headers != ['SKU#','Name','Case UPC','Unit UPC','Unit size','Count per case','PL Name','Formula#','Formula factor', 'ML Shortnames', 'Rate','Comment']:
+		if headers != ['SKU#','Name','Case UPC','Unit UPC','Unit size','Count per case','PL Name','Formula#','Formula factor', 'ML Shortnames', 'Rate', 'Mfg setup cost', 'Mfg run cost','Comment']:
 			return 'File headers not compliant to standard', ''
 		return '', ''
 
