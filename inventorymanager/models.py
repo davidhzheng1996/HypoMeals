@@ -39,13 +39,13 @@ class Sku(models.Model):
 	manufacture_setup_cost = models.DecimalField(null=False, decimal_places=2, max_digits=32, default=1.0)
 	manufacture_run_cost = models.DecimalField(null=False, decimal_places=2, max_digits=32, default=1.0)
 
-	# def save(self, *args, **kwargs):
-	# 	if self.id == 0:
-	# 		if not self.__class__.objects.all():
-	# 			self.id = 1
-	# 		else:
-	# 			self.id =  self.__class__.objects.all().order_by("-id")[0].id + 1
-	# 	super(self.__class__, self).save(*args, **kwargs)
+	def save(self, *args, **kwargs):
+		if self.id == 0:
+			if not self.__class__.objects.all():
+				self.id = 1
+			else:
+				self.id =  self.__class__.objects.all().order_by("-id")[0].id + 1
+		super(self.__class__, self).save(*args, **kwargs)
 
 class Ingredient(models.Model):
 	id = models.BigIntegerField(primary_key=True)
@@ -58,13 +58,13 @@ class Ingredient(models.Model):
 	# def __unicode__(self):
  #        return u'%s %s' % (self.first_name, self.last_name)
 
-	# def save(self, *args, **kwargs):
-	# 	if self.id == 0:
-	# 		if not self.__class__.objects.all():
-	# 			self.id = 1
-	# 		else:
-	# 			self.id =  self.__class__.objects.all().order_by("-id")[0].id + 1
-	# 	super(self.__class__, self).save(*args, **kwargs)
+	def save(self, *args, **kwargs):
+		if self.id == 0:
+			if not self.__class__.objects.all():
+				self.id = 1
+			else:
+				self.id =  self.__class__.objects.all().order_by("-id")[0].id + 1
+		super(self.__class__, self).save(*args, **kwargs)
 
 class Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)

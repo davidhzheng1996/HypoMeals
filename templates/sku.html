@@ -167,6 +167,15 @@
                         required="required" >
                   </div>
                   <div class="form-group">
+                     <label>Formula Name*</label>
+                     <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Formula Name"
+                        v-model="newSku.formula_name"
+                        required="required" >
+                  </div>
+                  <div class="form-group">
                      <label>Formula Scale Factor*</label>
                      <input
                         type="number"
@@ -314,6 +323,14 @@
                         v-model="currentSku.formula"
                         required="required" >
                   </div>
+                  <!-- <div class="form-group">
+                     <label>Formula Name</label>
+                     <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Enter Formula Name"
+                        v-model="currentSku.formula_name" >
+                  </div> -->
                   <div class="form-group">
                      <label>Formula Scale Factor*</label>
                      <input

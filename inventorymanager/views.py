@@ -362,7 +362,8 @@ class SkuImportView(APIView):
 					if serializer.is_valid():
 						serializer.save()
 					else:
-						errors.append(serializer.errors['caseupc'])
+						for error in serializer.errors.values():
+							errors.append(error)
 						break
 				else:
 					sku = Sku.objects.get(id=default_id)
@@ -572,7 +573,7 @@ class FormulaImportView(APIView):
 						formula1.delete()
 		formula_dictA = {}
 		first = True
-		print('60')
+		# print('60')
 		for formula_rowA in readers:
 			if first:
 				header = formula_rowA
@@ -580,9 +581,9 @@ class FormulaImportView(APIView):
 				continue
 			else:
 				for idx1, ele1 in enumerate(formula_rowA):
-					print("*********")
-					print(formula_rowA)
-					print(header[idx1])
+					# print("*********")
+					# print(formula_rowA)
+					# print(header[idx1])
 					formula_dictA[header[idx1]] = ele1
 					# print(formula_dictA['Name'])
 					print('61')
@@ -592,13 +593,13 @@ class FormulaImportView(APIView):
 						else:
 							default_idA =  Formula.objects.all().order_by("-id")[0].id + 1
 					elif formula_dictA['Formula#']:
-						print('61')
+						# print('61')
 						try:
 							int(formula_dictA['Formula#'])
-							print("here")
+							# print("here")
 						except ValueError:
 							errors.append(formula_dictA['Formula#'] + " is not a number,")
-							print("cont")
+							# print("cont")
 							continue
 						default_idA = int(formula_dictA['Formula#'])
 					elif not formula_dictA['Formula#'] and Formula.objects.filter(formula_name=formula_dictA['Name']).exists():
@@ -611,14 +612,14 @@ class FormulaImportView(APIView):
 					warnings.append(val_warning)
 				if val_error:
 					errors.append(val_error)
-					print("break")
+					# print("break")
 					break
 				if not unit_error:
 					errors.append("package size unit incorrect for %s" % formula_dictA['Name'])
-					print('break')
+					# print('break')
 					break
 				# store formula first if not exist 
-				print('666')
+				# print('666')
 				if not Formula.objects.filter(id=default_idA).exists():
 					# formula = Formula(formula_name=formula_dict['Name'],
 					# 				  id=formula_dict['Formula#'],

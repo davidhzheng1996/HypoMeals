@@ -2,6 +2,7 @@ from rest_framework import viewsets, filters
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.viewsets import ViewSetMixin
 from .models import *
 from .serializers import *
 from django.contrib.auth.decorators import login_required
@@ -9,6 +10,7 @@ from django.db.models import Q
 from django.middleware.csrf import CsrfViewMiddleware, get_token
 from django.test import Client
 from django.contrib.auth.models import User
+from django.db import transaction
 import datetime
 import math
 
@@ -26,6 +28,147 @@ class SkuViewSet(viewsets.ModelViewSet):
     serializer_class = SkuSerializer
 
     # GET override
+    @transaction.atomic
+    def create(self, request, *args, **kwargs): #override post
+        try:
+            errors = []
+            transaction_savepoint = transaction.savepoint()
+            post_data = request.data
+            sku_id = post_data['id']
+            sku_name = post_data['sku_name']
+            caseupc = post_data['caseupc']
+            unitupc = post_data['unitupc']
+            count = post_data['count']
+            unit_size = post_data['unit_size']
+            productline = post_data['productline']
+            formula_id = post_data['formula']
+            formula_name = post_data['formula_name']
+            formula_scale_factor = post_data['formula_scale_factor']
+            manufacture_rate = post_data['manufacture_rate']
+            manufacture_setup = post_data['manufacture_setup_cost']
+            manufacture_run = post_data['manufacture_run_cost']
+            comment = post_data['comment']
+
+            if Formula.objects.filter(id=formula_id).exists():
+                formula = Formula.objects.get(id=formula_id)
+                f = FormulaSerializer(formula)
+                f_data = f.data
+                formula.delete()
+                f_data['formula_name']=formula_name
+                serializer = FormulaSerializer(data=f_data)
+                if(serializer.is_valid()):
+                    serializer.save()
+                else:
+                    for error in serializer.errors.values():
+                        errors.append(error)
+            else:
+                serializer = FormulaSerializer(data={'formula_name':formula_name,'id':formula_id,'comment':comment})
+                if(serializer.is_valid()):
+                    serializer.save()
+                else:
+                    for error in serializer.errors.values():
+                        errors.append(error)
+
+            sku_serializer = SkuSerializer(data={'id':sku_id,'productline':productline,'caseupc':caseupc,'unitupc':unitupc,'sku_name':sku_name,'count':count,'unit_size':unit_size,'formula':formula_id,'formula_scale_factor':formula_scale_factor,'manufacture_rate':manufacture_rate,
+                'manufacture_setup_cost': manufacture_setup, 'manufacture_run_cost': manufacture_run,'comment':comment})
+            if(sku_serializer.is_valid()):
+                # print(sku_serializer.data)
+                sku_serializer.save()
+                # return Response(sku_serializer.data,status = status.HTTP_201_CREATED)
+            else:
+                for error in sku_serializer.errors.values():
+                    errors.append(error)
+            if errors != []:
+                transaction.savepoint_rollback(transaction_savepoint)
+                return Response(errors,status = status.HTTP_400_BAD_REQUEST)
+            transaction.savepoint_commit(transaction_savepoint)
+            return Response(sku_serializer.data,status = status.HTTP_201_CREATED)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+    # @transaction.atomic
+    # def update(self, request, *args, **kwargs):
+    #     try:
+    #         errors = []
+    #         transaction_savepoint = transaction.savepoint()
+    #         post_data = request.data
+    #         sku_id = post_data['id']
+    #         sku_name = post_data['sku_name']
+    #         caseupc = post_data['caseupc']
+    #         unitupc = post_data['unitupc']
+    #         count = post_data['count']
+    #         unit_size = post_data['unit_size']
+    #         productline = post_data['productline']
+    #         formula_id = post_data['formula']
+    #         if post_data['formula_name']:
+    #             formula_name = post_data['formula_name']
+    #         formula_scale_factor = post_data['formula_scale_factor']
+    #         manufacture_rate = post_data['manufacture_rate']
+    #         manufacture_setup = post_data['manufacture_setup_cost']
+    #         manufacture_run = post_data['manufacture_run_cost']
+    #         comment = post_data['comment']
+    #         print(sku_id)
+
+    #         if Formula.objects.filter(id=formula_id).exists():
+    #             formula = Formula.objects.get(id=formula_id)
+    #             f = FormulaSerializer(formula)
+    #             f_data = f.data
+    #             formula.delete()
+    #             if formula_name:
+    #                 f_data['formula_name']=formula_name
+    #             serializer = FormulaSerializer(data=f_data)
+    #             if(serializer.is_valid()):
+    #                 serializer.save()
+    #             else:
+    #                 for error in serializer.errors.values():
+    #                     errors.append(error)
+    #         else:
+    #             serializer = FormulaSerializer(data={'formula_name':formula_name,'id':formula_id,'comment':comment})
+    #             if(serializer.is_valid()):
+    #                 serializer.save()
+    #             else:
+    #                 for error in serializer.errors.values():
+    #                     errors.append(error)
+    #         print('66')
+    #         sku = Sku.objects.get(id=sku_id)
+    #         print(sku)
+    #         s = SkuSerializer(sku)
+    #         s_data = s.data
+    #         print(s_data)
+    #         print('66')
+    #         sku.delete()
+    #         print('66')
+    #         s_data['sku_name']=sku_name
+    #         s_data['productline']=productline
+    #         s_data['caseupc']=caseupc
+    #         s_data['unitupc']=unitupc
+    #         s_data['count']=count
+    #         print('66')
+    #         s_data['unit_size']=unit_size
+    #         s_data['formula']=formula_id
+    #         s_data['formula_scale_factor']=formula_scale_factor
+    #         print('66')
+    #         s_data['manufacture_rate']=manufacture_rate
+    #         s_data['comment']=comment
+    #         s_data['manufacture_setup_cost'] = manufacture_setup
+    #         s_data['manufacture_run_cost'] = manufacture_run
+    #         print('66')
+    #         sku_serializer = SkuSerializer(data=s_data)
+    #         if(sku_serializer.is_valid()):
+    #             print(sku_serializer.data)
+    #             # sku_serializer.save()
+    #             # return Response(sku_serializer.data,status = status.HTTP_201_CREATED)
+    #         else:
+    #             for error in sku_serializer.errors.values():
+    #                 errors.append(error)
+    #         if errors != []:
+    #             transaction.savepoint_rollback(transaction_savepoint)
+    #             return Response(errors,status = status.HTTP_400_BAD_REQUEST)
+    #         transaction.savepoint_commit(transaction_savepoint)
+    #         return Response(sku_serializer.data,status = status.HTTP_201_CREATED)
+    #     except Exception as e: 
+    #         return Response(status = status.HTTP_400_BAD_REQUEST)
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
@@ -97,6 +240,15 @@ class IngredientViewSet(viewsets.ModelViewSet):
 class FormulaViewSet(viewsets.ModelViewSet):
     queryset = Formula.objects.all()
     serializer_class = FormulaSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        formula = self.get_object()
+        # If related skus exist, abandon deletion 
+        if Sku.objects.filter(formula=formula.id).exists():
+            error = 'Related SKUs exist. Fail to delete Formula #%s' % str(formula.id)
+            return Response(error, status = status.HTTP_400_BAD_REQUEST)
+        formula.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -671,7 +823,7 @@ def manufacture_goals(request):
     if(request.method == 'POST'):
         try: 
             sku = Sku.objects.get(sku_name=request.data['goal_sku_name'])
-            print(request.data['name'])
+            # print(request.data['name'])
             goal = Goal.objects.get(id=request.data['name'])
             # COUPLED WITH FRONT END MAY WANT TO REFACTOR
             request.data['sku'] = sku.id
