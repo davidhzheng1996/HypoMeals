@@ -22,6 +22,9 @@ import re
 # ViewSet simplifies the API logic by providing common actions logic. 
 # https://stackoverflow.com/questions/41379654/difference-between-apiview-class-and-viewsets-class/41380941
 # https://stackoverflow.com/questions/32589087/django-rest-framework-difference-between-views-and-viewsets
+# class SalesReportViewSet(viewsets.ModelViewSet):
+#     queryset = Sales.objects.all()
+#     serializer_class = SalesSerializer
 
 class SkuViewSet(viewsets.ModelViewSet):
     queryset = Sku.objects.all()
@@ -236,6 +239,10 @@ class IngredientViewSet(viewsets.ModelViewSet):
             ingr_ids = Formula_To_Ingredients.objects.filter(formula__in=formula_ids).values('ig')
             queryset |= Ingredient.objects.filter(id__in=ingr_ids)
         return queryset
+
+class SalesReportViewSet(viewsets.ModelViewSet):
+    queryset = Sale_Record.objects.all()
+    serializer_class = SkuSerializer
 
 class FormulaViewSet(viewsets.ModelViewSet):
     queryset = Formula.objects.all()

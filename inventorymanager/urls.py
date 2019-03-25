@@ -13,6 +13,7 @@ urlpatterns = [
     path('formula',views.formula),
     path('product_line', views.product_line),
     path('manufacture_line', views.manufacture_line),
+    path('sales_report', views.sales_report),
     path('goal',views.goal),
     path('goal/<int:goalid>',views.manufacture_goal),
     path('sku/<int:formulaid>',views.formula_to_sku),

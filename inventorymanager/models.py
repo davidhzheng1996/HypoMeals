@@ -92,6 +92,7 @@ class Sku_To_Ingredient(models.Model):
 		unique_together = (("sku","ig"),)
 
 class Customer(models.Model):
+	id = models.BigIntegerField(primary_key=True, null = False)
 	name = models.CharField(max_length=128, unique = True)
 
 class Sku_To_Customer(models.Model):
