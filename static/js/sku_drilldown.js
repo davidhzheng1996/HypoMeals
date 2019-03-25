@@ -64,22 +64,19 @@ new Vue({
     });
   },
   methods: {
-    getIngredients: function () {
-      
+    getItems: function (id) {
+      this.loading = true;
+           this.$http.get('/api/sku_drilldown/'+id+'/')
+               .then((response) => {
+                   this.items = response.data;
+                   this.loading = false;
+               })
+               .catch((err) => {
+                   this.loading = false;
+                   console.log(err);
+               })
     },
-    getIngredient: function (id) {
 
-    },
-    deleteIngredient: function (id) {
-
-    },
-    addIngredient: function () {
-
-    },
-    updateIngredient: function () {
-
-    },
-    
       postCustomer: function(){
         let api_url = 'api/customers/'
         var e = document.getElementById("customers");

@@ -616,6 +616,22 @@ def ingredients_to_sku(request,skuid):
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
+@api_view(['GET','POST'])
+def sku_drilldown(request,skuid):
+    if(request.method == 'GET'):
+        try: 
+           
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+    if(request.method == 'POST'):
+        try: 
+            
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
 @api_view(['POST'])
 def delete_ingredients_to_sku(request,sku,ig):
     try: 

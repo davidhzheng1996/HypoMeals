@@ -63,19 +63,7 @@ new Vue({
     });
   },
   methods: {
-    getIngredients: function () {
-      
-    },
-    getIngredient: function (id) {
-
-    },
-    deleteIngredient: function (id) {
-
-    },
-    addIngredient: function () {
-
-    },
-    updateIngredient: function () {
+    getItems: function () {
 
     },
     getProductLines: function(){
