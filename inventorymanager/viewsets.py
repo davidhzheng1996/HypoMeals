@@ -477,6 +477,33 @@ def sales_summary(request):
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
+@api_view(['GET'])
+# return a report on manufacture status
+def get_sku_drilldown(request, skuid):
+    if(request.method=='GET'):
+        try:
+            result = []
+            sale_records = Sale_Record.objects.filter(sku=skuid)
+            for sale_record in sale_records:
+                revenue = sale_record.sales * sale_record.price_per_case
+                sale_date = sale_record.sale_date
+                year = sale_date.year
+                week = sale_date.isocalendar()[1]
+                sale_info = {
+                    'year': year,
+                    'week': week,
+                    'customer_id': sale_record.customer_id.id,
+                    'customer_name': sale_record.customer_name,
+                    'sales': sale_record.sales,
+                    'price_per_case': sale_record.price_per_case,
+                    'revenue': revenue
+                }
+                result.append(sale_info)
+            return Response(result,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)           
+
+@login_required(login_url='/accounts/login/')
 @api_view(['POST'])
 # return a report on manufacture status
 def manufacture_schedule_report(request, userid):

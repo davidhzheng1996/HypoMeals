@@ -124,7 +124,9 @@ new Vue({
             console.log(err);
         })
       },
-
+      viewDrilldown: function(skuid){
+        window.location.href = '/sku_drilldown/'+skuid
+      },
       // disablePage: function(){
       //   this.disable_paginate = true;
       // },

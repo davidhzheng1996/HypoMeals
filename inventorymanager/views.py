@@ -97,7 +97,7 @@ def sales_report(request):
 
 @login_required(login_url='/accounts/login/')
 def sku_drilldown(request, skuid):
-	return render(request, "sku_drilldown.html", {'skuid':skuid})
+	return render(request, "sku-drilldown.html", {'skuid':skuid})
 # @login_required(login_url='/accounts/login/')
 # def goal(request):
 # 	return render(request, "calculate.html",{'goalid':goalid})

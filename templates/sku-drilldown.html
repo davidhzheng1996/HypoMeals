@@ -40,11 +40,11 @@
                   <!-- Write overall here -->
                </tr>
                <tr v-for="item in items">
-                  <th>${item.year_number}</th>
-                  <td>${item.week_number}</td>
-                  <td>${item.customer_number}</td>
+                  <th>${item.year}</th>
+                  <td>${item.week}</td>
+                  <td>${item.customer_id}</td>
                   <td>${item.customer_name}</td>
-                  <td>${item.number_of_sales}</td>
+                  <td>${item.sales}</td>
                   <td>${item.price_per_case}</td>
                   <td>${item.revenue}</td>
                </tr>
@@ -76,4 +76,6 @@
 </div>
 <!-- <! — bootrtap js files → -->
 <script src="../static/js/sku_drilldown.js"></script>
+<!-- <script>vm.getItems({{skuid}})</script> -->
+<script>vm.getItems({{skuid}})</script>
 {% endblock %}

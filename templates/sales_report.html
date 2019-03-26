@@ -21,12 +21,14 @@
          <table class="table">
                <!-- write a forloop for productline here using div -->
                   <tr>
-                     <th colspan="100%" style="text-align:center;">Productline: ${key}</th>>
+                     <th colspan="100%" style="text-align:center;">Productline: ${key}</th>
                   </tr>
                   <!-- write a forloop for productline here using div -->
                   <template v-for="(value,key) in value">
                      <tr>
-                        <th colspan="100%" style="text-align:center;">Sku ID: ${key}</th>>
+                        <th colspan="100%" style="text-align:center;">Sku ID: ${key}
+                           <button class="btn btn-primary" v-on:click="viewDrilldown(key)">View Drilldown</button>
+                        </th>
                      </tr>
                      <table>
                      <thead>

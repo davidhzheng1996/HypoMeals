@@ -1,5 +1,5 @@
 // https://codesandbox.io/s/o29j95wx9
-new Vue({
+var vm = new Vue({
   el: '#starting',
   delimiters: ['${', '}'],
   data: {
@@ -7,12 +7,10 @@ new Vue({
     product_lines: [],
     items:[],
     loading: false,
-    currentIngredient: {},
     message: null,
     page: 1,
     perPage: 10,
     pages: [],
-    newIngredient: { 'ingredient_name': '', 'id': 0, 'description': null, 'package_size': '', 'cpp': 0, 'comment': null, },
     ingredientFile: null,
     search_term: '',
     search_input: '',
@@ -36,7 +34,6 @@ new Vue({
     unit_error: '',
   },
   mounted: function () {
-    this.getIngredients();
     $("#search_input").autocomplete({
       minLength: 1,
       delay: 100,
@@ -64,11 +61,13 @@ new Vue({
     });
   },
   methods: {
-    getItems: function (id) {
+    getItems: function (skuid) {
+      console.log(skuid)
       this.loading = true;
-           this.$http.get('/api/sku_drilldown/'+id+'/')
+           this.$http.get('/api/get_sku_drilldown/'+skuid)
                .then((response) => {
                    this.items = response.data;
+                   console.log(this.items)
                    this.loading = false;
                })
                .catch((err) => {
@@ -89,7 +88,7 @@ new Vue({
         .catch((err) => {
             console.log(err);
         })
-      }
+      },
 
       // disablePage: function(){
       //   this.disable_paginate = true;
