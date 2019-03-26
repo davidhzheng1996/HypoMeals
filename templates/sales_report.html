@@ -16,58 +16,46 @@
               <option value="opel">Opel</option>
               <option value="audi">Audi</option>
             </select>
-                        <!-- <button class="btn btn-success" data-toggle="modal" data-target="#updatePLModal" v-on:click.prevent="getProductLines()">Select Product Lines</button> -->
-                  </div>
+         </div>
+         <template v-for="(value,key) in items">
          <table class="table">
-            <thead>
                <!-- write a forloop for productline here using div -->
-               <tr>
-                  <th colspan="100%" style="text-align:center;">Productline</th>>
-               </tr>
-               <!-- write a forloop for productline here using div -->
-               <tr>
-                  <th colspan="100%" style="text-align:center;">Sku Name and SKU ID</th>>
-               </tr>
-               <tr>
-                  <th>Year</th>
-                  <th>Total Revenue</th>
-                  <th>Avg Revenue/Case</th>
-                  <th>Avg Run Size</th>
-                  <th>Ingr Cost/Case</th>
-                  <th>Avg Setup Cost/Case</th>
-                  <th>Run Cost/Case</th>
-                  <th>COGS/Case</th>
-                  <th>Profit/Case</th>
-                  <th>Profit Margin</th>
-               </tr>
-            </thead>
-            <tbody>
-               <!-- https://vuejs.org/v2/guide/migration.html#Replacing-the-orderBy-Filter -->
-               <!-- write an overall row before entering forloop -->
-               <tr>
-                  <!-- Write overall here -->
-               </tr>
-               <tr v-for="year in years">
-                  <th>${year.year_number}</th>
-                  <td>${year.revenue}</td>
-                  <td>${year.revenue_per_case}</td>
-                  <td>${year.avg_run_size}</td>
-                  <td>${year.ingr_cost_per_case}</td>
-                  <td>${year.avg_setup_cost}</td>
-                  <td>${year.run_cost_per_case}</td>
-                  <td>${year.cogs_per_case}</td>
-                  <td>${year.profit_per_case}</td>
-                  <td>${year.profit_margin}</td>
-               </tr>
-            </tbody>
+                  <tr>
+                     <th colspan="100%" style="text-align:center;">Productline: ${key}</th>>
+                  </tr>
+                  <!-- write a forloop for productline here using div -->
+                  <template v-for="(value,key) in value">
+                     <tr>
+                        <th colspan="100%" style="text-align:center;">Sku ID: ${key}</th>>
+                     </tr>
+                     <table>
+                     <thead>
+                           <tr>
+                              <th scope="col">Year</th>
+                              <th scope="col">Total Revenue</th>
+                              <th scope="col">Avg Revenue/Case</th>
+                              <th scope="col">Ingr Cost/Case</th>
+                              <th scope="col">Avg Run Size</th>
+                              <th scope="col">Avg Setup Cost/Case</th>
+                              <th scope="col">Run Cost/Case</th>
+                              <th scope="col">COGS/Case</th>
+                              <th scope="col">Profit/Case</th>
+                              <th scope="col">Profit Margin</th>
+                           </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(value,key) in value">
+                           <th scope="row">${key}</th>
+                              <template v-for="elements in value">
+                                 <td>${elements}</td>
+                              </template>
+                        </tr>
+                     </tbody>
+                     </table>
+                  </template>
          </table>
+      </template>
       </div>
-<!--       <div id = "pagination" class="clearfix btn-group col-md-2 offset-md-5">
-            <button type="button" class="btn btn-sm btn-outline-secondary" v-if="page != 1" @click="page--"> << </button>
-            <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> ${pageNumber} </button>
-            <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>
-            <button type="button" @click="page++" v-if="page < pages.length" class="btn btn-sm btn-outline-secondary"> >> </button>
-          </div> -->
    </div>
    <div class="loading" v-if="loading===true">Loading&#8230;</div>
    <div class="modal fade" id="updatePLModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">

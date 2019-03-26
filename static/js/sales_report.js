@@ -3,15 +3,12 @@ new Vue({
   el: '#starting',
   delimiters: ['${', '}'],
   data: {
-    ingredients: [],
+    items: [],
     product_lines: [],
+    skus: [],
     loading: false,
     currentIngredient: {},
     message: null,
-    page: 1,
-    perPage: 10,
-    pages: [],
-    newIngredient: { 'ingredient_name': '', 'id': 0, 'description': null, 'package_size': '', 'cpp': 0, 'comment': null, },
     ingredientFile: null,
     search_term: '',
     search_input: '',
@@ -35,36 +32,52 @@ new Vue({
     unit_error: '',
   },
   mounted: function () {
-    this.getIngredients();
-    $("#search_input").autocomplete({
-      minLength: 1,
-      delay: 100,
-      // https://stackoverflow.com/questions/9656523/jquery-autocomplete-with-callback-ajax-json
-      source: function (request, response) {
-        $.ajax({
-          url: "/api/ingredient",
-          dataType: "json",
-          data: {
-            // attach '?search=request.term' to the url 
-            search: request.term
-          },
-          success: function (data) {
-            ingr_names = $.map(data, function (item) {
-              return [item.ingredient_name];
-            })
-            response(ingr_names);
-          }
-        });
-      },
-      messages: {
-        noResults: '',
-        results: function() {}
-      }
-    });
+    this.getItems();
+    // $("#search_input").autocomplete({
+    //   minLength: 1,
+    //   delay: 100,
+    //   // https://stackoverflow.com/questions/9656523/jquery-autocomplete-with-callback-ajax-json
+    //   source: function (request, response) {
+    //     $.ajax({
+    //       url: "/api/ingredient",
+    //       dataType: "json",
+    //       data: {
+    //         // attach '?search=request.term' to the url 
+    //         search: request.term
+    //       },
+    //       success: function (data) {
+    //         ingr_names = $.map(data, function (item) {
+    //           return [item.ingredient_name];
+    //         })
+    //         response(ingr_names);
+    //       }
+    //     });
+    //   },
+    //   messages: {
+    //     noResults: '',
+    //     results: function() {}
+    //   }
+    // });
   },
   methods: {
     getItems: function () {
-
+      let api_url = '/api/sales_summary/';
+           // https://medium.com/quick-code/searchfilter-using-django-and-vue-js-215af82e12cd
+           // if(this.search_term !== '' && this.search_term !== null) {
+           //      api_url = '/api/sku/?search=' + this.search_term;
+           // }
+           this.loading = true;
+           this.$http.get(api_url)
+               .then((response) => {
+                  // user selection status
+                  this.items = response.data
+                  console.log(this.items)
+                   this.loading = false;
+               })
+               .catch((err) => {
+                   this.loading = false;
+                   console.log(err);
+               })
     },
     getProductLines: function(){
       let api_url = '/api/product_line/';
@@ -110,7 +123,7 @@ new Vue({
         .catch((err) => {
             console.log(err);
         })
-      }
+      },
 
       // disablePage: function(){
       //   this.disable_paginate = true;
@@ -145,16 +158,16 @@ new Vue({
     // },
     // https://www.academind.com/learn/vue-js/snippets/image-upload/
 
-    exportCSV: function () {
+    // exportCSV: function () {
       
-    },
+    // },
 
     // Trigger an action to update search_term
     // Dirty trick to get around a VueJS bug: https://github.com/vuejs/vue/issues/5248 
-    onBlur: function (event) {
-      if (event && this.search_term !== event.target.value)
-        this.search_term = event.target.value
-    },
+    // onBlur: function (event) {
+    //   if (event && this.search_term !== event.target.value)
+    //     this.search_term = event.target.value
+    // },
 
     getSkus: function (ingredientid) {
       this.loading = true;
