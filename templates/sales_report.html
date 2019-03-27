@@ -10,8 +10,11 @@
                   </div>
          <div class="form-inline my-2 ml-2 mr-2 my-lg-0">
             Select Customer:   
-            <select id="customers"> 
-              <option value="all">all</option>
+            <select id="customers" v-on:change="getSelected($event)"> 
+               <option value="all">all</option>
+            <template v-for="customer in customers">
+              <option :value="customer.id">${customer.id}:${customer.name}</option>
+           </template>
             </select>
          </div>
          <template v-for="(value,key) in items">
@@ -23,7 +26,7 @@
                   <!-- write a forloop for productline here using div -->
                   <template v-for="(value,key) in value">
                      <tr>
-                        <th colspan="100%" style="text-align:center;">Sku ID: ${key}
+                        <th colspan="100%" style="text-align:center;">Sku ID: #${key}
                            <button class="btn btn-primary" v-on:click="viewDrilldown(key)">View Drilldown</button>
                         </th>
                      </tr>

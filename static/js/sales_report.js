@@ -6,9 +6,7 @@ new Vue({
     items: [],
     product_lines: [],
     customers: [],
-    skus: [],
     loading: false,
-    currentIngredient: {},
     message: null,
     ingredientFile: null,
     search_term: '',
@@ -16,6 +14,8 @@ new Vue({
     has_paginated: false,
     csv_uploaded: false,
     disable_paginate: false,
+    selected_customer:'',
+    request_dict:{},
     // sorting variables
     sortKey: 'ingredient_name',
     sortAsc: [
@@ -69,8 +69,10 @@ new Vue({
            //      api_url = '/api/sku/?search=' + this.search_term;
            // }
            this.loading = true;
-           //console.log(this.active_pls);
-           this.$http.post(api_url, this.active_pls)
+           this.request_dict['pl'] = this.active_pls;
+           this.request_dict['customer'] = this.selected_customer;
+           console.log(this.request_dict)
+           this.$http.post(api_url, this.request_dict)
                .then((response) => {
                   // user selection status
                   this.items = response.data
@@ -80,6 +82,15 @@ new Vue({
                    this.loading = false;
                    console.log(err);
                })
+            this.$http.get('api/customer')
+            .then((response) => {
+              this.customers = response.data;
+              //console.log(this.customers)
+              //this.getItems();
+            })
+            .catch((err) => {
+                console.log(err);
+            })
     },
     getProductLines: function(){
       let api_url = '/api/product_line/';
@@ -108,27 +119,33 @@ new Vue({
         this.getItems();
       },
       postCustomer: function(){
-        let api_url = 'api/customers/';
-        var e = document.getElementById("customers");
-        var text = e.options[e.selectedIndex].text;
-        let request = text;
-        this.$http.post(api_url, request)
-        .then((response) => {
+        // let api_url = 'api/customer/';
+        // var e = document.getElementById("customers");
+        // var text = e.options[e.selectedIndex].text;
+        // let request = text;
+        // this.$http.post(api_url, request)
+        // .then((response) => {
           
-        })
-        .catch((err) => {
-            console.log(err);
-        })
+        // })
+        // .catch((err) => {
+        //     console.log(err);
+        // })
       },
-      getCustomer: function(){
-        let api_url = 'api/customers';
-        this.$http.get(api_url)
-        .then((response) => {
-          this.customers = response.data;
-        })
-        .catch((err) => {
-            console.log(err);
-        })
+      // getCustomer: function(){
+      //   let api_url = 'api/customer';
+      //   this.$http.get(api_url)
+      //   .then((response) => {
+      //     this.customers = response.data;
+      //     //console.log(this.customers)
+      //     //this.getItems();
+      //   })
+      //   .catch((err) => {
+      //       console.log(err);
+      //   })
+      // },
+      getSelected: function(event){
+        this.selected_customer = event.target.value;
+        this.getItems();
       },
       viewDrilldown: function(skuid){
         window.location.href = '/sku_drilldown/'+skuid
@@ -136,42 +153,23 @@ new Vue({
       pl_checkbox_click: function(ev, pl) {
         pl['all_active'] = true;
       },
-      // disablePage: function(){
-      //   this.disable_paginate = true;
-      // },
-   
-      // ml_checkbox_click: function(ev, ml) {
-      //   ml['part_active'] = false;
-      // },
-    // setPages: function () {
-    //   let numberOfPages = Math.ceil(this.ingredients.length / this.perPage);
-    //   for (let index = 1; index <= numberOfPages; index++) {
-    //     this.pages.push(index);
-    //   }
-    // },
-    // addPage: function () {
-    //   this.pages.push(Math.ceil(this.ingredients.length / this.perPage) + 1);
-    // },
-    // deletePage: function () {
-    //   this.pages = [];
-    //   let numberOfPages = Math.ceil(this.ingredients.length / this.perPage);
-    //   for (let index = 1; index < numberOfPages; index++) {
-    //     this.pages.push(index);
-    //   }
-    // },
-    // paginate: function (ingredients) {
-    //   let page = this.page;
-    //   // console.log(page)
-    //   let perPage = this.perPage;
-    //   let from = (page * perPage) - perPage;
-    //   let to = (page * perPage);
-    //   return ingredients.slice(from, to);
-    // },
-    // https://www.academind.com/learn/vue-js/snippets/image-upload/
 
-    // exportCSV: function () {
-      
-    // },
+      exportSkuCSV: function() {
+        this.loading = true;
+        // Export all current skus to a csv file
+        // https://codepen.io/dimaZubkov/pen/eKGdxN
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += [
+          Object.keys(this.skus[0]).join(","),
+          // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+          ...this.skus.map(key => Object.values(key).join(","))
+        ].join("\n");
+        const url = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "sales_report.csv");
+        link.click();
+      },
 
     // Trigger an action to update search_term
     // Dirty trick to get around a VueJS bug: https://github.com/vuejs/vue/issues/5248 
@@ -180,18 +178,7 @@ new Vue({
     //     this.search_term = event.target.value
     // },
 
-    getSkus: function (ingredientid) {
-      this.loading = true;
-      this.$http.get('/api/skus_to_ingredient/' + ingredientid)
-        .then((response) => {
-          this.skus = response.data;
-          this.loading = false;
-        })
-        .catch((err) => {
-          this.loading = false;
-          console.log(err);
-        })
-    },
+
 
     // https://vuejs.org/v2/guide/migration.html#Replacing-the-orderBy-Filter
     sortBy: function (key) {

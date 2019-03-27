@@ -385,7 +385,9 @@ def sales_summary(request):
 
     if(request.method=='POST'):
         try:
-            active_pls = request.data
+            print(request.data)
+            active_pls = request.data['pl']
+            customer = request.data['customer']
             product_line_names = []
             if active_pls:
                 for a in active_pls:
@@ -413,6 +415,10 @@ def sales_summary(request):
                     ingr_cost_per_case = 0
                     run_cost_per_case = sku.manufacture_run_cost
                     for sale_record in sale_records:
+                        customer_id = sale_record.customer_id.id
+                        if customer and customer != 'all':
+                            if customer!=str(customer_id):
+                                continue
                         sale_date = sale_record.sale_date
                         year = sale_date.year
                         revenue = sale_record.sales * sale_record.price_per_case
@@ -476,7 +482,6 @@ def sales_summary(request):
                 # print(sku_dict)
                 product_line_dict[pl.product_line_name] = {}
                 product_line_dict[pl.product_line_name] = sku_dict
-            print(product_line_dict)
             response = product_line_dict
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
@@ -533,11 +538,13 @@ def get_sku_drilldown(request, skuid):
             return res2
 
         return 0
-        
+
     if(request.method=='POST'):
         try:
             result = []
-            timespan = request.data
+            timespan = request.data['timespan']
+            customer = request.data['customer']
+            print(request.data['customer'])
             sale_records = Sale_Record.objects.filter(sku=skuid)
             sku = Sku.objects.get(id=skuid)
             ingredients = Formula_To_Ingredients.objects.filter(formula=sku.formula)
@@ -551,6 +558,10 @@ def get_sku_drilldown(request, skuid):
             run_cost_per_case = sku.manufacture_run_cost
             for sale_record in sale_records:
                 sale_date = sale_record.sale_date
+                customer_id = sale_record.customer_id.id
+                if customer and customer != 'all':
+                    if customer!=str(customer_id):
+                        continue
                 if timespan['start_date'] and timespan['end_date']:
                     start_date = datetime.datetime.strptime(timespan['start_date'], '%Y-%m-%d').date()
                     end_date = datetime.datetime.strptime(timespan['end_date'], '%Y-%m-%d').date()
@@ -609,9 +620,7 @@ def get_sku_drilldown(request, skuid):
                 'profit_per_case': profit_per_case,
                 'profit_margin': profit_margin
             }
-            print(response['overall'])
             response['rows'] = result #map to a list, each entry of the list is a map
-            print(response['rows'][0])
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)           
@@ -705,6 +714,20 @@ def active_manufacturing_lines(request):
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
+@login_required(login_url='/accounts/login/')
+@api_view(['GET'])
+# return list of all manufacturing lines with status 
+def get_customer(request):
+    if(request.method=='GET'):
+        try:
+            response = []
+            customers = Customer.objects.all()
+            for customer in customers:
+                serializer = CustomerSerializer(customer)
+                response.append(serializer.data)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])

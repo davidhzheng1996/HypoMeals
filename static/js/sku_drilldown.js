@@ -3,11 +3,12 @@ var vm = new Vue({
   el: '#starting',
   delimiters: ['${', '}'],
   data: {
-    ingredients: [],
     product_lines: [],
+    customers: [],
     items:{},
     loading: false,
     message: null,
+    selected_customer: '',
     page: 1,
     perPage: 10,
     pages: [],
@@ -15,19 +16,11 @@ var vm = new Vue({
     ingredientFile: null,
     search_term: '',
     search_input: '',
+    request_dict: {},
     has_paginated: false,
     csv_uploaded: false,
     disable_paginate: false,
     // sorting variables
-    sortKey: 'ingredient_name',
-    sortAsc: [
-      {'id': true},
-      { 'ingredient_name': true },
-      { 'package_size': true },
-      { 'cpp': true },
-      { 'description': true },
-      { 'id': true }
-    ],
     // File Upload Errors
     upload_errors: '',
     name_error: '',
@@ -65,10 +58,12 @@ var vm = new Vue({
     getItems: function (skuid) {
       // var span = this.updateTimespan();
       // console.log(span)
-      console.log(this.timespan);
       this.loading = true;
-
-           this.$http.post('/api/get_sku_drilldown/'+skuid, this.timespan)
+      this.request_dict['timespan'] = this.timespan;
+      console.log(this.selected_customer)
+       this.request_dict['customer'] = this.selected_customer;
+       console.log(this.request_dict)
+           this.$http.post('/api/get_sku_drilldown/'+skuid, this.request_dict)
                .then((response) => {
                    this.items = response.data;
                    console.log(this.items)
@@ -78,60 +73,50 @@ var vm = new Vue({
                    this.loading = false;
                    console.log(err);
                })
+          this.$http.get('../api/get_customer')
+            .then((response) => {
+              this.customers = response.data;
+              //this.getItems();
+            })
+            .catch((err) => {
+                console.log(err);
+            })
     },
-
+      // getCustomer: function(){
+      //   this.$http.get('../api/get_customer')
+      //       .then((response) => {
+      //         this.customers = response.data;
+      //         //this.getItems();
+      //       })
+      //       .catch((err) => {
+      //           console.log(err);
+      //       })
+      //   return;
+      // },
       postCustomer: function(){
-        let api_url = 'api/customers/'
-        var e = document.getElementById("customers");
-        var text = e.options[e.selectedIndex].text;
-        let request = text;
-        this.$http.post(api_url, request)
-        .then((response) => {
-          this.product_lines = response.data;
-        })
-        .catch((err) => {
-            console.log(err);
-        })
+        // let api_url = 'api/customers/'
+        // var e = document.getElementById("customers");
+        // var text = e.options[e.selectedIndex].text;
+        // let request = text;
+        // this.$http.post(api_url, request)
+        // .then((response) => {
+        //   this.product_lines = response.data;
+        // })
+        // .catch((err) => {
+        //     console.log(err);
+        // })
       },
       getLineGraph: function(){
 
       },
+      getSelected: function(event){
+        this.selected_customer = event.target.value;
+        this.getItems(savedSkuId);
+      },
       updateTimespan: function(){
-        console.log('update timespan')
         $("#TimeSpanModal").modal('hide');
         this.getItems(savedSkuId);
       },
-      // disablePage: function(){
-      //   this.disable_paginate = true;
-      // },
-   
-      // ml_checkbox_click: function(ev, ml) {
-      //   ml['part_active'] = false;
-      // },
-    // setPages: function () {
-    //   let numberOfPages = Math.ceil(this.ingredients.length / this.perPage);
-    //   for (let index = 1; index <= numberOfPages; index++) {
-    //     this.pages.push(index);
-    //   }
-    // },
-    // addPage: function () {
-    //   this.pages.push(Math.ceil(this.ingredients.length / this.perPage) + 1);
-    // },
-    // deletePage: function () {
-    //   this.pages = [];
-    //   let numberOfPages = Math.ceil(this.ingredients.length / this.perPage);
-    //   for (let index = 1; index < numberOfPages; index++) {
-    //     this.pages.push(index);
-    //   }
-    // },
-    // paginate: function (ingredients) {
-    //   let page = this.page;
-    //   // console.log(page)
-    //   let perPage = this.perPage;
-    //   let from = (page * perPage) - perPage;
-    //   let to = (page * perPage);
-    //   return ingredients.slice(from, to);
-    // },
     // https://www.academind.com/learn/vue-js/snippets/image-upload/
 
     exportCSV: function () {
@@ -143,30 +128,6 @@ var vm = new Vue({
     onBlur: function (event) {
       if (event && this.search_term !== event.target.value)
         this.search_term = event.target.value
-    },
-
-    getSkus: function (ingredientid) {
-      this.loading = true;
-      this.$http.get('/api/skus_to_ingredient/' + ingredientid)
-        .then((response) => {
-          this.skus = response.data;
-          this.loading = false;
-        })
-        .catch((err) => {
-          this.loading = false;
-          console.log(err);
-        })
-    },
-
-    // https://vuejs.org/v2/guide/migration.html#Replacing-the-orderBy-Filter
-    sortBy: function (key) {
-      this.sortKey = key
-      this.sortAsc[key] = !this.sortAsc[key]
-      if (!this.sortAsc[this.sortKey]) {
-        this.ingredients = _.sortBy(this.ingredients, this.sortKey)
-      } else {
-        this.ingredients = _.sortBy(this.ingredients, this.sortKey).reverse()
-      }
     },
 
     // disablePage: function(){
