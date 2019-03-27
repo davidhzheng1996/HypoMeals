@@ -71,11 +71,16 @@ new Vue({
            this.loading = true;
            this.request_dict['pl'] = this.active_pls;
            this.request_dict['customer'] = this.selected_customer;
-           console.log(this.request_dict)
            this.$http.post(api_url, this.request_dict)
                .then((response) => {
                   // user selection status
                   this.items = response.data
+                  console.log(this.items)
+                        // for (key in this.items) {
+                        //     if (this.items.hasOwnProperty(key)) {
+                        //       console.log(this.items[key])
+                        //     }
+                        //   }
                    this.loading = false;
                })
                .catch((err) => {
@@ -154,16 +159,43 @@ new Vue({
         pl['all_active'] = true;
       },
 
-      exportSkuCSV: function() {
+      exportCSV: function() {
         this.loading = true;
         // Export all current skus to a csv file
         // https://codepen.io/dimaZubkov/pen/eKGdxN
         let csvContent = "data:text/csv;charset=utf-8,";
-        csvContent += [
-          Object.keys(this.skus[0]).join(","),
-          // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
-          ...this.skus.map(key => Object.values(key).join(","))
-        ].join("\n");
+        // csvContent += [
+        //   Object.keys(this.skus[0]).join(","),
+        //   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+        //   ...this.skus.map(key => Object.values(key).join(","))
+        // ].join("\n");
+        for (key in this.items) {
+            if (this.items.hasOwnProperty(key)) {
+              var pl_str = "product_line:"+key;
+              csvContent+=[pl_str+'\n'];
+              let sku_object = this.items[key];
+              for(key in sku_object){
+                if(sku_object.hasOwnProperty(key)){
+                  csvContent+=['Sku: '+key+'\n'];
+                  csvContent += [["Year", "Total Revenue","Avg Revenue/Case","Ingr Cost/Case","Avg Run Size","Avg Setup Cost/Case",
+                  "Run Cost/Case","COGS/Case","Profit/Case","Profit Margin"].join(",") + '\n'];
+                  let year_object = sku_object[key];
+                  for(key in year_object){
+                    if(year_object.hasOwnProperty(key)){
+                      let item_object = year_object[key];
+                      if(key=='overall'){
+                        csvContent+=[[key,item_object.revenue,item_object.avg_rev_per_case,item_object.ingr_cost_per_case,
+                        item_object.avg_run_size,item_object.avg_setup_cost_per_case,item_object.run_cost_per_case,
+                        item_object.cogs_per_case,item_object.profit_per_case,item_object.profit_margin].join(",")+'\n'];
+                      } else{
+                      csvContent+=[[key,item_object.revenue,item_object.avg_rev_per_case].join(",")+'\n'];
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         const url = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", url);

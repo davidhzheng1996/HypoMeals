@@ -1,4 +1,5 @@
 // https://codesandbox.io/s/o29j95wx9
+var global_items = {};
 var vm = new Vue({
   el: '#starting',
   delimiters: ['${', '}'],
@@ -66,7 +67,8 @@ var vm = new Vue({
            this.$http.post('/api/get_sku_drilldown/'+skuid, this.request_dict)
                .then((response) => {
                    this.items = response.data;
-                   console.log(this.items)
+                   global_items = this.items;
+                   // console.log(this.items)
                    this.loading = false;
                })
                .catch((err) => {
@@ -119,9 +121,44 @@ var vm = new Vue({
       },
     // https://www.academind.com/learn/vue-js/snippets/image-upload/
 
-    exportCSV: function () {
-      
-    },
+    exportCSV: function() {
+        this.loading = true;
+        // Export all current skus to a csv file
+        // https://codepen.io/dimaZubkov/pen/eKGdxN
+        let csvContent = "data:text/csv;charset=utf-8,";
+        // csvContent += [
+        //   Object.keys(this.skus[0]).join(","),
+        //   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax
+        //   ...this.skus.map(key => Object.values(key).join(","))
+        // ].join("\n");
+        for (key in this.items) {
+            if (this.items.hasOwnProperty(key)) {
+              if(key=='overall'){
+                  let item_object = this.items[key];
+                  csvContent += [["Entry", "Total Revenue","Avg Revenue/Case","Ingr Cost/Case","Avg Run Size","Avg Setup Cost/Case",
+                  "Run Cost/Case","COGS/Case","Profit/Case","Profit Margin"].join(",") + '\n'];
+                  csvContent += [['overall',item_object.revenue,item_object.avg_rev_per_case,item_object.ingr_cost_per_case,
+                        item_object.avg_run_size,item_object.avg_setup_cost_per_case,item_object.run_cost_per_case,
+                        item_object.cogs_per_case,item_object.profit_per_case,item_object.profit_margin].join(",")+'\n'];
+              } else{
+                csvContent+=[["Year","Week","Customer ID","Customer Name","Number of Sales","Price/case","Revenue"].join(",")+'\n'];
+                let item_object = this.items[key];
+                for(key in item_object){
+                  if(item_object.hasOwnProperty(key)){
+                    let row_object = item_object[key];
+                        csvContent += [[row_object.year,row_object.week,row_object.customer_id,row_object.customer_name,
+                        row_object.sales,row_object.price_per_case,row_object.revenue].join(",")+'\n']; 
+                  }
+                }
+              }
+            }
+          }
+        const url = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "sku_drilldown.csv");
+        link.click();
+      },
 
     // Trigger an action to update search_term
     // Dirty trick to get around a VueJS bug: https://github.com/vuejs/vue/issues/5248 
