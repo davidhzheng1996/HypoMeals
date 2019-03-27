@@ -80,12 +80,24 @@ def manufacture_line(request):
 	return render(request, "manufacture_line.html")
 
 @login_required(login_url='/accounts/login/')
+def scheduler_report(request):
+	return render(request, "manufacture_report.html")
+
+@login_required(login_url='/accounts/login/')
 def goal(request):
 	return render(request, "goal.html")
 
 @login_required(login_url='/accounts/login')
 def calculate_goal(request,goalid):
 	return render(request,"calculate.html",{'goalid':goalid})
+
+@login_required(login_url='/accounts/login/')
+def sales_report(request):
+	return render(request, "sales_report.html")
+
+@login_required(login_url='/accounts/login/')
+def sku_drilldown(request, skuid):
+	return render(request, "sku-drilldown.html", {'skuid':skuid})
 # @login_required(login_url='/accounts/login/')
 # def goal(request):
 # 	return render(request, "calculate.html",{'goalid':goalid})
@@ -205,6 +217,10 @@ class IngredientImportView(APIView):
 					# print(serializer.data)
 					if(serializer.is_valid()):
 						serializer.save()
+					else:
+						for error in serializer.errors.values():
+							errors.append(error)
+						break
 				else:
 					ingr = Ingredient.objects.get(id=default_id)
 					s = IngredientSerializer(ingr)
@@ -219,6 +235,10 @@ class IngredientImportView(APIView):
 					# print(serializer)
 					if(serializer.is_valid()):
 						serializer.save()
+					else:
+						for error in serializer.errors.values():
+							errors.append(error)
+						break
 		if errors != []:
 			transaction.savepoint_rollback(transaction_savepoint)
 		else:
@@ -346,10 +366,14 @@ class SkuImportView(APIView):
 				product_line = Product_Line.objects.get(product_line_name=sku_dict['PL Name'])
 				formula = Formula.objects.get(id=int(sku_dict['Formula#']))
 				if not Sku.objects.filter(id=default_id).exists():
-					print('hi')
-					serializer = SkuSerializer(data={'id':default_id,'productline':product_line.product_line_name,'caseupc':sku_dict['Case UPC'],'unitupc':sku_dict['Unit UPC'],'sku_name':sku_dict['Name'],'count':sku_dict['Count per case'],'unit_size':sku_dict['Unit size'],'formula':formula.id,'formula_scale_factor':sku_dict['Formula factor'],'manufacture_rate':sku_dict['Rate'],'comment':sku_dict['Comment']})
+					serializer = SkuSerializer(data={'id':default_id,'productline':product_line.product_line_name,'caseupc':sku_dict['Case UPC'],'unitupc':sku_dict['Unit UPC'],'sku_name':sku_dict['Name'],'count':sku_dict['Count per case'],'unit_size':sku_dict['Unit size'],'formula':formula.id,'formula_scale_factor':sku_dict['Formula factor'],'manufacture_rate':sku_dict['Rate'],
+						'manufacture_setup_cost':sku_dict['Mfg setup cost'], 'manufacture_run_cost':sku_dict['Mfg run cost'],'comment':sku_dict['Comment']})
 					if serializer.is_valid():
 						serializer.save()
+					else:
+						for error in serializer.errors.values():
+							errors.append(error)
+						break
 				else:
 					sku = Sku.objects.get(id=default_id)
 					skutoml = Sku_To_Ml_Shortname.objects.filter(sku=default_id)
@@ -367,11 +391,17 @@ class SkuImportView(APIView):
 					s_data['formula']=formula.id
 					s_data['formula_scale_factor']=sku_dict['Formula factor']
 					s_data['manufacture_rate']=sku_dict['Rate']
+					s_data['manufacture_setup_cost']=sku_dict['Mfg setup cost']
+					s_data['manufacture_run_cost']=sku_dict['Mfg run cost']
 					s_data['comment']=sku_dict['Comment']
 					serializer = SkuSerializer(data=s_data)
 					# print(serializer)
 					if(serializer.is_valid()):
 						serializer.save()
+					else:
+						for error in serializer.errors.values():
+							errors.append(error)
+						break
 				# save all manufacturing lines associated with sku
 				ml_shortnames = sku_dict['ML Shortnames'].strip('"').split(',')
 				for ml_shortname in ml_shortnames:
@@ -391,7 +421,7 @@ class SkuImportView(APIView):
 		return errors, warnings
 
 	def validate_header(self, headers):
-		if headers != ['SKU#','Name','Case UPC','Unit UPC','Unit size','Count per case','PL Name','Formula#','Formula factor', 'ML Shortnames', 'Rate','Comment']:
+		if headers != ['SKU#','Name','Case UPC','Unit UPC','Unit size','Count per case','PL Name','Formula#','Formula factor', 'ML Shortnames', 'Rate', 'Mfg setup cost', 'Mfg run cost','Comment']:
 			return 'File headers not compliant to standard', ''
 		return '', ''
 
@@ -554,7 +584,7 @@ class FormulaImportView(APIView):
 						formula1.delete()
 		formula_dictA = {}
 		first = True
-		print('60')
+		# print('60')
 		for formula_rowA in readers:
 			if first:
 				header = formula_rowA
@@ -562,9 +592,9 @@ class FormulaImportView(APIView):
 				continue
 			else:
 				for idx1, ele1 in enumerate(formula_rowA):
-					print("*********")
-					print(formula_rowA)
-					print(header[idx1])
+					# print("*********")
+					# print(formula_rowA)
+					# print(header[idx1])
 					formula_dictA[header[idx1]] = ele1
 					# print(formula_dictA['Name'])
 					print('61')
@@ -574,13 +604,13 @@ class FormulaImportView(APIView):
 						else:
 							default_idA =  Formula.objects.all().order_by("-id")[0].id + 1
 					elif formula_dictA['Formula#']:
-						print('61')
+						# print('61')
 						try:
 							int(formula_dictA['Formula#'])
-							print("here")
+							# print("here")
 						except ValueError:
 							errors.append(formula_dictA['Formula#'] + " is not a number,")
-							print("cont")
+							# print("cont")
 							continue
 						default_idA = int(formula_dictA['Formula#'])
 					elif not formula_dictA['Formula#'] and Formula.objects.filter(formula_name=formula_dictA['Name']).exists():
@@ -593,14 +623,14 @@ class FormulaImportView(APIView):
 					warnings.append(val_warning)
 				if val_error:
 					errors.append(val_error)
-					print("break")
+					# print("break")
 					break
 				if not unit_error:
 					errors.append("package size unit incorrect for %s" % formula_dictA['Name'])
-					print('break')
+					# print('break')
 					break
 				# store formula first if not exist 
-				print('666')
+				# print('666')
 				if not Formula.objects.filter(id=default_idA).exists():
 					# formula = Formula(formula_name=formula_dict['Name'],
 					# 				  id=formula_dict['Formula#'],
@@ -608,6 +638,10 @@ class FormulaImportView(APIView):
 					serializer = FormulaSerializer(data={'formula_name':formula_dictA['Name'],'id':default_idA,'comment':formula_dictA['Comment']})
 					if(serializer.is_valid()):
 						serializer.save()
+					else:
+						for error in serializer.errors.values():
+							errors.append(error)
+						break
 
 
 				# add to Formula_To_Ingredients table if not exist
@@ -620,6 +654,10 @@ class FormulaImportView(APIView):
 					# print(serializer.data)
 					if(serializer.is_valid()):
 						serializer.save()
+					else:
+						for error in serializer.errors.values():
+							errors.append(error)
+						break
 		if errors != []:
 			transaction.savepoint_rollback(transaction_savepoint)
 		else:

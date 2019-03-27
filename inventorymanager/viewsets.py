@@ -2,6 +2,7 @@ from rest_framework import viewsets, filters
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.viewsets import ViewSetMixin
 from .models import *
 from .serializers import *
 from django.contrib.auth.decorators import login_required
@@ -9,7 +10,19 @@ from django.db.models import Q
 from django.middleware.csrf import CsrfViewMiddleware, get_token
 from django.test import Client
 from django.contrib.auth.models import User
+from django.db import transaction
+import datetime
 import math
+from scrapy.crawler import CrawlerProcess
+from scrapy.crawler import Crawler
+from scrapy import signals
+from scrapy.utils.project import get_project_settings
+from scrapy.settings import Settings
+import os
+import imp
+import sys
+sys.path.append('..')
+from crawl.sales_data.sales_data.spiders.sales_spider import SalesSpider
 
 import requests
 import re
@@ -19,12 +32,160 @@ import re
 # ViewSet simplifies the API logic by providing common actions logic. 
 # https://stackoverflow.com/questions/41379654/difference-between-apiview-class-and-viewsets-class/41380941
 # https://stackoverflow.com/questions/32589087/django-rest-framework-difference-between-views-and-viewsets
+# class SalesReportViewSet(viewsets.ModelViewSet):
+#     queryset = Sales.objects.all()
+#     serializer_class = SalesSerializer
 
 class SkuViewSet(viewsets.ModelViewSet):
     queryset = Sku.objects.all()
     serializer_class = SkuSerializer
 
     # GET override
+    @transaction.atomic
+    def create(self, request, *args, **kwargs): #override post
+        try:
+            errors = []
+            transaction_savepoint = transaction.savepoint()
+            post_data = request.data
+            sku_id = post_data['id']
+            sku_name = post_data['sku_name']
+            caseupc = post_data['caseupc']
+            unitupc = post_data['unitupc']
+            count = post_data['count']
+            unit_size = post_data['unit_size']
+            productline = post_data['productline']
+            formula_id = post_data['formula']
+            formula_name = post_data['formula_name']
+            formula_scale_factor = post_data['formula_scale_factor']
+            manufacture_rate = post_data['manufacture_rate']
+            manufacture_setup = post_data['manufacture_setup_cost']
+            manufacture_run = post_data['manufacture_run_cost']
+            comment = post_data['comment']
+
+            if Formula.objects.filter(id=formula_id).exists():
+                formula = Formula.objects.get(id=formula_id)
+                f = FormulaSerializer(formula)
+                f_data = f.data
+                formula.delete()
+                f_data['formula_name']=formula_name
+                serializer = FormulaSerializer(data=f_data)
+                if(serializer.is_valid()):
+                    serializer.save()
+                else:
+                    for error in serializer.errors.values():
+                        errors.append(error)
+            else:
+                serializer = FormulaSerializer(data={
+                    'formula_name':formula_name,
+                    'id':formula_id,
+                    'comment':comment
+                })
+                if(serializer.is_valid()):
+                    serializer.save()
+                else:
+                    for error in serializer.errors.values():
+                        errors.append(error)
+
+            sku_serializer = SkuSerializer(data={'id':sku_id,'productline':productline,'caseupc':caseupc,'unitupc':unitupc,'sku_name':sku_name,'count':count,'unit_size':unit_size,'formula':formula_id,'formula_scale_factor':formula_scale_factor,'manufacture_rate':manufacture_rate,
+                'manufacture_setup_cost': manufacture_setup,'manufacture_run_cost':manufacture_run,'comment':comment})
+            if(sku_serializer.is_valid()):
+                # print(sku_serializer.data)
+                sku_serializer.save()
+                # return Response(sku_serializer.data,status = status.HTTP_201_CREATED)
+            else:
+                for error in sku_serializer.errors.values():
+                    errors.append(error)
+            if errors != []:
+                transaction.savepoint_rollback(transaction_savepoint)
+                return Response(errors,status = status.HTTP_400_BAD_REQUEST)
+            transaction.savepoint_commit(transaction_savepoint)
+            return Response(sku_serializer.data,status = status.HTTP_201_CREATED)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+    # @transaction.atomic
+    # def update(self, request, *args, **kwargs):
+    #     try:
+    #         errors = []
+    #         transaction_savepoint = transaction.savepoint()
+    #         post_data = request.data
+    #         sku_id = post_data['id']
+    #         sku_name = post_data['sku_name']
+    #         caseupc = post_data['caseupc']
+    #         unitupc = post_data['unitupc']
+    #         count = post_data['count']
+    #         unit_size = post_data['unit_size']
+    #         productline = post_data['productline']
+    #         formula_id = post_data['formula']
+    #         if post_data['formula_name']:
+    #             formula_name = post_data['formula_name']
+    #         formula_scale_factor = post_data['formula_scale_factor']
+    #         manufacture_rate = post_data['manufacture_rate']
+    #         manufacture_setup = post_data['manufacture_setup_cost']
+    #         manufacture_run = post_data['manufacture_run_cost']
+    #         comment = post_data['comment']
+    #         print(sku_id)
+
+    #         if Formula.objects.filter(id=formula_id).exists():
+    #             formula = Formula.objects.get(id=formula_id)
+    #             f = FormulaSerializer(formula)
+    #             f_data = f.data
+    #             formula.delete()
+    #             if formula_name:
+    #                 f_data['formula_name']=formula_name
+    #             serializer = FormulaSerializer(data=f_data)
+    #             if(serializer.is_valid()):
+    #                 serializer.save()
+    #             else:
+    #                 for error in serializer.errors.values():
+    #                     errors.append(error)
+    #         else:
+    #             serializer = FormulaSerializer(data={'formula_name':formula_name,'id':formula_id,'comment':comment})
+    #             if(serializer.is_valid()):
+    #                 serializer.save()
+    #             else:
+    #                 for error in serializer.errors.values():
+    #                     errors.append(error)
+    #         print('66')
+    #         sku = Sku.objects.get(id=sku_id)
+    #         print(sku)
+    #         s = SkuSerializer(sku)
+    #         s_data = s.data
+    #         print(s_data)
+    #         print('66')
+    #         sku.delete()
+    #         print('66')
+    #         s_data['sku_name']=sku_name
+    #         s_data['productline']=productline
+    #         s_data['caseupc']=caseupc
+    #         s_data['unitupc']=unitupc
+    #         s_data['count']=count
+    #         print('66')
+    #         s_data['unit_size']=unit_size
+    #         s_data['formula']=formula_id
+    #         s_data['formula_scale_factor']=formula_scale_factor
+    #         print('66')
+    #         s_data['manufacture_rate']=manufacture_rate
+    #         s_data['comment']=comment
+    #         s_data['manufacture_setup_cost'] = manufacture_setup
+    #         s_data['manufacture_run_cost'] = manufacture_run
+    #         print('66')
+    #         sku_serializer = SkuSerializer(data=s_data)
+    #         if(sku_serializer.is_valid()):
+    #             print(sku_serializer.data)
+    #             # sku_serializer.save()
+    #             # return Response(sku_serializer.data,status = status.HTTP_201_CREATED)
+    #         else:
+    #             for error in sku_serializer.errors.values():
+    #                 errors.append(error)
+    #         if errors != []:
+    #             transaction.savepoint_rollback(transaction_savepoint)
+    #             return Response(errors,status = status.HTTP_400_BAD_REQUEST)
+    #         transaction.savepoint_commit(transaction_savepoint)
+    #         return Response(sku_serializer.data,status = status.HTTP_201_CREATED)
+    #     except Exception as e: 
+    #         return Response(status = status.HTTP_400_BAD_REQUEST)
+
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
@@ -93,9 +254,37 @@ class IngredientViewSet(viewsets.ModelViewSet):
             queryset |= Ingredient.objects.filter(id__in=ingr_ids)
         return queryset
 
+# class SalesReportViewSet(viewsets.ModelViewSet):
+#     queryset = Sale_Record.objects.all()
+#     serializer_class = SalesReportSerializer
+#     # print('retrive')
+
+#     def retrive(self, request, *args, **kwargs):
+#         print('retrive')
+#         instance = self.get_object()
+#         serializer = self.get_serializer(instance)
+#         case_dict = {}
+#         revenue_dict = {}
+#         for sale_record in serializer.data:
+#             year = sale_record['sale_date'].date.today().year;
+#             revenue_dict[year] += (sale_record['sales'])*(sale_record['price_per_case'])
+#             case_dict[year] += sale_record['sales']
+#         print(case_dict)
+#         print(revenue_dict)
+#         return Response(serializer.data)
+
 class FormulaViewSet(viewsets.ModelViewSet):
     queryset = Formula.objects.all()
     serializer_class = FormulaSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        formula = self.get_object()
+        # If related skus exist, abandon deletion 
+        if Sku.objects.filter(formula=formula.id).exists():
+            error = 'Related SKUs exist. Fail to delete Formula #%s' % str(formula.id)
+            return Response(error, status = status.HTTP_400_BAD_REQUEST)
+        formula.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -153,6 +342,378 @@ class ProductLineViewSet(viewsets.ModelViewSet):
 
 # Begin Explicit APIs
 @login_required(login_url='/accounts/login/')
+@api_view(['GET','POST'])
+# return a report on manufacture status
+def sales_summary(request):
+    def costCalculate(quantity, quantity_unit, package_size, package_size_unit, formula_scale_factor, cpp):
+        mass = ['lb', 'pound', 'oz', 'ounce', 'ton', 'g', 'gram', 'kg', 'kilogram']
+        volume = ['floz', 'fluidounce', 'pt', 'pint', 'qt', 'quart', 'gal', 'gallon', 'ml', 'milliliter', 'l', 'liter']
+        count = ['ct', 'count']
+        mass_dict = {}
+        volume_dict = {}
+        mass_dict['lb'] = 2.20
+        mass_dict['pound'] = 2.20
+        mass_dict['oz'] = 35.27
+        mass_dict['ounce'] = 35.27
+        mass_dict['ton'] = 0.0011
+        mass_dict['g'] = 1000.00
+        mass_dict['gram'] = 1000.00
+        mass_dict['kg'] = 1.00
+        mass_dict['kilogram'] = 1.00
+        volume_dict['floz'] = 33.81
+        volume_dict['fluidounce'] = 33.81
+        volume_dict['pt'] = 2.11
+        volume_dict['pint'] = 2.11
+        volume_dict['qt'] = 1.06
+        volume_dict['quart'] = 1.06
+        volume_dict['gal'] = 0.26
+        volume_dict['gallon'] = 0.26
+        volume_dict['ml'] = 1000.00
+        volume_dict['milliliter'] = 1000.00
+        volume_dict['l'] = 1.00
+        volume_dict['liter'] = 1.00
+
+        if package_size == 0:
+            return 0
+
+        num = cpp*formula_scale_factor/package_size
+
+        if package_size_unit in count and quantity_unit in count:
+            res = num*(quantity/package_size)
+            return res
+        elif package_size_unit in mass and quantity_unit in mass:
+            mass_converted = (quantity/(mass_dict[quantity_unit]))*mass_dict[package_size_unit]
+            # print("converted mass"+str(mass_converted))
+            res1 = num*mass_converted
+            return res1
+        elif package_size_unit in volume and quantity_unit in volume:
+            volume_converted = (quantity/(volume_dict[quantity_unit]))*volume_dict[package_size_unit]
+            res2 = num*volume_converted
+            return res2
+
+        return 0
+
+    if(request.method=='POST'):
+        try:
+            print(request.data)
+            active_pls = request.data['pl']
+            customer = request.data['customer']
+            product_line_names = []
+            if active_pls:
+                for a in active_pls:
+                    product_line_names.append(Product_Line.objects.get(product_line_name=a))
+            else:
+                product_line_names = Product_Line.objects.all()
+            product_line_dict = {}
+            for pl in product_line_names:
+                skus = Sku.objects.filter(productline=pl.product_line_name)
+                sku_dict = {}
+                response = []
+                for sku in skus:
+                    year_dict = {}
+                    year_dict['overall'] = {}
+                    sale_records = Sale_Record.objects.filter(sku=sku.id)
+                    ingredients = Formula_To_Ingredients.objects.filter(formula=sku.formula)
+                    goals = Manufacture_Goal.objects.filter(sku=sku.id)
+                    case_dict = {}
+                    formula_scale_factor = sku.formula_scale_factor
+                    overall_rev = 0
+                    overall_case = 0
+                    setup_cost = sku.manufacture_setup_cost
+                    ingr_cost_per_case = 0
+                    run_cost_per_case = sku.manufacture_run_cost
+                    for sale_record in sale_records:
+                        customer_id = sale_record.customer_id.id
+                        if customer and customer != 'all':
+                            if customer!=str(customer_id):
+                                continue
+                        sale_date = sale_record.sale_date
+                        year = sale_date.year
+                        revenue = sale_record.sales * sale_record.price_per_case
+                        overall_rev = overall_rev + revenue
+                        case = sale_record.sales
+                        overall_case = overall_case + case
+                        if year in year_dict:
+                            old_rev = year_dict[year]['revenue']
+                            year_dict[year]['revenue'] = old_rev + revenue
+                        else:
+                            year_dict[year] = {}
+                            year_dict[year]['revenue'] = revenue
+                        if year in case_dict:
+                            old_case = case_dict[year]
+                            case_dict[year] = old_case + case
+                        else:
+                            case_dict[year] = case
+                    # print(year_dict)
+                    if case_dict:
+                        for key in case_dict:
+                            # print(key)
+                            avg_rev_per_case = year_dict[key]['revenue']/case_dict[key]
+                            year_dict[key]['avg_rev_per_case'] = round(avg_rev_per_case,2)
+                    for ingr in ingredients:
+                        package_size = re.findall(r'\d*\.?\d+', ingr.ig.package_size)
+                        package_size_unit0 = re.sub(r'\d*\.?\d+', '', ingr.ig.package_size)
+                        package_size_unit = package_size_unit0.replace(' ', '').replace('.','').lower()
+                        if(package_size_unit[len(package_size_unit)-1]=='s'):
+                            package_size_unit = package_size_unit[:-1]
+                        float_package_size = float(package_size[0]) # from ingredient's package size
+                        ingredient_quantity = re.findall(r'\d*\.?\d+', ingr.quantity)
+                        float_quantity = float(ingredient_quantity[0]) # from ingredient's quantity
+                        quantity_unit0 = re.sub(r'\d*\.?\d+', '', ingr.quantity)
+                        quantity_unit = quantity_unit0.replace(' ', '').replace('.','').lower()
+                        if(quantity_unit[len(quantity_unit)-1]=='s'):
+                            quantity_unit = quantity_unit[:-1]
+                        cost = costCalculate(float_quantity, quantity_unit, float_package_size, package_size_unit, sku.formula_scale_factor, ingr.ig.cpp)
+                        ingr_cost_per_case = ingr_cost_per_case + cost
+                    year_dict['overall']['revenue'] = overall_rev
+                    count = 0;
+                    size = 0;
+                    for goal in goals:
+                        size = size + goal.desired_quantity
+                        count = count + 1;
+                    if count == 0:
+                        avg_run_size = 10
+                    else:
+                        avg_run_size = size/count
+                    if size == 0:
+                        avg_setup_cost_per_case = float(setup_cost)/10.0
+                    else:
+                        avg_setup_cost_per_case = float(setup_cost)/avg_run_size
+                    if overall_case == 0:
+                        year_dict['overall']['avg_rev_per_case'] = 0
+                    else:
+                        year_dict['overall']['avg_rev_per_case'] = round(overall_rev/overall_case,2)
+                    year_dict['overall']['ingr_cost_per_case'] = ingr_cost_per_case
+                    year_dict['overall']['avg_run_size'] = avg_run_size
+                    year_dict['overall']['avg_setup_cost_per_case'] = round(avg_setup_cost_per_case,2) 
+                    year_dict['overall']['run_cost_per_case'] = run_cost_per_case
+                    cogs_per_case = float(run_cost_per_case) + ingr_cost_per_case + float(avg_setup_cost_per_case)
+                    year_dict['overall']['cogs_per_case'] = round(cogs_per_case,2)
+                    profit_per_case = float(year_dict['overall']['avg_rev_per_case']) - cogs_per_case
+                    year_dict['overall']['profit_per_case'] = round(profit_per_case,2)
+                    if cogs_per_case == 0:
+                        year_dict['overall']['profit_margin'] = -1*100
+                    else:
+                        profit_margin = (float(year_dict['overall']['avg_rev_per_case'])/cogs_per_case-1)*100
+                        temp = round(profit_margin,2)
+                        year_dict['overall']['profit_margin'] = temp
+                    # print(year_dict)
+                    sku_dict[sku.id] = {}
+                    sku_dict[sku.id] = year_dict
+                # print(sku_dict)
+                product_line_dict[pl.product_line_name] = {}
+                product_line_dict[pl.product_line_name] = sku_dict
+            response = product_line_dict
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+# return a report on manufacture status
+def get_sku_drilldown(request, skuid):
+    def costCalculate(quantity, quantity_unit, package_size, package_size_unit, formula_scale_factor, cpp):
+        mass = ['lb', 'pound', 'oz', 'ounce', 'ton', 'g', 'gram', 'kg', 'kilogram']
+        volume = ['floz', 'fluidounce', 'pt', 'pint', 'qt', 'quart', 'gal', 'gallon', 'ml', 'milliliter', 'l', 'liter']
+        count = ['ct', 'count']
+        mass_dict = {}
+        volume_dict = {}
+        mass_dict['lb'] = 2.20
+        mass_dict['pound'] = 2.20
+        mass_dict['oz'] = 35.27
+        mass_dict['ounce'] = 35.27
+        mass_dict['ton'] = 0.0011
+        mass_dict['g'] = 1000.00
+        mass_dict['gram'] = 1000.00
+        mass_dict['kg'] = 1.00
+        mass_dict['kilogram'] = 1.00
+        volume_dict['floz'] = 33.81
+        volume_dict['fluidounce'] = 33.81
+        volume_dict['pt'] = 2.11
+        volume_dict['pint'] = 2.11
+        volume_dict['qt'] = 1.06
+        volume_dict['quart'] = 1.06
+        volume_dict['gal'] = 0.26
+        volume_dict['gallon'] = 0.26
+        volume_dict['ml'] = 1000.00
+        volume_dict['milliliter'] = 1000.00
+        volume_dict['l'] = 1.00
+        volume_dict['liter'] = 1.00
+
+        if package_size == 0:
+            return 0
+
+        num = cpp*formula_scale_factor/package_size
+
+        if package_size_unit in count and quantity_unit in count:
+            res = num*(quantity/package_size)
+            return res
+        elif package_size_unit in mass and quantity_unit in mass:
+            mass_converted = (quantity/(mass_dict[quantity_unit]))*mass_dict[package_size_unit]
+            # print("converted mass"+str(mass_converted))
+            res1 = num*mass_converted
+            return res1
+        elif package_size_unit in volume and quantity_unit in volume:
+            volume_converted = (quantity/(volume_dict[quantity_unit]))*volume_dict[package_size_unit]
+            res2 = num*volume_converted
+            return res2
+
+        return 0
+
+    if(request.method=='POST'):
+        try:
+            result = []
+            timespan = request.data['timespan']
+            customer = request.data['customer']
+            sale_records = Sale_Record.objects.filter(sku=skuid)
+            sku = Sku.objects.get(id=skuid)
+            ingredients = Formula_To_Ingredients.objects.filter(formula=sku.formula)
+            goals = Manufacture_Goal.objects.filter(sku=skuid)
+            response = {}
+            count = 0
+            total_rev = 0
+            cases = 0
+            setup_cost = sku.manufacture_setup_cost
+            ingr_cost_per_case = 0
+            run_cost_per_case = sku.manufacture_run_cost
+            for sale_record in sale_records:
+                sale_date = sale_record.sale_date
+                customer_id = sale_record.customer_id.id
+                if customer and customer != 'all':
+                    if customer!=str(customer_id):
+                        continue
+                if timespan['start_date'] and timespan['end_date']:
+                    start_date = datetime.datetime.strptime(timespan['start_date'], '%Y-%m-%d').date()
+                    end_date = datetime.datetime.strptime(timespan['end_date'], '%Y-%m-%d').date()
+                    if sale_date < start_date or sale_date > end_date:
+                        continue
+                revenue = sale_record.sales * sale_record.price_per_case
+                cases = cases + sale_record.sales
+                total_rev = total_rev + revenue
+                year = sale_date.year
+                week = sale_date.isocalendar()[1]
+                sale_info = {
+                    'sale_date': sale_date,
+                    'year': year,
+                    'week': week,
+                    'customer_id': sale_record.customer_id.id,
+                    'customer_name': sale_record.customer_name,
+                    'sales': sale_record.sales,
+                    'price_per_case': sale_record.price_per_case,
+                    'revenue': revenue
+                }
+                result.append(sale_info)
+            for ingr in ingredients:
+                package_size = re.findall(r'\d*\.?\d+', ingr.ig.package_size)
+                package_size_unit0 = re.sub(r'\d*\.?\d+', '', ingr.ig.package_size)
+                package_size_unit = package_size_unit0.replace(' ', '').replace('.','').lower()
+                if(package_size_unit[len(package_size_unit)-1]=='s'):
+                    package_size_unit = package_size_unit[:-1]
+                float_package_size = float(package_size[0]) # from ingredient's package size
+                ingredient_quantity = re.findall(r'\d*\.?\d+', ingr.quantity)
+                float_quantity = float(ingredient_quantity[0]) # from ingredient's quantity
+                quantity_unit0 = re.sub(r'\d*\.?\d+', '', ingr.quantity)
+                quantity_unit = quantity_unit0.replace(' ', '').replace('.','').lower()
+                if(quantity_unit[len(quantity_unit)-1]=='s'):
+                    quantity_unit = quantity_unit[:-1]
+                cost = costCalculate(float_quantity, quantity_unit, float_package_size, package_size_unit, sku.formula_scale_factor, ingr.ig.cpp)
+                ingr_cost_per_case = ingr_cost_per_case + cost
+            count = 0;
+            size = 0;
+            for goal in goals:
+                size = size + goal.desired_quantity
+                count = count + 1;
+            if count == 0:
+                avg_run_size = 10
+            else:
+                avg_run_size = size/count
+            if size == 0:
+                avg_setup_cost_per_case = float(setup_cost)/10.0
+            else:
+                avg_setup_cost_per_case = float(setup_cost)/avg_run_size
+            if cases == 0:
+                avg_rev_per_case = 0
+            else:
+                avg_rev_per_case = round(total_rev/cases,2)
+            cogs_per_case = round(float(run_cost_per_case) + float(ingr_cost_per_case) + float(avg_setup_cost_per_case),2)
+            profit_per_case = round(float(avg_rev_per_case) - cogs_per_case,2)
+            if cogs_per_case == 0:
+                year_dict['overall']['profit_margin'] = -1*100
+            else:
+                profit_margin = (float(avg_rev_per_case)/cogs_per_case-1)*100
+                temp = round(profit_margin,2)
+            response['overall'] = {
+                'revenue': total_rev,
+                'avg_rev_per_case': avg_rev_per_case,
+                'ingr_cost_per_case': round(ingr_cost_per_case,2),
+                'avg_run_size': avg_run_size,
+                'avg_setup_cost_per_case': round(avg_setup_cost_per_case,2),
+                'run_cost_per_case': run_cost_per_case,
+                'cogs_per_case': cogs_per_case,
+                'profit_per_case': profit_per_case,
+                'profit_margin': temp
+            }
+            response['rows'] = result #map to a list, each entry of the list is a map
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)           
+
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+# return a report on manufacture status
+def manufacture_schedule_report(request, userid):
+    if(request.method=='POST'):
+        try: 
+            # {'user': user, 'manufacture_line_short_name': ml, 'start_date': start_date, 'end_date': end_date}
+            request_info = request.data
+            # TODO: parse start and end date
+            start_date = request_info['start_date']
+            end_date = request_info['end_date']
+            # {'skus': [
+            # {'sku_name': sku_name, 
+            # 'case_quantity': quantity, 
+            # 'start': start, 
+            # 'end' : end, 
+            # 'duration': duration, 
+            # 'ingredient_info': ['ingr_name': name, 'ingr_quantity': qty]},
+            #  {}
+            #  ]
+            #  }
+            result = {'skus': []}
+            # schedule_sku_ids could contain duplicated skus 
+            schedule_sku_ids = Manufacture_Line_Skus.objects.filter(Q(user=request_info['user']),
+                        Q(manufacture_line_short_name=request_info['manufacture_line_short_name']),
+                        Q(start__range=[start_date, end_date]) | Q(end__range=[start_date, end_date])).values_list('id', flat=True)
+            for schedule_sku_id in schedule_sku_ids:
+                schedule_sku = Manufacture_Line_Skus.objects.get(pk=schedule_sku_id)
+                sku = Sku.objects.get(pk=schedule_sku.sku_id)
+                sku_name=sku.sku_name
+                case_quantity = Manufacture_Goal.objects.get(sku=schedule_sku.id, name=schedule_sku.goal_name).desired_quantity
+                start = schedule_sku.start
+                end = schedule_sku.end
+                duration = schedule_sku.duration
+                ingredient_info = []
+                sku2ingrs = Formula_To_Ingredients.objects.filter(formula=sku.formula)
+                for sku2ingr in sku2ingrs:
+                    ingr_name = Ingredient.objects.get(pk=sku2ingr.ig.id).ingredient_name
+                    ingredient_info.append({
+                        'ingr_name': ingr_name,
+                        'ingr_quantity': float(sku2ingr.quantity)*sku.formula_scale_factor
+                    })
+                sku_info = {
+                    'sku_name': sku_name,
+                    'case_quantity': case_quantity,
+                    'start': start,
+                    'end': end,
+                    'duration': duration,
+                    'ingredient_info': ingredient_info
+                }
+                result['sku'].append(sku_info)
+            return Response(result,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
 @api_view(['POST'])
 # return list of all manufacturing lines with status 
 def active_manufacturing_lines(request):
@@ -186,6 +747,20 @@ def active_manufacturing_lines(request):
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
+@login_required(login_url='/accounts/login/')
+@api_view(['GET'])
+# return list of all manufacturing lines with status 
+def get_customer(request):
+    if(request.method=='GET'):
+        try:
+            response = []
+            customers = Customer.objects.all()
+            for customer in customers:
+                serializer = CustomerSerializer(customer)
+                response.append(serializer.data)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])
@@ -502,9 +1077,42 @@ def delete_ingredients_to_formula(request,formula,ig):
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])
 def update_ingredients_to_formula(request,formula,ig):
+    def validate_unit(ingredient_quantity_unit, quantity_unit):
+        mass = ['lb', 'pound', 'oz', 'ounce', 'ton', 'g', 'gram', 'kg', 'kilogram']
+        volume = ['floz', 'fluidounce', 'pt', 'pint', 'qt', 'quart', 'gal', 'gallon', 'ml', 'milliliter', 'l', 'liter']
+        count = ['ct', 'count']
+        if ingredient_quantity_unit in mass and quantity_unit in mass:
+            return True;
+        
+        if ingredient_quantity_unit in volume and quantity_unit in volume:
+            return True
+
+        if ingredient_quantity_unit in count and quantity_unit in count:
+            return True
+
+        return False
+    
     if(request.method == 'POST'):
         try: 
+            errors = []
+            formula = Formula.objects.get(id=formula)
+            ingredient = Ingredient.objects.get(id=ig)
+            ingredient_quantity = ingredient.package_size
+            quantity = request.data['quantity']
+            ingredient_quantity_unit = re.sub(r'\d*\.?\d+', '', ingredient_quantity)
+            ingredient_quantity_unit = ingredient_quantity_unit.replace(' ', '').replace('.','').lower()
+            if(ingredient_quantity_unit[len(ingredient_quantity_unit)-1]=='s'):
+               ingredient_quantity_unit = ingredient_quantity_unit[:-1]
+            quantity_unit = re.sub(r'\d*\.?\d+', '', quantity)
+            quantity_unit = quantity_unit.replace(' ', '').replace('.','').lower()
+            if(quantity_unit[len(quantity_unit)-1]=='s'):
+                quantity_unit = quantity_unit[:-1]
+            if not validate_unit(ingredient_quantity_unit, quantity_unit):
+                errors.append('unit not compatible for %s' % ingredient.ingredient_name)
+                post_result = {'errors': errors}
+                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
             relation = Formula_To_Ingredients.objects.get(formula = formula, ig=ig)
+            quantity = request.data['quantity']
             serializer = IngredientToFormulaSerializer(relation,{'quantity':request.data['quantity']},partial=True)
             if(serializer.is_valid()):
                 serializer.save()
@@ -582,7 +1190,7 @@ def manufacture_goals(request):
     if(request.method == 'POST'):
         try: 
             sku = Sku.objects.get(sku_name=request.data['goal_sku_name'])
-            print(request.data['name'])
+            # print(request.data['name'])
             goal = Goal.objects.get(id=request.data['name'])
             # COUPLED WITH FRONT END MAY WANT TO REFACTOR
             request.data['sku'] = sku.id
@@ -791,3 +1399,23 @@ def get_scheduler(request):
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
+@login_required(login_url='/accounts/login/')
+@api_view(['GET','POST'])
+def get_sales_report(request):
+    try:
+        # settings = Settings()
+        # os.environ['SCRAPY_SETTINGS_MODULE'] = 'sales_data.settings'
+        # settings_module_path = os.environ['SCRAPY_SETTINGS_MODULE']
+        # settings.setmodule(settings_module_path, priority='project')
+        settings = get_project_settings()
+        process = CrawlerProcess(settings)
+        spider = SalesSpider()
+        process.crawl(spider)
+        process.start()
+        result = {
+            'status': 'success'
+        }
+        return Response(result, status = status.HTTP_200_OK)
+    except Exception as e: 
+        print(e)
+        return Response(status = status.HTTP_400_BAD_REQUEST)

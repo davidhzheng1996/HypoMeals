@@ -15,8 +15,12 @@
          </h1>
          <div class="form-inline my-2 my-lg-0">
             <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" autocomplete="on" v-model="search_term"  aria-label="Search" @blur="onBlur">
-            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="search_input_changed()">Search</button>
+            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="search_input_changed()" title="To search by multiple ingredients, separate each ingredient by comma. E.g. 'lettuce,tomato'">Search</button>
         </div>
+
+             <div class="form-inline my-2 ml-2 mr-2 my-lg-0">
+                                    <button class="btn btn-success" type="submit" @click="disablePage()">See Full Listing</button>
+                  </div>
          <table class="table">
             <thead>
                <tr>
@@ -49,7 +53,7 @@
             </tbody>
          </table>
       </div>
-      <div class="clearfix btn-group col-md-2 offset-md-5">
+      <div id = "pagination" class="clearfix btn-group col-md-2 offset-md-5">
             <button type="button" class="btn btn-sm btn-outline-secondary" v-if="page != 1" @click="page--"> << </button>
             <!-- <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> ${pageNumber} </button> -->
             <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>
@@ -75,7 +79,7 @@
                               <div class="modal-body">
                                     <div class="form-group">
                                           <label>Ingredient Name*</label>
-                                          <input type="text" id="name" class="form-control" placeholder="Enter Ingredient Name" v-model="newIngredient.ingredient_name"
+                                          <input type="text" id="name" class="form-control" accept-charset="ISO-8859-1" placeholder="Enter Ingredient Name" v-model="newIngredient.ingredient_name"
                                                 required="required">
                                     </div>
                                     <div class="form-group">
@@ -89,7 +93,7 @@
                                     </div>
                                     <div class="form-group">
                                           <label>(Optional) Vender Info</label>
-                                          <textarea class="form-control" placeholder="Enter Optional Vender Info" v-model="newIngredient.description" rows="3"></textarea>
+                                          <textarea class="form-control" accept-charset="ISO-8859-1" placeholder="Enter Optional Vender Info" v-model="newIngredient.description" rows="3"></textarea>
                                     </div>
                                     <div class="form-group">
                                           <label>(Optional) Ingredient ID</label>
@@ -128,7 +132,7 @@
                               <div class="modal-body">
                                     <div class="form-group">
                                           <label>Ingredient Name*</label>
-                                          <input type="text" class="form-control" placeholder="Enter Ingredient Name" v-model="currentIngredient.ingredient_name" required="required">
+                                          <input type="text" class="form-control" accept-charset="ISO-8859-1" placeholder="Enter Ingredient Name" v-model="currentIngredient.ingredient_name" required="required">
                                     </div>
                                     <div class="form-group">
                                           <label>Package Size*</label>
@@ -141,7 +145,7 @@
                                     </div>
                                     <div class="form-group">
                                           <label>(Optional) Vender Info</label>
-                                          <textarea class="form-control" placeholder="Enter Optional Vender Info" v-model="currentIngredient.description" rows="3"></textarea>
+                                          <textarea class="form-control" accept-charset="ISO-8859-1" placeholder="Enter Optional Vender Info" v-model="currentIngredient.description" rows="3"></textarea>
                                     </div>
                                     <!-- <div class="form-group">
                                           <label>(Optional) Ingredient ID</label>

@@ -1,0 +1,41 @@
+{% extends 'base.html' %} {% load static %}
+<link rel="stylesheet" href="{% static 'css/ingredients.css' %}"> {% block content %}
+<div id="starting">
+   <div class="container">
+      <div class="row">
+         <h1>List of Tasks</h1>
+         <table class="table">
+            <thead>
+               <tr>
+                  <th scope="col">SKU Name</th>
+                  <th scope="col">Formula</th>
+                  <th scope="col">Ingredients</th>
+                  <th scope="col">Case Quantity</th>
+                  <th scope="col">Start Time</th>
+                  <th scope="col">End Time</th>
+                  <th scope="col">Duration</th>
+               </tr>
+            </thead>
+            <tbody>
+               <!-- https://vuejs.org/v2/guide/migration.html#Replacing-the-orderBy-Filter -->
+               <tr v-for="sku in skus">
+                  <th scope="row">${sku.sku_name}</th>
+                  <td>${sku.formula}</td>
+                  <template v-for="ingredient in sku.ingredient_info">
+                     <li>${ingredient.ingr_name}: ${ingredient.ingr_quantity}</li>
+                  </template>
+                  <td>${sku.case_quantity}</td>
+                  <td>${sku.start}</td>
+                  <td>${sku.end}</td>
+                  <td>${sku.duration}</td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+   </div>
+   <div class="loading" v-if="loading===true">Loading&#8230;</div>
+</div>
+<!-- <! — bootrtap js files → -->
+<script>vm.getItemss({user.id})</script>
+<script src="../static/js/manufacture_report.js"></script>
+{% endblock %}

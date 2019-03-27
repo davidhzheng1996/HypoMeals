@@ -17,6 +17,7 @@ new Vue({
      formulaFile: null,
      has_paginated:false,
      csv_uploaded:false,
+     disable_paginate: false,
      search_term: '',
      search_input: '',
      suggestionAttribute: 'original_title',
@@ -254,6 +255,9 @@ new Vue({
           this.formulas = _.sortBy(this.formulas, this.sortKey).reverse()
         }
       },
+        disablePage: function(){
+        this.disable_paginate = true;
+      },
       
       onBlur: function(event) {
         if (event && this.search_term !== event.target.value) 
@@ -265,7 +269,14 @@ new Vue({
 
   computed: {
     displayedFormulas () {
-      return this.paginate(this.formulas);
+      var x = document.getElementById("pagination");
+      if(this.disable_paginate){
+          x.style.display = "none";
+        return this.formulas;
+      } else{
+        x.style.display = "block";
+         return this.paginate(this.formulas);
+    }
     }
   },
 

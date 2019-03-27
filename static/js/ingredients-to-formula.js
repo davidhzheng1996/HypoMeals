@@ -7,6 +7,7 @@ var vm = new Vue({
     currentIngredient: {},
     message: null,
     has_paginated:false,
+    disable_paginate:false,
     page:1,
     perPage: 10,
     pages:[],
@@ -185,6 +186,9 @@ var vm = new Vue({
       let to = (page * perPage);
       return  ingredients.slice(from, to);
     },
+    disablePage: function(){
+        this.disable_paginate = true;
+      },
     onBlur: function (event) {
       if (event && this.newIngredient.ingredient_name !== event.target.value)
         this.newIngredient.ingredient_name = event.target.value
@@ -192,7 +196,14 @@ var vm = new Vue({
   },
   computed: {
     displayedIngredients () {
-      return this.paginate(this.ingredients);
+      var x = document.getElementById("pagination");
+      if(this.disable_paginate){
+          x.style.display = "none";
+        return this.ingredients;
+      } else{
+        x.style.display = "block";
+         return this.paginate(this.ingredients);
+    }
     }
   },
 });

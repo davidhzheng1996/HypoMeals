@@ -3,7 +3,7 @@
 <div id="starting">
    <div class="container">
       <div class="row">
-         <h1>A Manufacturing Goal
+         <h1>Manufacturing Goal#{{goalid}}
             <button class="btn btn-success" data-toggle="modal" data-target="#addGoalModal">Add SKU</button>
             <button class="btn btn-success" type="submit" @click="exportCSV()">Export</button>
          </h1>
@@ -58,6 +58,7 @@
                         id="sku_search_input"
                         type="text"
                         class="form-control"
+                        accept-charset="ISO-8859-1"
                         placeholder="Enter SKU Name"
                         v-model="newGoal.goal_sku_name"
                         required="required" 
@@ -101,6 +102,7 @@
                      <input
                         type="text"
                         class="form-control"
+                        accept-charset="ISO-8859-1"
                         placeholder="Enter SKU Name"
                         v-model="currentGoal.goal_sku_name"
                         required="required" >

@@ -14,11 +14,12 @@ new Vue({
      perPage: 10,
      pages:[],
      newSku: { 'sku_name': '','productline': '', 'id': 0, 'caseupc': 100000000000,'unitupc': 100000000000, 'unit_size': 0, 'count': 0, 'formula':0,
-     'formula_scale_factor':0, 'manufacture_rate':0,'comment': null},
+     'formula_scale_factor':0, 'formula_name': '','manufacture_rate':0,'manufacture_setup_cost':0,'manufacture_run_cost':0,'comment': null},
      skuFile: null,
      formulaFile: null,
      has_paginated:false,
      csv_uploaded:false,
+     disable_paginate: false,
      search_term: '',
      search_input: '',
      sortKey: 'sku_name',
@@ -33,6 +34,8 @@ new Vue({
             {'formula': true},
             {'formula_scale_factor': true},
             {'manufacture_rate': true},
+            {'manufacture_setup_cost': true},
+            {'manufacture_run_cost': true},
           ],
       upload_errors: '',
       // [['ml_short_name': ml_short_name, 'ml_name': ml_name, 'comment': comment, 'all_active': bool, 'part_active': bool] x num_ml]
@@ -164,7 +167,7 @@ new Vue({
         }
       },
       viewFormula: function(formulaid){
-        window.location.href = '/sku/'+formulaid
+        window.location.href = '/formula/'+formulaid
       },
       viewIngr: function(skuid){
         window.location.href = '/get_sku/'+skuid
@@ -222,8 +225,7 @@ new Vue({
           this.unit_upc_errors = "unit upc not up to format, make sure leading number or check digit is correct";
           return;
          }
-         console.log(this.currentSku.id)
-         this.$http.put('/api/sku/'+ this.currentSku.id + '/',     this.currentSku)
+         this.$http.put('/api/sku/'+ this.currentSku.id + '/', this.currentSku)
            .then((response) => {
              $("#editSkuModal").modal('hide');
          this.loading = false;
@@ -362,6 +364,10 @@ new Vue({
             console.log(err);
         })
       },
+
+      disablePage: function(){
+        this.disable_paginate = true;
+      },
    
       ml_checkbox_click: function(ev, ml) {
         ml['part_active'] = false;
@@ -371,7 +377,14 @@ new Vue({
 
   computed: {
     displayedSkus () {
-      return this.paginate(this.skus);
+      var x = document.getElementById("pagination");
+      if(this.disable_paginate){
+        x.style.display = "none";
+        return this.skus;
+      } else{
+         x.style.display = "block";
+         return this.paginate(this.skus);
+    }
     }
   },
 

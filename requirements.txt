@@ -8,3 +8,8 @@ requests
 jsonfield
 whitenoise
 dj-database-url
+scrapy
+scrapyd
+python-scrapyd-api
+scrapy-djangoitem
+dill

@@ -64,6 +64,11 @@ class IngredientToSkuSerializer(serializers.ModelSerializer):
         model = Sku_To_Ingredient
         fields = '__all__'
 
+class SalesReportSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = Sale_Record
+        fields = '__all__'
+
 class IngredientToFormulaSerializer(serializers.ModelSerializer):
     class Meta: 
         model = Formula_To_Ingredients
