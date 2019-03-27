@@ -51,7 +51,8 @@ class Ingredient(models.Model):
 	id = models.BigIntegerField(primary_key=True)
 	ingredient_name = models.CharField(max_length=128, unique=True, null=False, default='')
 	description = models.TextField(null=True, blank = True) 
-	package_size = models.CharField(max_length=128,null=True)
+	package_size = models.CharField(max_length=128,null=False, default = '',
+		validators=[RegexValidator(r'^(\d*\.?\d+)\s*(\D.*|)$', message="package size not up to standard", code = "invalid package size")])
 	cpp = models.FloatField(null=True)
 	comment = models.TextField(null=True, blank = True)
 
@@ -96,7 +97,6 @@ class Customer(models.Model):
 	name = models.CharField(max_length=128, unique = True)
 
 class Sku_To_Customer(models.Model):
-	id = models.BigIntegerField(primary_key=True, null=False)
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
 	customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
 
@@ -138,7 +138,9 @@ class Sku_To_Ml_Shortname(models.Model):
 class Formula_To_Ingredients(models.Model):
 	formula = models.ForeignKey(Formula, on_delete=models.CASCADE)
 	ig = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-	quantity = models.CharField(null=False, max_length=32, default='')
+	quantity = models.CharField(max_length=128,null=False, default = '',
+		validators=[RegexValidator(r'^(\d*\.?\d+)\s*(\D.*|)$', message="quantity size not up to standard", code = "invalid quantity size")])
+
 
 	class Meta:
 		unique_together = (("formula","ig"),)

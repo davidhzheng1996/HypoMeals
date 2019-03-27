@@ -13,6 +13,8 @@ urlpatterns = [
     path('formula',views.formula),
     path('product_line', views.product_line),
     path('manufacture_line', views.manufacture_line),
+    path('sales_report', views.sales_report),
+    path('sku_drilldown/<int:skuid>', views.sku_drilldown),
     path('goal',views.goal),
     path('goal/<int:goalid>',views.manufacture_goal),
     path('sku/<int:formulaid>',views.formula_to_sku),
@@ -35,6 +37,7 @@ urlpatterns = [
     path('api/formula_to_sku/<int:formulaid>',viewsets.formula_to_sku),
     path('api/mls_to_sku/<int:skuid>',viewsets.mls_to_sku),
     path('api/add_ml_to_sku/<int:skuid>/<str:mlshortname>',viewsets.add_ml_to_sku),
+    path('api/get_sku_drilldown/<int:skuid>',viewsets.get_sku_drilldown),
     # path('api/calculate_goal/<int:id>/<int:goalid>',viewsets.calculate_ingredient),
     path('api/ingredients_to_sku/<int:skuid>',viewsets.ingredients_to_sku),
     path('api/delete_ingredients_to_sku/<int:sku>/<int:ig>',viewsets.delete_ingredients_to_sku),
@@ -62,4 +65,6 @@ urlpatterns = [
     path('api/mg_to_skus/<str:goal_name>', viewsets.mg_to_skus),
     path('api/manufacture_schedule_report/', viewsets.manufacture_schedule_report),
     path('api/sales_report/', viewsets.sales_report)
+    path('api/sales_summary/', viewsets.sales_summary),
+    path('api/get_customer/', viewsets.get_customer)
 ]

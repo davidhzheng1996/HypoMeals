@@ -1,0 +1,193 @@
+{% extends 'base.html' %} {% load static %}
+<link rel="stylesheet" href="{% static 'css/ingredients.css' %}"> {% block content %}
+<div id="starting">
+   <div class="container">
+      <div class="row">
+         <h1>Drilldown for SKU#{{skuid}}
+            <button class="btn btn-success" type="submit" @click="exportCSV">Export Sku</button>
+         </h1>
+         <div class="form-inline my-2 ml-2 mr-2 my-lg-0">
+               <button class="btn btn-success" data-toggle="modal" data-target="#LineGraphModal">View Sku Line Graph</button>
+         </div>
+         <div class="form-inline my-2 ml-2 mr-2 my-lg-0">
+            Select Customer:   
+            <select id="customers" v-on:change="getSelected($event)"> 
+               <option value="all">all</option>
+            <template v-for="customer in customers">
+              <option :value="customer.id">${customer.id}:${customer.name}</option>
+           </template>
+            </select>
+         </div>
+         <div class="form-inline my-2 ml-2 mr-2 my-lg-0">
+            <button class="btn btn-success" data-toggle="modal" data-target="#TimeSpanModal">Select Timespan</button>
+         </div>
+         <!-- insert timespan select here -->
+         <div class="form-inline my-2 ml-2 mr-2 my-lg-0">
+
+         </div>
+         <table class="table">
+            <thead>
+               <tr>
+                  <th>Entry</th>
+                  <th>Total Revenue</th>
+                  <th>Avg Revenue/Case</th>
+                  <th>Ingr Cost/Case</th>
+                  <th>Avg Run Size</th>
+                  <th>Avg Setup Cost/Case</th>
+                  <th>Run Cost/Case</th>
+                  <th>COGS/Case</th>
+                  <th>Profit/Case</th>
+                  <th>Profit Margin</th>
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                  <th>overall</th>
+                  <td>${items.overall.revenue}</td>
+                  <td>${items.overall.avg_rev_per_case}</td>
+                  <td>${items.overall.ingr_cost_per_case}</td>
+                  <td>${items.overall.avg_run_size}</td>
+                  <td>${items.overall.avg_setup_cost_per_case}</td>
+                  <td>${items.overall.run_cost_per_case}</td>
+                  <td>${items.overall.cogs_per_case}</td>
+                  <td>${items.overall.profit_per_case}</td>
+                  <td>${items.overall.profit_margin}</td>
+               </tr>
+            </tbody>
+            <thead>
+               <tr>
+                  <th>Year</th>
+                  <th>Week</th>
+                  <th>Customer ID</th>
+                  <th>Customer Name</th>
+                  <th>Number of Sales</th>
+                  <th>Price/Case</th>
+                  <th>Revenue</th>
+               </tr>
+            </thead>
+            <tbody>
+               <!-- https://vuejs.org/v2/guide/migration.html#Replacing-the-orderBy-Filter -->
+               <!-- write an overall row before entering forloop -->
+               <tr v-for="item in items.rows">
+                  <th>${item.year}</th>
+                  <td>${item.week}</td>
+                  <td>${item.customer_id}</td>
+                  <td>${item.customer_name}</td>
+                  <td>${item.sales}</td>
+                  <td>${item.price_per_case}</td>
+                  <td>${item.revenue}</td>
+               </tr>
+            </tbody>
+         </table>
+      </div>
+<!--       <div id = "pagination" class="clearfix btn-group col-md-2 offset-md-5">
+            <button type="button" class="btn btn-sm btn-outline-secondary" v-if="page != 1" @click="page--"> << </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> ${pageNumber} </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>
+            <button type="button" @click="page++" v-if="page < pages.length" class="btn btn-sm btn-outline-secondary"> >> </button>
+          </div> -->
+   </div>
+   <div class="loading" v-if="loading===true">Loading&#8230;</div>
+   <div class="modal fade" id="TimeSpanModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                        <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">Select Timespan</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                              </button>
+                        </div>
+                        <form v-on:submit.prevent="updateTimespan()">
+                              <div class="modal-body">
+                                 <div class="form-group">
+                                    <label>Start Date*</label>
+                                    <input
+                                       type="date"
+                                       class="form-control"
+                                       placeholder="Enter Start Date"
+                                       v-model="timespan.start_date"
+                                       required="required" >
+                                 </div>
+                                 <div class="form-group">
+                                    <label>End Date*</label>
+                                    <input
+                                       type="date"
+                                       class="form-control"
+                                       placeholder="Enter End Date"
+                                       v-model="timespan.end_date"
+                                       required="required" >
+                                 </div>
+                              </div>
+                              <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                              </div>
+                        </form>
+                  </div>
+            </div>
+            <div class="loading" v-if="loading===true">Loading&#8230;</div>
+      </div>
+   <div class="loading" v-if="loading===true">Loading&#8230;</div>
+</div>
+<!-- <! — bootrtap js files → -->
+<script> var savedSkuId = {{skuid}}</script>
+<!-- <script> var savedItems = {}</script> -->
+<script src="../static/js/sku_drilldown.js"></script>
+ <div class="modal fade" id="LineGraphModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                        <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">Line Graph</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                              </button>
+                        </div>
+                               <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                               <script type="text/javascript">
+                                 google.charts.load('current', {packages: ['corechart', 'line']});
+                                 google.charts.setOnLoadCallback(drawBackgroundColor);
+
+                                 function drawBackgroundColor() {
+                                       var data = new google.visualization.DataTable();
+                                       data.addColumn('string', 'X');
+                                       data.addColumn('number', 'Revenue');
+                                       console.log(global_items);
+                                       let row_dict = global_items['rows'];
+                                       for(key in row_dict){
+                                          if(row_dict.hasOwnProperty(key)){
+                                             data.addRow([row_dict[key].sale_date,row_dict[key].revenue]);
+                                          }
+                                       }
+
+                                       var options = {
+                                         hAxis: {
+                                           title: 'Time',
+                                           textPosition:'none',
+                                           baseline: 0,
+                                           gridlines: { count: 6 },
+                                         },
+                                         vAxis: {
+                                           title: 'Revenue',
+                                           // textStyle: {fontSize:8,color: '#005500'},
+                                         },
+                                         backgroundColor: '#f1f8e9',
+                                         legend: 'none',
+                                         width: 480,
+                                         height: 300,
+                                       };
+
+                                       var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+                                       chart.draw(data, options);
+                                     }
+                               </script>
+                               <div id="chart_div" style="width: 600px; height: 500px"></div>
+                           <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                              </div>
+                  </div>
+            </div>
+            <div class="loading" v-if="loading===true">Loading&#8230;</div>
+      </div>
+<!-- <script>vm.getItems({{skuid}})</script> -->
+<script>vm.getItems({{skuid}})</script>
+{% endblock %}

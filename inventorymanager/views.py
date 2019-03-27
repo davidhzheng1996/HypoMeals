@@ -90,6 +90,14 @@ def goal(request):
 @login_required(login_url='/accounts/login')
 def calculate_goal(request,goalid):
 	return render(request,"calculate.html",{'goalid':goalid})
+
+@login_required(login_url='/accounts/login/')
+def sales_report(request):
+	return render(request, "sales_report.html")
+
+@login_required(login_url='/accounts/login/')
+def sku_drilldown(request, skuid):
+	return render(request, "sku-drilldown.html", {'skuid':skuid})
 # @login_required(login_url='/accounts/login/')
 # def goal(request):
 # 	return render(request, "calculate.html",{'goalid':goalid})
