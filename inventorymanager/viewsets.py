@@ -17,7 +17,9 @@ from scrapy.crawler import CrawlerProcess
 from scrapy.crawler import Crawler
 from scrapy import signals
 from scrapy.utils.project import get_project_settings
-
+from scrapy.settings import Settings
+import os
+import imp
 import sys
 sys.path.append('..')
 from crawl.sales_data.sales_data.spiders.sales_spider import SalesSpider
@@ -1379,7 +1381,12 @@ def get_scheduler(request):
 @api_view(['GET','POST'])
 def sales_report(request):
     try:
-        process = CrawlerProcess(get_project_settings())
+        # settings = Settings()
+        # os.environ['SCRAPY_SETTINGS_MODULE'] = 'sales_data.settings'
+        # settings_module_path = os.environ['SCRAPY_SETTINGS_MODULE']
+        # settings.setmodule(settings_module_path, priority='project')
+        settings = get_project_settings()
+        process = CrawlerProcess(settings)
         spider = SalesSpider()
         process.crawl(spider)
         process.start()
@@ -1390,36 +1397,3 @@ def sales_report(request):
     except Exception as e: 
         print(e)
         return Response(status = status.HTTP_400_BAD_REQUEST)
-
-
-
-    # if(request.method == 'POST'):
-    #     # Initialize the crawling process using Scrapyd
-    #     try:
-    #         # Blocking Crawling
-    #         # process = CrawlerProcess()
-    #         # spider = SalesSpider()
-    #         # process.crawl(spider)
-    #         # process.start()
-
-    #         # Non blocking
-    #         # print(1)
-    #         # spider = SalesSpider()
-    #         # print(2)
-    #         # crawler = CrawlerScript(spider)
-    #         # print(3)
-    #         # crawler.start()
-    #         # print(4)
-    #         # crawler.join()
-
-    #         # Non blocking
-    #         threading.Thread(target=crawl,args=[]).start()
-    #         print('after')
-    #         result = {
-    #             # Ideally this should be pending while the crawling process runs in the background 
-    #             'status': 'success'
-    #         }
-    #         # return Response(result, status = status.HTTP_200_OK)
-    #     except Exception as e: 
-    #         print(e)
-    #         # return Response(status = status.HTTP_400_BAD_REQUEST)

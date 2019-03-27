@@ -55,6 +55,7 @@ class SalesSpider(scrapy.Spider):
                 customer_name=data['cust_name'], 
                 sales=data['sales'],
                 price_per_case=data['price_per_case'])
+            sale_item.save()
             yield sale_item
         
         if not len(self.year_sku) == 0:

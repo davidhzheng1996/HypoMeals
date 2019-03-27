@@ -78,7 +78,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'sales_data.pipelines.SalesDataPipeline': 300,
+   'sales_data.pipelines.SalesDataPipeline': 900,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
