@@ -13,6 +13,16 @@ from django.contrib.auth.models import User
 from django.db import transaction
 import datetime
 import math
+from scrapy.crawler import CrawlerProcess
+from scrapy.crawler import Crawler
+from scrapy import signals
+from scrapy.utils.project import get_project_settings
+from twisted.internet import reactor
+from billiard import Process
+
+import sys
+sys.path.append('..')
+from crawl.sales_data.sales_data.spiders.sales_spider import SalesSpider
 
 import requests
 import re
@@ -1032,3 +1042,34 @@ def get_scheduler(request):
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
+# Generate Sales Report based on product line and sku 
+# @login_required(login_url='/accounts/login/')
+@api_view(['GET','POST'])
+def sales_report(request):
+    # if(request.method == 'GET'):
+    #     # Use the task ID to check if crawling completes
+    #     # return status('pending', 'running', 'finished')
+    #     try: 
+    #         skus = Sku.objects.filter(formula=formulaid)
+    #         response = []
+    #         for sku in skus:
+    #             serializer = SkuSerializer(sku)
+    #             response.append(serializer.data)
+    #         return Response(response,status = status.HTTP_200_OK)
+    #     except Exception as e: 
+    #         return Response(status = status.HTTP_400_BAD_REQUEST)
+    if(request.method == 'POST'):
+        # Initialize the crawling process using Scrapyd
+        try:
+            process = CrawlerProcess()
+            spider = SalesSpider()
+            process.crawl(spider)
+            process.start()
+            result = {
+                # Ideally this should be pending while the crawling process runs in the background 
+                'status': 'success'
+            }
+            return Response(result, status = status.HTTP_200_OK)
+        except Exception as e: 
+            print(e)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
