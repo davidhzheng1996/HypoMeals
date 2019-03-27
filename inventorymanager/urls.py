@@ -64,7 +64,7 @@ urlpatterns = [
     path('api/get_scheduler',viewsets.get_scheduler),
     path('api/mg_to_skus/<str:goal_name>', viewsets.mg_to_skus),
     path('api/manufacture_schedule_report/', viewsets.manufacture_schedule_report),
-    path('api/sales_report/', viewsets.sales_report)
+    path('api/sales_report/', viewsets.sales_report),
     path('api/sales_summary/', viewsets.sales_summary),
     path('api/get_customer/', viewsets.get_customer)
 ]
