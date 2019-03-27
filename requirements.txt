@@ -9,3 +9,5 @@ jsonfield
 scrapy
 scrapyd
 python-scrapyd-api
+scrapy-djangoitem
+dill

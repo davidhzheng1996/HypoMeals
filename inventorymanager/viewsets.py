@@ -1399,8 +1399,7 @@ def get_scheduler(request):
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
-# Generate Sales Report based on product line and sku 
-# @login_required(login_url='/accounts/login/')
+@login_required(login_url='/accounts/login/')
 @api_view(['GET','POST'])
 def get_sales_report(request):
     try:
