@@ -32,6 +32,7 @@ new Vue({
     error:'',
     unit_error: '',
     active_pls:[],
+    status:'',
   },
   mounted: function () {
     this.getItems();
@@ -123,18 +124,21 @@ new Vue({
         this.active_pls = actives;
         this.getItems();
       },
-      postCustomer: function(){
-        // let api_url = 'api/customer/';
-        // var e = document.getElementById("customers");
-        // var text = e.options[e.selectedIndex].text;
-        // let request = text;
-        // this.$http.post(api_url, request)
-        // .then((response) => {
-          
-        // })
-        // .catch((err) => {
-        //     console.log(err);
-        // })
+      scrapeData: function(){
+        let api_url = 'api/get_sales_report';
+                   this.loading = true;
+           this.$http.get(api_url)
+               .then((response) => {
+                  this.status = response.data['status'];
+                  if(status=='success'){
+                    this.getItems();
+                  }
+                  this.loading = false;
+               })
+               .catch((err) => {
+                   this.loading = false;
+                   console.log(err);
+               })
       },
       // getCustomer: function(){
       //   let api_url = 'api/customer';

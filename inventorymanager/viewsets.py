@@ -404,7 +404,6 @@ def sales_summary(request):
                     product_line_names.append(Product_Line.objects.get(product_line_name=a))
             else:
                 product_line_names = Product_Line.objects.all()
-            print(product_line_names)
             product_line_dict = {}
             for pl in product_line_names:
                 skus = Sku.objects.filter(productline=pl.product_line_name)
@@ -415,13 +414,12 @@ def sales_summary(request):
                     year_dict['overall'] = {}
                     sale_records = Sale_Record.objects.filter(sku=sku.id)
                     ingredients = Formula_To_Ingredients.objects.filter(formula=sku.formula)
+                    goals = Manufacture_Goal.objects.filter(sku=sku.id)
                     case_dict = {}
-                    setup_cost = sku.manufacture_setup_cost
                     formula_scale_factor = sku.formula_scale_factor
                     overall_rev = 0
                     overall_case = 0
-                    avg_run_size = 0
-                    avg_setup_cost_per_case = 0
+                    setup_cost = sku.manufacture_setup_cost
                     ingr_cost_per_case = 0
                     run_cost_per_case = sku.manufacture_run_cost
                     for sale_record in sale_records:
@@ -451,7 +449,7 @@ def sales_summary(request):
                         for key in case_dict:
                             # print(key)
                             avg_rev_per_case = year_dict[key]['revenue']/case_dict[key]
-                            year_dict[key]['avg_rev_per_case'] = avg_rev_per_case
+                            year_dict[key]['avg_rev_per_case'] = round(avg_rev_per_case,2)
                     for ingr in ingredients:
                         package_size = re.findall(r'\d*\.?\d+', ingr.ig.package_size)
                         package_size_unit0 = re.sub(r'\d*\.?\d+', '', ingr.ig.package_size)
@@ -468,18 +466,31 @@ def sales_summary(request):
                         cost = costCalculate(float_quantity, quantity_unit, float_package_size, package_size_unit, sku.formula_scale_factor, ingr.ig.cpp)
                         ingr_cost_per_case = ingr_cost_per_case + cost
                     year_dict['overall']['revenue'] = overall_rev
+                    count = 0;
+                    size = 0;
+                    for goal in goals:
+                        size = size + goal.desired_quantity
+                        count = count + 1;
+                    if count == 0:
+                        avg_run_size = 10
+                    else:
+                        avg_run_size = size/count
+                    if size == 0:
+                        avg_setup_cost_per_case = float(setup_cost)/10.0
+                    else:
+                        avg_setup_cost_per_case = float(setup_cost)/avg_run_size
                     if overall_case == 0:
                         year_dict['overall']['avg_rev_per_case'] = 0
                     else:
-                        year_dict['overall']['avg_rev_per_case'] = overall_rev/overall_case
+                        year_dict['overall']['avg_rev_per_case'] = round(overall_rev/overall_case,2)
                     year_dict['overall']['ingr_cost_per_case'] = ingr_cost_per_case
                     year_dict['overall']['avg_run_size'] = avg_run_size
-                    year_dict['overall']['avg_setup_cost_per_case'] = avg_setup_cost_per_case 
+                    year_dict['overall']['avg_setup_cost_per_case'] = round(avg_setup_cost_per_case,2) 
                     year_dict['overall']['run_cost_per_case'] = run_cost_per_case
                     cogs_per_case = float(run_cost_per_case) + ingr_cost_per_case + float(avg_setup_cost_per_case)
-                    year_dict['overall']['cogs_per_case'] = cogs_per_case
+                    year_dict['overall']['cogs_per_case'] = round(cogs_per_case,2)
                     profit_per_case = float(year_dict['overall']['avg_rev_per_case']) - cogs_per_case
-                    year_dict['overall']['profit_per_case'] = profit_per_case
+                    year_dict['overall']['profit_per_case'] = round(profit_per_case,2)
                     if cogs_per_case == 0:
                         year_dict['overall']['profit_margin'] = -1*100
                     else:
@@ -554,16 +565,15 @@ def get_sku_drilldown(request, skuid):
             result = []
             timespan = request.data['timespan']
             customer = request.data['customer']
-            print(request.data['customer'])
             sale_records = Sale_Record.objects.filter(sku=skuid)
             sku = Sku.objects.get(id=skuid)
             ingredients = Formula_To_Ingredients.objects.filter(formula=sku.formula)
+            goals = Manufacture_Goal.objects.filter(sku=skuid)
             response = {}
             count = 0
             total_rev = 0
             cases = 0
-            avg_run_size = 0
-            avg_setup_cost_per_case = 0
+            setup_cost = sku.manufacture_setup_cost
             ingr_cost_per_case = 0
             run_cost_per_case = sku.manufacture_run_cost
             for sale_record in sale_records:
@@ -608,12 +618,25 @@ def get_sku_drilldown(request, skuid):
                     quantity_unit = quantity_unit[:-1]
                 cost = costCalculate(float_quantity, quantity_unit, float_package_size, package_size_unit, sku.formula_scale_factor, ingr.ig.cpp)
                 ingr_cost_per_case = ingr_cost_per_case + cost
+            count = 0;
+            size = 0;
+            for goal in goals:
+                size = size + goal.desired_quantity
+                count = count + 1;
+            if count == 0:
+                avg_run_size = 10
+            else:
+                avg_run_size = size/count
+            if size == 0:
+                avg_setup_cost_per_case = float(setup_cost)/10.0
+            else:
+                avg_setup_cost_per_case = float(setup_cost)/avg_run_size
             if cases == 0:
                 avg_rev_per_case = 0
             else:
-                avg_rev_per_case = total_rev/cases
-            cogs_per_case = float(run_cost_per_case) + float(ingr_cost_per_case) + float(avg_setup_cost_per_case)
-            profit_per_case = float(avg_rev_per_case) - cogs_per_case
+                avg_rev_per_case = round(total_rev/cases,2)
+            cogs_per_case = round(float(run_cost_per_case) + float(ingr_cost_per_case) + float(avg_setup_cost_per_case),2)
+            profit_per_case = round(float(avg_rev_per_case) - cogs_per_case,2)
             if cogs_per_case == 0:
                 year_dict['overall']['profit_margin'] = -1*100
             else:
@@ -622,13 +645,13 @@ def get_sku_drilldown(request, skuid):
             response['overall'] = {
                 'revenue': total_rev,
                 'avg_rev_per_case': avg_rev_per_case,
-                'ingr_cost_per_case': ingr_cost_per_case,
+                'ingr_cost_per_case': round(ingr_cost_per_case,2),
                 'avg_run_size': avg_run_size,
-                'avg_setup_cost_per_case': avg_setup_cost_per_case,
+                'avg_setup_cost_per_case': round(avg_setup_cost_per_case,2),
                 'run_cost_per_case': run_cost_per_case,
                 'cogs_per_case': cogs_per_case,
                 'profit_per_case': profit_per_case,
-                'profit_margin': profit_margin
+                'profit_margin': temp
             }
             response['rows'] = result #map to a list, each entry of the list is a map
             return Response(response,status = status.HTTP_200_OK)
@@ -1379,7 +1402,7 @@ def get_scheduler(request):
 # Generate Sales Report based on product line and sku 
 # @login_required(login_url='/accounts/login/')
 @api_view(['GET','POST'])
-def sales_report(request):
+def get_sales_report(request):
     try:
         # settings = Settings()
         # os.environ['SCRAPY_SETTINGS_MODULE'] = 'sales_data.settings'
