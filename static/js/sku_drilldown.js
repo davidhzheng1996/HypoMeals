@@ -5,12 +5,13 @@ var vm = new Vue({
   data: {
     ingredients: [],
     product_lines: [],
-    items:[],
+    items:{},
     loading: false,
     message: null,
     page: 1,
     perPage: 10,
     pages: [],
+    timespan: {'start_date':'','end_date':''},
     ingredientFile: null,
     search_term: '',
     search_input: '',
@@ -62,9 +63,12 @@ var vm = new Vue({
   },
   methods: {
     getItems: function (skuid) {
-      console.log(skuid)
+      // var span = this.updateTimespan();
+      // console.log(span)
+      console.log(this.timespan);
       this.loading = true;
-           this.$http.get('/api/get_sku_drilldown/'+skuid)
+
+           this.$http.post('/api/get_sku_drilldown/'+skuid, this.timespan)
                .then((response) => {
                    this.items = response.data;
                    console.log(this.items)
@@ -89,7 +93,14 @@ var vm = new Vue({
             console.log(err);
         })
       },
+      getLineGraph: function(){
 
+      },
+      updateTimespan: function(){
+        console.log('update timespan')
+        $("#TimeSpanModal").modal('hide');
+        this.getItems(savedSkuId);
+      },
       // disablePage: function(){
       //   this.disable_paginate = true;
       // },

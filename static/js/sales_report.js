@@ -5,6 +5,7 @@ new Vue({
   data: {
     items: [],
     product_lines: [],
+    customers: [],
     skus: [],
     loading: false,
     currentIngredient: {},
@@ -30,6 +31,7 @@ new Vue({
     name_error: '',
     error:'',
     unit_error: '',
+    active_pls:[],
   },
   mounted: function () {
     this.getItems();
@@ -67,11 +69,11 @@ new Vue({
            //      api_url = '/api/sku/?search=' + this.search_term;
            // }
            this.loading = true;
-           this.$http.get(api_url)
+           //console.log(this.active_pls);
+           this.$http.post(api_url, this.active_pls)
                .then((response) => {
                   // user selection status
                   this.items = response.data
-                  console.log(this.items)
                    this.loading = false;
                })
                .catch((err) => {
@@ -85,8 +87,8 @@ new Vue({
            this.loading = true;
            this.$http.get(api_url)
                .then((response) => {
-                    this.product_lines = response.data;
-                   this.loading = false;
+                  this.product_lines = response.data;
+                  this.loading = false;
                })
                .catch((err) => {
                    this.loading = false;
@@ -94,31 +96,35 @@ new Vue({
                })
     },
     updateProductLines: function(event) {
-      let api_url = '/api/bulk_match_manufacturing_lines/';
-        let active_pls = this.product_lines.filter((pl) => {
+      //let api_url = '/api/bulk_match_manufacturing_lines/';
+        let actives = this.product_lines.filter((pl) => {
           return pl['all_active'];
         }).map((pl) => {
-          return pl['pl_short_name'];
+          return pl['product_line_name'];
         })
-        let request = {
-          'active_pl_short_names': active_pls
-        }
-        this.$http.post(api_url, request)
-        .then((response) => {
-          $("#updatePLModal").modal('hide');
-        })
-        .catch((err) => {
-            console.log(err);
-        })
+        $("#updatePLModal").modal('hide');
+        // console.log(request)
+        this.active_pls = actives;
+        this.getItems();
       },
       postCustomer: function(){
-        let api_url = 'api/customers/'
+        let api_url = 'api/customers/';
         var e = document.getElementById("customers");
         var text = e.options[e.selectedIndex].text;
         let request = text;
         this.$http.post(api_url, request)
         .then((response) => {
-          this.product_lines = response.data;
+          
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+      },
+      getCustomer: function(){
+        let api_url = 'api/customers';
+        this.$http.get(api_url)
+        .then((response) => {
+          this.customers = response.data;
         })
         .catch((err) => {
             console.log(err);
@@ -126,6 +132,9 @@ new Vue({
       },
       viewDrilldown: function(skuid){
         window.location.href = '/sku_drilldown/'+skuid
+      },
+      pl_checkbox_click: function(ev, pl) {
+        pl['all_active'] = true;
       },
       // disablePage: function(){
       //   this.disable_paginate = true;

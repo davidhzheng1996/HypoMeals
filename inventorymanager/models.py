@@ -97,7 +97,6 @@ class Customer(models.Model):
 	name = models.CharField(max_length=128, unique = True)
 
 class Sku_To_Customer(models.Model):
-	id = models.BigIntegerField(primary_key=True, null=False)
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
 	customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
 

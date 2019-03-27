@@ -12,9 +12,6 @@
             Select Customer:   
             <select id="customers"> 
               <option value="all">all</option>
-              <option value="saab">Saab</option>
-              <option value="opel">Opel</option>
-              <option value="audi">Audi</option>
             </select>
          </div>
          <template v-for="(value,key) in items">
@@ -81,7 +78,7 @@
                                           <tbody>
                                                 <tr v-for="pl in product_lines">
                                                       <td>
-                                                            <input type="checkbox" v-model='pl.all_active'
+                                                            <input type="checkbox" :indeterminate.prop="pl.part_active" v-model='pl.all_active'
                                                                   v-on:click="pl_checkbox_click($event, pl)">
                                                       </td>
                                                       <td>${pl.product_line_name}</td>

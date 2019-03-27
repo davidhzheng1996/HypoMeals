@@ -383,9 +383,16 @@ def sales_summary(request):
 
         return 0
 
-    if(request.method=='GET'):
+    if(request.method=='POST'):
         try:
-            product_line_names = Product_Line.objects.all()
+            active_pls = request.data
+            product_line_names = []
+            if active_pls:
+                for a in active_pls:
+                    product_line_names.append(Product_Line.objects.get(product_line_name=a))
+            else:
+                product_line_names = Product_Line.objects.all()
+            print(product_line_names)
             product_line_dict = {}
             for pl in product_line_names:
                 skus = Sku.objects.filter(productline=pl.product_line_name)
@@ -429,7 +436,6 @@ def sales_summary(request):
                             # print(key)
                             avg_rev_per_case = year_dict[key]['revenue']/case_dict[key]
                             year_dict[key]['avg_rev_per_case'] = avg_rev_per_case
-                        print(year_dict)
                     for ingr in ingredients:
                         package_size = re.findall(r'\d*\.?\d+', ingr.ig.package_size)
                         package_size_unit0 = re.sub(r'\d*\.?\d+', '', ingr.ig.package_size)
@@ -477,19 +483,86 @@ def sales_summary(request):
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
-@api_view(['GET'])
+@api_view(['POST'])
 # return a report on manufacture status
 def get_sku_drilldown(request, skuid):
-    if(request.method=='GET'):
+    def costCalculate(quantity, quantity_unit, package_size, package_size_unit, formula_scale_factor, cpp):
+        mass = ['lb', 'pound', 'oz', 'ounce', 'ton', 'g', 'gram', 'kg', 'kilogram']
+        volume = ['floz', 'fluidounce', 'pt', 'pint', 'qt', 'quart', 'gal', 'gallon', 'ml', 'milliliter', 'l', 'liter']
+        count = ['ct', 'count']
+        mass_dict = {}
+        volume_dict = {}
+        mass_dict['lb'] = 2.20
+        mass_dict['pound'] = 2.20
+        mass_dict['oz'] = 35.27
+        mass_dict['ounce'] = 35.27
+        mass_dict['ton'] = 0.0011
+        mass_dict['g'] = 1000.00
+        mass_dict['gram'] = 1000.00
+        mass_dict['kg'] = 1.00
+        mass_dict['kilogram'] = 1.00
+        volume_dict['floz'] = 33.81
+        volume_dict['fluidounce'] = 33.81
+        volume_dict['pt'] = 2.11
+        volume_dict['pint'] = 2.11
+        volume_dict['qt'] = 1.06
+        volume_dict['quart'] = 1.06
+        volume_dict['gal'] = 0.26
+        volume_dict['gallon'] = 0.26
+        volume_dict['ml'] = 1000.00
+        volume_dict['milliliter'] = 1000.00
+        volume_dict['l'] = 1.00
+        volume_dict['liter'] = 1.00
+
+        if package_size == 0:
+            return 0
+
+        num = cpp*formula_scale_factor/package_size
+
+        if package_size_unit in count and quantity_unit in count:
+            res = num*(quantity/package_size)
+            return res
+        elif package_size_unit in mass and quantity_unit in mass:
+            mass_converted = (quantity/(mass_dict[quantity_unit]))*mass_dict[package_size_unit]
+            # print("converted mass"+str(mass_converted))
+            res1 = num*mass_converted
+            return res1
+        elif package_size_unit in volume and quantity_unit in volume:
+            volume_converted = (quantity/(volume_dict[quantity_unit]))*volume_dict[package_size_unit]
+            res2 = num*volume_converted
+            return res2
+
+        return 0
+        
+    if(request.method=='POST'):
         try:
             result = []
+            timespan = request.data
             sale_records = Sale_Record.objects.filter(sku=skuid)
+            sku = Sku.objects.get(id=skuid)
+            ingredients = Formula_To_Ingredients.objects.filter(formula=sku.formula)
+            response = {}
+            count = 0
+            total_rev = 0
+            cases = 0
+            avg_run_size = 0
+            avg_setup_cost_per_case = 0
+            ingr_cost_per_case = 0
+            run_cost_per_case = sku.manufacture_run_cost
             for sale_record in sale_records:
-                revenue = sale_record.sales * sale_record.price_per_case
                 sale_date = sale_record.sale_date
+                if timespan['start_date'] and timespan['end_date']:
+                    start_date = datetime.datetime.strptime(timespan['start_date'], '%Y-%m-%d').date()
+                    end_date = datetime.datetime.strptime(timespan['end_date'], '%Y-%m-%d').date()
+                    if sale_date < start_date or sale_date > end_date:
+                        continue
+                revenue = sale_record.sales * sale_record.price_per_case
+                cases = cases + sale_record.sales
+                total_rev = total_rev + revenue
                 year = sale_date.year
                 week = sale_date.isocalendar()[1]
                 sale_info = {
+                    'sale_date': sale_date,
                     'year': year,
                     'week': week,
                     'customer_id': sale_record.customer_id.id,
@@ -499,7 +572,47 @@ def get_sku_drilldown(request, skuid):
                     'revenue': revenue
                 }
                 result.append(sale_info)
-            return Response(result,status = status.HTTP_200_OK)
+            for ingr in ingredients:
+                package_size = re.findall(r'\d*\.?\d+', ingr.ig.package_size)
+                package_size_unit0 = re.sub(r'\d*\.?\d+', '', ingr.ig.package_size)
+                package_size_unit = package_size_unit0.replace(' ', '').replace('.','').lower()
+                if(package_size_unit[len(package_size_unit)-1]=='s'):
+                    package_size_unit = package_size_unit[:-1]
+                float_package_size = float(package_size[0]) # from ingredient's package size
+                ingredient_quantity = re.findall(r'\d*\.?\d+', ingr.quantity)
+                float_quantity = float(ingredient_quantity[0]) # from ingredient's quantity
+                quantity_unit0 = re.sub(r'\d*\.?\d+', '', ingr.quantity)
+                quantity_unit = quantity_unit0.replace(' ', '').replace('.','').lower()
+                if(quantity_unit[len(quantity_unit)-1]=='s'):
+                    quantity_unit = quantity_unit[:-1]
+                cost = costCalculate(float_quantity, quantity_unit, float_package_size, package_size_unit, sku.formula_scale_factor, ingr.ig.cpp)
+                ingr_cost_per_case = ingr_cost_per_case + cost
+            if cases == 0:
+                avg_rev_per_case = 0
+            else:
+                avg_rev_per_case = total_rev/cases
+            cogs_per_case = float(run_cost_per_case) + float(ingr_cost_per_case) + float(avg_setup_cost_per_case)
+            profit_per_case = float(avg_rev_per_case) - cogs_per_case
+            if cogs_per_case == 0:
+                year_dict['overall']['profit_margin'] = -1*100
+            else:
+                profit_margin = (float(avg_rev_per_case)/cogs_per_case-1)*100
+                temp = round(profit_margin,2)
+            response['overall'] = {
+                'revenue': total_rev,
+                'avg_rev_per_case': avg_rev_per_case,
+                'ingr_cost_per_case': ingr_cost_per_case,
+                'avg_run_size': avg_run_size,
+                'avg_setup_cost_per_case': avg_setup_cost_per_case,
+                'run_cost_per_case': run_cost_per_case,
+                'cogs_per_case': cogs_per_case,
+                'profit_per_case': profit_per_case,
+                'profit_margin': profit_margin
+            }
+            print(response['overall'])
+            response['rows'] = result #map to a list, each entry of the list is a map
+            print(response['rows'][0])
+            return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)           
 
@@ -802,22 +915,6 @@ def ingredients_to_sku(request,skuid):
             serializer = IngredientToSkuSerializer(data=newrelation)
             if(serializer.is_valid()):
                 serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except Exception as e: 
-            return Response(status = status.HTTP_400_BAD_REQUEST)
-
-@login_required(login_url='/accounts/login/')
-@api_view(['GET','POST'])
-def sku_drilldown(request,skuid):
-    if(request.method == 'GET'):
-        try: 
-           
-            return Response(response,status = status.HTTP_200_OK)
-        except Exception as e: 
-            return Response(status = status.HTTP_400_BAD_REQUEST)
-    if(request.method == 'POST'):
-        try: 
-            
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
