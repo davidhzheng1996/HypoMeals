@@ -15,5 +15,4 @@ class SalesDataPipeline(object):
         print('pipelines for scrapy----saved item: ')
         print(item)
         item.save()
-        print(dill.pickles(item))
         return item
