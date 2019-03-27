@@ -6,3 +6,6 @@ djangorestframework
 reportlab
 requests
 jsonfield
+scrapy
+scrapyd
+python-scrapyd-api
