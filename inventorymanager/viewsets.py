@@ -402,7 +402,6 @@ def sales_summary(request):
                     product_line_names.append(Product_Line.objects.get(product_line_name=a))
             else:
                 product_line_names = Product_Line.objects.all()
-            print(product_line_names)
             product_line_dict = {}
             for pl in product_line_names:
                 skus = Sku.objects.filter(productline=pl.product_line_name)
@@ -419,7 +418,6 @@ def sales_summary(request):
                     overall_rev = 0
                     overall_case = 0
                     setup_cost = sku.manufacture_setup_cost
-                    print(setup_cost)
                     ingr_cost_per_case = 0
                     run_cost_per_case = sku.manufacture_run_cost
                     for sale_record in sale_records:
@@ -565,7 +563,6 @@ def get_sku_drilldown(request, skuid):
             result = []
             timespan = request.data['timespan']
             customer = request.data['customer']
-            print(request.data['customer'])
             sale_records = Sale_Record.objects.filter(sku=skuid)
             sku = Sku.objects.get(id=skuid)
             ingredients = Formula_To_Ingredients.objects.filter(formula=sku.formula)
@@ -1403,7 +1400,7 @@ def get_scheduler(request):
 # Generate Sales Report based on product line and sku 
 # @login_required(login_url='/accounts/login/')
 @api_view(['GET','POST'])
-def sales_report(request):
+def get_sales_report(request):
     try:
         process = CrawlerProcess(get_project_settings())
         spider = SalesSpider()
