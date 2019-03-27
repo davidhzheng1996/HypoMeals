@@ -18,7 +18,10 @@ from scrapy.crawler import Crawler
 from scrapy import signals
 from scrapy.utils.project import get_project_settings
 from twisted.internet import reactor
+import dill
 from billiard import Process
+import threading 
+from django.http import JsonResponse
 
 import sys
 sys.path.append('..')
@@ -1042,34 +1045,97 @@ def get_scheduler(request):
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
+class CrawlerScript(Process):
+    spider = None
+    crawler = None
+    def __init__(self,spider):
+        settings = get_project_settings()
+        self.crawler = Crawler(spider.__class__, settings)
+        print(dill.pickles(self.crawler))
+        self.crawler.signals.connect(reactor.stop, signal=signals.spider_closed)
+        print(dill.pickles(self.crawler))
+        self.spider = spider
+        print(dill.pickles(self.spider))
+        Process.__init__(self)
+
+    
+    # def set_spider(self, spider):
+    #     self.spider = spider
+    #     settings = get_project_settings()
+    #     self.crawler = Crawler(spider.__class__, settings)
+    #     self.crawler.signals.connect(reactor.stop, signal=signals.spider_closed)
+
+    def run(self):
+        self.crawler.crawl(self.spider)
+        reactor.run()
+
+# def crawl():
+#     print('crawling1...')
+#     process = CrawlerProcess()
+#     print('crawling2...')
+#     spider = SalesSpider()
+#     print('crawling3...')
+#     process.crawl(spider)
+#     print('crawling4...')
+#     process.start()
+
 # Generate Sales Report based on product line and sku 
 # @login_required(login_url='/accounts/login/')
-@api_view(['GET','POST'])
+# @api_view(['GET','POST'])
 def sales_report(request):
-    # if(request.method == 'GET'):
-    #     # Use the task ID to check if crawling completes
-    #     # return status('pending', 'running', 'finished')
-    #     try: 
-    #         skus = Sku.objects.filter(formula=formulaid)
-    #         response = []
-    #         for sku in skus:
-    #             serializer = SkuSerializer(sku)
-    #             response.append(serializer.data)
-    #         return Response(response,status = status.HTTP_200_OK)
+    try:
+        spider = SalesSpider()
+        crawler = CrawlerScript(spider)
+        # crawler.set_spider(spider)
+        crawler.start()
+        crawler.join()
+        # print('crawling1...')
+        # process = CrawlerProcess()
+        # print('crawling2...')
+        # spider = SalesSpider()
+        # print('crawling3...')
+        # process.crawl(spider)
+        # print('crawling4...')
+        # process.start()
+        # print(threading.current_thread())
+        # print(threading.main_thread())
+        # t1 = threading.Thread(target=crawl,args=[])
+        # t1.start()
+        # t1.join()
+        return JsonResponse({'result': ''})
+    except Exception as e: 
+        print(e)
+        return JsonResponse({'result': ''})
+
+
+
+    # if(request.method == 'POST'):
+    #     # Initialize the crawling process using Scrapyd
+    #     try:
+    #         # Blocking Crawling
+    #         # process = CrawlerProcess()
+    #         # spider = SalesSpider()
+    #         # process.crawl(spider)
+    #         # process.start()
+
+    #         # Non blocking
+    #         # print(1)
+    #         # spider = SalesSpider()
+    #         # print(2)
+    #         # crawler = CrawlerScript(spider)
+    #         # print(3)
+    #         # crawler.start()
+    #         # print(4)
+    #         # crawler.join()
+
+    #         # Non blocking
+    #         threading.Thread(target=crawl,args=[]).start()
+    #         print('after')
+    #         result = {
+    #             # Ideally this should be pending while the crawling process runs in the background 
+    #             'status': 'success'
+    #         }
+    #         # return Response(result, status = status.HTTP_200_OK)
     #     except Exception as e: 
-    #         return Response(status = status.HTTP_400_BAD_REQUEST)
-    if(request.method == 'POST'):
-        # Initialize the crawling process using Scrapyd
-        try:
-            process = CrawlerProcess()
-            spider = SalesSpider()
-            process.crawl(spider)
-            process.start()
-            result = {
-                # Ideally this should be pending while the crawling process runs in the background 
-                'status': 'success'
-            }
-            return Response(result, status = status.HTTP_200_OK)
-        except Exception as e: 
-            print(e)
-            return Response(status = status.HTTP_400_BAD_REQUEST)
+    #         print(e)
+    #         # return Response(status = status.HTTP_400_BAD_REQUEST)

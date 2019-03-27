@@ -2,6 +2,7 @@ import scrapy
 from ..items import SalesDataItem
 import datetime
 from inventorymanager.models import Sku, Customer
+import dill
 
 
 class SalesSpider(scrapy.Spider):
@@ -54,6 +55,7 @@ class SalesSpider(scrapy.Spider):
                 customer_name=data['cust_name'], 
                 sales=data['sales'],
                 price_per_case=data['price_per_case'])
+            print(dill.pickles(sale_item))
             yield sale_item
         
         if not len(self.year_sku) == 0:
