@@ -15,6 +15,7 @@ var vm = new Vue({
     pages: [],
     timespan: {'start_date':'','end_date':''},
     ingredientFile: null,
+    chartData: [],
     search_term: '',
     search_input: '',
     request_dict: {},
@@ -61,21 +62,27 @@ var vm = new Vue({
       // console.log(span)
       this.loading = true;
       this.request_dict['timespan'] = this.timespan;
-      console.log(this.selected_customer)
        this.request_dict['customer'] = this.selected_customer;
-       console.log(this.request_dict)
            this.$http.post('/api/get_sku_drilldown/'+skuid, this.request_dict)
                .then((response) => {
                    this.items = response.data;
                    global_items = this.items;
-                   // console.log(this.items)
+                   console.log(global_items)
+                   for(key in this.items['rows']){
+                    if(this.items['rows'].hasOwnProperty(key)){
+                      var temp = [this.items['rows'][key].sale_date,this.items['rows'][key].revenue];
+                      // console.log(temp)
+                      this.chartData.push(temp);
+                    }
+                   }
+                   // console.log(this.chartData)
                    this.loading = false;
                })
                .catch((err) => {
                    this.loading = false;
                    console.log(err);
                })
-          this.$http.get('../api/get_customer')
+          this.$http.get('../api/customer')
             .then((response) => {
               this.customers = response.data;
               //this.getItems();

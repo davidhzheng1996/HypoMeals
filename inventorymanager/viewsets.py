@@ -395,7 +395,6 @@ def sales_summary(request):
 
     if(request.method=='POST'):
         try:
-            print(request.data)
             active_pls = request.data['pl']
             customer = request.data['customer']
             product_line_names = []
@@ -429,6 +428,8 @@ def sales_summary(request):
                                 continue
                         sale_date = sale_record.sale_date
                         year = sale_date.year
+                        if int(year) < 2010:
+                            continue
                         revenue = sale_record.sales * sale_record.price_per_case
                         overall_rev = overall_rev + revenue
                         case = sale_record.sales
