@@ -17,7 +17,7 @@ from scrapy.crawler import CrawlerProcess
 from scrapy.crawler import Crawler
 from scrapy import signals
 from scrapy.utils.project import get_project_settings
-from django.db.models import Sum, F
+from django.db.models import Sum, F, Count
 
 import sys
 sys.path.append('..')
@@ -421,9 +421,9 @@ def sales_summary(request):
                     # year_dict[2017] = {}
                     # year_dict[2018] = {}
                     # year_dict[2019] = {}
-                    sale_records = Sale_Record.objects.filter(sku=sku.id)
+                    # sale_records = Sale_Record.objects.filter(sku=sku.id)
                     ingredients = Formula_To_Ingredients.objects.filter(formula=sku.formula)
-                    goals = Manufacture_Goal.objects.filter(sku=sku.id)
+                    # goals = Manufacture_Goal.objects.filter(sku=sku.id)
                     case_dict = {}
                     formula_scale_factor = sku.formula_scale_factor
                     # overall_rev = 0
@@ -563,16 +563,16 @@ def sales_summary(request):
                         cost = costCalculate(float_quantity, quantity_unit, float_package_size, package_size_unit, sku.formula_scale_factor, ingr.ig.cpp)
                         ingr_cost_per_case = ingr_cost_per_case + cost
                     year_dict['overall']['revenue'] = overall_rev
-                    count = 0;
-                    size = 0;
-                    for goal in goals:
-                        size = size + goal.desired_quantity
-                        count = count + 1;
-                    if count == 0:
+                    count = Manufacture_Goal.objects.filter(sku=sku.id).count()
+                    size = Manufacture_Goal.objects.filter(sku=sku.id).aggregate(Sum('desired_quantity')).get('desired_quantity__sum',0.00)
+                    # for goal in goals:
+                    #     size = size + goal.desired_quantity
+                    #     count = count + 1;
+                    if not count:
                         avg_run_size = 10
                     else:
                         avg_run_size = size/count
-                    if size == 0:
+                    if not size:
                         avg_setup_cost_per_case = float(setup_cost)/10.0
                     else:
                         avg_setup_cost_per_case = float(setup_cost)/avg_run_size
@@ -666,14 +666,18 @@ def get_sku_drilldown(request, skuid):
             sale_records = Sale_Record.objects.filter(sku=skuid)
             sku = Sku.objects.get(id=skuid)
             ingredients = Formula_To_Ingredients.objects.filter(formula=sku.formula)
-            goals = Manufacture_Goal.objects.filter(sku=skuid)
+            # goals = Manufacture_Goal.objects.filter(sku=skuid)
             response = {}
             count = 0
-            total_rev = 0
-            cases = 0
+            # total_rev = 0
+            # cases = 0
             setup_cost = sku.manufacture_setup_cost
             ingr_cost_per_case = 0
             run_cost_per_case = sku.manufacture_run_cost
+            overall_case = Sale_Record.objects.filter(sku=sku.id).aggregate(Sum('sales')).get('sales__sum',0.00)
+            overall_rev = Sale_Record.objects.filter(sku=sku.id).aggregate(total_spent=Sum(F('sales') * F('price_per_case'),   
+            output_field=models.FloatField()
+            )).get('total_spent', 0.00)
             for sale_record in sale_records:
                 sale_date = sale_record.sale_date
                 customer_id = sale_record.customer_id.id
@@ -686,8 +690,8 @@ def get_sku_drilldown(request, skuid):
                     if sale_date < start_date or sale_date > end_date:
                         continue
                 revenue = sale_record.sales * sale_record.price_per_case
-                cases = cases + sale_record.sales
-                total_rev = total_rev + revenue
+                # cases = cases + sale_record.sales
+                # total_rev = total_rev + revenue
                 year = sale_date.year
                 week = sale_date.isocalendar()[1]
                 sale_info = {
@@ -716,23 +720,23 @@ def get_sku_drilldown(request, skuid):
                     quantity_unit = quantity_unit[:-1]
                 cost = costCalculate(float_quantity, quantity_unit, float_package_size, package_size_unit, sku.formula_scale_factor, ingr.ig.cpp)
                 ingr_cost_per_case = ingr_cost_per_case + cost
-            count = 0;
-            size = 0;
-            for goal in goals:
-                size = size + goal.desired_quantity
-                count = count + 1;
-            if count == 0:
+            count = Manufacture_Goal.objects.filter(sku=sku.id).count()
+            size = Manufacture_Goal.objects.filter(sku=sku.id).aggregate(Sum('desired_quantity')).get('desired_quantity__sum',0.00)
+            # for goal in goals:
+            #     size = size + goal.desired_quantity
+            #     count = count + 1;
+            if not count:
                 avg_run_size = 10
             else:
                 avg_run_size = size/count
-            if size == 0:
+            if not size:
                 avg_setup_cost_per_case = float(setup_cost)/10.0
             else:
                 avg_setup_cost_per_case = float(setup_cost)/avg_run_size
-            if cases == 0:
+            if not overall_case:
                 avg_rev_per_case = 0
             else:
-                avg_rev_per_case = round(total_rev/cases,2)
+                avg_rev_per_case = round(overall_rev/overall_case,2)
             cogs_per_case = round(float(run_cost_per_case) + float(ingr_cost_per_case) + float(avg_setup_cost_per_case),2)
             profit_per_case = round(float(avg_rev_per_case) - cogs_per_case,2)
             if cogs_per_case == 0:
@@ -741,7 +745,7 @@ def get_sku_drilldown(request, skuid):
                 profit_margin = (float(avg_rev_per_case)/cogs_per_case-1)*100
                 temp = round(profit_margin,2)
             response['overall'] = {
-                'revenue': total_rev,
+                'revenue': overall_rev,
                 'avg_rev_per_case': avg_rev_per_case,
                 'ingr_cost_per_case': round(ingr_cost_per_case,2),
                 'avg_run_size': avg_run_size,
@@ -749,7 +753,7 @@ def get_sku_drilldown(request, skuid):
                 'run_cost_per_case': run_cost_per_case,
                 'cogs_per_case': cogs_per_case,
                 'profit_per_case': profit_per_case,
-                'profit_margin': temp
+                'profit_margin': str(temp)+'%'
             }
             response['rows'] = result #map to a list, each entry of the list is a map
             return Response(response,status = status.HTTP_200_OK)
