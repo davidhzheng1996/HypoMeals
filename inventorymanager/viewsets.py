@@ -809,7 +809,7 @@ def calculate_goal(request,goalid):
         mass_dict['pound'] = 2.20
         mass_dict['oz'] = 35.27
         mass_dict['ounce'] = 35.27
-        mass_dict['ton'] = 0.0011
+        mass_dict['ton'] = 0.000984
         mass_dict['g'] = 1000.00
         mass_dict['gram'] = 1000.00
         mass_dict['kg'] = 1.00
@@ -834,7 +834,6 @@ def calculate_goal(request,goalid):
             return res
         elif package_size_unit in mass and quantity_unit in mass:
             mass_converted = (float_quantity/(mass_dict[quantity_unit]))*mass_dict[package_size_unit]
-            print("converted mass"+str(mass_converted))
             res1 = num*mass_converted
             return res1
         elif package_size_unit in volume and quantity_unit in volume:
@@ -853,9 +852,11 @@ def calculate_goal(request,goalid):
             for goal in manufacture_goals:
                 skuid = goal.sku.id
                 sku = Sku.objects.get(id = skuid)
+                # print(sku.sku_name)
                 formula = sku.formula
                 ingredients = Formula_To_Ingredients.objects.filter(formula = formula)
                 for ingredient in ingredients: 
+                    print(ingredient.ig.ingredient_name)
                     temp = []
                     package_size = re.findall(r'\d*\.?\d+', ingredient.ig.package_size)
                     package_size_unit0 = re.sub(r'\d*\.?\d+', '', ingredient.ig.package_size)
@@ -883,13 +884,21 @@ def calculate_goal(request,goalid):
                     #     print(errors)
                     if ingredient.ig.ingredient_name in response:
                         old_list = response[ingredient.ig.ingredient_name]
-                        old_list[0] = old_list[0] + temp[0]
-                        old_list[1] = old_list[1] + temp[1]
+                        old_amount = re.findall(r'\d*\.?\d+', old_list[0])
+                        float_old_amount = float(old_amount[0])
+                        new_amount = unit_amount + float_old_amount
+                        new_amount_str = str(round(new_amount, 3)) + ' ' + package_size_unit0
+                        old_package = re.findall(r'\d*\.?\d+', old_list[1])
+                        float_old_package = float(old_package[0])
+                        new_package = package_amount + float_old_package
+                        new_package_str = str(round(new_package, 3)) + ' ' + 'packages'
+                        old_list[0] = new_amount_str
+                        old_list[1] = new_package_str
                         response[ingredient.ig.ingredient_name] = old_list
                     else: 
                         response[ingredient.ig.ingredient_name] = temp
-                print(response)
-                return Response(response,status=status.HTTP_200_OK)
+            # print(response)
+            return Response(response,status=status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
