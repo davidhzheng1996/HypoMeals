@@ -36,31 +36,6 @@ new Vue({
   },
   mounted: function () {
     this.getItems();
-    // $("#search_input").autocomplete({
-    //   minLength: 1,
-    //   delay: 100,
-    //   // https://stackoverflow.com/questions/9656523/jquery-autocomplete-with-callback-ajax-json
-    //   source: function (request, response) {
-    //     $.ajax({
-    //       url: "/api/ingredient",
-    //       dataType: "json",
-    //       data: {
-    //         // attach '?search=request.term' to the url 
-    //         search: request.term
-    //       },
-    //       success: function (data) {
-    //         ingr_names = $.map(data, function (item) {
-    //           return [item.ingredient_name];
-    //         })
-    //         response(ingr_names);
-    //       }
-    //     });
-    //   },
-    //   messages: {
-    //     noResults: '',
-    //     results: function() {}
-    //   }
-    // });
   },
   methods: {
     getItems: function () {
@@ -77,11 +52,6 @@ new Vue({
                   // user selection status
                   this.items = response.data
                   console.log(this.items)
-                        // for (key in this.items) {
-                        //     if (this.items.hasOwnProperty(key)) {
-                        //       console.log(this.items[key])
-                        //     }
-                        //   }
                    this.loading = false;
                })
                .catch((err) => {
@@ -177,7 +147,7 @@ new Vue({
             if (this.items.hasOwnProperty(key)) {
               var pl_str = "product_line:"+key;
               csvContent+=[pl_str+'\n'];
-              let sku_object = this.items[key];
+              let sku_object = this.items[key].sku;
               for(key in sku_object){
                 if(sku_object.hasOwnProperty(key)){
                   csvContent+=['Sku: '+key+'\n'];

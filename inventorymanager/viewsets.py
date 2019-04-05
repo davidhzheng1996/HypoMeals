@@ -406,32 +406,111 @@ def sales_summary(request):
                 product_line_names = Product_Line.objects.all()
             product_line_dict = {}
             for pl in product_line_names:
+                total_dict = {}
                 skus = Sku.objects.filter(productline=pl.product_line_name)
+                pl_rev = Sale_Record.objects.filter(sku__productline=pl.product_line_name).aggregate(total_spent=Sum(F('sales') * F('price_per_case'),
+                    output_field=models.FloatField())).get('total_spent',0.00)
+                first_pl_rev = Sale_Record.objects.filter(sku__productline=pl.product_line_name,sale_date__year='2010').aggregate(total_spent=Sum(F('sales') * F('price_per_case'),
+                    output_field=models.FloatField())).get('total_spent',0.00)
+                second_pl_rev = Sale_Record.objects.filter(sku__productline=pl.product_line_name,sale_date__year='2011').aggregate(total_spent=Sum(F('sales') * F('price_per_case'),
+                    output_field=models.FloatField())).get('total_spent',0.00)
+                third_pl_rev = Sale_Record.objects.filter(sku__productline=pl.product_line_name,sale_date__year='2012').aggregate(total_spent=Sum(F('sales') * F('price_per_case'),
+                    output_field=models.FloatField())).get('total_spent',0.00)
+                fourth_pl_rev = Sale_Record.objects.filter(sku__productline=pl.product_line_name,sale_date__year='2013').aggregate(total_spent=Sum(F('sales') * F('price_per_case'),
+                    output_field=models.FloatField())).get('total_spent',0.00)
+                fifth_pl_rev = Sale_Record.objects.filter(sku__productline=pl.product_line_name,sale_date__year='2014').aggregate(total_spent=Sum(F('sales') * F('price_per_case'),
+                    output_field=models.FloatField())).get('total_spent',0.00)
+                sixth_pl_rev = Sale_Record.objects.filter(sku__productline=pl.product_line_name,sale_date__year='2015').aggregate(total_spent=Sum(F('sales') * F('price_per_case'),
+                    output_field=models.FloatField())).get('total_spent',0.00)
+                seventh_pl_rev = Sale_Record.objects.filter(sku__productline=pl.product_line_name,sale_date__year='2016').aggregate(total_spent=Sum(F('sales') * F('price_per_case'),
+                    output_field=models.FloatField())).get('total_spent',0.00)
+                eighth_pl_rev = Sale_Record.objects.filter(sku__productline=pl.product_line_name,sale_date__year='2017').aggregate(total_spent=Sum(F('sales') * F('price_per_case'),
+                    output_field=models.FloatField())).get('total_spent',0.00)
+                ninenth_pl_rev = Sale_Record.objects.filter(sku__productline=pl.product_line_name,sale_date__year='2018').aggregate(total_spent=Sum(F('sales') * F('price_per_case'),
+                    output_field=models.FloatField())).get('total_spent',0.00)
+                tenth_pl_rev = Sale_Record.objects.filter(sku__productline=pl.product_line_name,sale_date__year='2019').aggregate(total_spent=Sum(F('sales') * F('price_per_case'),
+                    output_field=models.FloatField())).get('total_spent',0.00)
+                if first_pl_rev:
+                    total_dict[2010] = first_pl_rev
+                if second_pl_rev:
+                    total_dict[2011] = second_pl_rev
+                if third_pl_rev:
+                    total_dict[2012] = third_pl_rev
+                if fourth_pl_rev:
+                    total_dict[2013] = fourth_pl_rev
+                if fifth_pl_rev:
+                    total_dict[2014] = fifth_pl_rev
+                if sixth_pl_rev:
+                    total_dict[2015] = sixth_pl_rev
+                if seventh_pl_rev:
+                    total_dict[2016] = seventh_pl_rev
+                if eighth_pl_rev:
+                    total_dict[2017] = eighth_pl_rev
+                if ninenth_pl_rev:
+                    total_dict[2018] = ninenth_pl_rev
+                if tenth_pl_rev:
+                    total_dict[2019] = tenth_pl_rev
+                if pl_rev:
+                    total_dict['overall'] = pl_rev
                 sku_dict = {}
                 response = []
                 for sku in skus:
                     year_dict = {}
                     year_dict['overall'] = {}
-                    # year_dict[2010] = {}
-                    # year_dict[2011] = {}
-                    # year_dict[2012] = {}
-                    # year_dict[2013] = {}
-                    # year_dict[2014] = {}
-                    # year_dict[2015] = {}
-                    # year_dict[2016] = {}
-                    # year_dict[2017] = {}
-                    # year_dict[2018] = {}
-                    # year_dict[2019] = {}
-                    # sale_records = Sale_Record.objects.filter(sku=sku.id)
                     ingredients = Formula_To_Ingredients.objects.filter(formula=sku.formula)
-                    # goals = Manufacture_Goal.objects.filter(sku=sku.id)
-                    case_dict = {}
                     formula_scale_factor = sku.formula_scale_factor
-                    # overall_rev = 0
-                    # overall_case = 0
                     setup_cost = sku.manufacture_setup_cost
                     ingr_cost_per_case = 0
                     run_cost_per_case = sku.manufacture_run_cost
+                    overall_case = Sale_Record.objects.filter(sku=sku.id).aggregate(Sum('sales')).get('sales__sum',0.00)
+                    overall_rev = Sale_Record.objects.filter(sku=sku.id).aggregate(total_spent=Sum(F('sales') * F('price_per_case'),   
+                    output_field=models.FloatField()
+                    )).get('total_spent', 0.00)
+                    for ingr in ingredients:
+                        package_size = re.findall(r'\d*\.?\d+', ingr.ig.package_size)
+                        package_size_unit0 = re.sub(r'\d*\.?\d+', '', ingr.ig.package_size)
+                        package_size_unit = package_size_unit0.replace(' ', '').replace('.','').lower()
+                        if(package_size_unit[len(package_size_unit)-1]=='s'):
+                            package_size_unit = package_size_unit[:-1]
+                        float_package_size = float(package_size[0]) # from ingredient's package size
+                        ingredient_quantity = re.findall(r'\d*\.?\d+', ingr.quantity)
+                        float_quantity = float(ingredient_quantity[0]) # from ingredient's quantity
+                        quantity_unit0 = re.sub(r'\d*\.?\d+', '', ingr.quantity)
+                        quantity_unit = quantity_unit0.replace(' ', '').replace('.','').lower()
+                        if(quantity_unit[len(quantity_unit)-1]=='s'):
+                            quantity_unit = quantity_unit[:-1]
+                        cost = costCalculate(float_quantity, quantity_unit, float_package_size, package_size_unit, sku.formula_scale_factor, ingr.ig.cpp)
+                        ingr_cost_per_case = ingr_cost_per_case + cost
+                    year_dict['overall']['revenue'] = overall_rev
+                    count = Manufacture_Goal.objects.filter(sku=sku.id).count()
+                    size = Manufacture_Goal.objects.filter(sku=sku.id).aggregate(Sum('desired_quantity')).get('desired_quantity__sum',0.00)
+                    if not count:
+                        avg_run_size = 10
+                    else:
+                        avg_run_size = size/count
+                    if not size:
+                        avg_setup_cost_per_case = float(setup_cost)/10.0
+                    else:
+                        avg_setup_cost_per_case = float(setup_cost)/avg_run_size
+                    # print(overall_case)
+                    if not overall_case:
+                        year_dict['overall']['avg_rev_per_case'] = 0
+                    else:
+                        year_dict['overall']['avg_rev_per_case'] = round(overall_rev/overall_case,2)
+                    year_dict['overall']['ingr_cost_per_case'] = round(ingr_cost_per_case,2)
+                    year_dict['overall']['avg_run_size'] = avg_run_size
+                    year_dict['overall']['avg_setup_cost_per_case'] = round(avg_setup_cost_per_case,2) 
+                    year_dict['overall']['run_cost_per_case'] = run_cost_per_case
+                    cogs_per_case = float(run_cost_per_case) + ingr_cost_per_case + float(avg_setup_cost_per_case)
+                    year_dict['overall']['cogs_per_case'] = round(cogs_per_case,2)
+                    profit_per_case = float(year_dict['overall']['avg_rev_per_case']) - cogs_per_case
+                    year_dict['overall']['profit_per_case'] = round(profit_per_case,2)
+                    if cogs_per_case == 0:
+                        year_dict['overall']['profit_margin'] = -1*100
+                    else:
+                        profit_margin = (float(year_dict['overall']['avg_rev_per_case'])/cogs_per_case-1)*100
+                        temp = round(profit_margin,2)
+                        year_dict['overall']['profit_margin'] = str(temp)+"%"
                     first_case = Sale_Record.objects.filter(sku=sku.id,sale_date__year='2010').aggregate(Sum('sales')).get('sales__sum',0.00)
                     first_rev = Sale_Record.objects.filter(sku=sku.id,sale_date__year='2010').aggregate(total_spent=Sum(F('sales') * F('price_per_case'),
                     output_field=models.FloatField())).get('total_spent',0.00)
@@ -512,96 +591,17 @@ def sales_summary(request):
                         year_dict[2018]['avg_rev_per_case'] = round(nineth_rev/nineth_case, 2)
                     if tenth_case:
                         year_dict[2019]['avg_rev_per_case'] = round(tenth_rev/tenth_case, 2)
-                    # print(overall_case)
-                    # overall_rev = Sale_Record.objects.filter(sku=sku.id).aggregate(Sum(F('sales')*F('price_per_case')))
-                    overall_case = Sale_Record.objects.filter(sku=sku.id).aggregate(Sum('sales')).get('sales__sum',0.00)
-                    overall_rev = Sale_Record.objects.filter(sku=sku.id).aggregate(total_spent=Sum(F('sales') * F('price_per_case'),   
-                    output_field=models.FloatField()
-                    )).get('total_spent', 0.00)
-                    # print(overall_rev)
-                    # for sale_record in sale_records:
-                    #     customer_id = sale_record.customer_id.id
-                    #     if customer and customer != 'all':
-                    #         if customer!=str(customer_id):
-                    #             continue
-                    #     sale_date = sale_record.sale_date
-                    #     year = sale_date.year
-                    #     print(type(year))
-                    #     revenue = sale_record.sales * sale_record.price_per_case
-                    #     # overall_rev = overall_rev + revenue
-                    #     case = sale_record.sales
-                    #     # overall_case = overall_case + case
-                    #     if year in year_dict:
-                    #         old_rev = year_dict[year]['revenue']
-                    #         year_dict[year]['revenue'] = old_rev + revenue
-                    #     else:
-                    #         year_dict[year] = {}
-                    #         year_dict[year]['revenue'] = revenue
-                    #     if year in case_dict:
-                    #         old_case = case_dict[year]
-                    #         case_dict[year] = old_case + case
-                    #     else:
-                    #         case_dict[year] = case
-                    # # print(year_dict)
-                    # if case_dict:
-                    #     for key in case_dict:
-                    #         # print(key)
-                    #         avg_rev_per_case = year_dict[key]['revenue']/case_dict[key]
-                    #         year_dict[key]['avg_rev_per_case'] = round(avg_rev_per_case,2)
-                    for ingr in ingredients:
-                        package_size = re.findall(r'\d*\.?\d+', ingr.ig.package_size)
-                        package_size_unit0 = re.sub(r'\d*\.?\d+', '', ingr.ig.package_size)
-                        package_size_unit = package_size_unit0.replace(' ', '').replace('.','').lower()
-                        if(package_size_unit[len(package_size_unit)-1]=='s'):
-                            package_size_unit = package_size_unit[:-1]
-                        float_package_size = float(package_size[0]) # from ingredient's package size
-                        ingredient_quantity = re.findall(r'\d*\.?\d+', ingr.quantity)
-                        float_quantity = float(ingredient_quantity[0]) # from ingredient's quantity
-                        quantity_unit0 = re.sub(r'\d*\.?\d+', '', ingr.quantity)
-                        quantity_unit = quantity_unit0.replace(' ', '').replace('.','').lower()
-                        if(quantity_unit[len(quantity_unit)-1]=='s'):
-                            quantity_unit = quantity_unit[:-1]
-                        cost = costCalculate(float_quantity, quantity_unit, float_package_size, package_size_unit, sku.formula_scale_factor, ingr.ig.cpp)
-                        ingr_cost_per_case = ingr_cost_per_case + cost
-                    year_dict['overall']['revenue'] = overall_rev
-                    count = Manufacture_Goal.objects.filter(sku=sku.id).count()
-                    size = Manufacture_Goal.objects.filter(sku=sku.id).aggregate(Sum('desired_quantity')).get('desired_quantity__sum',0.00)
-                    # for goal in goals:
-                    #     size = size + goal.desired_quantity
-                    #     count = count + 1;
-                    if not count:
-                        avg_run_size = 10
-                    else:
-                        avg_run_size = size/count
-                    if not size:
-                        avg_setup_cost_per_case = float(setup_cost)/10.0
-                    else:
-                        avg_setup_cost_per_case = float(setup_cost)/avg_run_size
-                    # print(overall_case)
-                    if not overall_case:
-                        year_dict['overall']['avg_rev_per_case'] = 0
-                    else:
-                        year_dict['overall']['avg_rev_per_case'] = round(overall_rev/overall_case,2)
-                    year_dict['overall']['ingr_cost_per_case'] = round(ingr_cost_per_case,2)
-                    year_dict['overall']['avg_run_size'] = avg_run_size
-                    year_dict['overall']['avg_setup_cost_per_case'] = round(avg_setup_cost_per_case,2) 
-                    year_dict['overall']['run_cost_per_case'] = run_cost_per_case
-                    cogs_per_case = float(run_cost_per_case) + ingr_cost_per_case + float(avg_setup_cost_per_case)
-                    year_dict['overall']['cogs_per_case'] = round(cogs_per_case,2)
-                    profit_per_case = float(year_dict['overall']['avg_rev_per_case']) - cogs_per_case
-                    year_dict['overall']['profit_per_case'] = round(profit_per_case,2)
-                    if cogs_per_case == 0:
-                        year_dict['overall']['profit_margin'] = -1*100
-                    else:
-                        profit_margin = (float(year_dict['overall']['avg_rev_per_case'])/cogs_per_case-1)*100
-                        temp = round(profit_margin,2)
-                        year_dict['overall']['profit_margin'] = str(temp)+"%"
                     # print(year_dict)
+                    # key = sku.sku_name + ' ' + '#' + str(sku.id)
                     sku_dict[sku.id] = {}
                     sku_dict[sku.id] = year_dict
                 # print(sku_dict)
                 product_line_dict[pl.product_line_name] = {}
-                product_line_dict[pl.product_line_name] = sku_dict
+                product_line_dict[pl.product_line_name]['total'] = {}
+                product_line_dict[pl.product_line_name]['total'] = total_dict
+                product_line_dict[pl.product_line_name]['sku'] = {}
+                product_line_dict[pl.product_line_name]['sku'] = sku_dict
+                # product_line_dict[pl.product_line_name] = sku_dict
             response = product_line_dict
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
@@ -680,6 +680,7 @@ def get_sku_drilldown(request, skuid):
             output_field=models.FloatField()
             )).get('total_spent', 0.00)
             for sale_record in sale_records:
+                # print(sale_record.sku.productline.product_line_name)
                 sale_date = sale_record.sale_date
                 customer_id = sale_record.customer_id.id
                 if customer and customer != 'all':
