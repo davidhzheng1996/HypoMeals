@@ -6,6 +6,8 @@ djangorestframework
 reportlab
 requests
 jsonfield
+whitenoise
+dj-database-url
 scrapy
 scrapyd
 python-scrapyd-api

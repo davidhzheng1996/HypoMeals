@@ -51,7 +51,6 @@ var starting = new Vue({
 
         removeGoal: function(goal_name) {
             // remove scheduled skus on Timeline 
-            console.log(goal_name)
             scheduled_goal_items = []
             this.items.forEach((item) => {
                 if(item.goal === goal_name) {
