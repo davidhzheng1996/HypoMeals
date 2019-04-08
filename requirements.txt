@@ -11,3 +11,4 @@ scrapyd
 python-scrapyd-api
 scrapy-djangoitem
 dill
+dj-database-url

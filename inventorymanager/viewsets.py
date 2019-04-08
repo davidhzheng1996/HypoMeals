@@ -21,8 +21,8 @@ from scrapy.settings import Settings
 import os
 import imp
 import sys
-sys.path.append('..')
-from crawl.sales_data.sales_data.spiders.sales_spider import SalesSpider
+# sys.path.append('..')
+# from crawl.sales_data.sales_data.spiders.sales_spider import SalesSpider
 
 import requests
 import re
@@ -1399,23 +1399,23 @@ def get_scheduler(request):
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
-@login_required(login_url='/accounts/login/')
-@api_view(['GET','POST'])
-def get_sales_report(request):
-    try:
-        # settings = Settings()
-        # os.environ['SCRAPY_SETTINGS_MODULE'] = 'sales_data.settings'
-        # settings_module_path = os.environ['SCRAPY_SETTINGS_MODULE']
-        # settings.setmodule(settings_module_path, priority='project')
-        settings = get_project_settings()
-        process = CrawlerProcess(settings)
-        spider = SalesSpider()
-        process.crawl(spider)
-        process.start()
-        result = {
-            'status': 'success'
-        }
-        return Response(result, status = status.HTTP_200_OK)
-    except Exception as e: 
-        print(e)
-        return Response(status = status.HTTP_400_BAD_REQUEST)
+# @login_required(login_url='/accounts/login/')
+# @api_view(['GET','POST'])
+# def get_sales_report(request):
+#     try:
+#         # settings = Settings()
+#         # os.environ['SCRAPY_SETTINGS_MODULE'] = 'sales_data.settings'
+#         # settings_module_path = os.environ['SCRAPY_SETTINGS_MODULE']
+#         # settings.setmodule(settings_module_path, priority='project')
+#         settings = get_project_settings()
+#         process = CrawlerProcess(settings)
+#         spider = SalesSpider()
+#         process.crawl(spider)
+#         process.start()
+#         result = {
+#             'status': 'success'
+#         }
+#         return Response(result, status = status.HTTP_200_OK)
+#     except Exception as e: 
+#         print(e)
+#         return Response(status = status.HTTP_400_BAD_REQUEST)

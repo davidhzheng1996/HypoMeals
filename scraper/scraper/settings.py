@@ -12,20 +12,22 @@
 ######### DJANGO INTEGRATION  #########
 
 import sys, os
-sys.path.append(os.path.dirname(os.path.abspath('../..')))
+sys.path.append(os.path.dirname(os.path.abspath('.')))
+print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+print(os.path.dirname(os.path.abspath('.')))
 # Do not forget the change iCrawler part based on your project name
 os.environ['DJANGO_SETTINGS_MODULE'] = 'hypomeals.settings'
 
-# need to set up django explicitly to use it outside of manage.py
+# # need to set up django explicitly to use it outside of manage.py
 import django
 django.setup()
 
 ######## DJANGO INTEGRATION  #########
 
-BOT_NAME = 'sales_data'
+BOT_NAME = 'scraper'
 
-SPIDER_MODULES = ['sales_data.spiders']
-NEWSPIDER_MODULE = 'sales_data.spiders'
+SPIDER_MODULES = ['scraper.spiders']
+NEWSPIDER_MODULE = 'scraper.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -77,9 +79,9 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-   'sales_data.pipelines.SalesDataPipeline': 900,
-}
+# ITEM_PIPELINES = {
+#    'scraper.pipelines.SalesDataPipeline': 900,
+# }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://doc.scrapy.org/en/latest/topics/autothrottle.html
