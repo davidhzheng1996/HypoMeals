@@ -25,38 +25,60 @@
                   <tr>
                      <th colspan="100%" style="text-align:center;">Productline: ${key}</th>
                   </tr>
-                  <!-- write a forloop for productline here using div -->
-                  <template v-for="(value,key) in value">
-                     <tr>
-                        <th colspan="100%" style="text-align:center;">Sku ID: #${key}
-                           <button class="btn btn-primary" v-on:click="viewDrilldown(key)">View Drilldown</button>
-                        </th>
-                     </tr>
-                     <table>
-                     <thead>
+                  <!-- <template v-for="(value,key) in value.total"> -->
+                     <table class="table">
+                        <thead>
                            <tr>
                               <th scope="col">Year</th>
                               <th scope="col">Total Revenue</th>
-                              <th scope="col">Avg Revenue/Case</th>
-                              <th scope="col">Ingr Cost/Case</th>
-                              <th scope="col">Avg Run Size</th>
-                              <th scope="col">Avg Setup Cost/Case</th>
-                              <th scope="col">Run Cost/Case</th>
-                              <th scope="col">COGS/Case</th>
-                              <th scope="col">Profit/Case</th>
-                              <th scope="col">Profit Margin</th>
                            </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="(value,key) in value">
+                           <tr v-for="(value,key) in value.total">
                            <th scope="row">${key}</th>
-                              <template v-for="elements in value">
-                                 <td>${elements}</td>
-                              </template>
+                              <!-- <template v-for="elements in value"> -->
+                                 <td>${value}</td>
+                              <!-- </template> -->
                         </tr>
-                     </tbody>
+                        </tbody>
                      </table>
-                  </template>
+                  <!-- </template> -->
+                  <!-- write a forloop for productline here using template -->
+                  <!-- <template v-for="(value,key) in value"> -->
+                     <table class="table">
+                     <template v-for="(value,key) in value.sku">
+                        <tr>
+                           <th colspan="100%" style="text-align:center;">SKU: ${key}
+                              <button class="btn btn-primary" v-on:click="viewDrilldown(key)">View Drilldown</button>
+                           </th>
+                        </tr>
+                        <table class="table">
+                        <thead>
+                              <tr>
+                                 <th scope="col">Year</th>
+                                 <th scope="col">Total Revenue</th>
+                                 <th scope="col">Avg Revenue/Case</th>
+                                 <th scope="col">Ingr Cost/Case</th>
+                                 <th scope="col">Avg Run Size</th>
+                                 <th scope="col">Avg Setup Cost/Case</th>
+                                 <th scope="col">Run Cost/Case</th>
+                                 <th scope="col">COGS/Case</th>
+                                 <th scope="col">Profit/Case</th>
+                                 <th scope="col">Profit Margin</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                           <tr v-for="(value,key) in value">
+                              <th scope="row">${key}</th>
+                                 <template v-for="elements in value">
+                                    <td>${elements}</td>
+                                 </template>
+                           </tr>
+                        </tbody>
+                        </table>
+                     </template>
+                  </table>
+               <!-- </template> -->
          </table>
       </template>
       </div>
