@@ -11,10 +11,12 @@ var vm = new Vue({
      pages:[],
      has_paginated:false,
      search_term: '',
+     start_date: {'month':'','day':''},
+     end_date: {'month':'','day':''},
      // search_suggestions: search_suggestions,
      search_input: '',
      //COUPLED WITH BACKEND DO NOT REMOVE BELOW
-     newGoal: { 'goal_sku_name': '', 'desired_quantity': 0, 'user': null, 'sku': null, 'name':-1},
+     newGoal: { 'goal_sku_name': '', 'desired_quantity': 0, 'user': null, 'sku': null, 'name':-1, 'comment':''},
      error:'',
    },
    mounted: function() {
@@ -188,6 +190,9 @@ var vm = new Vue({
          this.error = err.bodyText;
          console.log(err);
        })
+       },
+       getSalesProjection: function(){
+          $("#salesProjectionModal").modal('show');
        },
        exportCSV: function(){
         this.loading = true;

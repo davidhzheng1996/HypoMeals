@@ -13,7 +13,7 @@ class SalesSpider(scrapy.Spider):
     year_sku = []
     years = list(range(2010, 2020))
     skus = Sku.objects.all().values_list('id', flat=True)
-    print(skus)
+    # print(skus)
     for sku in skus:
         for year in years:
             year_sku.append((str(year), str(sku)))  

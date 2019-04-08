@@ -147,6 +147,7 @@ var vm = new Vue({
                   csvContent += [['overall',item_object.revenue,item_object.avg_rev_per_case,item_object.ingr_cost_per_case,
                         item_object.avg_run_size,item_object.avg_setup_cost_per_case,item_object.run_cost_per_case,
                         item_object.cogs_per_case,item_object.profit_per_case,item_object.profit_margin].join(",")+'\n'];
+                  csvContent+='\n';
               } else{
                 csvContent+=[["Year","Week","Customer ID","Customer Name","Number of Sales","Price/case","Revenue"].join(",")+'\n'];
                 let item_object = this.items[key];

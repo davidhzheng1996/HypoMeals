@@ -1374,7 +1374,7 @@ def update_manufacture_goal(request):
     if(request.method == 'POST'):
         try: 
             manufacture_goal = Manufacture_Goal.objects.get(id = request.data['id'])
-            serializer = ManufactureGoalSerializer(manufacture_goal,{'desired_quantity':request.data['desired_quantity']},partial=True)
+            serializer = ManufactureGoalSerializer(manufacture_goal,{'desired_quantity':request.data['desired_quantity'],'comment':request.data['comment']},partial=True)
             if(serializer.is_valid()):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
