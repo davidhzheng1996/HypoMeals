@@ -964,15 +964,23 @@ def get_sales_projection(request):
                 sales2019 = Sale_Record.objects.filter(sku=sku.id,sale_date__range=[start_date,end_date]).aggregate(Sum('sales')).get('sales__sum',0.00)
                 sales.append(sales2019)
                 output_dict['rows'][curr_year-3] = {
+                    'start_date': start_date_2016,
+                    'end_date': end_date_2016,
                     'sales': sales2016
                 }
                 output_dict['rows'][curr_year-2] = {
+                    'start_date': start_date_2017,
+                    'end_date': end_date_2017,
                     'sales': sales2017
                 }
                 output_dict['rows'][curr_year-1] = {
+                    'start_date': start_date_2018,
+                    'end_date': end_date_2018,
                     'sales': sales2018
                 }
                 output_dict['rows'][curr_year] = {
+                    'start_date': start_date,
+                    'end_date': end_date,
                     'sales': sales2019
                 }
             else:
@@ -985,21 +993,32 @@ def get_sales_projection(request):
                 sales2015 = Sale_Record.objects.filter(sku=sku.id,sale_date__range=[start_date_2015,end_date_2015]).aggregate(Sum('sales')).get('sales__sum',0.00)
                 sales.append(sales2015)
                 output_dict['rows'][curr_year-4] = {
+                    'start_date': start_date_2015,
+                    'end_date': end_date_2015,
                     'sales': sales2015
                 }
                 output_dict['rows'][curr_year-3] = {
+                    'start_date': start_date_2016,
+                    'end_date': end_date_2016,
                     'sales': sales2016
                 }
                 output_dict['rows'][curr_year-2] = {
+                    'start_date': start_date_2017,
+                    'end_date': end_date_2017,
                     'sales': sales2017
                 }
                 output_dict['rows'][curr_year-1] = {
+                    'start_date': start_date_2018,
+                    'end_date': end_date_2018,
                     'sales': sales2018
                 }
             sales_avg = round(sum(sales)/len(sales))
             sales_std = statistics.stdev(sales)
             sales_std = round(sales_std,1)
-            output_dict['overall'] = [sales_avg,sales_std]
+            temp_str = '<'+str(sales_avg)+'>'+'+/-'+'<'+str(sales_std)+'>'
+            # output_dict['overall'] = [sales_avg,sales_std]
+            output_dict['summary'] = temp_str
+            output_dict['sales_avg'] = sales_avg
             response = output_dict
             # print(response)
             return Response(response,status = status.HTTP_200_OK)

@@ -140,32 +140,37 @@
             <table class="table">
                <thead>
                   <tr>
-                  <th>Year</th>
-                  <th>Sales</th>
-               </tr>
+                     <th>Year</th>
+                     <th>Start Date</th>
+                     <th>End Date</th>
+                     <th>Sales</th>
+                  </tr>
                </thead>
                <tbody>
                   <tr v-for="(value,key) in projection_response.rows">
                            <th scope="row">${key}</th>
                               <!-- <template v-for="elements in value"> -->
+                                 <td>${value.start_date}</td>
+                                 <td>${value.end_date}</td>
                                  <td>${value.sales}</td>
                               <!-- </template> -->
                         </tr>
                </tbody>
                <thead>
                <tr>
-                  <th>Sales_avg</th>
-                  <th>Sales_std</th>
+                  <th>Summary Row</th>
                </tr>
             </thead>
             <tbody>
                <tr>
-                  <template v-for="val in projection_response.overall">
-                           <td>${val}</td>
-                        </template>
+                  <td>${projection_response.summary}</td>
                </tr>
             </tbody>
             </table>
+            <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-info" data-dismiss="modal" v-on:click="copyData()">Copy Sales Avg</button>
+               </div>
          </div>
       </div>
    </div>

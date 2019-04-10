@@ -204,7 +204,7 @@ var vm = new Vue({
           this.$http.post(api_url, this.projection_dict)
            .then((response) => {
            this.projection_response = response.data;
-           console.log(this.projection_response)
+           // console.log(this.projection_response.overall[0])
            this.loading = false;
          })
            .catch((err) => {
@@ -212,6 +212,10 @@ var vm = new Vue({
          // this.error = err.bodyText;
          this.date_error = err.bodyText;
        })
+       },
+       copyData: function(){
+        var temp = "Sales Average: " + this.projection_response.sales_avg + "";
+        this.newGoal.comment = temp;
        },
        exportCSV: function(){
         this.loading = true;
