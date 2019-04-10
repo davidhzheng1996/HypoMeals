@@ -20,6 +20,7 @@ from scrapy.utils.project import get_project_settings
 from scrapy.settings import Settings
 import os
 import imp
+import statistics
 from django.db.models import Sum, F, Count
 import sys
 sys.path.append('..')
@@ -862,6 +863,145 @@ def get_customer(request):
             for customer in customers:
                 serializer = CustomerSerializer(customer)
                 response.append(serializer.data)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+# return sales projections based on month and day
+def get_sales_projection(request):
+    def validateDate(date_dict):
+        month = int(date_dict['month'])
+        day = int(date_dict['day'])
+        days = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        if not date_dict['month'] or not date_dict['day']:
+            return False
+        if month < 1 or month > 12:
+            return False
+        if day < 1 or day > days[month]:
+            return False
+        return True
+    def checkDate(start_dict, end_dict):
+        month1 = int(start_dict['month'])
+        month2 = int(end_dict['month'])
+        day1 = int(start_dict['day'])
+        day2 = int(end_dict['day'])
+        if month1 > month2:
+            return False
+        elif month1 == month2:
+            if day1 > day2:
+                return False
+        return True
+    if(request.method=='POST'):
+        try:
+            response = {}
+            sales = []
+            output_dict = {}
+            output_dict['rows'] = {}
+            sku = Sku.objects.get(sku_name=request.data['sku_name'])
+            if not validateDate(request.data['start_date']):
+                post_result = 'error: start_date is invalid'
+                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
+            if not validateDate(request.data['end_date']):
+                post_result = 'error: end_date is invalid'
+                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
+            if not checkDate(request.data['start_date'],request.data['end_date']):
+                post_result = 'error: end_date cannot be ahead of start_date'
+                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
+            d = datetime.datetime.today().strftime('%Y-%m-%d')
+            curr_year = datetime.datetime.today().year
+            start_month = request.data['start_date']['month']
+            start_day = request.data['start_date']['day']
+            end_month = request.data['end_date']['month']
+            end_day = request.data['end_date']['day']
+            if int(start_month) < 10:
+                start_month = '0'+start_month
+            if int(start_day) < 10:
+                start_day = '0' + start_day
+            if int(end_month) < 10:
+                end_month = '0'+end_month
+            if int(end_day) < 10:
+                end_day = '0' + end_day
+            start_str = str(curr_year)+start_month+start_day
+            end_str = str(curr_year)+end_month+end_day
+            start_datetime = datetime.datetime.strptime(start_str, '%Y%m%d')
+            start_date = start_datetime.strftime('%Y-%m-%d')
+            end_datetime = datetime.datetime.strptime(end_str, '%Y%m%d')
+            end_date = end_datetime.strftime('%Y-%m-%d')
+            # rev2019 = 0
+            # rev2015 = 0
+
+            # 2018
+            s2018 = str(curr_year-1)+start_month+start_day
+            start_datetime_2018 = datetime.datetime.strptime(s2018, '%Y%m%d')
+            start_date_2018 = start_datetime_2018.strftime('%Y-%m-%d')
+            end2018 = str(curr_year-1)+end_month+end_day
+            end_datetime_2018 = datetime.datetime.strptime(end2018, '%Y%m%d')
+            end_date_2018 = end_datetime_2018.strftime('%Y-%m-%d')
+            sales2018 = Sale_Record.objects.filter(sku=sku.id,sale_date__range=[start_date_2018,end_date_2018]).aggregate(Sum('sales')).get('sales__sum',0.00)
+            sales.append(sales2018)
+            # 2017
+            s2017 = str(curr_year-2)+start_month+start_day
+            start_datetime_2017 = datetime.datetime.strptime(s2017, '%Y%m%d')
+            start_date_2017 = start_datetime_2017.strftime('%Y-%m-%d')
+            end2017 = str(curr_year-2)+end_month+end_day
+            end_datetime_2017 = datetime.datetime.strptime(end2017, '%Y%m%d')
+            end_date_2017 = end_datetime_2017.strftime('%Y-%m-%d')
+            sales2017 = Sale_Record.objects.filter(sku=sku.id,sale_date__range=[start_date_2017,end_date_2017]).aggregate(Sum('sales')).get('sales__sum',0.00)
+            sales.append(sales2017)
+            # 2016
+            s2016 = str(curr_year-3)+start_month+start_day
+            start_datetime_2016 = datetime.datetime.strptime(s2016, '%Y%m%d')
+            start_date_2016 = start_datetime_2016.strftime('%Y-%m-%d')
+            end2016 = str(curr_year-3)+end_month+end_day
+            end_datetime_2016 = datetime.datetime.strptime(end2016, '%Y%m%d')
+            end_date_2016 = end_datetime_2016.strftime('%Y-%m-%d')
+            sales2016 = Sale_Record.objects.filter(sku=sku.id,sale_date__range=[start_date_2016,end_date_2016]).aggregate(Sum('sales')).get('sales__sum',0.00)
+            sales.append(sales2016)
+
+            if end_date < d:
+                sales2019 = Sale_Record.objects.filter(sku=sku.id,sale_date__range=[start_date,end_date]).aggregate(Sum('sales')).get('sales__sum',0.00)
+                sales.append(sales2019)
+                output_dict['rows'][curr_year-3] = {
+                    'sales': sales2016
+                }
+                output_dict['rows'][curr_year-2] = {
+                    'sales': sales2017
+                }
+                output_dict['rows'][curr_year-1] = {
+                    'sales': sales2018
+                }
+                output_dict['rows'][curr_year] = {
+                    'sales': sales2019
+                }
+            else:
+                s2015 = str(curr_year-4)+start_month+start_day
+                start_datetime_2015 = datetime.datetime.strptime(s2015, '%Y%m%d')
+                start_date_2015 = start_datetime_2015.strftime('%Y-%m-%d')
+                end2015 = str(curr_year-4)+end_month+end_day
+                end_datetime_2015 = datetime.datetime.strptime(end2015, '%Y%m%d')
+                end_date_2015 = end_datetime_2015.strftime('%Y-%m-%d')
+                sales2015 = Sale_Record.objects.filter(sku=sku.id,sale_date__range=[start_date_2015,end_date_2015]).aggregate(Sum('sales')).get('sales__sum',0.00)
+                sales.append(sales2015)
+                output_dict['rows'][curr_year-4] = {
+                    'sales': sales2015
+                }
+                output_dict['rows'][curr_year-3] = {
+                    'sales': sales2016
+                }
+                output_dict['rows'][curr_year-2] = {
+                    'sales': sales2017
+                }
+                output_dict['rows'][curr_year-1] = {
+                    'sales': sales2018
+                }
+            sales_avg = round(sum(sales)/len(sales))
+            sales_std = statistics.stdev(sales)
+            sales_std = round(sales_std,1)
+            output_dict['overall'] = [sales_avg,sales_std]
+            response = output_dict
+            # print(response)
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)

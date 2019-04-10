@@ -66,5 +66,6 @@ urlpatterns = [
     path('api/manufacture_schedule_report/', viewsets.manufacture_schedule_report),
     path('api/get_sales_report/', viewsets.get_sales_report),
     path('api/sales_summary/', viewsets.sales_summary),
-    path('api/get_customer/', viewsets.get_customer)
+    path('api/get_customer/', viewsets.get_customer),
+    path('api/get_sales_projection', viewsets.get_sales_projection)
 ]
