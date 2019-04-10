@@ -1,0 +1,3699 @@
+2019-04-10 19:28:06 [scrapy.utils.log] INFO: Scrapy 1.6.0 started (bot: scraper)
+2019-04-10 19:28:06 [scrapy.utils.log] INFO: Versions: lxml 4.3.3.0, libxml2 2.9.9, cssselect 1.0.3, parsel 1.5.1, w3lib 1.20.0, Twisted 18.9.0, Python 3.7.3 (default, Mar 27 2019, 22:11:17) - [GCC 7.3.0], pyOpenSSL 19.0.0 (OpenSSL 1.1.1b  26 Feb 2019), cryptography 2.6.1, Platform Linux-4.4.0-145-generic-x86_64-with-debian-stretch-sid
+2019-04-10 19:28:06 [scrapy.crawler] INFO: Overridden settings: {'BOT_NAME': 'scraper', 'LOG_FILE': 'logs/default/sales/c22818a45bc611e99306005056a190d2.log', 'NEWSPIDER_MODULE': 'scraper.spiders', 'ROBOTSTXT_OBEY': True, 'SPIDER_MODULES': ['scraper.spiders']}
+2019-04-10 19:28:06 [scrapy.extensions.telnet] INFO: Telnet Password: 709adcbb142218e8
+2019-04-10 19:28:06 [scrapy.middleware] INFO: Enabled extensions:
+['scrapy.extensions.corestats.CoreStats',
+ 'scrapy.extensions.telnet.TelnetConsole',
+ 'scrapy.extensions.memusage.MemoryUsage',
+ 'scrapy.extensions.logstats.LogStats']
+2019-04-10 19:28:07 [scrapy.middleware] INFO: Enabled downloader middlewares:
+['scrapy.downloadermiddlewares.robotstxt.RobotsTxtMiddleware',
+ 'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+ 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+ 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+ 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+ 'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+ 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+ 'scrapy.downloadermiddlewares.cookies.CookiesMiddleware',
+ 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+ 'scrapy.downloadermiddlewares.stats.DownloaderStats']
+2019-04-10 19:28:07 [scrapy.middleware] INFO: Enabled spider middlewares:
+['scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+ 'scrapy.spidermiddlewares.offsite.OffsiteMiddleware',
+ 'scrapy.spidermiddlewares.referer.RefererMiddleware',
+ 'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+ 'scrapy.spidermiddlewares.depth.DepthMiddleware']
+2019-04-10 19:28:07 [scrapy.middleware] INFO: Enabled item pipelines:
+[]
+2019-04-10 19:28:07 [scrapy.core.engine] INFO: Spider opened
+2019-04-10 19:28:07 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2019-04-10 19:28:07 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
+2019-04-10 19:28:07 [scrapy.core.engine] DEBUG: Crawled (404) <GET http://hypomeals-sales.colab.duke.edu:8080/robots.txt> (referer: None)
+2019-04-10 19:28:07 [scrapy.core.engine] DEBUG: Crawled (200) <GET http://hypomeals-sales.colab.duke.edu:8080/> (referer: None)
+2019-04-10 19:28:07 [scrapy.core.engine] DEBUG: Crawled (200) <GET http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2019> (referer: http://hypomeals-sales.colab.duke.edu:8080/)
+2019-04-10 19:28:08 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2019>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2019, 1, 14, 0, 0),
+ 'sales': '321',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:08 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2019>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2019, 1, 14, 0, 0),
+ 'sales': '168',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:08 [scrapy.core.engine] DEBUG: Crawled (200) <GET http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016> (referer: http://hypomeals-sales.colab.duke.edu:8080/)
+2019-04-10 19:28:08 [scrapy.core.engine] DEBUG: Crawled (200) <GET http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014> (referer: http://hypomeals-sales.colab.duke.edu:8080/)
+2019-04-10 19:28:08 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2019>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2019, 1, 14, 0, 0),
+ 'sales': '99',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:08 [scrapy.core.engine] DEBUG: Crawled (200) <GET http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017> (referer: http://hypomeals-sales.colab.duke.edu:8080/)
+2019-04-10 19:28:08 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2019>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2019, 1, 21, 0, 0),
+ 'sales': '53',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:08 [scrapy.core.engine] DEBUG: Crawled (200) <GET http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015> (referer: http://hypomeals-sales.colab.duke.edu:8080/)
+2019-04-10 19:28:08 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 1, 11, 0, 0),
+ 'sales': '287',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:08 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 1, 13, 0, 0),
+ 'sales': '314',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:09 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2019>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2019, 2, 4, 0, 0),
+ 'sales': '297',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:09 [scrapy.core.engine] DEBUG: Crawled (200) <GET http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012> (referer: http://hypomeals-sales.colab.duke.edu:8080/)
+2019-04-10 19:28:09 [scrapy.core.engine] DEBUG: Crawled (200) <GET http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018> (referer: http://hypomeals-sales.colab.duke.edu:8080/)
+2019-04-10 19:28:09 [scrapy.core.engine] DEBUG: Crawled (200) <GET http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010> (referer: http://hypomeals-sales.colab.duke.edu:8080/)
+2019-04-10 19:28:09 [scrapy.core.engine] DEBUG: Crawled (200) <GET http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013> (referer: http://hypomeals-sales.colab.duke.edu:8080/)
+2019-04-10 19:28:09 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 1, 11, 0, 0),
+ 'sales': '152',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:09 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 1, 13, 0, 0),
+ 'sales': '169',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:09 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 1, 9, 0, 0),
+ 'sales': '318',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:09 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2019>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2019, 2, 18, 0, 0),
+ 'sales': '682',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:09 [scrapy.core.engine] DEBUG: Crawled (200) <GET http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011> (referer: http://hypomeals-sales.colab.duke.edu:8080/)
+2019-04-10 19:28:09 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 1, 12, 0, 0),
+ 'sales': '299',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:10 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 1, 11, 0, 0),
+ 'sales': '93',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:10 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 1, 13, 0, 0),
+ 'sales': '102',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:10 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 1, 9, 0, 0),
+ 'sales': '178',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:10 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2019>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2019, 2, 25, 0, 0),
+ 'sales': '118',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:10 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 1, 12, 0, 0),
+ 'sales': '164',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:10 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 1, 9, 0, 0),
+ 'sales': '318',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:10 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 1, 8, 0, 0),
+ 'sales': '342',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:11 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 1, 11, 0, 0),
+ 'sales': '316',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:11 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 1, 14, 0, 0),
+ 'sales': '346',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:11 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2016, 1, 18, 0, 0),
+ 'sales': '57',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:11 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2014, 1, 20, 0, 0),
+ 'sales': '52',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:11 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 1, 9, 0, 0),
+ 'sales': '97',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:11 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2019>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2019, 2, 25, 0, 0),
+ 'sales': '354',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:12 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 1, 10, 0, 0),
+ 'sales': '328',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:12 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 1, 12, 0, 0),
+ 'sales': '93',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:12 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 1, 9, 0, 0),
+ 'sales': '156',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:12 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 1, 8, 0, 0),
+ 'sales': '171',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:12 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 1, 11, 0, 0),
+ 'sales': '156',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:12 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 1, 14, 0, 0),
+ 'sales': '171',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:13 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 2, 1, 0, 0),
+ 'sales': '356',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:13 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 2, 3, 0, 0),
+ 'sales': '320',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:13 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2017, 1, 16, 0, 0),
+ 'sales': '58',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:13 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2019>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2019, 3, 4, 0, 0),
+ 'sales': '75',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:13 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 1, 10, 0, 0),
+ 'sales': '183',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:13 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2015, 1, 19, 0, 0),
+ 'sales': '50',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:13 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 1, 9, 0, 0),
+ 'sales': '97',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:14 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 1, 8, 0, 0),
+ 'sales': '110',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:14 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 1, 11, 0, 0),
+ 'sales': '109',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:14 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 1, 14, 0, 0),
+ 'sales': '100',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:14 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2016, 2, 15, 0, 0),
+ 'sales': '580',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:14 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2014, 2, 17, 0, 0),
+ 'sales': '607',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:14 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 1, 30, 0, 0),
+ 'sales': '311',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:14 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2019>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2019, 3, 4, 0, 0),
+ 'sales': '55',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:15 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 1, 10, 0, 0),
+ 'sales': '107',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:15 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 2, 2, 0, 0),
+ 'sales': '355',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:15 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2012, 1, 16, 0, 0),
+ 'sales': '51',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:15 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2018, 1, 15, 0, 0),
+ 'sales': '59',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:15 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2010, 1, 18, 0, 0),
+ 'sales': '60',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:15 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2013, 1, 21, 0, 0),
+ 'sales': '56',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:16 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 2, 22, 0, 0),
+ 'sales': '142',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:16 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 2, 24, 0, 0),
+ 'sales': '133',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:16 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2017, 2, 13, 0, 0),
+ 'sales': '565',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:16 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2019>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2019, 3, 18, 0, 0),
+ 'sales': '347',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:16 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2011, 1, 17, 0, 0),
+ 'sales': '59',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:16 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2015, 2, 16, 0, 0),
+ 'sales': '655',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:17 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 1, 30, 0, 0),
+ 'sales': '330',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:17 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 1, 29, 0, 0),
+ 'sales': '288',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:17 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 2, 1, 0, 0),
+ 'sales': '350',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:17 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 2, 4, 0, 0),
+ 'sales': '349',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:17 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 2, 22, 0, 0),
+ 'sales': '354',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:17 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 2, 24, 0, 0),
+ 'sales': '341',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:17 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 2, 20, 0, 0),
+ 'sales': '137',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:18 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2019>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2019, 3, 18, 0, 0),
+ 'sales': '103',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:18 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 1, 31, 0, 0),
+ 'sales': '323',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:18 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 2, 23, 0, 0),
+ 'sales': '141',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:18 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2012, 2, 13, 0, 0),
+ 'sales': '651',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:18 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2018, 2, 12, 0, 0),
+ 'sales': '581',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:18 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2010, 2, 15, 0, 0),
+ 'sales': '559',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:18 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2013, 2, 18, 0, 0),
+ 'sales': '610',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:19 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 2, 29, 0, 0),
+ 'sales': '76',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:19 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 3, 3, 0, 0),
+ 'sales': '65',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:19 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 2, 20, 0, 0),
+ 'sales': '287',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:19 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2019>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2019, 3, 25, 0, 0),
+ 'sales': '156',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:19 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2011, 2, 14, 0, 0),
+ 'sales': '586',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:19 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 2, 23, 0, 0),
+ 'sales': '292',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:19 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 2, 20, 0, 0),
+ 'sales': '140',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:20 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 2, 19, 0, 0),
+ 'sales': '138',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:20 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 2, 22, 0, 0),
+ 'sales': '119',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:20 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 2, 25, 0, 0),
+ 'sales': '118',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:20 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2016, 2, 29, 0, 0),
+ 'sales': '54',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:20 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2014, 3, 3, 0, 0),
+ 'sales': '61',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:20 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 2, 27, 0, 0),
+ 'sales': '73',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:21 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2019>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2019, 4, 8, 0, 0),
+ 'sales': '313',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:21 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 2, 21, 0, 0),
+ 'sales': '140',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:21 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 3, 2, 0, 0),
+ 'sales': '63',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:21 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 2, 20, 0, 0),
+ 'sales': '310',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:21 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 2, 19, 0, 0),
+ 'sales': '294',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:21 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 2, 22, 0, 0),
+ 'sales': '304',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:21 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 2, 25, 0, 0),
+ 'sales': '318',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:22 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 3, 14, 0, 0),
+ 'sales': '307',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:22 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 3, 17, 0, 0),
+ 'sales': '302',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:22 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2017, 2, 27, 0, 0),
+ 'sales': '59',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:22 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 2, 21, 0, 0),
+ 'sales': '354',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:22 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2015, 3, 2, 0, 0),
+ 'sales': '60',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:22 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 2, 27, 0, 0),
+ 'sales': '71',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:22 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 2, 26, 0, 0),
+ 'sales': '70',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:23 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 3, 1, 0, 0),
+ 'sales': '69',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:23 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 3, 4, 0, 0),
+ 'sales': '72',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:23 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 3, 14, 0, 0),
+ 'sales': '104',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:23 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 3, 17, 0, 0),
+ 'sales': '98',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:23 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 3, 13, 0, 0),
+ 'sales': '303',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:23 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 2, 28, 0, 0),
+ 'sales': '73',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:24 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 3, 16, 0, 0),
+ 'sales': '304',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:24 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2012, 2, 27, 0, 0),
+ 'sales': '50',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:24 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2018, 2, 26, 0, 0),
+ 'sales': '61',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:24 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2010, 3, 1, 0, 0),
+ 'sales': '57',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:24 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2013, 3, 4, 0, 0),
+ 'sales': '60',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:24 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 3, 21, 0, 0),
+ 'sales': '151',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:24 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 3, 24, 0, 0),
+ 'sales': '160',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 3, 13, 0, 0),
+ 'sales': '104',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2011, 2, 28, 0, 0),
+ 'sales': '51',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 3, 16, 0, 0),
+ 'sales': '104',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 3, 12, 0, 0),
+ 'sales': '295',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 3, 12, 0, 0),
+ 'sales': '344',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 3, 15, 0, 0),
+ 'sales': '289',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 3, 18, 0, 0),
+ 'sales': '343',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:26 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 4, 4, 0, 0),
+ 'sales': '318',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:26 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 4, 7, 0, 0),
+ 'sales': '330',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:26 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 3, 20, 0, 0),
+ 'sales': '152',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:26 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 3, 14, 0, 0),
+ 'sales': '300',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:26 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 3, 23, 0, 0),
+ 'sales': '176',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:26 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 3, 12, 0, 0),
+ 'sales': '110',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:27 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 3, 12, 0, 0),
+ 'sales': '100',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:27 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 3, 15, 0, 0),
+ 'sales': '109',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:27 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 3, 18, 0, 0),
+ 'sales': '104',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:27 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2016, 4, 11, 0, 0),
+ 'sales': '40',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:27 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2014, 4, 14, 0, 0),
+ 'sales': '40',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:27 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 4, 3, 0, 0),
+ 'sales': '323',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:27 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 3, 14, 0, 0),
+ 'sales': '101',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:28 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 4, 6, 0, 0),
+ 'sales': '333',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:28 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 3, 19, 0, 0),
+ 'sales': '162',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:28 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 3, 19, 0, 0),
+ 'sales': '174',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:28 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 3, 22, 0, 0),
+ 'sales': '154',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:28 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 3, 25, 0, 0),
+ 'sales': '152',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:28 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2016, 4, 11, 0, 0),
+ 'sales': '58',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:28 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2014, 4, 14, 0, 0),
+ 'sales': '64',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:29 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2017, 4, 10, 0, 0),
+ 'sales': '36',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:29 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 3, 21, 0, 0),
+ 'sales': '176',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:29 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2015, 4, 13, 0, 0),
+ 'sales': '36',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:29 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 4, 2, 0, 0),
+ 'sales': '344',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:29 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 4, 2, 0, 0),
+ 'sales': '355',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:29 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 4, 5, 0, 0),
+ 'sales': '306',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:29 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 4, 8, 0, 0),
+ 'sales': '290',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:30 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2016, 4, 18, 0, 0),
+ 'sales': '32',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:30 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2014, 4, 21, 0, 0),
+ 'sales': '27',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:30 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2017, 4, 10, 0, 0),
+ 'sales': '56',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:30 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 4, 4, 0, 0),
+ 'sales': '340',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:30 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2015, 4, 13, 0, 0),
+ 'sales': '58',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:30 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2012, 4, 9, 0, 0),
+ 'sales': '42',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:31 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2018, 4, 9, 0, 0),
+ 'sales': '43',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:31 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2010, 4, 12, 0, 0),
+ 'sales': '37',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:31 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2013, 4, 15, 0, 0),
+ 'sales': '40',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:31 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 4, 25, 0, 0),
+ 'sales': '296',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:31 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 4, 28, 0, 0),
+ 'sales': '310',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:31 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2017, 4, 17, 0, 0),
+ 'sales': '32',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:31 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2011, 4, 11, 0, 0),
+ 'sales': '38',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:32 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2015, 4, 20, 0, 0),
+ 'sales': '32',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:32 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2012, 4, 9, 0, 0),
+ 'sales': '63',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:32 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2018, 4, 9, 0, 0),
+ 'sales': '57',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:32 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2010, 4, 12, 0, 0),
+ 'sales': '57',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:32 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2013, 4, 15, 0, 0),
+ 'sales': '52',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:32 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 5, 2, 0, 0),
+ 'sales': '65',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:32 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 5, 5, 0, 0),
+ 'sales': '63',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:33 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 4, 24, 0, 0),
+ 'sales': '320',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:33 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2011, 4, 11, 0, 0),
+ 'sales': '52',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:33 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 4, 27, 0, 0),
+ 'sales': '323',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:33 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2012, 4, 16, 0, 0),
+ 'sales': '28',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:33 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2018, 4, 16, 0, 0),
+ 'sales': '32',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:33 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2010, 4, 19, 0, 0),
+ 'sales': '31',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:34 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2013, 4, 22, 0, 0),
+ 'sales': '30',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:34 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 5, 16, 0, 0),
+ 'sales': '311',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:34 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 5, 19, 0, 0),
+ 'sales': '296',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:34 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 5, 1, 0, 0),
+ 'sales': '70',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:34 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2011, 4, 18, 0, 0),
+ 'sales': '32',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:34 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 5, 4, 0, 0),
+ 'sales': '61',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:34 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 4, 23, 0, 0),
+ 'sales': '288',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:35 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 4, 23, 0, 0),
+ 'sales': '332',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:35 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 4, 26, 0, 0),
+ 'sales': '302',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:35 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 4, 29, 0, 0),
+ 'sales': '289',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:35 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 5, 16, 0, 0),
+ 'sales': '111',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:35 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 5, 19, 0, 0),
+ 'sales': '106',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:35 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 5, 15, 0, 0),
+ 'sales': '321',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:35 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 4, 25, 0, 0),
+ 'sales': '325',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:36 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 5, 18, 0, 0),
+ 'sales': '288',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:36 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 4, 30, 0, 0),
+ 'sales': '63',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:36 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 4, 30, 0, 0),
+ 'sales': '63',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:36 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 5, 3, 0, 0),
+ 'sales': '67',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:36 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 5, 6, 0, 0),
+ 'sales': '71',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:36 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2016, 5, 23, 0, 0),
+ 'sales': '67',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:36 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2014, 5, 26, 0, 0),
+ 'sales': '61',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:37 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 5, 15, 0, 0),
+ 'sales': '113',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:37 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 5, 2, 0, 0),
+ 'sales': '67',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:37 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 5, 18, 0, 0),
+ 'sales': '110',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:37 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 5, 14, 0, 0),
+ 'sales': '291',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:37 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 5, 14, 0, 0),
+ 'sales': '309',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:37 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 5, 17, 0, 0),
+ 'sales': '347',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:37 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 5, 20, 0, 0),
+ 'sales': '318',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:38 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2016, 5, 30, 0, 0),
+ 'sales': '636',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:38 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2014, 6, 2, 0, 0),
+ 'sales': '597',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:38 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2017, 5, 22, 0, 0),
+ 'sales': '61',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:38 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 5, 16, 0, 0),
+ 'sales': '322',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:38 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2015, 5, 25, 0, 0),
+ 'sales': '64',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:38 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 5, 14, 0, 0),
+ 'sales': '112',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:38 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 5, 14, 0, 0),
+ 'sales': '105',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:39 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 5, 17, 0, 0),
+ 'sales': '103',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:39 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 5, 20, 0, 0),
+ 'sales': '111',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:39 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 5, 30, 0, 0),
+ 'sales': '144',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:39 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 6, 2, 0, 0),
+ 'sales': '147',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:39 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2017, 5, 29, 0, 0),
+ 'sales': '622',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:39 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 5, 16, 0, 0),
+ 'sales': '92',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:39 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2015, 6, 1, 0, 0),
+ 'sales': '691',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:40 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2012, 5, 21, 0, 0),
+ 'sales': '66',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:40 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2018, 5, 21, 0, 0),
+ 'sales': '66',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:40 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2010, 5, 24, 0, 0),
+ 'sales': '54',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:40 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2013, 5, 27, 0, 0),
+ 'sales': '66',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:40 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 6, 6, 0, 0),
+ 'sales': '339',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:40 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 6, 9, 0, 0),
+ 'sales': '323',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:40 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 5, 29, 0, 0),
+ 'sales': '138',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:41 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2011, 5, 23, 0, 0),
+ 'sales': '56',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:41 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 6, 1, 0, 0),
+ 'sales': '140',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:41 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2012, 5, 28, 0, 0),
+ 'sales': '577',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:41 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2018, 5, 28, 0, 0),
+ 'sales': '650',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:41 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2010, 5, 31, 0, 0),
+ 'sales': '646',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:41 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2013, 6, 3, 0, 0),
+ 'sales': '598',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:41 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 6, 20, 0, 0),
+ 'sales': '124',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:42 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 6, 23, 0, 0),
+ 'sales': '127',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:42 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 6, 5, 0, 0),
+ 'sales': '350',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:42 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2011, 5, 30, 0, 0),
+ 'sales': '563',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:42 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 6, 8, 0, 0),
+ 'sales': '351',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:42 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 5, 28, 0, 0),
+ 'sales': '162',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:42 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 5, 28, 0, 0),
+ 'sales': '154',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:42 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 5, 31, 0, 0),
+ 'sales': '163',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:43 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 6, 3, 0, 0),
+ 'sales': '147',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:43 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 6, 27, 0, 0),
+ 'sales': '316',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:43 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 6, 30, 0, 0),
+ 'sales': '302',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:43 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 6, 19, 0, 0),
+ 'sales': '146',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:43 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 5, 30, 0, 0),
+ 'sales': '138',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:43 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 6, 22, 0, 0),
+ 'sales': '146',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:43 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 6, 4, 0, 0),
+ 'sales': '305',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:44 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 6, 4, 0, 0),
+ 'sales': '324',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:44 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 6, 7, 0, 0),
+ 'sales': '330',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:44 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 6, 10, 0, 0),
+ 'sales': '319',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:44 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 7, 4, 0, 0),
+ 'sales': '61',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:44 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 7, 7, 0, 0),
+ 'sales': '60',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:45 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 6, 26, 0, 0),
+ 'sales': '287',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:45 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 6, 6, 0, 0),
+ 'sales': '322',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:45 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 6, 29, 0, 0),
+ 'sales': '290',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:45 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 6, 18, 0, 0),
+ 'sales': '150',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:45 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 6, 18, 0, 0),
+ 'sales': '133',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:45 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 6, 21, 0, 0),
+ 'sales': '150',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:45 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 6, 24, 0, 0),
+ 'sales': '137',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:46 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2016, 7, 4, 0, 0),
+ 'sales': '59',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:46 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2014, 7, 7, 0, 0),
+ 'sales': '64',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:46 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 7, 3, 0, 0),
+ 'sales': '57',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:46 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 6, 20, 0, 0),
+ 'sales': '152',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:46 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 7, 6, 0, 0),
+ 'sales': '62',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:46 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 6, 25, 0, 0),
+ 'sales': '337',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:46 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 6, 25, 0, 0),
+ 'sales': '313',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:47 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 6, 28, 0, 0),
+ 'sales': '339',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:47 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 7, 1, 0, 0),
+ 'sales': '289',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:47 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 7, 18, 0, 0),
+ 'sales': '322',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:47 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 7, 21, 0, 0),
+ 'sales': '352',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:47 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2017, 7, 3, 0, 0),
+ 'sales': '55',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:47 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 6, 27, 0, 0),
+ 'sales': '345',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:47 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2015, 7, 6, 0, 0),
+ 'sales': '62',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:48 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 7, 2, 0, 0),
+ 'sales': '58',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:48 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 7, 2, 0, 0),
+ 'sales': '61',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:48 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 7, 5, 0, 0),
+ 'sales': '68',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:48 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 7, 8, 0, 0),
+ 'sales': '59',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:48 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 7, 18, 0, 0),
+ 'sales': '97',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:48 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 7, 21, 0, 0),
+ 'sales': '101',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:48 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 7, 17, 0, 0),
+ 'sales': '320',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:49 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 7, 4, 0, 0),
+ 'sales': '69',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:49 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 7, 20, 0, 0),
+ 'sales': '307',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:49 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2012, 7, 2, 0, 0),
+ 'sales': '63',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:49 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2018, 7, 2, 0, 0),
+ 'sales': '62',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:49 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2010, 7, 5, 0, 0),
+ 'sales': '59',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:49 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2013, 7, 8, 0, 0),
+ 'sales': '65',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:49 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2016, 8, 1, 0, 0),
+ 'sales': '44',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:50 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2014, 8, 4, 0, 0),
+ 'sales': '37',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:50 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 7, 17, 0, 0),
+ 'sales': '110',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:50 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2011, 7, 4, 0, 0),
+ 'sales': '56',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:50 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 7, 20, 0, 0),
+ 'sales': '104',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:50 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 7, 16, 0, 0),
+ 'sales': '353',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:50 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 7, 16, 0, 0),
+ 'sales': '314',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:51 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 7, 19, 0, 0),
+ 'sales': '342',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:51 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 7, 22, 0, 0),
+ 'sales': '339',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:51 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 8, 8, 0, 0),
+ 'sales': '326',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:51 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 8, 11, 0, 0),
+ 'sales': '300',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:51 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2017, 7, 31, 0, 0),
+ 'sales': '38',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:51 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 7, 18, 0, 0),
+ 'sales': '300',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:51 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2015, 8, 3, 0, 0),
+ 'sales': '39',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:52 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 7, 16, 0, 0),
+ 'sales': '108',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:52 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 7, 16, 0, 0),
+ 'sales': '100',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:52 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 7, 19, 0, 0),
+ 'sales': '91',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:52 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 7, 22, 0, 0),
+ 'sales': '97',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:52 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 8, 8, 0, 0),
+ 'sales': '151',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:52 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 8, 11, 0, 0),
+ 'sales': '156',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:52 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 8, 7, 0, 0),
+ 'sales': '289',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:53 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 7, 18, 0, 0),
+ 'sales': '102',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:53 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 8, 10, 0, 0),
+ 'sales': '345',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:53 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2012, 7, 30, 0, 0),
+ 'sales': '38',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:53 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2018, 7, 30, 0, 0),
+ 'sales': '37',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:53 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2010, 8, 2, 0, 0),
+ 'sales': '39',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:53 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2013, 8, 5, 0, 0),
+ 'sales': '37',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:53 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2016, 8, 8, 0, 0),
+ 'sales': '34',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:54 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2014, 8, 11, 0, 0),
+ 'sales': '32',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:54 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 8, 7, 0, 0),
+ 'sales': '150',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:54 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2011, 8, 1, 0, 0),
+ 'sales': '42',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:54 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 8, 10, 0, 0),
+ 'sales': '145',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:54 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 8, 6, 0, 0),
+ 'sales': '313',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:54 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 8, 6, 0, 0),
+ 'sales': '288',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:54 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 8, 9, 0, 0),
+ 'sales': '297',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:55 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 8, 12, 0, 0),
+ 'sales': '303',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:55 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2016, 8, 15, 0, 0),
+ 'sales': '57',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:55 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2014, 8, 18, 0, 0),
+ 'sales': '63',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:55 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2017, 8, 7, 0, 0),
+ 'sales': '29',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:55 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 8, 8, 0, 0),
+ 'sales': '294',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:55 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2015, 8, 10, 0, 0),
+ 'sales': '34',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:55 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 8, 6, 0, 0),
+ 'sales': '156',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:56 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 8, 6, 0, 0),
+ 'sales': '149',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:56 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 8, 9, 0, 0),
+ 'sales': '151',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:56 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 8, 12, 0, 0),
+ 'sales': '147',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:56 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 8, 29, 0, 0),
+ 'sales': '310',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:56 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 9, 1, 0, 0),
+ 'sales': '305',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:56 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2017, 8, 14, 0, 0),
+ 'sales': '59',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:57 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 8, 8, 0, 0),
+ 'sales': '140',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:57 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2015, 8, 17, 0, 0),
+ 'sales': '58',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:57 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2012, 8, 6, 0, 0),
+ 'sales': '35',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:57 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2018, 8, 6, 0, 0),
+ 'sales': '36',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:57 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2010, 8, 9, 0, 0),
+ 'sales': '30',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:57 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2013, 8, 12, 0, 0),
+ 'sales': '35',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:57 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 9, 5, 0, 0),
+ 'sales': '60',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:58 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 9, 8, 0, 0),
+ 'sales': '65',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:58 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 8, 28, 0, 0),
+ 'sales': '321',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:58 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2011, 8, 8, 0, 0),
+ 'sales': '33',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:58 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 8, 31, 0, 0),
+ 'sales': '310',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:58 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2012, 8, 13, 0, 0),
+ 'sales': '58',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:58 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2018, 8, 13, 0, 0),
+ 'sales': '58',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:58 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2010, 8, 16, 0, 0),
+ 'sales': '62',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:59 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2013, 8, 19, 0, 0),
+ 'sales': '66',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:59 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2016, 9, 12, 0, 0),
+ 'sales': '611',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:59 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2014, 9, 15, 0, 0),
+ 'sales': '634',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:59 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 9, 4, 0, 0),
+ 'sales': '64',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:59 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2011, 8, 15, 0, 0),
+ 'sales': '57',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:59 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 9, 7, 0, 0),
+ 'sales': '63',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:28:59 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 8, 27, 0, 0),
+ 'sales': '347',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:00 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 8, 27, 0, 0),
+ 'sales': '323',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:00 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 8, 30, 0, 0),
+ 'sales': '301',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:00 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 9, 2, 0, 0),
+ 'sales': '309',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:00 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 9, 19, 0, 0),
+ 'sales': '287',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:00 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 9, 22, 0, 0),
+ 'sales': '311',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:00 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2017, 9, 11, 0, 0),
+ 'sales': '567',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:00 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 8, 29, 0, 0),
+ 'sales': '333',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:01 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2015, 9, 14, 0, 0),
+ 'sales': '673',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:01 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 9, 3, 0, 0),
+ 'sales': '64',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:01 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 9, 3, 0, 0),
+ 'sales': '63',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:01 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 9, 6, 0, 0),
+ 'sales': '65',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:01 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 9, 9, 0, 0),
+ 'sales': '64',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:01 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 9, 19, 0, 0),
+ 'sales': '92',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:01 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 9, 22, 0, 0),
+ 'sales': '110',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:02 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 9, 18, 0, 0),
+ 'sales': '339',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:02 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 9, 5, 0, 0),
+ 'sales': '66',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:02 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 9, 21, 0, 0),
+ 'sales': '294',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:02 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2012, 9, 10, 0, 0),
+ 'sales': '571',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:02 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2018, 9, 10, 0, 0),
+ 'sales': '658',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:02 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2010, 9, 13, 0, 0),
+ 'sales': '591',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:02 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2013, 9, 16, 0, 0),
+ 'sales': '627',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:03 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2016, 9, 26, 0, 0),
+ 'sales': '57',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:03 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2014, 9, 29, 0, 0),
+ 'sales': '56',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:03 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 9, 18, 0, 0),
+ 'sales': '91',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:03 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2011, 9, 12, 0, 0),
+ 'sales': '612',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:03 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 9, 21, 0, 0),
+ 'sales': '101',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:03 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 9, 17, 0, 0),
+ 'sales': '331',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:04 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 9, 17, 0, 0),
+ 'sales': '321',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:04 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 9, 20, 0, 0),
+ 'sales': '295',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:04 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 9, 23, 0, 0),
+ 'sales': '293',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:04 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 10, 10, 0, 0),
+ 'sales': '340',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:04 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 10, 13, 0, 0),
+ 'sales': '346',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:04 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2017, 9, 25, 0, 0),
+ 'sales': '59',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:04 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 9, 19, 0, 0),
+ 'sales': '284',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:04 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2015, 9, 28, 0, 0),
+ 'sales': '53',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:05 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 9, 17, 0, 0),
+ 'sales': '94',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:05 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 9, 17, 0, 0),
+ 'sales': '97',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:05 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 9, 20, 0, 0),
+ 'sales': '101',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:05 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 9, 23, 0, 0),
+ 'sales': '90',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:05 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 10, 17, 0, 0),
+ 'sales': '131',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:05 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 10, 20, 0, 0),
+ 'sales': '125',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:06 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 10, 9, 0, 0),
+ 'sales': '316',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:06 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 9, 19, 0, 0),
+ 'sales': '110',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:06 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 10, 12, 0, 0),
+ 'sales': '329',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:06 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2012, 9, 24, 0, 0),
+ 'sales': '57',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:06 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2018, 9, 24, 0, 0),
+ 'sales': '63',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:06 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2010, 9, 27, 0, 0),
+ 'sales': '58',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:06 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2013, 9, 30, 0, 0),
+ 'sales': '55',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:07 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 10, 17, 0, 0),
+ 'sales': '162',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:07 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 10, 20, 0, 0),
+ 'sales': '143',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:07 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 10, 16, 0, 0),
+ 'sales': '128',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:07 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2011, 9, 26, 0, 0),
+ 'sales': '57',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:07 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 10, 19, 0, 0),
+ 'sales': '137',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:07 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 10, 8, 0, 0),
+ 'sales': '303',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:07 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 10, 8, 0, 0),
+ 'sales': '336',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:08 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 10, 11, 0, 0),
+ 'sales': '313',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:08 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 10, 14, 0, 0),
+ 'sales': '286',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:08 [scrapy.extensions.logstats] INFO: Crawled 12 pages (at 12 pages/min), scraped 406 items (at 406 items/min)
+2019-04-10 19:29:08 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 10, 31, 0, 0),
+ 'sales': '300',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:08 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 11, 3, 0, 0),
+ 'sales': '336',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:08 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 10, 16, 0, 0),
+ 'sales': '161',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:08 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 10, 10, 0, 0),
+ 'sales': '325',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:08 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 10, 19, 0, 0),
+ 'sales': '147',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:09 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 10, 15, 0, 0),
+ 'sales': '136',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:09 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 10, 15, 0, 0),
+ 'sales': '126',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:09 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 10, 18, 0, 0),
+ 'sales': '132',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:09 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 10, 21, 0, 0),
+ 'sales': '131',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:09 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 11, 7, 0, 0),
+ 'sales': '66',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:09 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 11, 10, 0, 0),
+ 'sales': '62',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:09 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 10, 30, 0, 0),
+ 'sales': '320',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:10 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (23)>,
+ 'customer_name': 'Western Beef',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 10, 17, 0, 0),
+ 'sales': '131',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:10 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 11, 2, 0, 0),
+ 'sales': '333',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:10 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 10, 15, 0, 0),
+ 'sales': '153',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:10 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 10, 15, 0, 0),
+ 'sales': '143',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:10 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 10, 18, 0, 0),
+ 'sales': '171',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:10 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 10, 21, 0, 0),
+ 'sales': '168',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:11 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2016, 11, 7, 0, 0),
+ 'sales': '53',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:11 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2014, 11, 10, 0, 0),
+ 'sales': '50',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:11 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 11, 6, 0, 0),
+ 'sales': '67',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:11 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 10, 17, 0, 0),
+ 'sales': '152',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:11 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 11, 9, 0, 0),
+ 'sales': '71',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:11 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 10, 29, 0, 0),
+ 'sales': '337',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:11 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 10, 29, 0, 0),
+ 'sales': '325',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:12 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 11, 1, 0, 0),
+ 'sales': '306',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:12 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 11, 4, 0, 0),
+ 'sales': '348',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:12 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 11, 21, 0, 0),
+ 'sales': '323',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:12 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 11, 24, 0, 0),
+ 'sales': '321',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:12 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2017, 11, 6, 0, 0),
+ 'sales': '57',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:12 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 10, 31, 0, 0),
+ 'sales': '349',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:12 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2015, 11, 9, 0, 0),
+ 'sales': '56',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:13 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 11, 5, 0, 0),
+ 'sales': '70',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:13 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 11, 5, 0, 0),
+ 'sales': '61',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:13 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 11, 8, 0, 0),
+ 'sales': '66',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:13 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 11, 11, 0, 0),
+ 'sales': '65',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:13 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2016, 11, 21, 0, 0),
+ 'sales': '44',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:13 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2014, 11, 24, 0, 0),
+ 'sales': '38',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:13 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 11, 20, 0, 0),
+ 'sales': '336',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:14 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (99)>,
+ 'customer_name': 'Strack & Van Til',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 11, 7, 0, 0),
+ 'sales': '69',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:14 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 11, 23, 0, 0),
+ 'sales': '285',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:14 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2012, 11, 5, 0, 0),
+ 'sales': '51',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:14 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2018, 11, 5, 0, 0),
+ 'sales': '56',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:14 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2010, 11, 8, 0, 0),
+ 'sales': '56',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:14 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2013, 11, 11, 0, 0),
+ 'sales': '58',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:14 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 11, 21, 0, 0),
+ 'sales': '98',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:15 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 11, 24, 0, 0),
+ 'sales': '95',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:15 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2017, 11, 20, 0, 0),
+ 'sales': '42',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:15 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2011, 11, 7, 0, 0),
+ 'sales': '52',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:15 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2015, 11, 23, 0, 0),
+ 'sales': '44',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:15 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 11, 19, 0, 0),
+ 'sales': '321',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:15 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 11, 19, 0, 0),
+ 'sales': '339',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:16 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 11, 22, 0, 0),
+ 'sales': '295',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:16 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 11, 25, 0, 0),
+ 'sales': '334',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:16 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2016, 11, 28, 0, 0),
+ 'sales': '28',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:16 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2014, 12, 1, 0, 0),
+ 'sales': '31',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:16 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 11, 20, 0, 0),
+ 'sales': '114',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:16 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 11, 21, 0, 0),
+ 'sales': '321',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:17 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 11, 23, 0, 0),
+ 'sales': '108',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:17 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2012, 11, 19, 0, 0),
+ 'sales': '40',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:17 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2018, 11, 19, 0, 0),
+ 'sales': '42',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:17 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2010, 11, 22, 0, 0),
+ 'sales': '42',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:17 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2013, 11, 25, 0, 0),
+ 'sales': '44',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:17 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2016, 12, 12, 0, 0),
+ 'sales': '314',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:17 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2014, 12, 15, 0, 0),
+ 'sales': '338',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:18 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2017, 11, 27, 0, 0),
+ 'sales': '34',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:18 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (79)>,
+ 'customer_name': "Harding's Friendly Markets",
+ 'price_per_case': '356.75',
+ 'sale_date': datetime.datetime(2011, 11, 21, 0, 0),
+ 'sales': '41',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:18 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2015, 11, 30, 0, 0),
+ 'sales': '33',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:18 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 11, 19, 0, 0),
+ 'sales': '112',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:18 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 11, 19, 0, 0),
+ 'sales': '92',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:18 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 11, 22, 0, 0),
+ 'sales': '105',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:18 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 11, 25, 0, 0),
+ 'sales': '103',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:19 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2016, 12, 19, 0, 0),
+ 'sales': '55',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:19 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2014, 12, 22, 0, 0),
+ 'sales': '49',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:19 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2017, 12, 11, 0, 0),
+ 'sales': '293',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:19 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (86)>,
+ 'customer_name': 'Quality Foods',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 11, 21, 0, 0),
+ 'sales': '102',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:19 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2015, 12, 14, 0, 0),
+ 'sales': '332',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:19 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2012, 11, 26, 0, 0),
+ 'sales': '29',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:19 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2018, 11, 26, 0, 0),
+ 'sales': '31',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:20 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2010, 11, 29, 0, 0),
+ 'sales': '30',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:20 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2013, 12, 2, 0, 0),
+ 'sales': '34',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:20 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2016, 12, 26, 0, 0),
+ 'sales': '627',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:20 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2014, 12, 29, 0, 0),
+ 'sales': '582',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:20 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2017, 12, 18, 0, 0),
+ 'sales': '50',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:20 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (83)>,
+ 'customer_name': 'BI-LO',
+ 'price_per_case': '312.25',
+ 'sale_date': datetime.datetime(2011, 11, 28, 0, 0),
+ 'sales': '29',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:20 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2015, 12, 21, 0, 0),
+ 'sales': '58',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:21 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2012, 12, 10, 0, 0),
+ 'sales': '283',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:21 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2018, 12, 10, 0, 0),
+ 'sales': '310',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:21 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2010, 12, 13, 0, 0),
+ 'sales': '335',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:21 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2013, 12, 16, 0, 0),
+ 'sales': '291',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:21 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2016>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2016, 12, 26, 0, 0),
+ 'sales': '151',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:21 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2014>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2014, 12, 29, 0, 0),
+ 'sales': '153',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:21 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2017, 12, 25, 0, 0),
+ 'sales': '632',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:22 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (30)>,
+ 'customer_name': 'SuperTarget',
+ 'price_per_case': '282.50',
+ 'sale_date': datetime.datetime(2011, 12, 12, 0, 0),
+ 'sales': '319',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:22 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2015, 12, 28, 0, 0),
+ 'sales': '592',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:22 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2012, 12, 17, 0, 0),
+ 'sales': '59',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:22 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2018, 12, 17, 0, 0),
+ 'sales': '54',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:22 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2010, 12, 20, 0, 0),
+ 'sales': '59',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:22 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2013, 12, 23, 0, 0),
+ 'sales': '56',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:22 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2017>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2017, 12, 25, 0, 0),
+ 'sales': '169',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:23 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (102)>,
+ 'customer_name': "Matherne's Supermarkets",
+ 'price_per_case': '327.00',
+ 'sale_date': datetime.datetime(2011, 12, 19, 0, 0),
+ 'sales': '54',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:23 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2015>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2015, 12, 28, 0, 0),
+ 'sales': '162',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:23 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2012, 12, 24, 0, 0),
+ 'sales': '558',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:23 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2018, 12, 24, 0, 0),
+ 'sales': '614',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:23 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2010, 12, 27, 0, 0),
+ 'sales': '668',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:23 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2013, 12, 30, 0, 0),
+ 'sales': '658',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:24 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (20)>,
+ 'customer_name': 'Walmart',
+ 'price_per_case': '267.50',
+ 'sale_date': datetime.datetime(2011, 12, 26, 0, 0),
+ 'sales': '598',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:24 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2012>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2012, 12, 24, 0, 0),
+ 'sales': '148',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:24 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2018>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2018, 12, 24, 0, 0),
+ 'sales': '181',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:24 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2010>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2010, 12, 27, 0, 0),
+ 'sales': '166',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:24 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2013>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2013, 12, 30, 0, 0),
+ 'sales': '146',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:24 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/?sku=1012&year=2011>
+{'customer_id': <Customer: Customer object (58)>,
+ 'customer_name': 'Red Apple',
+ 'price_per_case': '297.25',
+ 'sale_date': datetime.datetime(2011, 12, 26, 0, 0),
+ 'sales': '176',
+ 'sku': <Sku: Sku object (1012)>}
+2019-04-10 19:29:24 [scrapy.core.engine] INFO: Closing spider (finished)
+2019-04-10 19:29:24 [scrapy.statscollectors] INFO: Dumping Scrapy stats:
+{'downloader/request_bytes': 3488,
+ 'downloader/request_count': 12,
+ 'downloader/request_method_count/GET': 12,
+ 'downloader/response_bytes': 44642,
+ 'downloader/response_count': 12,
+ 'downloader/response_status_count/200': 11,
+ 'downloader/response_status_count/404': 1,
+ 'finish_reason': 'finished',
+ 'finish_time': datetime.datetime(2019, 4, 10, 19, 29, 24, 741327),
+ 'item_scraped_count': 518,
+ 'log_count/DEBUG': 530,
+ 'log_count/INFO': 10,
+ 'memusage/max': 78499840,
+ 'memusage/startup': 69984256,
+ 'request_depth_max': 1,
+ 'response_received_count': 12,
+ 'robotstxt/request_count': 1,
+ 'robotstxt/response_count': 1,
+ 'robotstxt/response_status_count/404': 1,
+ 'scheduler/dequeued': 11,
+ 'scheduler/dequeued/memory': 11,
+ 'scheduler/enqueued': 11,
+ 'scheduler/enqueued/memory': 11,
+ 'start_time': datetime.datetime(2019, 4, 10, 19, 28, 7, 15202)}
+2019-04-10 19:29:24 [scrapy.core.engine] INFO: Spider closed (finished)

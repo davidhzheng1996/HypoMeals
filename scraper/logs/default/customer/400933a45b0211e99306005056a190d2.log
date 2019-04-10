@@ -1,0 +1,269 @@
+2019-04-09 20:01:24 [scrapy.utils.log] INFO: Scrapy 1.6.0 started (bot: scraper)
+2019-04-09 20:01:24 [scrapy.utils.log] INFO: Versions: lxml 4.3.3.0, libxml2 2.9.9, cssselect 1.0.3, parsel 1.5.1, w3lib 1.20.0, Twisted 18.9.0, Python 3.7.3 (default, Mar 27 2019, 22:11:17) - [GCC 7.3.0], pyOpenSSL 19.0.0 (OpenSSL 1.1.1b  26 Feb 2019), cryptography 2.6.1, Platform Linux-4.4.0-145-generic-x86_64-with-debian-stretch-sid
+2019-04-09 20:01:24 [scrapy.crawler] INFO: Overridden settings: {'BOT_NAME': 'scraper', 'LOG_FILE': 'logs/default/customer/400933a45b0211e99306005056a190d2.log', 'NEWSPIDER_MODULE': 'scraper.spiders', 'ROBOTSTXT_OBEY': True, 'SPIDER_MODULES': ['scraper.spiders']}
+2019-04-09 20:01:24 [scrapy.extensions.telnet] INFO: Telnet Password: af84f060d77af3e4
+2019-04-09 20:01:24 [scrapy.middleware] INFO: Enabled extensions:
+['scrapy.extensions.corestats.CoreStats',
+ 'scrapy.extensions.telnet.TelnetConsole',
+ 'scrapy.extensions.memusage.MemoryUsage',
+ 'scrapy.extensions.logstats.LogStats']
+2019-04-09 20:01:24 [scrapy.middleware] INFO: Enabled downloader middlewares:
+['scrapy.downloadermiddlewares.robotstxt.RobotsTxtMiddleware',
+ 'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+ 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+ 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+ 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+ 'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+ 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+ 'scrapy.downloadermiddlewares.cookies.CookiesMiddleware',
+ 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+ 'scrapy.downloadermiddlewares.stats.DownloaderStats']
+2019-04-09 20:01:24 [scrapy.middleware] INFO: Enabled spider middlewares:
+['scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+ 'scrapy.spidermiddlewares.offsite.OffsiteMiddleware',
+ 'scrapy.spidermiddlewares.referer.RefererMiddleware',
+ 'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+ 'scrapy.spidermiddlewares.depth.DepthMiddleware']
+2019-04-09 20:01:24 [scrapy.middleware] INFO: Enabled item pipelines:
+[]
+2019-04-09 20:01:24 [scrapy.core.engine] INFO: Spider opened
+2019-04-09 20:01:24 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2019-04-09 20:01:24 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
+2019-04-09 20:01:24 [scrapy.core.engine] DEBUG: Crawled (404) <GET http://hypomeals-sales.colab.duke.edu:8080/robots.txt> (referer: None)
+2019-04-09 20:01:24 [scrapy.core.engine] DEBUG: Crawled (200) <GET http://hypomeals-sales.colab.duke.edu:8080/customers> (referer: None)
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '0', 'name': 'Weis Markets'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '1', 'name': 'Albertsons LLC'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '2', 'name': 'Food Lion'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '3', 'name': 'Hannaford'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '4', 'name': 'Giant'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '5', 'name': 'Stop & Shop'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '6', 'name': 'Kroger'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '7', 'name': 'SpartanNash'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '8', 'name': 'SuperValu Inc.'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '9', 'name': "Shop 'n Save"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '10', 'name': 'C-Town'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '11', 'name': 'Sunflower Farmers Market'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '12', 'name': "Scolari's Food and Drug"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '13', 'name': 'Brookshire Grocery Company'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '14', 'name': 'FoodCity'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '15', 'name': 'Brown & Cole'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '16', 'name': 'K-VA-T Food Stores'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '17', 'name': 'Broulims'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '18', 'name': 'Super Saver'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '19', 'name': "Raley's"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '20', 'name': 'Walmart'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '21', 'name': 'Village Market Food Center'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '22', 'name': 'Food Town'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '23', 'name': 'Western Beef'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '24', 'name': 'Chappells Hometown Foods'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '25', 'name': "Hank's Market"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '26', 'name': 'Market Basket'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '27', 'name': 'Nam Dae Mun Farmers Market'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '28', 'name': 'Great Valu Markets'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '29', 'name': 'Felpausch'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '30', 'name': 'SuperTarget'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '31', 'name': 'Compare Foods Supermarket'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '32', 'name': 'Pueblo'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '33', 'name': "Lauer's Supermarket and Bakery"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '34', 'name': 'Mayfair Markets'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '35', 'name': 'Schnucks'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '36', 'name': 'D&W Food Centers'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '37', 'name': 'Fred Meyer'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '38', 'name': 'Great American Food Stores'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '39', 'name': 'Fareway'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '40', 'name': "Buehler's Buy-Low"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '41', 'name': "Arlan's Market"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '42', 'name': 'Sack&Save'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '43', 'name': 'United Grocery Outlet'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '44', 'name': 'Foodland'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '45', 'name': 'Landis Supermarkets'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '46', 'name': "Macey's Market"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '47', 'name': 'Food Pavilion'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '48', 'name': "Miller's Fresh Foods"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '49', 'name': 'FoodMaxx'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '50', 'name': 'Sav-A-Lot'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '51', 'name': 'Valley Marketplace'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '52', 'name': "Beach's Market"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '53', 'name': 'DeCicco Family Market'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '54', 'name': "Gelson's Markets"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '55', 'name': 'Piggly Wiggly'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '56', 'name': 'Hollywood Super Market'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '57', 'name': 'Lunds & Byerlys'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '58', 'name': 'Red Apple'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '59', 'name': 'Meijer'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '60', 'name': 'Super Dollar Discount Foods'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '61', 'name': 'Breaux Mart Supermarkets'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '62', 'name': 'Westborn Market'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '63', 'name': "Yoke's Fresh Market"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '64', 'name': 'Big M'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '65', 'name': 'The Fresh Grocer'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '66', 'name': "McCaffrey's"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '67', 'name': "Crosby's Marketplace"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '68', 'name': 'Ideal Food Basket'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '69', 'name': 'Western Supermarket'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '70', 'name': "Zup's"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '71', 'name': 'Remke Markets'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '72', 'name': 'Acme Fresh Market'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '73', 'name': 'Homeland'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '74', 'name': 'Tom Thumb Food & Pharmacy'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '75', 'name': "Pick 'N Save"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '76', 'name': 'Ingles Markets'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '77', 'name': "Woodman's Food Market"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '78', 'name': "Dahl's Foods"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '79', 'name': "Harding's Friendly Markets"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '80', 'name': 'New Leaf Community Markets'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '81', 'name': "Hugo's"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '82', 'name': 'Vinckier Foods'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '83', 'name': 'BI-LO'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '84', 'name': "Mac's Fresh Market"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '85', 'name': 'ShopRite'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '86', 'name': 'Quality Foods'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '87', 'name': 'Sav-Mor Foods'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '88', 'name': "Lin's Fresh Market"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '89', 'name': 'Plum Market'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '90', 'name': 'H-E-B'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '91', 'name': 'Big Y Foods'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '92', 'name': 'Central Market'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '93', 'name': 'Coborns'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '94', 'name': 'H-E-B Plus'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '95', 'name': 'Cost Cutter'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '96', 'name': 'Key Markets'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '97', 'name': 'Trade Fair'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '98', 'name': 'Sunfresh Market'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '99', 'name': 'Strack & Van Til'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '100', 'name': "Shaw's and Star Market"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '101', 'name': 'Gristedes'}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '102', 'name': "Matherne's Supermarkets"}
+2019-04-09 20:01:25 [scrapy.core.scraper] DEBUG: Scraped from <200 http://hypomeals-sales.colab.duke.edu:8080/customers>
+{'id': '103', 'name': "Wayne's Hometown Market"}
+2019-04-09 20:01:25 [scrapy.core.engine] INFO: Closing spider (finished)
+2019-04-09 20:01:25 [scrapy.statscollectors] INFO: Dumping Scrapy stats:
+{'downloader/request_bytes': 477,
+ 'downloader/request_count': 2,
+ 'downloader/request_method_count/GET': 2,
+ 'downloader/response_bytes': 4143,
+ 'downloader/response_count': 2,
+ 'downloader/response_status_count/200': 1,
+ 'downloader/response_status_count/404': 1,
+ 'finish_reason': 'finished',
+ 'finish_time': datetime.datetime(2019, 4, 9, 20, 1, 25, 70942),
+ 'item_scraped_count': 104,
+ 'log_count/DEBUG': 106,
+ 'log_count/INFO': 9,
+ 'memusage/max': 69799936,
+ 'memusage/startup': 69799936,
+ 'response_received_count': 2,
+ 'robotstxt/request_count': 1,
+ 'robotstxt/response_count': 1,
+ 'robotstxt/response_status_count/404': 1,
+ 'scheduler/dequeued': 1,
+ 'scheduler/dequeued/memory': 1,
+ 'scheduler/enqueued': 1,
+ 'scheduler/enqueued/memory': 1,
+ 'start_time': datetime.datetime(2019, 4, 9, 20, 1, 24, 880934)}
+2019-04-09 20:01:25 [scrapy.core.engine] INFO: Spider closed (finished)

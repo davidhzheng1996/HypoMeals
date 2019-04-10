@@ -17,9 +17,12 @@ class SalesSpider(scrapy.Spider):
             row_data = all_row_data[row_idx*2:(row_idx+1)*2]
             cust_id = row_data[0].rstrip()
             cust_name = row_data[1].rstrip()
+            if Customer.objects.filter(id=cust_id, name=cust_name).exists():
+                continue
             customer_item = CustomerItem(
                 id = cust_id,
                 name = cust_name
             )
+            customer_item.save()
             yield customer_item
     

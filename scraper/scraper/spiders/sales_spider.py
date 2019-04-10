@@ -1,8 +1,7 @@
 import scrapy
 from ..items import SalesDataItem
 import datetime
-from inventorymanager.models import Sku, Customer
-import dill
+from inventorymanager.models import Sku, Customer, Sale_Record
 
 
 class SalesSpider(scrapy.Spider):
@@ -10,23 +9,33 @@ class SalesSpider(scrapy.Spider):
     start_urls  = [
         'http://hypomeals-sales.colab.duke.edu:8080/'
     ]
-    year_sku = []
-    years = list(range(2010, 2020))
-    skus = Sku.objects.all().values_list('id', flat=True)
-    print(skus)
-    for sku in skus:
-        for year in years:
-            year_sku.append((str(year), str(sku)))  
+    
+    def up_to_date(self, sku):
+        unique_years = set()
+        sale_dates = Sale_Record.objects.filter(sku=sku).values_list('sale_date', flat=True)
+        for sale_date in sale_dates:
+            unique_years.add(sale_date.year)
+        # 2010-2019 have 10 unique years
+        return len(unique_years) == 10
+
 
     def parse(self, response):
-        if len(self.year_sku) == 0:
-            return
-        year, sku = self.year_sku.pop()
-        return scrapy.FormRequest.from_response(
-            response,
-            formdata={'sku': sku, 'year': year},
-            callback=self.parse_sales
-        )
+        year_sku = []
+        years = list(range(2010, 2020))
+        skus = Sku.objects.all().values_list('id', flat=True)
+        for sku in skus:
+            # Heuristic: if SalesData contains record for this sku for years 2010-2019, then the sku is up-to-date
+            if self.up_to_date(sku):
+                continue
+            # otherwise, scrape all years for this sku 
+            for year in years:
+                year_sku.append((str(year), str(sku))) 
+        for year, sku in year_sku:
+            yield scrapy.FormRequest.from_response(
+                response,
+                formdata={'sku': sku, 'year': year},
+                callback=self.parse_sales
+            )
     
     def parse_sales(self, response):
         attr_names = ['year', 'sku', 'week', 'cust_id', 'cust_name', 'sales', 'price_per_case']
@@ -49,6 +58,16 @@ class SalesSpider(scrapy.Spider):
             if not Customer.objects.filter(id=data['cust_id']).exists():
                 continue
             customer = Customer.objects.get(id=data['cust_id'])
+            # if the exact same sale record already exist, skip 
+            if Sale_Record.objects.filter(
+                sku=sku, 
+                sale_date=date, 
+                customer_id=customer, 
+                customer_name=data['cust_name'], 
+                sales=data['sales'],
+                price_per_case=data['price_per_case']
+            ).exists():
+                continue
             sale_item = SalesDataItem(
                 sku=sku, 
                 sale_date=date, 
@@ -58,6 +77,3 @@ class SalesSpider(scrapy.Spider):
                 price_per_case=data['price_per_case'])
             sale_item.save()
             yield sale_item
-        
-        if not len(self.year_sku) == 0:
-            yield scrapy.Request(self.start_urls[0], callback=self.parse, dont_filter=True)
