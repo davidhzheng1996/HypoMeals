@@ -117,7 +117,7 @@ class Manufacture_Goal(models.Model):
 	name = models.ForeignKey(Goal,on_delete=models.CASCADE)
 	goal_sku_name = models.CharField(max_length=128, null=False, default='')
 	desired_quantity = models.PositiveIntegerField()
-
+	comment = models.TextField(null=True, blank = True)
 
 	class Meta: 
 		unique_together = (("name","sku"),)

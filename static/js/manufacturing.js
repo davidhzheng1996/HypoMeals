@@ -11,11 +11,16 @@ var vm = new Vue({
      pages:[],
      has_paginated:false,
      search_term: '',
+     projection_dict: {},
+     projection_response: {},
+     start_date: {'month':'','day':''},
+     end_date: {'month':'','day':''},
      // search_suggestions: search_suggestions,
      search_input: '',
      //COUPLED WITH BACKEND DO NOT REMOVE BELOW
-     newGoal: { 'goal_sku_name': '', 'desired_quantity': 0, 'user': null, 'sku': null, 'name':-1},
+     newGoal: { 'goal_sku_name': '', 'desired_quantity': 0, 'user': null, 'sku': null, 'name':-1, 'comment':''},
      error:'',
+     date_error:'',
    },
    mounted: function() {
     $("#sku_search_input").autocomplete({
@@ -188,6 +193,29 @@ var vm = new Vue({
          this.error = err.bodyText;
          console.log(err);
        })
+       },
+       getSalesProjection: function(){
+          // $("#salesProjectionModal").modal('show');
+          let api_url = '/api/get_sales_projection';
+          this.projection_dict['sku_name'] = this.newGoal.goal_sku_name;
+          this.projection_dict['start_date'] = this.start_date;
+          this.projection_dict['end_date'] = this.end_date;
+          this.loading = true;
+          this.$http.post(api_url, this.projection_dict)
+           .then((response) => {
+           this.projection_response = response.data;
+           // console.log(this.projection_response.overall[0])
+           this.loading = false;
+         })
+           .catch((err) => {
+         this.loading = false;
+         // this.error = err.bodyText;
+         this.date_error = err.bodyText;
+       })
+       },
+       copyData: function(){
+        var temp = "Sales Average: " + this.projection_response.sales_avg + "";
+        this.newGoal.comment = temp;
        },
        exportCSV: function(){
         this.loading = true;

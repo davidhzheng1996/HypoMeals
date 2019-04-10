@@ -168,6 +168,7 @@ new Vue({
                   }
                 }
               }
+              csvContent+='\n';
             }
           }
         const url = encodeURI(csvContent);
