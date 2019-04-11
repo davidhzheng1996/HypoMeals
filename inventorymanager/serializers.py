@@ -83,7 +83,11 @@ class SchedulerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Scheduler
         fields = '__all__'
-    
+
+class ManufacturingActivity(serializers.ModelSerializer):
+    class Meta:
+        model = Manufacturing_Actvity
+        fields = '__all__'
 # models not having a serializers yet 
 # class sku_to_ingredients(models.Model):
 # 	sku = models.ForeignKey(sku,on_delete=models.CASCADE,primary_key=True)

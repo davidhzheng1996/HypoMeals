@@ -12,6 +12,7 @@ var starting = new Vue({
         search_term: '',
         message: '',
         report: {'manufacture_line':'', 'start_date':'', 'end_date':'',user:''},
+        automate: {'manufacturing_activity':'','start_date':'', 'end_date':''},
     },
     methods: {
         addGoal: function () {
@@ -44,11 +45,14 @@ var starting = new Vue({
              scheduled_goals_string = JSON.stringify(this.scheduled_goals)
              unscheduled_goals_string = JSON.stringify(this.unscheduled_goals)
              manufacturing_lines_string = JSON.stringify(this.manufacturing_lines)
+             console.log(manufacturing_lines_string)
             $.post('api/save_scheduler',{'manufacturing_lines':manufacturing_lines_string,'items':items_string,'groups':groups_string,'scheduled_goals':scheduled_goals_string,'unscheduled_goals':unscheduled_goals_string},(response)=>{
                 alert('Success')
             });
         },
+        getAutomation: function(){
 
+        },
         removeGoal: function(goal_name) {
             // remove scheduled skus on Timeline 
             console.log(goal_name)
