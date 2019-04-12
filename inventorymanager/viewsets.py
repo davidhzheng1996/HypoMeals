@@ -23,8 +23,7 @@ import imp
 import statistics
 from django.db.models import Sum, F, Count
 import sys
-# sys.path.append('..')
-# from crawl.sales_data.sales_data.spiders.sales_spider import SalesSpider
+from scrapyd_api import ScrapydAPI
 
 import requests
 import re
@@ -1671,23 +1670,17 @@ def get_scheduler(request):
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
-# @login_required(login_url='/accounts/login/')
-# @api_view(['GET','POST'])
-# def get_sales_report(request):
-#     try:
-#         # settings = Settings()
-#         # os.environ['SCRAPY_SETTINGS_MODULE'] = 'sales_data.settings'
-#         # settings_module_path = os.environ['SCRAPY_SETTINGS_MODULE']
-#         # settings.setmodule(settings_module_path, priority='project')
-#         settings = get_project_settings()
-#         process = CrawlerProcess(settings)
-#         spider = SalesSpider()
-#         process.crawl(spider)
-#         process.start()
-#         result = {
-#             'status': 'success'
-#         }
-#         return Response(result, status = status.HTTP_200_OK)
-#     except Exception as e: 
-#         print(e)
-#         return Response(status = status.HTTP_400_BAD_REQUEST)
+@login_required(login_url='/accounts/login/')
+@api_view(['GET','POST'])
+def get_sales_report(request):
+    try:
+        scrapyd = ScrapydAPI('http://152.3.53.19:6800')
+        task_id = scrapyd.schedule('default', 'sales')
+        result = {
+            'task_id': task_id
+        }
+        return Response(result, status = status.HTTP_200_OK)
+    except Exception as e: 
+        print('exception in get_sales_report:')
+        print(e)
+        return Response(status = status.HTTP_400_BAD_REQUEST)
