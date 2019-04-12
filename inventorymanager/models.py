@@ -71,6 +71,7 @@ class Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
 	goalname = models.CharField(max_length=128,unique=True,null=False,default='')
 	deadline = models.DateField(default=date.today, null=False, editable=True)
+	enable_goal = models.BooleanField(default=False)
 
 
 class IngredientFile(models.Model):

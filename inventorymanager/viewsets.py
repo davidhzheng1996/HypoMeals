@@ -1601,7 +1601,7 @@ def update_goal(request,id,goalid):
     if(request.method == 'POST'):
         try: 
             goal = Goal.objects.get(user = id, id=goalid)
-            serializer = GoalSerializer(goal,{'goalname':request.data['goalname'],'deadline':request.data['deadline']},partial=True)
+            serializer = GoalSerializer(goal,{'goalname':request.data['goalname'],'deadline':request.data['deadline'],'enable_goal':request.data['enable_goal']},partial=True)
             if(serializer.is_valid()):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
