@@ -882,17 +882,17 @@ def get_sales_projection(request):
         if day < 1 or day > days[month]:
             return False
         return True
-    def checkDate(start_dict, end_dict):
-        month1 = int(start_dict['month'])
-        month2 = int(end_dict['month'])
-        day1 = int(start_dict['day'])
-        day2 = int(end_dict['day'])
-        if month1 > month2:
-            return False
-        elif month1 == month2:
-            if day1 > day2:
-                return False
-        return True
+    # def checkDate(start_dict, end_dict):
+    #     month1 = int(start_dict['month'])
+    #     month2 = int(end_dict['month'])
+    #     day1 = int(start_dict['day'])
+    #     day2 = int(end_dict['day'])
+    #     if month1 > month2:
+    #         return False
+    #     elif month1 == month2:
+    #         if day1 > day2:
+    #             return False
+    #     return True
     if(request.method=='POST'):
         try:
             response = {}
@@ -906,15 +906,24 @@ def get_sales_projection(request):
             if not validateDate(request.data['end_date']):
                 post_result = 'error: end_date is invalid'
                 return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
-            if not checkDate(request.data['start_date'],request.data['end_date']):
-                post_result = 'error: end_date cannot be ahead of start_date'
-                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
+            month1 = int(request.data['start_date']['month'])
+            month2 = int(request.data['end_date']['month'])
+            day1 = int(request.data['start_date']['day'])
+            day2 = int(request.data['end_date']['day'])
             d = datetime.datetime.today().strftime('%Y-%m-%d')
             curr_year = datetime.datetime.today().year
             start_month = request.data['start_date']['month']
             start_day = request.data['start_date']['day']
             end_month = request.data['end_date']['month']
             end_day = request.data['end_date']['day']
+            prev_year = curr_year
+            if month1 > month2:
+                prev_year = curr_year - 1
+            elif month1 == month2 and day1 > day2:
+                prev_year = curr_year - 1
+            elif month1 == month2 and day1 == day2:
+                post_result = 'error: end_date and start_date are the same'
+                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
             if int(start_month) < 10:
                 start_month = '0'+start_month
             if int(start_day) < 10:
@@ -923,17 +932,15 @@ def get_sales_projection(request):
                 end_month = '0'+end_month
             if int(end_day) < 10:
                 end_day = '0' + end_day
-            start_str = str(curr_year)+start_month+start_day
+            start_str = str(prev_year)+start_month+start_day
             end_str = str(curr_year)+end_month+end_day
             start_datetime = datetime.datetime.strptime(start_str, '%Y%m%d')
             start_date = start_datetime.strftime('%Y-%m-%d')
             end_datetime = datetime.datetime.strptime(end_str, '%Y%m%d')
             end_date = end_datetime.strftime('%Y-%m-%d')
-            # rev2019 = 0
-            # rev2015 = 0
 
             # 2018
-            s2018 = str(curr_year-1)+start_month+start_day
+            s2018 = str(prev_year-1)+start_month+start_day
             start_datetime_2018 = datetime.datetime.strptime(s2018, '%Y%m%d')
             start_date_2018 = start_datetime_2018.strftime('%Y-%m-%d')
             end2018 = str(curr_year-1)+end_month+end_day
@@ -942,7 +949,7 @@ def get_sales_projection(request):
             sales2018 = Sale_Record.objects.filter(sku=sku.id,sale_date__range=[start_date_2018,end_date_2018]).aggregate(Sum('sales')).get('sales__sum',0.00)
             sales.append(sales2018)
             # 2017
-            s2017 = str(curr_year-2)+start_month+start_day
+            s2017 = str(prev_year-2)+start_month+start_day
             start_datetime_2017 = datetime.datetime.strptime(s2017, '%Y%m%d')
             start_date_2017 = start_datetime_2017.strftime('%Y-%m-%d')
             end2017 = str(curr_year-2)+end_month+end_day
@@ -951,7 +958,7 @@ def get_sales_projection(request):
             sales2017 = Sale_Record.objects.filter(sku=sku.id,sale_date__range=[start_date_2017,end_date_2017]).aggregate(Sum('sales')).get('sales__sum',0.00)
             sales.append(sales2017)
             # 2016
-            s2016 = str(curr_year-3)+start_month+start_day
+            s2016 = str(prev_year-3)+start_month+start_day
             start_datetime_2016 = datetime.datetime.strptime(s2016, '%Y%m%d')
             start_date_2016 = start_datetime_2016.strftime('%Y-%m-%d')
             end2016 = str(curr_year-3)+end_month+end_day
@@ -984,7 +991,7 @@ def get_sales_projection(request):
                     'sales': sales2019
                 }
             else:
-                s2015 = str(curr_year-4)+start_month+start_day
+                s2015 = str(prev_year-4)+start_month+start_day
                 start_datetime_2015 = datetime.datetime.strptime(s2015, '%Y%m%d')
                 start_date_2015 = start_datetime_2015.strftime('%Y-%m-%d')
                 end2015 = str(curr_year-4)+end_month+end_day
