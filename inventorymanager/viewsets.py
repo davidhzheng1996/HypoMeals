@@ -1404,6 +1404,7 @@ def mg_to_skus(request,goal_name):
             sku_ids = Manufacture_Goal.objects.filter(name__goalname=goal_name).values_list('sku', flat=True)
             skus = Sku.objects.filter(id__in=sku_ids)
             goal = Goal.objects.get(goalname=goal_name)
+            # print(goal)
             response[goal_name]['deadline'] = goal.deadline
             for sku in skus:
                 # get mls for each sku: Sku_To_Ml_Shortname
@@ -1411,10 +1412,13 @@ def mg_to_skus(request,goal_name):
                 # get time needed for each sku: Sku, Manufacture_Goal
                 manufacture_rate = sku.manufacture_rate
                 desired_quantity = Manufacture_Goal.objects.get(sku=sku.id, name__goalname=goal_name).desired_quantity
-                hours_needed = desired_quantity / manufacture_rate
+                if manufacture_rate == 0:
+                    hours_needed = 0
+                else:
+                    hours_needed = desired_quantity / manufacture_rate
                 response[goal_name][sku.sku_name] = {
                     'manufacturing_lines': list(ml_short_names),
-                    'hours_needed': math.ceil(hours_needed),
+                    'hours_needed': math.ceil(hours_needed)
                 }
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
@@ -1462,7 +1466,7 @@ def manufacture_goals(request):
         try: 
             sku = Sku.objects.get(sku_name=request.data['goal_sku_name'])
             # print(request.data['name'])
-            goal = Goal.objects.get(id=request.data['name'])
+            # goal = Goal.objects.get(id=request.data['name'])
             # COUPLED WITH FRONT END MAY WANT TO REFACTOR
             request.data['sku'] = sku.id
             serializer = ManufactureGoalSerializer(data = request.data)
@@ -1494,6 +1498,7 @@ def manufacture_goals_get(request,id,goalid):
             for goal in goals:
                 serializer = ManufactureGoalSerializer(goal)
                 response.append(serializer.data)
+            print(response)
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
@@ -1595,7 +1600,7 @@ def update_goal(request,id,goalid):
     if(request.method == 'POST'):
         try: 
             goal = Goal.objects.get(user = id, id=goalid)
-            serializer = GoalSerializer(goal,{'goalname':request.data['goalname'],'deadline':request.data['deadline']},partial=True)
+            serializer = GoalSerializer(goal,{'goalname':request.data['goalname'],'deadline':request.data['deadline'],'enable_goal':request.data['enable_goal']},partial=True)
             if(serializer.is_valid()):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
@@ -1634,6 +1639,7 @@ def save_scheduler(request):
     if(request.method == 'POST'):
         try:
             timeline_data = Scheduler.objects.all()
+            print(timeline_data)
             if(len(timeline_data)==0):
                 serializer = SchedulerSerializer(data=request.data)
                 if(serializer.is_valid()):
@@ -1654,8 +1660,10 @@ def get_scheduler(request):
     if(request.method=='GET'):
         try:
             timeline_data = Scheduler.objects.all()
+            # print(timeline_data)
             if(len(timeline_data)!=0):
                 first = timeline_data.first()
+                print(first.unscheduled_goals)
                 response = {}
                 response['items'] = first.items
                 response['groups'] = first.groups

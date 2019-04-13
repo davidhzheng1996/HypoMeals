@@ -11,7 +11,7 @@ var vm = new Vue({
      pages:[],
      has_paginated:false,
      //COUPLED WITH BACKEND DO NOT REMOVE BELOW
-     newGoal: { 'goalname': '', 'user':null, 'deadline':'' },
+     newGoal: { 'goalname': '', 'user':null, 'deadline':'', 'enable_goal': false },
      dateError:'',
      error:'',
    },
@@ -21,8 +21,7 @@ var vm = new Vue({
            this.loading = true;
            this.$http.get('/api/goal/'+userid)
                .then((response) => {
-                  console.log(response)
-                  console.log(response.data)
+                  // console.log(response.data)
                    this.goals = response.data;
                    this.loading = false;
                    if(!this.has_paginated){
@@ -42,7 +41,7 @@ var vm = new Vue({
             // console.log(this.goals[key].id)
               if(this.goals[key].id == goalid){
                 this.currentGoal = {'id':this.goals[key].id,'goalname':this.goals[key].goalname,'user':this.goals[key].user, 
-                'deadline':this.goals[key].deadline}
+                'deadline':this.goals[key].deadline,'enable_goal':this.goals[key].enable_goal}
                 $("#editGoalModal").modal('show');
               }
             }

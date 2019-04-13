@@ -121,7 +121,8 @@ var vm = new Vue({
             if(this.goals.hasOwnProperty(key)){
             // console.log(this.goals[key].id)
               if(this.goals[key].id == id){
-                this.currentGoal = {'id':this.goals[key].id,'goal_sku_name':this.goals[key].goal_sku_name,'user':this.goals[key].user,'desired_quantity':this.goals[key].desired_quantity,'sku':this.goals[key].sku,'name':this.goals[key].name}
+                this.currentGoal = {'id':this.goals[key].id,'goal_sku_name':this.goals[key].goal_sku_name,'user':this.goals[key].user,'desired_quantity':this.goals[key].desired_quantity,'sku':this.goals[key].sku,'name':this.goals[key].name, 
+                'comment':this.goals[key].comment}
                 $("#editGoalModal").modal('show');
               }
             }
