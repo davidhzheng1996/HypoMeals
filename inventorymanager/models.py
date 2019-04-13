@@ -67,6 +67,7 @@ class Ingredient(models.Model):
 				self.id =  self.__class__.objects.all().order_by("-id")[0].id + 1
 		super(self.__class__, self).save(*args, **kwargs)
 
+# Overall Goal that contains multiple SKUs (Manufacture_Goal)
 class Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
 	goalname = models.CharField(max_length=128,unique=True,null=False,default='')
@@ -111,6 +112,7 @@ class Sale_Record(models.Model):
 	sales = models.PositiveIntegerField()
 	price_per_case = models.DecimalField(null=False,max_digits=12, decimal_places=2, default=1.0)
 
+# Schedulable SKU inside each Goal 
 class Manufacture_Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
@@ -145,13 +147,16 @@ class Formula_To_Ingredients(models.Model):
 	class Meta:
 		unique_together = (("formula","ig"),)
 
+# This is a manufacture activity 
 class Scheduler(models.Model):
+	# each item is one manufacture activity 
 	items = models.TextField(null=False,default='')
+	# each group is one manufacture line
 	groups = models.TextField(null=False,default='')
 	scheduled_goals = models.TextField(null=False,default='')
 	unscheduled_goals = models.TextField(null=False,default='')
 	manufacturing_lines = models.TextField(null=False,default='')
-		
+	
 # Keep track of sku status on manufacture lines 
 class Manufacture_Line_Skus(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
