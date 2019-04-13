@@ -16,12 +16,14 @@
                <tr>
                   <th scope="col">SKU Name</th>
                   <th scope="col">Desired Quantity</th>
+                  <th scope="col">Comment</th>
                </tr>
             </thead>
             <tbody>
                <tr v-for="goal in displayedGoals">
                   <th scope="row">${goal.goal_sku_name}</th>
                   <td>${goal.desired_quantity}</td>
+                  <td>${goal.comment}</td>
                   <td>
                      <button class="btn btn-info" v-on:click="getGoal(goal.id)">Edit</button>
                      <button class="btn btn-danger" v-on:click="deleteGoal(goal.id)">Delete</button>
