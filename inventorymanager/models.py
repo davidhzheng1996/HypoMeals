@@ -35,9 +35,9 @@ class Sku(models.Model):
 	productline = models.ForeignKey(Product_Line, on_delete=models.CASCADE, default='')
 	formula = models.ForeignKey(Formula, on_delete=models.CASCADE, default = 1)
 	formula_scale_factor = models.FloatField(null=False, default=1.0)
-	manufacture_rate = models.FloatField(null=False, default=1.0)
-	manufacture_setup_cost = models.DecimalField(null=False, decimal_places=2, max_digits=32, default=1.0)
-	manufacture_run_cost = models.DecimalField(null=False, decimal_places=2, max_digits=32, default=1.0)
+	manufacture_rate = models.FloatField(null=False, default=1.0, validators=[MinValueValidator(0.0000001)])
+	manufacture_setup_cost = models.DecimalField(null=False, decimal_places=2, max_digits=32, default=1.0, validators=[MinValueValidator(0.0)])
+	manufacture_run_cost = models.DecimalField(null=False, decimal_places=2, max_digits=32, default=1.0, validators=[MinValueValidator(0.0)])
 
 	def save(self, *args, **kwargs):
 		if self.id == 0:
@@ -71,6 +71,7 @@ class Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
 	goalname = models.CharField(max_length=128,unique=True,null=False,default='')
 	deadline = models.DateField(default=date.today, null=False, editable=True)
+	enable_goal = models.BooleanField(default=False)
 
 
 class IngredientFile(models.Model):
@@ -153,17 +154,29 @@ class Scheduler(models.Model):
 	manufacturing_lines = models.TextField(null=False,default='')
 		
 # Keep track of sku status on manufacture lines 
-class Manufacture_Line_Skus(models.Model):
-	user = models.ForeignKey(User,on_delete=models.CASCADE)
-	manufacture_line_short_name = models.ForeignKey(Manufacture_line,on_delete=models.CASCADE)
-	sku_id = models.ForeignKey(Sku,on_delete=models.CASCADE)
-	goal_name = models.ForeignKey(Goal, on_delete=models.CASCADE, to_field='goalname')
-	start = models.DateTimeField(auto_now_add=False)
-	end = models.DateTimeField(auto_now_add=False)
-	duration = models.PositiveIntegerField(null=False, default=0) 
+# class Manufacture_Line_Skus(models.Model):
+# 	user = models.ForeignKey(User,on_delete=models.CASCADE)
+# 	manufacture_line_short_name = models.ForeignKey(Manufacture_line,on_delete=models.CASCADE)
+# 	sku_id = models.ForeignKey(Sku,on_delete=models.CASCADE)
+# 	goal_name = models.ForeignKey(Goal, on_delete=models.CASCADE, to_field='goalname')
+# 	start = models.DateTimeField(auto_now_add=False)
+# 	end = models.DateTimeField(auto_now_add=False)
+# 	duration = models.PositiveIntegerField(null=False, default=0) 
 	# # active if the associated manufacture goal is being scheduled 
 	# STATUS_CHOICES = ['active', 'orphaned']
 	# status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
 
+	# class Meta:
+	# 	unique_together = (("user","sku_id", 'goal_name'),)
+
+class Manufacturing_Actvity(models.Model):
+	user = models.ForeignKey(User,on_delete=models.CASCADE)
+	manufacturing_line = models.ForeignKey(Manufacture_line,on_delete=models.CASCADE)
+	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
+	goal_name = models.ForeignKey(Goal, on_delete=models.CASCADE, to_field='goalname')
+	start = models.DateTimeField(auto_now_add=False)
+	end = models.DateTimeField(auto_now_add=False)
+	duration = models.PositiveIntegerField(null=False, default=0)
+
 	class Meta:
-		unique_together = (("user","sku_id", 'goal_name'),)
+		unique_together = (("user","sku", 'goal_name'),) 
