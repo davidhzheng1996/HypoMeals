@@ -86,7 +86,7 @@ class SchedulerSerializer(serializers.ModelSerializer):
 
 class ManufacturingActivitySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Manufacturing_Actvity
+        model = Manufacturing_Activity
         fields = '__all__'
 # models not having a serializers yet 
 # class sku_to_ingredients(models.Model):

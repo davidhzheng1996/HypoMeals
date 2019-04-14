@@ -174,7 +174,7 @@ class Scheduler(models.Model):
 	# class Meta:
 	# 	unique_together = (("user","sku_id", 'goal_name'),)
 
-class Manufacturing_Actvity(models.Model):
+class Manufacturing_Activity(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
 	manufacturing_line = models.ForeignKey(Manufacture_line,on_delete=models.CASCADE)
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)

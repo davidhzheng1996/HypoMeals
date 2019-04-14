@@ -1645,7 +1645,7 @@ def netid_login(request):
 def save_scheduler(request):
     if(request.method == 'POST'):
         try:
-            # save to Manufacturing_Actvity instead of Scheduler 
+            # save to Manufacturing_Activity instead of Scheduler 
             # print(request.data)
             if len(request.data) == 0:
                 return Response(request.data, status=status.HTTP_204_NO_CONTENT)
@@ -1653,7 +1653,7 @@ def save_scheduler(request):
                 sku_id = Sku.objects.filter(sku_name=activity['sku']).values_list("id",flat=True)[0]
                 activity['sku'] = sku_id
                 # if activity already exists, skip 
-                if Manufacturing_Actvity.objects.filter(user=activity['user'], sku=activity['sku'], goal_name=activity['goal_name']).exists():
+                if Manufacturing_Activity.objects.filter(user=activity['user'], sku=activity['sku'], goal_name=activity['goal_name']).exists():
                     continue
                 serializer = ManufacturingActivitySerializer(data=activity)
                 if serializer.is_valid():
