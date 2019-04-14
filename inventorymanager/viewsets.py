@@ -1409,8 +1409,14 @@ def mg_to_skus(request,goal_name):
             response[goal_name]={}
             # get skus associated with the goal: Manufacture_Goal
             sku_ids = Manufacture_Goal.objects.filter(name__goalname=goal_name).values_list('sku', flat=True)
+            if not sku_ids:
+                post_result = goal_name +' does not exist'
+                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
             skus = Sku.objects.filter(id__in=sku_ids)
             goal = Goal.objects.get(goalname=goal_name)
+            if goal.enable_goal == False:
+                post_result = goal_name +' is not enabled'
+                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
             # print(goal)
             response[goal_name]['deadline'] = goal.deadline
             for sku in skus:
@@ -1585,6 +1591,8 @@ def search_goals(request,search):
             allgoals = Goal.objects.filter(goalname__icontains=search)
             response = []
             for goal in allgoals: 
+                if goal.enable_goal == False:
+                    continue
                 response.append(goal.goalname)
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
@@ -1686,6 +1694,20 @@ def get_scheduler(request):
         try:
             timeline_data = Scheduler.objects.all()
             # print(timeline_data)
+            manufacture_activities = Manufacturing_Activity.objects.all()
+            for manufacture_activity in manufacture_activities:
+                goal = Goal.objects.get(goalname = manufacture_activity.goal_name.goalname)
+                print(goal)
+                if goal.enable_goal == False and manufacture_activity.status != 'orphaned':
+                    serializer = ManufacturingActivitySerializer(manufacture_activity,{'status':'orphaned'},partial=True)
+                    if(serializer.is_valid()):
+                        serializer.save()
+                elif goal.enable_goal == True and manufacture_activity.status != 'active':
+                    serializer = ManufacturingActivitySerializer(manufacture_activity,{'status':'active'},partial=True)
+                    if(serializer.is_valid()):
+                        serializer.save()
+                    # print(serializer.errors)
+
             if(len(timeline_data)!=0):
                 first = timeline_data.first()
                 # print(first.unscheduled_goals)
@@ -1700,6 +1722,23 @@ def get_scheduler(request):
                 response = {}
                 response = {'init':'yes'}
                 return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+def automate_scheduler(request):
+    if(request.method=='POST'):
+        try:
+            start_date = datetime.datetime.strptime(request.data['start_date'], '%Y-%m-%d').date()
+            end_date = datetime.datetime.strptime(request.data['end_date'], '%Y-%m-%d').date()
+            # print(start_date)
+            response = []
+            ma = Manufacturing_Activity.objects.filter(status='active', goal_name__deadline__range=[start_date,end_date]).order_by('goal_name__deadline','duration')
+            print(ma)
+            for m in ma:
+                print(m.duration)
+            return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 

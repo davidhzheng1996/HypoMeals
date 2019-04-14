@@ -13,6 +13,7 @@
 
 	<h3 class="error" v-if="message"> ${message} </h3>
 	<div id="visualization"></div>
+   <h4 class="error" v-if="search_error"> ${search_error} </h4>
 	<div class="row">
         <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" autocomplete="on" v-model="search_term"  aria-label="Search" @blur="onBlur">
         <button class="btn btn-outline-success my-2 my-sm-0 schedule-button" v-on:click.prevent="addGoal()">Add Goal</button>
@@ -105,7 +106,7 @@
             </div>
             <form v-on:submit.prevent="getAutomation()">
                <div class="modal-body">
-                  <div class="form-group">
+<!--                   <div class="form-group">
                      <label>Manufacturing Activity*</label>
                      <input
                         type="text"
@@ -113,7 +114,7 @@
                         placeholder="Enter Manufacture Activity"
                         v-model="automate.manufacturing_activity"
                         required="required" >
-                  </div>
+                  </div> -->
                   <div class="form-group">
                      <label>Start Date*</label>
                      <input
