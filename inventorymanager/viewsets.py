@@ -23,8 +23,7 @@ import imp
 import statistics
 from django.db.models import Sum, F, Count
 import sys
-# sys.path.append('..')
-# from crawl.sales_data.sales_data.spiders.sales_spider import SalesSpider
+from scrapyd_api import ScrapydAPI
 
 import requests
 import re
@@ -1646,21 +1645,39 @@ def netid_login(request):
 def save_scheduler(request):
     if(request.method == 'POST'):
         try:
-            timeline_data = Scheduler.objects.all()
-            print(timeline_data)
-            if(len(timeline_data)==0):
-                serializer = SchedulerSerializer(data=request.data)
-                if(serializer.is_valid()):
+            # save to Manufacturing_Actvity instead of Scheduler 
+            # print(request.data)
+            if len(request.data) == 0:
+                return Response(request.data, status=status.HTTP_204_NO_CONTENT)
+            for activity in request.data:
+                sku_id = Sku.objects.filter(sku_name=activity['sku']).values_list("id",flat=True)[0]
+                activity['sku'] = sku_id
+                # if activity already exists, skip 
+                if Manufacturing_Actvity.objects.filter(user=activity['user'], sku=activity['sku'], goal_name=activity['goal_name']).exists():
+                    continue
+                serializer = ManufacturingActivitySerializer(data=activity)
+                if serializer.is_valid():
                     serializer.save()
-                    return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
-            else: 
-                first = timeline_data.first()
-                serializer = SchedulerSerializer(first,request.data)
-                if(serializer.is_valid()):
-                    serializer.save()
-                    return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+                else:
+                    return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST) 
+            return Response(request.data, status=status.HTTP_204_NO_CONTENT)
+
+            # timeline_data = Scheduler.objects.all()
+            # print(timeline_data)
+            # if(len(timeline_data)==0):
+            #     serializer = SchedulerSerializer(data=request.data)
+            #     if(serializer.is_valid()):
+            #         serializer.save()
+            #         return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+            # else: 
+            #     first = timeline_data.first()
+            #     serializer = SchedulerSerializer(first,request.data)
+            #     if(serializer.is_valid()):
+            #         serializer.save()
+            #         return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
         except Exception as e: 
-            return Response(status = status.HTTP_400_BAD_REQUEST)
+            print(e)
+            return Response(e, status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
 @api_view(['GET'])
@@ -1671,7 +1688,7 @@ def get_scheduler(request):
             # print(timeline_data)
             if(len(timeline_data)!=0):
                 first = timeline_data.first()
-                print(first.unscheduled_goals)
+                # print(first.unscheduled_goals)
                 response = {}
                 response['items'] = first.items
                 response['groups'] = first.groups
@@ -1686,23 +1703,17 @@ def get_scheduler(request):
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
-# @login_required(login_url='/accounts/login/')
-# @api_view(['GET','POST'])
-# def get_sales_report(request):
-#     try:
-#         # settings = Settings()
-#         # os.environ['SCRAPY_SETTINGS_MODULE'] = 'sales_data.settings'
-#         # settings_module_path = os.environ['SCRAPY_SETTINGS_MODULE']
-#         # settings.setmodule(settings_module_path, priority='project')
-#         settings = get_project_settings()
-#         process = CrawlerProcess(settings)
-#         spider = SalesSpider()
-#         process.crawl(spider)
-#         process.start()
-#         result = {
-#             'status': 'success'
-#         }
-#         return Response(result, status = status.HTTP_200_OK)
-#     except Exception as e: 
-#         print(e)
-#         return Response(status = status.HTTP_400_BAD_REQUEST)
+@login_required(login_url='/accounts/login/')
+@api_view(['GET','POST'])
+def get_sales_report(request):
+    try:
+        scrapyd = ScrapydAPI('http://152.3.53.19:6800')
+        task_id = scrapyd.schedule('default', 'sales')
+        result = {
+            'task_id': task_id
+        }
+        return Response(result, status = status.HTTP_200_OK)
+    except Exception as e: 
+        print('exception in get_sales_report:')
+        print(e)
+        return Response(status = status.HTTP_400_BAD_REQUEST)

@@ -67,6 +67,7 @@ class Ingredient(models.Model):
 				self.id =  self.__class__.objects.all().order_by("-id")[0].id + 1
 		super(self.__class__, self).save(*args, **kwargs)
 
+# Overall Goal that contains multiple SKUs (Manufacture_Goal)
 class Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
 	goalname = models.CharField(max_length=128,unique=True,null=False,default='')
@@ -112,6 +113,7 @@ class Sale_Record(models.Model):
 	sales = models.PositiveIntegerField()
 	price_per_case = models.DecimalField(null=False,max_digits=12, decimal_places=2, default=1.0)
 
+# Schedulable SKU inside each Goal 
 class Manufacture_Goal(models.Model):
 	user = models.ForeignKey(User,on_delete=models.CASCADE)
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
@@ -139,21 +141,24 @@ class Sku_To_Ml_Shortname(models.Model):
 class Formula_To_Ingredients(models.Model):
 	formula = models.ForeignKey(Formula, on_delete=models.CASCADE)
 	ig = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-	quantity = models.CharField(max_length=128,null=False, default = '',
+	quantity = models.CharField(max_length=128, null=False, default = '',
 		validators=[RegexValidator(r'^(\d*\.?\d+)\s*(\D.*|)$', message="quantity size not up to standard", code = "invalid quantity size")])
 
 
 	class Meta:
 		unique_together = (("formula","ig"),)
 
+# Deprecated and replaced with Manufacture_Activity 
 class Scheduler(models.Model):
+	# each item is one manufacture activity 
 	items = models.TextField(null=False,default='')
+	# each group is one manufacture line
 	groups = models.TextField(null=False,default='')
 	scheduled_goals = models.TextField(null=False,default='')
 	unscheduled_goals = models.TextField(null=False,default='')
 	manufacturing_lines = models.TextField(null=False,default='')
-		
-# Keep track of sku status on manufacture lines 
+	
+# Manufacture Activity. Deprecated and replaced with Manufacture_Activity 
 # class Manufacture_Line_Skus(models.Model):
 # 	user = models.ForeignKey(User,on_delete=models.CASCADE)
 # 	manufacture_line_short_name = models.ForeignKey(Manufacture_line,on_delete=models.CASCADE)
@@ -177,6 +182,7 @@ class Manufacturing_Actvity(models.Model):
 	start = models.DateTimeField(auto_now_add=False)
 	end = models.DateTimeField(auto_now_add=False)
 	duration = models.PositiveIntegerField(null=False, default=0)
+	status = models.CharField(max_length=20, choices=[('active', 'scheduled activity'), ('orphaned','orphaned activity')], default='active')
 
 	class Meta:
 		unique_together = (("user","sku", 'goal_name'),) 

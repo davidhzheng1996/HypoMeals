@@ -84,7 +84,7 @@ class SchedulerSerializer(serializers.ModelSerializer):
         model = Scheduler
         fields = '__all__'
 
-class ManufacturingActivity(serializers.ModelSerializer):
+class ManufacturingActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Manufacturing_Actvity
         fields = '__all__'

@@ -33,8 +33,10 @@ new Vue({
     unit_error: '',
     active_pls:[],
     status:'',
+    task_id: '',
   },
   mounted: function () {
+    this.scrapeData();
     this.getItems();
   },
   methods: {
@@ -96,13 +98,10 @@ new Vue({
       },
       scrapeData: function(){
         let api_url = 'api/get_sales_report';
-                   this.loading = true;
+           this.loading = true;
            this.$http.get(api_url)
                .then((response) => {
-                  this.status = response.data['status'];
-                  if(status=='success'){
-                    this.getItems();
-                  }
+                  this.task_id = response.data['task_id'];
                   this.loading = false;
                })
                .catch((err) => {
