@@ -1,9 +1,18 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 import uuid
 from datetime import date
 from jsonfield import JSONField	
+
+
+class User(AbstractUser):
+	is_analyst = models.BooleanField('analyst status', default=False)
+	is_product_manager = models.BooleanField('product manager status', default=False)
+	is_business_manager = models.BooleanField('business manager status', default=False)
+	is_plant_manager = models.BooleanField('plant manager status', default=False)
+	is_administrator = models.BooleanField('admin status', default=False)
 
 # product_line to sku is one to many. Each sku matches to exactly one product line
 class Product_Line(models.Model):
@@ -69,7 +78,7 @@ class Ingredient(models.Model):
 
 # Overall Goal that contains multiple SKUs (Manufacture_Goal)
 class Goal(models.Model):
-	user = models.ForeignKey(User,on_delete=models.CASCADE)
+	user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 	goalname = models.CharField(max_length=128,unique=True,null=False,default='')
 	deadline = models.DateField(default=date.today, null=False, editable=True)
 	enable_goal = models.BooleanField(default=False)
@@ -115,7 +124,7 @@ class Sale_Record(models.Model):
 
 # Schedulable SKU inside each Goal 
 class Manufacture_Goal(models.Model):
-	user = models.ForeignKey(User,on_delete=models.CASCADE)
+	user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
 	name = models.ForeignKey(Goal,on_delete=models.CASCADE)
 	goal_sku_name = models.CharField(max_length=128, null=False, default='')
@@ -175,7 +184,7 @@ class Scheduler(models.Model):
 	# 	unique_together = (("user","sku_id", 'goal_name'),)
 
 class Manufacturing_Activity(models.Model):
-	user = models.ForeignKey(User,on_delete=models.CASCADE)
+	user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
 	manufacturing_line = models.ForeignKey(Manufacture_line,on_delete=models.CASCADE)
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
 	goal_name = models.ForeignKey(Goal, on_delete=models.CASCADE, to_field='goalname')
