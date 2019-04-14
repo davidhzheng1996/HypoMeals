@@ -182,7 +182,7 @@ class Manufacturing_Activity(models.Model):
 	start = models.DateTimeField(auto_now_add=False)
 	end = models.DateTimeField(auto_now_add=False)
 	duration = models.PositiveIntegerField(null=False, default=0)
-	status = models.CharField(max_length=20, choices=[('active', 'scheduled activity'), ('orphaned','orphaned activity')], default='active')
+	status = models.CharField(max_length=20, choices=[('active', 'scheduled activity'), ('inactive', 'unscheduled activity'), ('orphaned','orphaned activity')], default='active')
 
 	class Meta:
 		unique_together = (("user","sku", 'goal_name'),) 
