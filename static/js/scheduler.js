@@ -39,16 +39,37 @@ var starting = new Vue({
                 }
             }); 
         },
-        saveTimeline: function(){
-             items_string = JSON.stringify(this.items)
-             groups_string = JSON.stringify(this.groups)
-             scheduled_goals_string = JSON.stringify(this.scheduled_goals)
-             unscheduled_goals_string = JSON.stringify(this.unscheduled_goals)
-             manufacturing_lines_string = JSON.stringify(this.manufacturing_lines)
-             console.log(manufacturing_lines_string)
-            $.post('api/save_scheduler',{'manufacturing_lines':manufacturing_lines_string,'items':items_string,'groups':groups_string,'scheduled_goals':scheduled_goals_string,'unscheduled_goals':unscheduled_goals_string},(response)=>{
+        saveTimeline: function(userid){
+             let timeline_info = []
+             this.items.forEach((item) => {
+                timeline_info.push({
+                    'user': userid,
+                    'manufacturing_line': item['group'],
+                    'sku': item['sku'],
+                    'goal_name': item['goal'],
+                    'start': item['start'],
+                    'end': item['end'],
+                    'duration': item['time_needed'],
+                    'status': 'active'
+                })
+             })
+            //  items_string = JSON.stringify(this.items)
+            //  groups_string = JSON.stringify(this.groups)
+            //  scheduled_goals_string = JSON.stringify(this.scheduled_goals)
+            //  unscheduled_goals_string = JSON.stringify(this.unscheduled_goals)
+            //  manufacturing_lines_string = JSON.stringify(this.manufacturing_lines)
+             console.log(timeline_info)
+             this.$http.post('api/save_scheduler',timeline_info)
+             .then((response) => {
                 alert('Success')
-            });
+            })
+             .catch((err) => {
+                alert('Faiulre')
+            })
+
+            // $.post('api/save_scheduler', {'info': timeline_info}, (response)=>{
+            //     alert('Success')
+            // });
         },
         getAutomation: function(){
 

@@ -148,7 +148,7 @@ class Formula_To_Ingredients(models.Model):
 	class Meta:
 		unique_together = (("formula","ig"),)
 
-# This is a manufacture activity 
+# Deprecated and replaced with Manufacture_Activity 
 class Scheduler(models.Model):
 	# each item is one manufacture activity 
 	items = models.TextField(null=False,default='')
@@ -158,7 +158,7 @@ class Scheduler(models.Model):
 	unscheduled_goals = models.TextField(null=False,default='')
 	manufacturing_lines = models.TextField(null=False,default='')
 	
-# Keep track of sku status on manufacture lines 
+# Manufacture Activity. Deprecated and replaced with Manufacture_Activity 
 # class Manufacture_Line_Skus(models.Model):
 # 	user = models.ForeignKey(User,on_delete=models.CASCADE)
 # 	manufacture_line_short_name = models.ForeignKey(Manufacture_line,on_delete=models.CASCADE)
@@ -182,6 +182,7 @@ class Manufacturing_Actvity(models.Model):
 	start = models.DateTimeField(auto_now_add=False)
 	end = models.DateTimeField(auto_now_add=False)
 	duration = models.PositiveIntegerField(null=False, default=0)
+	status = models.CharField(max_length=20, choices=[('active', 'scheduled activity'), ('orphaned','orphaned activity')], default='active')
 
 	class Meta:
 		unique_together = (("user","sku", 'goal_name'),) 

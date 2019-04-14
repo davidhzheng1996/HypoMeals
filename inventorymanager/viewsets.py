@@ -1638,21 +1638,39 @@ def netid_login(request):
 def save_scheduler(request):
     if(request.method == 'POST'):
         try:
-            timeline_data = Scheduler.objects.all()
-            print(timeline_data)
-            if(len(timeline_data)==0):
-                serializer = SchedulerSerializer(data=request.data)
-                if(serializer.is_valid()):
+            # save to Manufacturing_Actvity instead of Scheduler 
+            # print(request.data)
+            if len(request.data) == 0:
+                return Response(request.data, status=status.HTTP_204_NO_CONTENT)
+            for activity in request.data:
+                sku_id = Sku.objects.filter(sku_name=activity['sku']).values_list("id",flat=True)[0]
+                activity['sku'] = sku_id
+                # if activity already exists, skip 
+                if Manufacturing_Actvity.objects.filter(user=activity['user'], sku=activity['sku'], goal_name=activity['goal_name']).exists():
+                    continue
+                serializer = ManufacturingActivitySerializer(data=activity)
+                if serializer.is_valid():
                     serializer.save()
-                    return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
-            else: 
-                first = timeline_data.first()
-                serializer = SchedulerSerializer(first,request.data)
-                if(serializer.is_valid()):
-                    serializer.save()
-                    return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+                else:
+                    return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST) 
+            return Response(request.data, status=status.HTTP_204_NO_CONTENT)
+
+            # timeline_data = Scheduler.objects.all()
+            # print(timeline_data)
+            # if(len(timeline_data)==0):
+            #     serializer = SchedulerSerializer(data=request.data)
+            #     if(serializer.is_valid()):
+            #         serializer.save()
+            #         return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
+            # else: 
+            #     first = timeline_data.first()
+            #     serializer = SchedulerSerializer(first,request.data)
+            #     if(serializer.is_valid()):
+            #         serializer.save()
+            #         return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
         except Exception as e: 
-            return Response(status = status.HTTP_400_BAD_REQUEST)
+            print(e)
+            return Response(e, status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
 @api_view(['GET'])
@@ -1663,7 +1681,7 @@ def get_scheduler(request):
             # print(timeline_data)
             if(len(timeline_data)!=0):
                 first = timeline_data.first()
-                print(first.unscheduled_goals)
+                # print(first.unscheduled_goals)
                 response = {}
                 response['items'] = first.items
                 response['groups'] = first.groups
