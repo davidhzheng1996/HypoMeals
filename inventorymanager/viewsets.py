@@ -65,11 +65,7 @@ class SkuViewSet(viewsets.ModelViewSet):
 
             if Formula.objects.filter(id=formula_id).exists():
                 formula = Formula.objects.get(id=formula_id)
-                f = FormulaSerializer(formula)
-                f_data = f.data
-                formula.delete()
-                f_data['formula_name']=formula_name
-                serializer = FormulaSerializer(data=f_data)
+                serializer = FormulaSerializer(formula,{'formula_name':formula_name},partial=True)
                 if(serializer.is_valid()):
                     serializer.save()
                 else:
@@ -254,25 +250,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
             ingr_ids = Formula_To_Ingredients.objects.filter(formula__in=formula_ids).values('ig')
             queryset |= Ingredient.objects.filter(id__in=ingr_ids)
         return queryset
-
-# class SalesReportViewSet(viewsets.ModelViewSet):
-#     queryset = Sale_Record.objects.all()
-#     serializer_class = SalesReportSerializer
-#     # print('retrive')
-
-#     def retrive(self, request, *args, **kwargs):
-#         print('retrive')
-#         instance = self.get_object()
-#         serializer = self.get_serializer(instance)
-#         case_dict = {}
-#         revenue_dict = {}
-#         for sale_record in serializer.data:
-#             year = sale_record['sale_date'].date.today().year;
-#             revenue_dict[year] += (sale_record['sales'])*(sale_record['price_per_case'])
-#             case_dict[year] += sale_record['sales']
-#         print(case_dict)
-#         print(revenue_dict)
-#         return Response(serializer.data)
 
 class FormulaViewSet(viewsets.ModelViewSet):
     queryset = Formula.objects.all()
@@ -1733,11 +1710,50 @@ def automate_scheduler(request):
             start_date = datetime.datetime.strptime(request.data['start_date'], '%Y-%m-%d').date()
             end_date = datetime.datetime.strptime(request.data['end_date'], '%Y-%m-%d').date()
             # print(start_date)
-            response = []
-            ma = Manufacturing_Activity.objects.filter(status='active', goal_name__deadline__range=[start_date,end_date]).order_by('goal_name__deadline','duration')
-            print(ma)
-            for m in ma:
-                print(m.duration)
+            activities = Manufacturing_Activity.objects.filter(status='active', goal_name__deadline__range=[start_date,end_date]).order_by('goal_name__deadline','duration')
+            # activities = Manufacturing_Activity.objects.filter(status='unscheduled', goal_name__deadline__range=[start_date,end_date]).order_by('goal_name__deadline','duration')
+            if len(activities) == 0:
+                response = {}
+                response = {'init':'yes'}
+                return Response(response,status = status.HTTP_200_OK)
+            response = {
+                # all scheduled activities
+                'items': [],
+                # manufacturing lines for all scheduled activities
+                'groups': [],
+                # [{goal_name(enabled): [sku_name(active),]},]
+                'scheduled_goals': {},
+                # [{goal_name(enabled): [sku_name(non_active),]},]
+                'unscheduled_goals': {},
+                # manufacturing lines for all enabled goals
+                'manufacturing_lines': []
+            }
+            #initialize start time
+            start_time = datetime.datetime.strptime(request.data['start_date']+' '+'8:00', '%Y-%m-%d %I:%M')
+            print(start_time)
+            # add items
+            for activity in activities:
+                activity = ManufacturingActivitySerializer(activity).data
+                sku_name = Sku.objects.get(id=activity['sku']).sku_name
+                allowed_manufacturing_lines = Sku_To_Ml_Shortname.objects.filter(sku=activity['sku']).values_list('ml_short_name', flat=True)
+                allowed_manufacturing_lines = list(allowed_manufacturing_lines)
+                deadline = Goal.objects.get(goalname=activity['goal_name'], user=activity['user']).deadline
+                style = "background-color: green;"
+                item = {
+                    'id': activity['sku'],
+                    'group': activity['manufacturing_line'],
+                    'manufacturing_lines': allowed_manufacturing_lines,
+                    'sku': sku_name,
+                    'start': activity['start'],
+                    'end': activity['end'],
+                    'time_needed': activity['duration'],
+                    'style': style,
+                    'status': activity['status'],
+                    'deadline': deadline,
+                    'goal': activity['goal_name'],
+                    'content': sku_name
+                }
+                response['items'].append(item)  
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
