@@ -1,5 +1,5 @@
 from rest_framework import viewsets, filters
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.viewsets import ViewSetMixin
@@ -9,7 +9,6 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.middleware.csrf import CsrfViewMiddleware, get_token
 from django.test import Client
-from django.contrib.auth.models import User
 from django.db import transaction
 import datetime
 import math
@@ -24,6 +23,8 @@ import statistics
 from django.db.models import Sum, F, Count
 import sys
 from scrapyd_api import ScrapydAPI
+from rest_framework.permissions import BasePermission
+
 
 import requests
 import re
@@ -37,9 +38,22 @@ import re
 #     queryset = Sales.objects.all()
 #     serializer_class = SalesSerializer
 
+# Permissions
+
+# Custom permission for users with "is_active" = True.
+class IsAnalyst(BasePermission):
+    """
+    Allows access only to "is_active" users.
+    """
+    def has_permission(self, request, view):
+        return request.user and request.user.is_analyst
+
+# =================END PERMISSIONS===============
+
 class SkuViewSet(viewsets.ModelViewSet):
     queryset = Sku.objects.all()
     serializer_class = SkuSerializer
+    # permission_classes = ((IsAnalyst, ))
 
     # GET override
     @transaction.atomic
@@ -199,7 +213,7 @@ class SkuViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset(request)
         search_terms = self.request.query_params.get('search', None)
         if search_terms and ',' in search_terms:
             search_terms = search_terms.split(',')
@@ -1772,3 +1786,6 @@ def get_sales_report(request):
         print('exception in get_sales_report:')
         print(e)
         return Response(status = status.HTTP_400_BAD_REQUEST)
+
+
+

@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils.translation import ugettext_lazy as _
+from .manager import UserManager
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 import uuid
@@ -12,7 +14,14 @@ class User(AbstractUser):
 	is_product_manager = models.BooleanField('product manager status', default=False)
 	is_business_manager = models.BooleanField('business manager status', default=False)
 	is_plant_manager = models.BooleanField('plant manager status', default=False)
-	is_administrator = models.BooleanField('admin status', default=False)
+
+	USERNAME_FIELD = "username"
+	REQUIRED_FIELD = []
+
+	objects = UserManager()
+
+	def __str__(self):
+		return self.username
 
 # product_line to sku is one to many. Each sku matches to exactly one product line
 class Product_Line(models.Model):
