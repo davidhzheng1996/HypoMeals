@@ -5,7 +5,8 @@ from .manager import UserManager
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
 import uuid
-from datetime import date
+from datetime import date, datetime
+from django.utils.timezone import now
 from jsonfield import JSONField	
 
 
@@ -91,7 +92,8 @@ class Goal(models.Model):
 	goalname = models.CharField(max_length=128,unique=True,null=False,default='')
 	deadline = models.DateField(default=date.today, null=False, editable=True)
 	enable_goal = models.BooleanField(default=False)
-
+	timestamp = models.TextField(null=False, default='')
+	title = models.CharField(max_length=150,unique=False,null=False,blank=True)
 
 class IngredientFile(models.Model):
 	file = models.FileField(blank=False, null=False)
@@ -139,6 +141,7 @@ class Manufacture_Goal(models.Model):
 	goal_sku_name = models.CharField(max_length=128, null=False, default='')
 	desired_quantity = models.PositiveIntegerField()
 	comment = models.TextField(null=True, blank = True)
+	timestamp = models.TextField(null=False, default='')
 
 	class Meta: 
 		unique_together = (("name","sku"),)

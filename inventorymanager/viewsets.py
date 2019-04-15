@@ -1541,7 +1541,7 @@ def update_manufacture_goal(request):
     if(request.method == 'POST'):
         try: 
             manufacture_goal = Manufacture_Goal.objects.get(id = request.data['id'])
-            serializer = ManufactureGoalSerializer(manufacture_goal,{'desired_quantity':request.data['desired_quantity'],'comment':request.data['comment']},partial=True)
+            serializer = ManufactureGoalSerializer(manufacture_goal,{'desired_quantity':request.data['desired_quantity'],'comment':request.data['comment'],'timestamp':request.data['timestamp']},partial=True)
             if(serializer.is_valid()):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
@@ -1603,11 +1603,11 @@ def delete_goal(request,id,goalid):
 
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])
-def update_goal(request,id,goalid):
+def update_goal(request,goalid):
     if(request.method == 'POST'):
         try: 
-            goal = Goal.objects.get(user = id, id=goalid)
-            serializer = GoalSerializer(goal,{'goalname':request.data['goalname'],'deadline':request.data['deadline'],'enable_goal':request.data['enable_goal']},partial=True)
+            goal = Goal.objects.get(id=goalid)
+            serializer = GoalSerializer(goal,{'goalname':request.data['goalname'],'deadline':request.data['deadline'],'enable_goal':request.data['enable_goal'],'timestamp':request.data['timestamp']},partial=True)
             if(serializer.is_valid()):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)

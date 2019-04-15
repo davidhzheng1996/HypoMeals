@@ -52,7 +52,7 @@ urlpatterns = [
     path('api/goal/', viewsets.goal),
     path('api/search_goals/<str:search>',viewsets.search_goals),
     path('api/delete_goal/<int:id>/<int:goalid>', viewsets.delete_goal),
-    path('api/update_goal/<int:id>/<int:goalid>', viewsets.update_goal),
+    path('api/update_goal/<int:goalid>', viewsets.update_goal),
     path('api/sku_import/', SkuImportView.as_view()),
     path('api/sku_export/', SkuExportView.as_view()),
     path('api/formula_import/', FormulaImportView.as_view()),

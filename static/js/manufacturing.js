@@ -18,7 +18,7 @@ var vm = new Vue({
      // search_suggestions: search_suggestions,
      search_input: '',
      //COUPLED WITH BACKEND DO NOT REMOVE BELOW
-     newGoal: { 'goal_sku_name': '', 'desired_quantity': 0, 'user': null, 'sku': null, 'name':-1, 'comment':''},
+     newGoal: { 'goal_sku_name': '', 'desired_quantity': 0, 'user': null, 'sku': null, 'name':-1, 'comment':'','timestamp':''},
      error:'',
      date_error:'',
    },
@@ -179,6 +179,8 @@ var vm = new Vue({
        addGoal: function(userid,goalid) {
          this.newGoal.user = parseInt(userid)
          this.newGoal.name = parseInt(goalid)
+         var time = new Date().toLocaleString();
+         this.newGoal.timestamp = time;
          this.loading = true;
          this.$http.post('/api/manufacture_goal/',this.newGoal)
            .then((response) => {
@@ -187,7 +189,7 @@ var vm = new Vue({
            if((this.goals.length%this.perPage)==0){
             this.addPage();
          }
-           this.getGoals(userid,goalid);
+           this.getGoals(goalid);
          })
            .catch((err) => {
          this.loading = false;
@@ -245,14 +247,17 @@ var vm = new Vue({
       //                   this.getGoals();
       //           })
       // },
-       updateGoal: function(userid,goalid) {
+       updateGoal: function(goalid) {
          this.loading = true;
+         console.log(goalid)
+         var time = new Date().toLocaleString();
+         this.currentGoal.timestamp = time;
          this.$http.post('/api/update_manufacture_goal/',   this.currentGoal)
            .then((response) => {
              $("#editGoalModal").modal('hide');
            this.loading = false;
            this.currentGoal = response.data;
-           this.getGoals(userid,goalid);
+           this.getGoals(goalid);
          })
            .catch((err) => {
          this.loading = false;

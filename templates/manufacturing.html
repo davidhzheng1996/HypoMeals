@@ -24,6 +24,11 @@
                   <th scope="col">SKU Name</th>
                   <th scope="col">Desired Quantity</th>
                   <th scope="col">Comment</th>
+                  {% endif %}
+                  {% if user.is_superuser or user.is_analyst %}
+                  <th scope="col">Timestamp</th>
+                  {% endif %}
+                  {% if user.is_superuser or user.is_analyst or user.is_product_manager or user.is_business_manager or user.is_plant_manager%}
                </tr>
             </thead>
             <tbody>
@@ -31,6 +36,9 @@
                   <th scope="row">${goal.goal_sku_name}</th>
                   <td>${goal.desired_quantity}</td>
                   <td>${goal.comment}</td>
+                  {% endif %}
+                  {% if user.is_superuser or user.is_analyst %}
+                  <td>${goal.timestamp}</td>
                   {% endif %}
                   {% if user.is_superuser or user.is_business_manager %}
                   <td>
@@ -203,7 +211,7 @@
                </button>
             </div>
             <p class="error" v-if="error">${ error }</p>
-            <form v-on:submit.prevent="updateGoal('{{user.id}}','{{goalid}}')">
+            <form v-on:submit.prevent="updateGoal({{goalid}})">
                <div class="modal-body">
                   <div class="form-group">
                      <label>SKU Name*</label>

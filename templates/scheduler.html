@@ -12,7 +12,7 @@
 	</h1>
 	<h3 class="error" v-if="message"> ${message} </h3>
    {% endif %}
-   {% if user.is_superuser or user.is_analyst or user.is_plant_manager%}
+   {% if user.is_superuser or user.is_analyst or user.is_product_manager or user.is_business_manager or user.is_plant_manager%}
 	<div id="visualization"></div>
    {% endif %}
    {% if user.is_superuser or user.is_plant_manager%}
