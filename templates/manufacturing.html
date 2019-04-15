@@ -4,13 +4,20 @@
    <div class="container">
       <div class="row">
          <h1>Manufacturing Goal#{{goalid}}
+            {% if user.is_superuser or user.is_business_manager %}
             <button class="btn btn-success" data-toggle="modal" data-target="#addGoalModal">Add SKU</button>
+            {% endif %}
+            {% if user.is_superuser or user.is_analyst or user.is_product_manager or user.is_business_manager or user.is_plant_manager%}
             <button class="btn btn-success" type="submit" @click="exportCSV()">Export</button>
+            {% endif %}
          </h1>
+         {% if user.is_superuser or user.is_analyst or user.is_product_manager or user.is_business_manager or user.is_plant_manager%}
          <div class="form-inline my-2 my-lg-0">
             <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" autocomplete="on" v-model="search_term"  aria-label="Search" @blur="onBlur">
-            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="search_input_changed('{{user.id}}','{{goalid}}')">Search</button>
+            <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="search_input_changed('{{goalid}}')">Search</button>
         </div>
+        {% endif %}
+        {% if user.is_superuser or user.is_analyst or user.is_product_manager or user.is_business_manager or user.is_plant_manager%}
          <table class="table">
             <thead>
                <tr>
@@ -24,10 +31,14 @@
                   <th scope="row">${goal.goal_sku_name}</th>
                   <td>${goal.desired_quantity}</td>
                   <td>${goal.comment}</td>
+                  {% endif %}
+                  {% if user.is_superuser or user.is_business_manager %}
                   <td>
                      <button class="btn btn-info" v-on:click="getGoal(goal.id)">Edit</button>
                      <button class="btn btn-danger" v-on:click="deleteGoal(goal.id)">Delete</button>
                   </td>
+                  {% endif %}
+                  {% if user.is_superuser or user.is_analyst or user.is_product_manager or user.is_business_manager or user.is_plant_manager%}
                </tr>
             </tbody>
          </table>
@@ -38,9 +49,11 @@
             <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>
             <button type="button" @click="page++" v-if="page < pages.length" class="btn btn-sm btn-outline-secondary"> >> </button>
           </div>
+          {% endif %}
    </div>
    <div class="loading" v-if="loading===true">Loading&#8230;</div>
    <!-- Add Article Modal -->
+   {% if user.is_superuser or user.is_business_manager %}
    <div class="modal fade" id="addGoalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
@@ -228,11 +241,12 @@
          </div>
       </div>
    </div>
+   {% endif %}
    <!-- End of edit article modal -->
 </div>
 <!-- <! — bootrtap js files → -->
 <script src="../static/js/manufacturing.js"></script>
 <!-- Not sure if there isn't a better solution -->
-<script>vm.getGoals({{user.id}},{{goalid}})</script>
+<script>vm.getGoals({{goalid}})</script>
 <script>vm.setUpGoalsAutocomplete({{user.id}},{{goalid}})</script>
 {% endblock %}

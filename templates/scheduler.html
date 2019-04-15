@@ -5,14 +5,17 @@
 <link rel="stylesheet" href="{% static 'css/vis.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/scheduler.css' %}">
 <div id="starting">
-   {% if user.is_superuser %}
+   {% if user.is_superuser or user.is_plant_manager%}
 	<h1> Scheduler 
 		<button class="btn btn-success" data-toggle="modal" data-target="#createReportModal">Create Schedule Report</button>
       <button class="btn btn-success" data-toggle="modal" data-target="#scheduleAutomationModal">Schedule Automation</button>
 	</h1>
-
 	<h3 class="error" v-if="message"> ${message} </h3>
+   {% endif %}
+   {% if user.is_superuser or user.is_analyst or user.is_plant_manager%}
 	<div id="visualization"></div>
+   {% endif %}
+   {% if user.is_superuser or user.is_plant_manager%}
    <h4 class="error" v-if="search_error"> ${search_error} </h4>
 	<div class="row">
         <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" autocomplete="on" v-model="search_term"  aria-label="Search" @blur="onBlur">
@@ -142,8 +145,7 @@
          </div>
       </div>
    </div>
-
-</div>
 {% endif %}
+</div>
 <script src="../static/js/scheduler.js"></script>
 {% endblock %}

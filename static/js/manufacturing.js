@@ -49,13 +49,13 @@ var vm = new Vue({
     });
    },
    methods: {
-      setUpGoalsAutocomplete: function(userid,goalid){
+      setUpGoalsAutocomplete: function(goalid){
         $("#search_input").autocomplete({
           minLength: 2,
           delay: 100,
           source: function (request, response) {
             $.ajax({
-              url: "/api/manufacture_goal/" + userid + '/' + goalid,
+              url: "/api/manufacture_goal/" + goalid,
               dataType: "json",
               data: {
                 search: request.term
@@ -75,8 +75,8 @@ var vm = new Vue({
         });
       },
 
-       getGoals: function(userid,goalid){
-           let api_url = '/api/manufacture_goal/'+userid+'/'+goalid;
+       getGoals: function(goalid){
+           let api_url = '/api/manufacture_goal/'+goalid;
            if(this.search_term !== '' && this.search_term !== null) {
                 api_url += '?search=' + this.search_term
            }

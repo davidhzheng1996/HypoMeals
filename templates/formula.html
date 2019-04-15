@@ -4,7 +4,7 @@
    <div class="container">
       <div class="row">
          <h1>List of Formulas
-            {% if user.is_superuser %}
+            {% if user.is_product_manager or user.is_superuser %}
             <button class="btn btn-success" data-toggle="modal" data-target="#addFormulaModal">Add Formula</button>
             <input class="btn btn-success" type="file" @change="selectFormulaCSV">
             <button class="btn btn-success" type="submit" @click="uploadFormulaCSV">Upload Formula</button>
@@ -24,7 +24,9 @@
                <tr>
                   <th v-on:click="sortBy('id')" scope="col">ID</th>
                   <th v-on:click="sortBy('formula_name')" scope="col">Name</th>
+                  {% if user.is_product_manager or user.is_superuser %}
                   <th scope="col">Actions</th>
+                  {% endif %}
                </tr>
             </thead>
             <tbody>
@@ -34,7 +36,7 @@
                   <td>
                      <button class="btn btn-primary" v-on:click="viewSku(formula.id)">View SKUs</button>
                      <button class="btn btn-primary" v-on:click="viewFormula(formula.id)">View Ingredients</button>
-                     {% if user.is_superuser %}
+                     {% if user.is_product_manager or user.is_superuser %}
                      <button class="btn btn-info" v-on:click="getFormula(formula.id)">Edit</button>
                      <button class="btn btn-danger" v-on:click="deleteFormula(formula.id)">Delete</button>
                      {% endif %}
@@ -51,7 +53,7 @@
    </div>
    <div class="loading" v-if="loading===true">Loading&#8230;</div>
    <!-- Add Article Modal -->
-   {% if user.is_superuser %}
+   {% if user.is_product_manager or user.is_superuser %}
    <div class="modal fade" id="addFormulaModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
          <div class="modal-content">

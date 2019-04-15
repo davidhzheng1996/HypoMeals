@@ -1,6 +1,7 @@
 {% extends 'base.html' %} {% load static %}
 <link rel="stylesheet" href="{% static 'css/ingredients.css' %}"> {% block content %}
 <div id="starting">
+  {% if user.is_superuser or user.is_analyst or user.is_product_manager or user.is_business_manager or user.is_plant_manager%}
    <div class="container">
       <div class="row">
          <h1>Drilldown for SKU#{{skuid}}
@@ -147,6 +148,7 @@
             </div>
             <div class="loading" v-if="loading===true">Loading&#8230;</div>
       </div>
+      {% endif %}
 </div>
 <!-- <! — bootrtap js files → -->
 <script> var savedSkuId = {{skuid}}</script>

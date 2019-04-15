@@ -4,10 +4,12 @@
    <div class="container">
       <div class="row">
          <h1>List of Product Lines
+            {% if user.is_product_manager or user.is_superuser %}
             <button class="btn btn-success" data-toggle="modal" data-target="#addProductLineModal">Add Product Line</button>
             <input class="btn btn-success" type="file" @change="selectCSV">
             <button class="btn btn-success" type="submit" @click="uploadCSV">Upload Product Line</button>
             <p class="error" v-if="upload_errors">${ upload_errors }</p>
+            {% endif %}
             <button class="btn btn-success" type="submit" @click="exportCSV()">Export</button>
             <p class="message" v-if="message">${ message }</p>
          </h1>
@@ -20,10 +22,12 @@
             <tbody>
                <tr v-for="product_line in displayedProductLines">
                   <th scope="row">${product_line.product_line_name}</th>
+                  {% if user.is_product_manager or user.is_superuser %}
                   <td>
                      <!-- <button class="btn btn-info" v-on:click="getProductLine(product_line.product_line_name)">Edit</button> -->
                      <button class="btn btn-danger" v-on:click="deleteProductLine(product_line.product_line_name)">Delete</button>
                   </td>
+                  {% endif %}
                </tr>
             </tbody>
          </table>
@@ -37,6 +41,7 @@
    </div>
    <div class="loading" v-if="loading===true">Loading&#8230;</div>
    <!-- Add Article Modal -->
+   {% if user.is_product_manager or user.is_superuser %}
    <div class="modal fade" id="addProductLineModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
@@ -104,6 +109,7 @@
       </div>
       <div class="loading" v-if="loading===true">Loading&#8230;</div>
    </div>
+   {% endif %}
    <!-- End of edit article modal -->
 </div>
 <!-- <! — bootrtap js files → -->

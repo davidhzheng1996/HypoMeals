@@ -213,7 +213,8 @@ class SkuViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def get_queryset(self):
-        queryset = super().get_queryset(request)
+        # queryset = super().get_queryset(request)
+        queryset = super().get_queryset()
         search_terms = self.request.query_params.get('search', None)
         if search_terms and ',' in search_terms:
             search_terms = search_terms.split(',')
@@ -1484,19 +1485,18 @@ def manufacture_goals(request):
 # SKUs within manufacture goal
 @login_required(login_url='/accounts/login/')
 @api_view(['GET'])
-def manufacture_goals_get(request,id,goalid):
+def manufacture_goals_get(request,goalid):
     search_term = request.query_params.get('search', None)
     if(request.method == 'GET'):
         try: 
             if search_term:
             # filter skus by sku name
                 goals = Manufacture_Goal.objects.filter(
-                    Q(user=id),
                     Q(name=goalid),
                     Q(sku__sku_name__icontains=search_term)
                     | Q(sku__productline__product_line_name__icontains=search_term))
             else:
-                goals = Manufacture_Goal.objects.filter(user=id,name=goalid)
+                goals = Manufacture_Goal.objects.filter(name=goalid)
             # goals = Manufacture_Goal.objects.filter(user=id,name=goalid)
             response = []
             for goal in goals:
@@ -1553,10 +1553,11 @@ def update_manufacture_goal(request):
 # Singular Manufacturing Goal
 @login_required(login_url='/accounts/login/')
 @api_view(['GET','POST'])
-def goal(request,id):
+def goal(request):
     if(request.method == 'GET'):
         try: 
-            goals = Goal.objects.filter(user = id)
+            goals = Goal.objects.all()
+            print('hi')
             response = []
             for goal in goals:
                 serializer = GoalSerializer(goal)
@@ -1688,7 +1689,7 @@ def get_scheduler(request):
             manufacture_activities = Manufacturing_Activity.objects.all()
             for manufacture_activity in manufacture_activities:
                 goal = Goal.objects.get(goalname = manufacture_activity.goal_name.goalname)
-                print(goal)
+                # print(goal)
                 if goal.enable_goal == False and manufacture_activity.status != 'orphaned':
                     serializer = ManufacturingActivitySerializer(manufacture_activity,{'status':'orphaned'},partial=True)
                     if(serializer.is_valid()):
@@ -1719,6 +1720,8 @@ def get_scheduler(request):
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])
 def automate_scheduler(request):
+    def calculateTime(start_time,duration):
+        return 0;
     if(request.method=='POST'):
         try:
             start_date = datetime.datetime.strptime(request.data['start_date'], '%Y-%m-%d').date()
@@ -1726,10 +1729,11 @@ def automate_scheduler(request):
             # print(start_date)
             activities = Manufacturing_Activity.objects.filter(status='active', goal_name__deadline__range=[start_date,end_date]).order_by('goal_name__deadline','duration')
             # activities = Manufacturing_Activity.objects.filter(status='unscheduled', goal_name__deadline__range=[start_date,end_date]).order_by('goal_name__deadline','duration')
-            if len(activities) == 0:
-                response = {}
-                response = {'init':'yes'}
-                return Response(response,status = status.HTTP_200_OK)
+            # if len(activities) == 0:
+            #     print(activities)
+            #     response = {}
+            #     response = {'init':'yes'}
+            #     return Response(response,status = status.HTTP_200_OK)
             response = {
                 # all scheduled activities
                 'items': [],
@@ -1745,6 +1749,7 @@ def automate_scheduler(request):
             #initialize start time
             start_time = datetime.datetime.strptime(request.data['start_date']+' '+'8:00', '%Y-%m-%d %I:%M')
             print(start_time)
+            time_needed = calculateTime(start_time,activity['duration'])
             # add items
             for activity in activities:
                 activity = ManufacturingActivitySerializer(activity).data

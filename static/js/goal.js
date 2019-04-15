@@ -15,11 +15,13 @@ var vm = new Vue({
      dateError:'',
      error:'',
    },
-   mounted: function() {},
+   mounted: function() {
+    this.getGoals();
+   },
    methods: {
-       getGoals: function(userid){
+       getGoals: function(){
            this.loading = true;
-           this.$http.get('/api/goal/'+userid)
+           this.$http.get('/api/goal/')
                .then((response) => {
                   // console.log(response.data)
                    this.goals = response.data;
@@ -74,7 +76,7 @@ var vm = new Vue({
        deleteGoal: function(userid,goalid){
          this.loading = true;
          // TODO: use delimiters
-         this.$http.post('/api/delete_goal/' + userid + '/'+goalid)
+         this.$http.post('/api/delete_goal/'+ userid + '/'+goalid)
            .then((response) => {
              this.loading = false;
              if((this.goals.length%this.perPage)==1){
@@ -96,7 +98,7 @@ var vm = new Vue({
             return;
          }
          this.loading = true;
-         this.$http.post('/api/goal/'+userid,this.newGoal)
+         this.$http.post('/api/goal/',this.newGoal)
            .then((response) => {
            $("#addGoalModal").modal('hide');
            this.loading = false;
