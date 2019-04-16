@@ -1740,13 +1740,15 @@ def get_scheduler(request):
                 'manufacturing_lines': []
             }
             # add items
-            for activity in activities:
-                activity = ManufacturingActivitySerializer(activity).data
+            for m_activity in activities:
+                activity = ManufacturingActivitySerializer(m_activity).data
                 sku_name = Sku.objects.get(id=activity['sku']).sku_name
                 allowed_manufacturing_lines = Sku_To_Ml_Shortname.objects.filter(sku=activity['sku']).values_list('ml_short_name', flat=True)
                 allowed_manufacturing_lines = list(allowed_manufacturing_lines)
                 deadline = Goal.objects.get(goalname=activity['goal_name']).deadline
-                print(type(deadline))
+                # print(m_activity.sku)
+                # print(m_activity.goal_name)
+                # hours = m_activity.goal_name.quantity/m_activity.sku.manufacture_rate
                 style = "background-color: gray;" if activity['status'] == 'orphaned' else "background-color: green;"
                 item = {
                     'id': activity['sku'],
@@ -1785,6 +1787,7 @@ def get_scheduler(request):
                         hours_needed = 0
                     else:
                         hours_needed = desired_quantity / manufacture_rate
+                    print(hours_needed)
                     sku_lines = set(Sku_To_Ml_Shortname.objects.filter(sku=sku.id).values_list('ml_short_name', flat=True))
                     deadline = Goal.objects.get(goalname=enabled_goal.goalname).deadline
                     if (not Manufacturing_Activity.objects.filter(sku=sku.id, goal_name=enabled_goal.goalname).exists() or 
@@ -1897,10 +1900,10 @@ def automate_scheduler(request):
                 print(start_t)
                 print('end')
                 print(end_t)
-                # if end_t.date() > deadline:
-                #     continue
-                # if end_t > end_time:
-                #     break;
+                if end_t.date() > deadline:
+                    continue
+                if end_t > end_time:
+                    break;
                 style = "background-color: green;"
                 item = {
                     'id': activity['sku'],
