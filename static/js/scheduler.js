@@ -320,6 +320,7 @@ var starting = new Vue({
                                 Vue.delete(unscheduled_goal[item.goal], item.sku)
                             }
                         })
+                        
                     },
                     onMoving: function (item, callback) {
                         console.log('on moving')

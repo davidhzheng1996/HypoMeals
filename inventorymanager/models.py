@@ -150,7 +150,7 @@ class Manufacture_line(models.Model):
 	ml_name = models.CharField(max_length=32, null=False, default='')
 	ml_short_name = models.CharField(primary_key = True, max_length=5, null=False, unique=True, editable = True,
 		validators=[RegexValidator(r'^[a-zA-Z0-9\S]{1,5}$', message="Short name can have only Alphabets and Numbers", code = "invalid Short name")])
-	comment = models.TextField(null=True)
+	comment = models.TextField(null=True, blank = True)
 
 class Sku_To_Ml_Shortname(models.Model):
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
@@ -200,8 +200,8 @@ class Manufacturing_Activity(models.Model):
 	manufacturing_line = models.ForeignKey(Manufacture_line,on_delete=models.CASCADE)
 	sku = models.ForeignKey(Sku,on_delete=models.CASCADE)
 	goal_name = models.ForeignKey(Goal, on_delete=models.CASCADE, to_field='goalname')
-	start = models.DateTimeField(auto_now_add=False)
-	end = models.DateTimeField(auto_now_add=False)
+	start = models.DateTimeField(auto_now_add=False, null = True, blank = True)
+	end = models.DateTimeField(auto_now_add=False, null = True, blank = True)
 	duration = models.PositiveIntegerField(null=False, default=0)
 	status = models.CharField(max_length=20, choices=[('active', 'scheduled activity'), ('inactive', 'unscheduled activity'), ('orphaned','orphaned activity')], default='inactive')
 
