@@ -1437,12 +1437,33 @@ def mg_to_skus(request,goal_name):
                     hours_needed = 0
                 else:
                     hours_needed = desired_quantity / manufacture_rate
-                response[goal_name][sku.sku_name] = {
-                    'manufacturing_lines': list(ml_short_names),
-                    'hours_needed': math.ceil(hours_needed)
-                }
+                
+                if not Manufacturing_Activity.objects.filter(sku=sku.id, goal_name=goal_name).exists():
+                    response[goal_name][sku.sku_name] = {
+                        'manufacturing_lines': list(ml_short_names),
+                        'hours_needed': math.ceil(hours_needed)
+                    }
+                    # add sku as a new manufacture activity 
+                    # user, manufacturing line, start, end, duration are registered using random values
+                    serializer = ManufacturingActivitySerializer(data={
+                        'user': 1,
+                        'manufacturing_line': ml_short_names[0],
+                        'sku': sku.id,
+                        'goal_name': goal_name,
+                        'start': datetime.datetime.now(),
+                        'end': datetime.datetime.now(),
+                        'duration': math.ceil(hours_needed),
+                        'status': 'inactive'
+                    })
+                    if serializer.is_valid():
+                        serializer.save()
+                    else:
+                        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)  
+            if len(response[goal_name]) == 1:
+                response = {} 
             return Response(response,status = status.HTTP_200_OK)
-        except Exception as e: 
+        except Exception as error: 
+            print(error)
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
@@ -1717,10 +1738,10 @@ def get_scheduler(request):
                 'items': [],
                 # manufacturing lines for all scheduled activities
                 'groups': [],
-                # [{goal_name(enabled): [sku_name(active),]},]
-                'scheduled_goals': {},
-                # [{goal_name(enabled): [sku_name(non_active),]},]
-                'unscheduled_goals': {},
+                # [{goal_name(enabled): {sku_name(active),}},]
+                'scheduled_goals': [],
+                # [{goal_name(enabled): {sku_name(non_active),},]
+                'unscheduled_goals': [],
                 # manufacturing lines for all enabled goals
                 'manufacturing_lines': []
             }
@@ -1748,15 +1769,17 @@ def get_scheduler(request):
                 }
                 response['items'].append(item)  
             # add scheduled_goals and unscheduled_goals
+            # format: scheduled_goals:
+            # [{goal_name: {sku_name: {manufacturing_lines, hours_needed}}}]
             enabled_goals = Goal.objects.filter(enable_goal=True)
             manufacture_line_set = set()
             for enabled_goal in enabled_goals:
-                response['scheduled_goals'][enabled_goal.goalname] = {}
-                response['unscheduled_goals'][enabled_goal.goalname] = {}
-                # response[goal_name][sku.sku_name] = {
-                #     'manufacturing_lines': list(ml_short_names),
-                #     'hours_needed': math.ceil(hours_needed)
-                # }
+                scheduled_goal = {
+                    enabled_goal.goalname: {}
+                }
+                unscheduled_goal = {
+                    enabled_goal.goalname: {}
+                }
                 sku_ids = Manufacture_Goal.objects.filter(name__goalname=enabled_goal.goalname).values_list('sku', flat=True)
                 for sku_id in sku_ids:
                     sku = Sku.objects.get(id=sku_id)
@@ -1767,17 +1790,20 @@ def get_scheduler(request):
                     else:
                         hours_needed = desired_quantity / manufacture_rate
                     sku_lines = set(Sku_To_Ml_Shortname.objects.filter(sku=sku.id).values_list('ml_short_name', flat=True))
-                    if not Manufacturing_Activity.objects.filter(user=activity['user'], sku=sku.id, goal_name=enabled_goal.goalname).exists():
-                        response['unscheduled_goals'][enabled_goal.goalname][sku.sku_name] = {
+                    if (not Manufacturing_Activity.objects.filter(sku=sku.id, goal_name=enabled_goal.goalname).exists() or 
+                        Manufacturing_Activity.objects.get(sku=sku.id, goal_name=enabled_goal.goalname).status == 'inactive'):
+                        unscheduled_goal[enabled_goal.goalname][sku.sku_name] = {
                             'manufacturing_lines': list(sku_lines),
                             'hours_needed': math.ceil(hours_needed)
                         }
                     else:
-                        response['scheduled_goals'][enabled_goal.goalname][sku.sku_name] = {
+                        scheduled_goal[enabled_goal.goalname][sku.sku_name] = {
                             'manufacturing_lines': list(sku_lines),
                             'hours_needed': math.ceil(hours_needed)
                         }
                     manufacture_line_set |= sku_lines
+                response['scheduled_goals'].append(scheduled_goal)
+                response['unscheduled_goals'].append(unscheduled_goal)
             response['manufacturing_lines'] = list(manufacture_line_set)
             # add groups
             for manufacture_line in list(manufacture_line_set):
