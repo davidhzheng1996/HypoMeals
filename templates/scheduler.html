@@ -110,15 +110,23 @@
             <h4 class="error" v-if="automate_error"> ${automate_error} </h4>
             <form v-on:submit.prevent="getAutomation()">
                <div class="modal-body">
-<!--                   <div class="form-group">
-                     <label>Manufacturing Activity*</label>
-                     <input
-                        type="text"
-                        class="form-control"
-                        placeholder="Enter Manufacture Activity"
-                        v-model="automate.manufacturing_activity"
-                        required="required" >
-                  </div> -->
+<!--                   <table class="table">
+                     <thead>
+                           <tr>
+                                 <th></th>
+                                 <th>Manufacturing Lines</th>
+                           </tr>
+                     </thead>
+                     <tbody>
+                           <tr v-for="ml in manufacturing_lines">
+                                 <td>
+                                       <input type="checkbox" :indeterminate.prop="ml.part_active" v-model='ml.all_active'
+                                             v-on:click="ml_checkbox_click($event, ml)">
+                                 </td>
+                                 <td>${ml}</td>
+                           </tr>
+                     </tbody>
+                  </table> -->
                   <div class="form-group">
                      <label>Start Date*</label>
                      <input

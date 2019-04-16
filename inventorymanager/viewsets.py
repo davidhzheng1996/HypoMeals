@@ -1858,10 +1858,11 @@ def automate_scheduler(request):
         duration_seconds = float(duration * 3600)
         start_date_end = datetime.datetime.fromisoformat(str(start_time.date())+'T'+'18:00:00-04:00')
         seconds_gap = start_date_end - start_time;
-        if duration_seconds < seconds_gap.total_seconds():
+        # print(seconds_gap.total_seconds())
+        if duration_seconds <= seconds_gap.total_seconds():
             actual_seconds += duration_seconds
             return actual_seconds
-        duration_seconds -= second_gap.total_seconds()
+        duration_seconds -= seconds_gap.total_seconds()
         actual_seconds += seconds_gap.total_seconds()
         if duration_seconds > 0:
             actual_seconds += (3600 * 14)
@@ -1869,7 +1870,14 @@ def automate_scheduler(request):
         actual_seconds += (days * 3600 * 24)
         duration_seconds -= (days * 3600 * 10)
         actual_seconds += duration_seconds
-        return actual_seconds;
+        return actual_seconds
+    def timeCheck(start_time):
+        start_date_end = datetime.datetime.fromisoformat(str(start_time.date())+'T'+'18:00:00-04:00')
+        if start_time == start_date_end:
+            print('true')
+            start_time = datetime.datetime.fromisoformat(str(start_time.date()+timedelta(days=1))+'T'+'08:00:00-04:00')
+            return start_time
+        return start_time
     if(request.method=='POST'):
         try:
             start_date = datetime.datetime.strptime(request.data['start_date'], '%Y-%m-%d').date()
@@ -1881,9 +1889,9 @@ def automate_scheduler(request):
             # end_time = datetime.datetime.strptime(request.data['end_date']+' '+'18:00:00', '%Y-%m-%d %H:%M:%S')
             start_time = datetime.datetime.fromisoformat(request.data['start_date']+'T'+'08:00:00-04:00')
             end_time = datetime.datetime.fromisoformat(request.data['end_date']+'T'+'18:00:00-04:00')
-            # print(start_date)
             inactive_activities = Manufacturing_Activity.objects.filter(status='inactive', goal_name__deadline__range=[start_date,end_date]).order_by('goal_name__deadline','duration')
             active_activities = Manufacturing_Activity.objects.filter((Q(status='active')|Q(status='orphaned')), goal_name__deadline__range=[start_date,end_date])
+            print(inactive_activities)
             if not inactive_activities:
                 post_result = 'error: no activities can be scheduled'
                 return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
@@ -1907,24 +1915,28 @@ def automate_scheduler(request):
                 activity = ManufacturingActivitySerializer(m_activity).data
                 sku_name = Sku.objects.get(id=activity['sku']).sku_name
                 allowed_manufacturing_lines = Sku_To_Ml_Shortname.objects.filter(sku=activity['sku']).values_list('ml_short_name', flat=True)
-                allowed_manufacturing_lines = list(allowed_manufacturing_lines)
+                allowed_manufacturing_lines_list = list(allowed_manufacturing_lines)
                 deadline = Goal.objects.get(goalname=activity['goal_name']).deadline
+                start_t = timeCheck(start_t)
                 seconds = int(calculateTime(start_t,activity['duration']))
                 # print(seconds)
-                end_t = start_t + datetime.timedelta(seconds=seconds)
+                end_t1 = start_t + datetime.timedelta(seconds=seconds)
                 print('start')
                 print(start_t)
-                print('end')
-                print(end_t)
-                if end_t.date() > deadline:
+                print('end_t1')
+                print(end_t1)
+                if end_t1.date() > deadline:
                     continue
-                if end_t > end_time:
-                    break;
+                if end_t1 > end_time:
+                    break
+                end_t = start_t + datetime.timedelta(seconds=seconds)
+                print('end_t')
+                print(end_t)
                 style = "background-color: green;"
                 item = {
                     'id': activity['sku'],
                     'group': activity['manufacturing_line'],
-                    'manufacturing_lines': allowed_manufacturing_lines,
+                    'manufacturing_lines': allowed_manufacturing_lines_list,
                     'sku': sku_name,
                     'start': start_t,
                     'end': end_t,
@@ -1936,9 +1948,9 @@ def automate_scheduler(request):
                     'content': sku_name
                 }
                 response['items'].append(item)
-                # serializer = ManufacturingActivitySerializer(m_activity,{'start':start_t,'end':end_t},partial=True)
-                # if(serializer.is_valid()):
-                #     serializer.save()  
+                serializer = ManufacturingActivitySerializer(m_activity,{'start':start_t,'end':end_t},partial=True)
+                if(serializer.is_valid()):
+                    serializer.save()  
                 start_t = end_t
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 

@@ -17,6 +17,7 @@ var starting = new Vue({
         automate_error: '',
         report: {'manufacture_line':'', 'start_date':'', 'end_date':'',user:''},
         automate: {'start_date':'', 'end_date':''},
+        active_manufacturing_activities:[],
     },
     methods: {
         addGoal: function () {
@@ -114,6 +115,9 @@ var starting = new Vue({
                 this.automate_error = err.bodyText;
             })
         },
+        // ml_checkbox_click: function(ev, ml) {
+        //     ml['all_active'] = true;
+        //  },
         removeGoal: function(goal_name) {
             // remove scheduled skus on Timeline 
             scheduled_goal_items = []
