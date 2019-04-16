@@ -79,11 +79,7 @@ class SkuViewSet(viewsets.ModelViewSet):
 
             if Formula.objects.filter(id=formula_id).exists():
                 formula = Formula.objects.get(id=formula_id)
-                f = FormulaSerializer(formula)
-                f_data = f.data
-                formula.delete()
-                f_data['formula_name']=formula_name
-                serializer = FormulaSerializer(data=f_data)
+                serializer = FormulaSerializer(formula,{'formula_name':formula_name},partial=True)
                 if(serializer.is_valid()):
                     serializer.save()
                 else:
@@ -217,7 +213,8 @@ class SkuViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def get_queryset(self):
-        queryset = super().get_queryset(request)
+        # queryset = super().get_queryset(request)
+        queryset = super().get_queryset()
         search_terms = self.request.query_params.get('search', None)
         if search_terms and ',' in search_terms:
             search_terms = search_terms.split(',')
@@ -268,25 +265,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
             ingr_ids = Formula_To_Ingredients.objects.filter(formula__in=formula_ids).values('ig')
             queryset |= Ingredient.objects.filter(id__in=ingr_ids)
         return queryset
-
-# class SalesReportViewSet(viewsets.ModelViewSet):
-#     queryset = Sale_Record.objects.all()
-#     serializer_class = SalesReportSerializer
-#     # print('retrive')
-
-#     def retrive(self, request, *args, **kwargs):
-#         print('retrive')
-#         instance = self.get_object()
-#         serializer = self.get_serializer(instance)
-#         case_dict = {}
-#         revenue_dict = {}
-#         for sale_record in serializer.data:
-#             year = sale_record['sale_date'].date.today().year;
-#             revenue_dict[year] += (sale_record['sales'])*(sale_record['price_per_case'])
-#             case_dict[year] += sale_record['sales']
-#         print(case_dict)
-#         print(revenue_dict)
-#         return Response(serializer.data)
 
 class FormulaViewSet(viewsets.ModelViewSet):
     queryset = Formula.objects.all()
@@ -1423,8 +1401,14 @@ def mg_to_skus(request,goal_name):
             response[goal_name]={}
             # get skus associated with the goal: Manufacture_Goal
             sku_ids = Manufacture_Goal.objects.filter(name__goalname=goal_name).values_list('sku', flat=True)
+            if not sku_ids:
+                post_result = goal_name +' does not exist'
+                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
             skus = Sku.objects.filter(id__in=sku_ids)
             goal = Goal.objects.get(goalname=goal_name)
+            if goal.enable_goal == False:
+                post_result = goal_name +' is not enabled'
+                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
             # print(goal)
             response[goal_name]['deadline'] = goal.deadline
             for sku in skus:
@@ -1522,19 +1506,18 @@ def manufacture_goals(request):
 # SKUs within manufacture goal
 @login_required(login_url='/accounts/login/')
 @api_view(['GET'])
-def manufacture_goals_get(request,id,goalid):
+def manufacture_goals_get(request,goalid):
     search_term = request.query_params.get('search', None)
     if(request.method == 'GET'):
         try: 
             if search_term:
             # filter skus by sku name
                 goals = Manufacture_Goal.objects.filter(
-                    Q(user=id),
                     Q(name=goalid),
                     Q(sku__sku_name__icontains=search_term)
                     | Q(sku__productline__product_line_name__icontains=search_term))
             else:
-                goals = Manufacture_Goal.objects.filter(user=id,name=goalid)
+                goals = Manufacture_Goal.objects.filter(name=goalid)
             # goals = Manufacture_Goal.objects.filter(user=id,name=goalid)
             response = []
             for goal in goals:
@@ -1579,7 +1562,7 @@ def update_manufacture_goal(request):
     if(request.method == 'POST'):
         try: 
             manufacture_goal = Manufacture_Goal.objects.get(id = request.data['id'])
-            serializer = ManufactureGoalSerializer(manufacture_goal,{'desired_quantity':request.data['desired_quantity'],'comment':request.data['comment']},partial=True)
+            serializer = ManufactureGoalSerializer(manufacture_goal,{'desired_quantity':request.data['desired_quantity'],'comment':request.data['comment'],'timestamp':request.data['timestamp']},partial=True)
             if(serializer.is_valid()):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
@@ -1591,10 +1574,11 @@ def update_manufacture_goal(request):
 # Singular Manufacturing Goal
 @login_required(login_url='/accounts/login/')
 @api_view(['GET','POST'])
-def goal(request,id):
+def goal(request):
     if(request.method == 'GET'):
         try: 
-            goals = Goal.objects.filter(user = id)
+            goals = Goal.objects.all()
+            print('hi')
             response = []
             for goal in goals:
                 serializer = GoalSerializer(goal)
@@ -1620,6 +1604,8 @@ def search_goals(request,search):
             allgoals = Goal.objects.filter(goalname__icontains=search)
             response = []
             for goal in allgoals: 
+                if goal.enable_goal == False:
+                    continue
                 response.append(goal.goalname)
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
@@ -1638,11 +1624,11 @@ def delete_goal(request,id,goalid):
 
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])
-def update_goal(request,id,goalid):
+def update_goal(request,goalid):
     if(request.method == 'POST'):
         try: 
-            goal = Goal.objects.get(user = id, id=goalid)
-            serializer = GoalSerializer(goal,{'goalname':request.data['goalname'],'deadline':request.data['deadline'],'enable_goal':request.data['enable_goal']},partial=True)
+            goal = Goal.objects.get(id=goalid)
+            serializer = GoalSerializer(goal,{'goalname':request.data['goalname'],'deadline':request.data['deadline'],'enable_goal':request.data['enable_goal'],'timestamp':request.data['timestamp']},partial=True)
             if(serializer.is_valid()):
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
@@ -1733,6 +1719,16 @@ def get_scheduler(request):
                 response = {}
                 response = {'init':'yes'}
                 return Response(response,status = status.HTTP_200_OK)
+            for manufacture_activity in activities:
+                goal = Goal.objects.get(goalname = manufacture_activity.goal_name.goalname)
+                if goal.enable_goal == False and manufacture_activity.status != 'orphaned':
+                    serializer = ManufacturingActivitySerializer(manufacture_activity,{'status':'orphaned'},partial=True)
+                    if(serializer.is_valid()):
+                        serializer.save()
+                elif goal.enable_goal == True and manufacture_activity.status == 'orphaned':
+                    serializer = ManufacturingActivitySerializer(manufacture_activity,{'status':'active'},partial=True)
+                    if(serializer.is_valid()):
+                        serializer.save()
             response = {
                 # all scheduled activities
                 'items': [],
@@ -1830,6 +1826,66 @@ def get_scheduler(request):
         except Exception as e: 
             print('exception')
             print(e)
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+def automate_scheduler(request):
+    def calculateTime(start_time,duration):
+        return 0;
+    if(request.method=='POST'):
+        try:
+            start_date = datetime.datetime.strptime(request.data['start_date'], '%Y-%m-%d').date()
+            end_date = datetime.datetime.strptime(request.data['end_date'], '%Y-%m-%d').date()
+            # print(start_date)
+            activities = Manufacturing_Activity.objects.filter(status='active', goal_name__deadline__range=[start_date,end_date]).order_by('goal_name__deadline','duration')
+            # activities = Manufacturing_Activity.objects.filter(status='unscheduled', goal_name__deadline__range=[start_date,end_date]).order_by('goal_name__deadline','duration')
+            # if len(activities) == 0:
+            #     print(activities)
+            #     response = {}
+            #     response = {'init':'yes'}
+            #     return Response(response,status = status.HTTP_200_OK)
+            response = {
+                # all scheduled activities
+                'items': [],
+                # manufacturing lines for all scheduled activities
+                'groups': [],
+                # [{goal_name(enabled): [sku_name(active),]},]
+                'scheduled_goals': {},
+                # [{goal_name(enabled): [sku_name(non_active),]},]
+                'unscheduled_goals': {},
+                # manufacturing lines for all enabled goals
+                'manufacturing_lines': []
+            }
+            #initialize start time
+            start_time = datetime.datetime.strptime(request.data['start_date']+' '+'8:00', '%Y-%m-%d %I:%M')
+            print(start_time)
+            time_needed = calculateTime(start_time,activity['duration'])
+            # add items
+            for activity in activities:
+                activity = ManufacturingActivitySerializer(activity).data
+                sku_name = Sku.objects.get(id=activity['sku']).sku_name
+                allowed_manufacturing_lines = Sku_To_Ml_Shortname.objects.filter(sku=activity['sku']).values_list('ml_short_name', flat=True)
+                allowed_manufacturing_lines = list(allowed_manufacturing_lines)
+                deadline = Goal.objects.get(goalname=activity['goal_name'], user=activity['user']).deadline
+                style = "background-color: green;"
+                item = {
+                    'id': activity['sku'],
+                    'group': activity['manufacturing_line'],
+                    'manufacturing_lines': allowed_manufacturing_lines,
+                    'sku': sku_name,
+                    'start': activity['start'],
+                    'end': activity['end'],
+                    'time_needed': activity['duration'],
+                    'style': style,
+                    'status': activity['status'],
+                    'deadline': deadline,
+                    'goal': activity['goal_name'],
+                    'content': sku_name
+                }
+                response['items'].append(item)  
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')

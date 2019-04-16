@@ -11,15 +11,17 @@ var vm = new Vue({
      pages:[],
      has_paginated:false,
      //COUPLED WITH BACKEND DO NOT REMOVE BELOW
-     newGoal: { 'goalname': '', 'user':null, 'deadline':'', 'enable_goal': false },
+     newGoal: { 'goalname': '', 'user':null, 'deadline':'', 'enable_goal': false, 'timestamp':'','title':'' },
      dateError:'',
      error:'',
    },
-   mounted: function() {},
+   mounted: function() {
+    this.getGoals();
+   },
    methods: {
-       getGoals: function(userid){
+       getGoals: function(){
            this.loading = true;
-           this.$http.get('/api/goal/'+userid)
+           this.$http.get('/api/goal/')
                .then((response) => {
                   // console.log(response.data)
                    this.goals = response.data;
@@ -74,7 +76,7 @@ var vm = new Vue({
        deleteGoal: function(userid,goalid){
          this.loading = true;
          // TODO: use delimiters
-         this.$http.post('/api/delete_goal/' + userid + '/'+goalid)
+         this.$http.post('/api/delete_goal/'+ userid + '/'+goalid)
            .then((response) => {
              this.loading = false;
              if((this.goals.length%this.perPage)==1){
@@ -87,8 +89,11 @@ var vm = new Vue({
              console.log(err);
            })
        },
-       addGoal: function(userid) {
-         this.newGoal.user = parseInt(userid,10)
+       addGoal: function(userid,username) {
+         this.newGoal.user = parseInt(userid,10);
+         this.newGoal.title = username;
+         var time = new Date().toLocaleString();
+         this.newGoal.timestamp = time;
          var now = new Date();
          var date = new Date(this.newGoal.deadline);
          if(date < now){
@@ -96,7 +101,7 @@ var vm = new Vue({
             return;
          }
          this.loading = true;
-         this.$http.post('/api/goal/'+userid,this.newGoal)
+         this.$http.post('/api/goal/',this.newGoal)
            .then((response) => {
            $("#addGoalModal").modal('hide');
            this.loading = false;
@@ -109,8 +114,8 @@ var vm = new Vue({
          this.loading = false;
          console.log(err);
        })
-       },
-       updateGoal: function(userid,goalid) {
+         },
+        updateGoal: function(goalid) {
          this.loading = true;
          var now = new Date();
          var date = new Date(this.currentGoal.deadline);
@@ -118,11 +123,13 @@ var vm = new Vue({
             this.dateError = "Deadline cannot be in the past!"
             return;
          }
-         this.$http.post('/api/update_goal/'+ userid + '/'+goalid, this.currentGoal)
+         var time = new Date().toLocaleString();
+         this.currentGoal.timestamp = time;
+         this.$http.post('/api/update_goal/'+goalid, this.currentGoal)
            .then((response) => {
              $("#editGoalModal").modal('hide');
              this.loading = false;
-             this.getGoals(userid);
+             this.getGoals();
          })
            .catch((err) => {
          this.loading = false;

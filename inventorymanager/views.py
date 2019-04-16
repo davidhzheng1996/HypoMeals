@@ -223,15 +223,17 @@ class IngredientImportView(APIView):
 						break
 				else:
 					ingr = Ingredient.objects.get(id=default_id)
-					s = IngredientSerializer(ingr)
-					s_data = s.data
-					ingr.delete()
-					s_data['ingredient_name']=ingr_dict['Name'].lower()
-					s_data['description']=ingr_dict['Vendor Info']
-					s_data['package_size']=ingr_dict['Size']
-					s_data['cpp']=ingr_dict['Cost']
-					s_data['comment']=ingr_dict['Comment']
-					serializer = IngredientSerializer(data=s_data)
+					# s = IngredientSerializer(ingr)
+					serializer = IngredientSerializer(ingr,{'ingredient_name':ingr_dict['Name'],'description':ingr_dict['Vendor Info'],
+						'package_size':ingr_dict['Size'],'cpp':ingr_dict['Cost'],'comment':ingr_dict['Comment']},partial=True)
+					# s_data = s.data
+					# ingr.delete()
+					# s_data['ingredient_name']=ingr_dict['Name'].lower()
+					# s_data['description']=ingr_dict['Vendor Info']
+					# s_data['package_size']=ingr_dict['Size']
+					# s_data['cpp']=ingr_dict['Cost']
+					# s_data['comment']=ingr_dict['Comment']
+					# serializer = IngredientSerializer(data=s_data)
 					# print(serializer)
 					if(serializer.is_valid()):
 						serializer.save()
@@ -379,22 +381,27 @@ class SkuImportView(APIView):
 					skutoml = Sku_To_Ml_Shortname.objects.filter(sku=default_id)
 					for s in skutoml:
 						s.delete()
-					s = SkuSerializer(sku)
-					s_data = s.data
-					sku.delete()
-					s_data['sku_name']=sku_dict['Name']
-					s_data['productline']=product_line.product_line_name
-					s_data['caseupc']=sku_dict['Case UPC']
-					s_data['unitupc']=sku_dict['Unit UPC']
-					s_data['count']=sku_dict['Count per case']
-					s_data['unit_size']=sku_dict['Unit size']
-					s_data['formula']=formula.id
-					s_data['formula_scale_factor']=sku_dict['Formula factor']
-					s_data['manufacture_rate']=sku_dict['Rate']
-					s_data['manufacture_setup_cost']=sku_dict['Mfg setup cost']
-					s_data['manufacture_run_cost']=sku_dict['Mfg run cost']
-					s_data['comment']=sku_dict['Comment']
-					serializer = SkuSerializer(data=s_data)
+					# s = SkuSerializer(sku)
+					# s_data = s.data
+					# sku.delete()
+					serializer = SkuSerializer(sku,{'sku_name':sku_dict['Name'], 'productline':product_line.product_line_name,
+						'caseupc':sku_dict['Case UPC'],'unitupc':sku_dict['Unit UPC'],'count':sku_dict['Count per case'],
+						'unit_size':sku_dict['Unit size'],'formula':formula.id,'formula_scale_factor':sku_dict['Formula factor'],
+						'manufacture_rate':sku_dict['Rate'],'manufacture_setup_cost':sku_dict['Mfg setup cost'],'manufacture_run_cost':sku_dict['Mfg run cost'],
+						'comment':sku_dict['Comment']},partial=True)
+					# s_data['sku_name']=sku_dict['Name']
+					# s_data['productline']=product_line.product_line_name
+					# s_data['caseupc']=sku_dict['Case UPC']
+					# s_data['unitupc']=sku_dict['Unit UPC']
+					# s_data['count']=sku_dict['Count per case']
+					# s_data['unit_size']=sku_dict['Unit size']
+					# s_data['formula']=formula.id
+					# s_data['formula_scale_factor']=sku_dict['Formula factor']
+					# s_data['manufacture_rate']=sku_dict['Rate']
+					# s_data['manufacture_setup_cost']=sku_dict['Mfg setup cost']
+					# s_data['manufacture_run_cost']=sku_dict['Mfg run cost']
+					# s_data['comment']=sku_dict['Comment']
+					# serializer = SkuSerializer(data=s_data)
 					# print(serializer)
 					if(serializer.is_valid()):
 						serializer.save()

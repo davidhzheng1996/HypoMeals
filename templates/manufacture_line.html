@@ -4,7 +4,9 @@
    <div class="container">
       <div class="row">
          <h1>List of Manufacture Lines
+            {% if user.is_product_manager or user.is_superuser %}
             <button class="btn btn-success" data-toggle="modal" data-target="#addManufactureLineModal">Add Manufacture Line</button>
+            {% endif %}
          </h1>
          <table class="table">
             <thead>
@@ -19,11 +21,13 @@
                   <th scope="row">${manufacture_line.ml_name}</th>
                   <td>${manufacture_line.ml_short_name}</td>
                   <td>${manufacture_line.comment}</td>
+                  {% if user.is_product_manager or user.is_superuser %}
                   <td>
                     <!--  <button class="btn btn-info" v-on:click="">View Manufacture Schedule</button> -->
                      <button class="btn btn-info" v-on:click="getManufactureLine(manufacture_line.ml_short_name)">Edit</button>
                      <button class="btn btn-danger" v-on:click="deleteManufactureLine(manufacture_line.ml_short_name)">Delete</button>
                   </td>
+                  {% endif %}
                </tr>
             </tbody>
          </table>
@@ -37,6 +41,7 @@
    </div>
    <div class="loading" v-if="loading===true">Loading&#8230;</div>
    <!-- Add Article Modal -->
+   {% if user.is_product_manager or user.is_superuser %}
    <div class="modal fade" id="addManufactureLineModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
@@ -139,6 +144,7 @@
       </div>
       <div class="loading" v-if="loading===true">Loading&#8230;</div>
    </div>
+   {% endif %}
    <!-- End of edit article modal -->
 </div>
 <!-- <! — bootrtap js files → -->

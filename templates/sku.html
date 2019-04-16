@@ -4,7 +4,7 @@
    <div class="container">
       <div class="row">
          <h1>List of SKUs
-            {% if user.is_superuser %}
+            {% if user.is_product_manager or user.is_superuser %}
             <button class="btn btn-success" data-toggle="modal" data-target="#addSkuModal">Add Sku</button>
             <input class="btn btn-success" type="file" @change="selectSkuCSV">
             <button class="btn btn-success" type="submit" @click="uploadSkuCSV">Upload Sku</button>
@@ -13,16 +13,18 @@
             <p class="error" v-if="upload_errors">${ upload_errors }</p>
             {% endif %}
             <button class="btn btn-success" type="submit" @click="exportSkuCSV">Export Sku</button>
-            <button class="btn btn-success" type="submit" @click="disablePage">Full Listing</button>
+            <!-- <button class="btn btn-success" type="submit" @click="disablePage">Full Listing</button> -->
             <!-- <button class="btn btn-success" type="submit" @click="exportFormula()">Export Formulas</button> -->
          </h1>
          <div class="form-inline my-2 my-lg-0">
             <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" v-model="search_term" autocomplete="on" aria-label="Search" @blur="onBlur">
             <button class="btn btn-outline-success my-2 my-sm-0" v-on:click.prevent="getSkus()" title="To search by multiple Skus, separate each ingredient by comma. E.g. 'burger,coke'">Search</button>
         </div>
+        {% if user.is_product_manager or user.is_superuser %}
         <div class="form-inline my-2 ml-2 mr-2 my-lg-0">
                         <button class="btn btn-success" data-toggle="modal" data-target="#updateMLModal" v-on:click.prevent="getManufactureLines()">View Manufacturing Lines</button>
                   </div>
+         {% endif %}
          <div class="form-inline my-2 ml-2 mr-2 my-lg-0">
                                     <button class="btn btn-success" type="submit" @click="disablePage">See Full Listing</button>
                   </div>
@@ -38,7 +40,9 @@
                   <th v-on:click="sortBy('unit_size')" scope="col">Unit Size</th>
                   <th v-on:click="sortBy('count')" scope="col">Count</th>
                   <th v-on:click="sortBy('formula')" scope="col">Formula</th>
+                  {% if user.is_product_manager or user.is_superuser %}
                   <th scope="col">Actions</th>
+                  {% endif %}
                </tr>
             </thead>
             <tbody>
@@ -57,9 +61,11 @@
                   <td>
                      <!-- <button class="btn btn-primary" v-on:click="viewIngr(sku.id)">View Ingrs</button> -->
                      <button class="btn btn-primary" v-on:click="viewFormula(sku.formula)">View Formula</button>
+                     {% if user.is_product_manager %}
                      {% if user.is_superuser %}
                      <button class="btn btn-info" v-on:click="getSku(sku.id)">Edit</button>
                      <button class="btn btn-danger" v-on:click="deleteSku(sku.id)">Delete</button>
+                     {% endif %}
                      {% endif %}
                   </td>
                </tr>
@@ -75,7 +81,7 @@
    </div>
    <div class="loading" v-if="loading===true">Loading&#8230;</div>
    <!-- Add Article Modal -->
-   {% if user.is_superuser %}
+   {% if user.is_product_manager or user.is_superuser %}
    <div class="modal fade" id="addSkuModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
@@ -235,8 +241,8 @@
    </div>
    {% endif %}
    <!-- End of add article modal -->
-   <!-- Edit Article Modal -->               
-   {% if user.is_superuser %}
+   <!-- Edit Article Modal -->      
+   {% if user.is_product_manager or user.is_superuser %}
    <div class="modal fade" id="editSkuModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
@@ -271,12 +277,15 @@
                   <div class="form-group">
                      <label>SKU Productline*</label>
                      <input
+                        id="product_line_search_input_2"
                         type="text"
                         class="form-control"
                         accept-charset="ISO-8859-1"
                         placeholder="Enter Sku Productline"
                         v-model="currentSku.productline"
-                        required="required" >
+                        required="required" 
+                        autocomplete="on"
+                        @blur="onBlurProductLine">
                   </div>
                   <div class="form-group">
                      <label>Case UPC*</label>
@@ -393,7 +402,7 @@
    <!-- End of edit article modal -->
       <!-- End of edit article modal -->
       <!-- Begining of edit manufacturing line modal -->
-      {% if user.is_superuser %}
+   {% if user.is_product_manager or user.is_superuser %}
       <div class="modal fade" id="updateMLModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
             <div class="modal-dialog" role="document">
                   <div class="modal-content">

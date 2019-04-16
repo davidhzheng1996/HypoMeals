@@ -46,13 +46,13 @@ urlpatterns = [
     path('api/delete_ingredients_to_formula/<int:formula>/<int:ig>',viewsets.delete_ingredients_to_formula),
     path('api/update_ingredients_to_formula/<int:formula>/<int:ig>',viewsets.update_ingredients_to_formula),
     path('api/manufacture_goal/', viewsets.manufacture_goals),
-    path('api/manufacture_goal/<int:id>/<int:goalid>', viewsets.manufacture_goals_get),
+    path('api/manufacture_goal/<int:goalid>', viewsets.manufacture_goals_get),
     path('api/delete_manufacture_goal/<int:specificgoal>',viewsets.delete_manufacture_goal),
     path('api/update_manufacture_goal/',viewsets.update_manufacture_goal),
-    path('api/goal/<int:id>', viewsets.goal),
+    path('api/goal/', viewsets.goal),
     path('api/search_goals/<str:search>',viewsets.search_goals),
     path('api/delete_goal/<int:id>/<int:goalid>', viewsets.delete_goal),
-    path('api/update_goal/<int:id>/<int:goalid>', viewsets.update_goal),
+    path('api/update_goal/<int:goalid>', viewsets.update_goal),
     path('api/sku_import/', SkuImportView.as_view()),
     path('api/sku_export/', SkuExportView.as_view()),
     path('api/formula_import/', FormulaImportView.as_view()),
@@ -67,5 +67,6 @@ urlpatterns = [
     path('api/get_sales_report/', viewsets.get_sales_report),
     path('api/sales_summary/', viewsets.sales_summary),
     path('api/get_customer/', viewsets.get_customer),
-    path('api/get_sales_projection', viewsets.get_sales_projection)
+    path('api/get_sales_projection', viewsets.get_sales_projection),
+    path('api/automate_scheduler', viewsets.automate_scheduler)
 ]

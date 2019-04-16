@@ -1,12 +1,17 @@
 {% extends 'base.html' %} {% load static %}
 <link rel="stylesheet" href="{% static 'css/ingredients.css' %}"> {% block content %}
 <div id="starting">
+   {% if user.is_superuser or user.is_analyst or user.is_product_manager or user.is_business_manager or user.is_plant_manager%}
    <div class="container">
       <div class="row">
          <h1>Sales Report
             <button class="btn btn-success" type="submit" @click="exportCSV">Export Sales Report</button>
+            {% endif %}
+            {% if user.is_superuser or user.is_product_manager or user.is_business_manager or user.is_plant_manager%}
             <button class="btn btn-success" type="submit" @click="scrapeData">Scrape Data</button>
+            {% endif %}
          </h1>
+         {% if user.is_superuser or user.is_analyst or user.is_product_manager or user.is_business_manager or user.is_plant_manager%}
          <div class="form-inline my-2 ml-2 mr-2 my-lg-0">
                         <button class="btn btn-success" data-toggle="modal" data-target="#updatePLModal" v-on:click.prevent="getProductLines()">Select Product Lines</button>
                   </div>
@@ -122,6 +127,7 @@
             </div>
             <div class="loading" v-if="loading===true">Loading&#8230;</div>
       </div>
+      {% endif %}
 </div>
 <!-- <! — bootrtap js files → -->
 <script src="../static/js/sales_report.js"></script>

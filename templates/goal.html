@@ -4,13 +4,22 @@
    <div class="container">
       <div class="row">
          <h1>List of Manufacturing Goals
+            {% if user.is_superuser or user.is_business_manager %}
             <button class="btn btn-success" data-toggle="modal" data-target="#addGoalModal">Add Manufacturing Goal</button>
+            {% endif %}
          </h1>
+         {% if user.is_superuser or user.is_analyst or user.is_product_manager or user.is_business_manager or user.is_plant_manager%}
          <table class="table">
             <thead>
                <tr>
                   <th scope="col">Goal Name</th>
                   <th scope="col">Deadline</th>
+                  <th scope="col">Author</th>
+                  {% endif %}
+                  {% if user.is_superuser or user.is_analyst %}
+                  <th scope="col">Timestamp</th>
+                  {% endif %}
+                  {% if user.is_superuser or user.is_analyst or user.is_product_manager or user.is_business_manager or user.is_plant_manager%}
                   <th scope="col">Actions</th>
                </tr>
             </thead>
@@ -18,10 +27,20 @@
                <tr v-for="goal in displayedGoals">
                   <th scope="row">${goal.goalname}</th>
                   <th scope="row">${goal.deadline}</th>
+                  <td>${goal.title}</td>
+                  {% endif %}
+                  {% if user.is_superuser or user.is_analyst %}
+                  <td>${goal.timestamp}</td>
+                  {% endif %}
+                  {% if user.is_superuser or user.is_analyst or user.is_product_manager or user.is_business_manager or user.is_plant_manager%}
                   <td>
                      <button class="btn btn-primary" v-on:click="viewGoal(goal.id)">View Goal</button>
+                     {% endif %}
+                     {% if user.is_superuser or user.is_business_manager %}
                      <button class="btn btn-info" v-on:click="getGoal(goal.id)">Edit</button>
                      <button class="btn btn-danger" v-on:click="deleteGoal('{{user.id}}',goal.id)">Delete</button> 
+                     {% endif %}
+                     {% if user.is_superuser or user.is_analyst or user.is_product_manager or user.is_business_manager or user.is_plant_manager%}
                      <button class="btn btn-primary" v-on:click="Calculate(goal.id)">Calculate Ingredients</button>
                   </td>
                </tr>
@@ -34,9 +53,11 @@
             <button type="button" class="btn btn-sm btn-outline-secondary" v-for="pageNumber in pages " @click="page = pageNumber"> ${pageNumber} </button>
             <button type="button" @click="page++" v-if="page < pages.length" class="btn btn-sm btn-outline-secondary"> >> </button>
           </div>
+          {% endif %}
    </div>
    <div class="loading" v-if="loading===true">Loading&#8230;</div>
    <!-- Add Goal Modal -->
+   {% if user.is_superuser or user.is_business_manager %}
    <div class="modal fade" id="addGoalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
       <div class="modal-dialog" role="document">
          <div class="modal-content">
@@ -49,7 +70,7 @@
             <!-- Not sure if this needs to be refactored.... jinja2 inside of vue? ew. -->
             <p class="error" v-if="dateError">${ dateError }</p>
             <p class="error" v-if="error">${ error }</p>
-            <form v-on:submit.prevent="addGoal('{{user.id}}')">
+            <form v-on:submit.prevent="addGoal('{{user.id}}','{{user.username}}')">
                <div class="modal-body">
                   <div class="form-group">
                      <label>Goal Name*</label>
@@ -98,7 +119,7 @@
             </div>
             <p class="error" v-if="dateError">${ dateError }</p>
             <p class="error" v-if="error">${ error }</p>
-            <form v-on:submit.prevent="updateGoal('{{user.id}}',currentGoal.id)">
+            <form v-on:submit.prevent="updateGoal(currentGoal.id)">
                <div class="modal-body">
                   <div class="form-group">
                      <label>Goal Name*</label>
@@ -136,94 +157,10 @@
       </div>
       <div class="loading" v-if="loading===true">Loading&#8230;</div>
    </div>
-   
+   {% endif %}
    <!-- End of edit goal modal -->
-   <div class="modal fade" id="addGoalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-         <div class="modal-content">
-            <div class="modal-header">
-               <h5 class="modal-title" id="exampleModalLongTitle">Add Manufacturing Goal</h5>
-               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-               <span aria-hidden="true">&times;</span>
-               </button>
-            </div>
-            <!-- Not sure if this needs to be refactored.... jinja2 inside of vue? ew. -->
-            <form v-on:submit.prevent="addGoal('{{user.id}}')">
-               <div class="modal-body">
-                  <div class="form-group">
-                     <label>SKU Name*</label>
-                     <input
-                        type="text"
-                        class="form-control"
-                        accept-charset="ISO-8859-1"
-                        placeholder="Enter SKU Name"
-                        v-model="newGoal.goal_sku_name"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Quantity*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Desired Quantity"
-                        v-model="newGoal.desired_quantity"
-                        required="required" >
-                  </div>
-               </div>
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-               </div>
-            </form>
-         </div>
-      </div>
-      <div class="loading" v-if="loading===true">Loading&#8230;</div>
-   </div>
-   <!-- End of add article modal -->
-   <!-- Edit Article Modal -->
-   <div class="modal fade" id="editGoalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-         <div class="modal-content">
-            <div class="modal-header">
-               <h5 class="modal-title" id="exampleModalLongTitle">Edit Manufacturing Goal</h5>
-               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-               <span aria-hidden="true">&times;</span>
-               </button>
-            </div>
-            <form v-on:submit.prevent="updateGoal()">
-               <div class="modal-body">
-                  <div class="form-group">
-                     <label>Goal Name*</label>
-                     <input
-                        type="text"
-                        class="form-control"
-                        accept-charset="ISO-8859-1"
-                        placeholder="Enter Goal Name"
-                        v-model="currentGoal.goal_sku_name"
-                        required="required" >
-                  </div>
-                  <div class="form-group">
-                     <label>Quantity*</label>
-                     <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Enter Desired Quantity"
-                        v-model="currentGoal.desired_quantity"
-                        required="required" >
-                  </div>
-               </div>
-               <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary m-progress" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Save changes</button>
-               </div>
-            </form>
-         </div>
-      </div>
-      <div class="loading" v-if="loading===true">Loading&#8230;</div>
-   </div>
-   <!-- End of edit article modal -->
 </div>
 <script src="../static/js/goal.js"></script>
 <!-- Not sure if there isn't a better solution -->
-<script>vm.getGoals({{user.id}})</script>
+<!-- <script>vm.getGoals({{user.id}})</script> -->
 {% endblock %}

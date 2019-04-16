@@ -11,13 +11,15 @@ var starting = new Vue({
         items: new vis.DataSet(),
         search_term: '',
         message: '',
+        search_error: '',
         report: {'manufacture_line':'', 'start_date':'', 'end_date':'',user:''},
-        automate: {'manufacturing_activity':'','start_date':'', 'end_date':''},
+        automate: {'start_date':'', 'end_date':''},
     },
     methods: {
         addGoal: function () {
             $.get('api/mg_to_skus/'+this.search_term,(data)=>{
                 // add all skus to unscheduled goals
+                console.log(data)
                 this.unscheduled_goals.push(data)
                 // add all new manufacturing lines 
                 for (key in data) {
@@ -37,8 +39,39 @@ var starting = new Vue({
                         this.groups.add({ "id": value, "content": value })
                     }
                 }
-            }); 
+            }).fail(function(xhr, status, error) {
+                // this.search_error = xhr.responseText;
+                // console.log(this.search_error)
+                alert(xhr.responseText);
+            });
         },
+        // addGoal: function () {
+        //     this.$http.get('api/mg_to_skus/'+this.search_term).then((response)=>{
+        //         // add all skus to unscheduled goals
+        //         console.log(response)
+        //         this.unscheduled_goals.push(response)
+        //         // add all new manufacturing lines 
+        //         for (key in response) {
+        //             if (response.hasOwnProperty(key)) {
+        //                 for (key2 in response[key]) {
+        //                     if (response[key].hasOwnProperty(key2)&&key2!='deadline') {
+        //                         for (key3 in response[key][key2].manufacturing_lines) {
+        //                             this.manufacturing_lines.add(response[key][key2].manufacturing_lines[key3])
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //         group_ids = this.groups.getIds()
+        //         for (let value of this.manufacturing_lines) {
+        //             if(!group_ids.includes(value)){
+        //                 this.groups.add({ "id": value, "content": value })
+        //             }
+        //         }
+        //     }).catch((err) => {
+        //         console.log(err)
+        //     }); 
+        // },
         saveTimeline: function(userid){
              let timeline_info = []
              this.items.forEach((item) => {
@@ -67,7 +100,14 @@ var starting = new Vue({
             })
         },
         getAutomation: function(){
-
+            let api_url = '/api/automate_scheduler';
+            this.$http.post(api_url,this.automate)
+             .then((response) => {
+                this.loading = false;
+            })
+             .catch((err) => {
+                console.log(err);
+            })
         },
         removeGoal: function(goal_name) {
             // remove scheduled skus on Timeline 

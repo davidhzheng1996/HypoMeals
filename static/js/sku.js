@@ -97,6 +97,32 @@ new Vue({
           results: function() {}
         }
       });
+      $("#product_line_search_input_2").autocomplete({
+        minLength: 1,
+        delay: 100,
+        // https://stackoverflow.com/questions/9656523/jquery-autocomplete-with-callback-ajax-json
+        source: function (request, response) {
+          $.ajax({
+            url: "/api/product_line",
+            dataType: "json",
+            data: {
+              // attach '?search=request.term' to the url 
+              search: request.term
+            },
+            success: function (data) {
+              names = $.map(data, function (item) {
+                return [item.product_line_name];
+              })
+              response(names);
+            }
+          });
+        },
+        appendTo: "#editSkuModal",
+        messages: {
+          noResults: '',
+          results: function() {}
+        }
+      });
    },
    methods: {
        getSkus: function(){
@@ -322,6 +348,8 @@ new Vue({
       onBlurProductLine: function(event) {
         if (event && this.newSku.productline !== event.target.value) 
           this.newSku.productline = event.target.value
+        if (event && this.currentSku.productline !== event.target.value) 
+          this.currentSku.productline = event.target.value
       },
 
       // store manufacture lines states based on active SKUs
