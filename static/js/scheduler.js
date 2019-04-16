@@ -84,15 +84,14 @@ var starting = new Vue({
                     'start': item['start'],
                     'end': item['end'],
                     'duration': item['time_needed'],
-                    'status': 'active'
+                    'status': item['status']
                 })
              })
-            //  items_string = JSON.stringify(this.items)
-            //  groups_string = JSON.stringify(this.groups)
-            //  scheduled_goals_string = JSON.stringify(this.scheduled_goals)
-            //  unscheduled_goals_string = JSON.stringify(this.unscheduled_goals)
-            //  manufacturing_lines_string = JSON.stringify(this.manufacturing_lines)
-             console.log(timeline_info)
+            console.log(this.items)
+            console.log(this.groups)
+            console.log(this.scheduled_goals)
+            console.log(this.unscheduled_goals)
+            console.log(this.manufacturing_lines)
              this.$http.post('api/save_scheduler',timeline_info)
              .then((response) => {
                 alert('Success')
@@ -100,10 +99,6 @@ var starting = new Vue({
              .catch((err) => {
                 alert('Faiulre')
             })
-
-            // $.post('api/save_scheduler', {'info': timeline_info}, (response)=>{
-            //     alert('Success')
-            // });
         },
         getAutomation: function(){
             let api_url = '/api/automate_scheduler';
@@ -331,22 +326,19 @@ var starting = new Vue({
                         starting.items.remove(item)
                     }
                 };
-
                 if(!response['init']){
-                    var items_parsed = JSON.parse(response['items'])._data
-                    for(key in items_parsed){
-                        if(items_parsed.hasOwnProperty(key)){
-                            this.items.add(items_parsed[key])
-                        }
-                    }
-                    var groups_parsed = JSON.parse(response['groups'])._data
-                     for(key in groups_parsed){
-                        if(groups_parsed.hasOwnProperty(key)){
-                            this.groups.add(groups_parsed[key])
-                        }
-                    }
-                    this.unscheduled_goals = JSON.parse(response['unscheduled_goals'])
-                    this.scheduled_goals = JSON.parse(response['scheduled_goals'])
+                    this.items = new vis.DataSet(response['items'])
+                    this.groups = new vis.DataSet(response['groups'])
+                    this.unscheduled_goals = response['unscheduled_goals']
+                    this.scheduled_goals = response['scheduled_goals']
+                    console.log('this.items')
+                    console.log(this.items)
+                    console.log('this.groups')
+                    console.log(this.groups)
+                    console.log('this.unscheduled_goals')
+                    console.log(this.unscheduled_goals)
+                    console.log('this.scheduled_goals')
+                    console.log(this.scheduled_goals)
                 }
                 // create a Timeline
                 var container = document.getElementById('visualization');
@@ -374,14 +366,3 @@ var starting = new Vue({
         });
     }
 });
-
-// 
-//  var items = new vis.DataSet([
-//     {id: 1, content: 'item 1', start: '2013-04-20'},
-//     {id: 2, content: 'item 2', start: '2013-04-14'},
-//     {id: 3, content: 'item 3', start: '2013-04-18'},
-//     {id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19'},
-//     {id: 5, content: 'item 5', start: '2013-04-25'},
-//     {id: 6, content: 'item 6', start: '2013-04-27'}
-//   ]);
-

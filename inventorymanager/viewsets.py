@@ -1421,12 +1421,33 @@ def mg_to_skus(request,goal_name):
                     hours_needed = 0
                 else:
                     hours_needed = desired_quantity / manufacture_rate
-                response[goal_name][sku.sku_name] = {
-                    'manufacturing_lines': list(ml_short_names),
-                    'hours_needed': math.ceil(hours_needed)
-                }
+                
+                if not Manufacturing_Activity.objects.filter(sku=sku.id, goal_name=goal_name).exists():
+                    response[goal_name][sku.sku_name] = {
+                        'manufacturing_lines': list(ml_short_names),
+                        'hours_needed': math.ceil(hours_needed)
+                    }
+                    # add sku as a new manufacture activity 
+                    # user, manufacturing line, start, end, duration are registered using random values
+                    serializer = ManufacturingActivitySerializer(data={
+                        'user': 1,
+                        'manufacturing_line': ml_short_names[0],
+                        'sku': sku.id,
+                        'goal_name': goal_name,
+                        'start': datetime.datetime.now(),
+                        'end': datetime.datetime.now(),
+                        'duration': math.ceil(hours_needed),
+                        'status': 'inactive'
+                    })
+                    if serializer.is_valid():
+                        serializer.save()
+                    else:
+                        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)  
+            if len(response[goal_name]) == 1:
+                response = {} 
             return Response(response,status = status.HTTP_200_OK)
-        except Exception as e: 
+        except Exception as error: 
+            print(error)
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
@@ -1645,17 +1666,25 @@ def netid_login(request):
 def save_scheduler(request):
     if(request.method == 'POST'):
         try:
-            # save to Manufacturing_Activity instead of Scheduler 
-            # print(request.data)
+            print('SAVE request')
+            print(request.data)
             if len(request.data) == 0:
                 return Response(request.data, status=status.HTTP_204_NO_CONTENT)
             for activity in request.data:
                 sku_id = Sku.objects.filter(sku_name=activity['sku']).values_list("id",flat=True)[0]
                 activity['sku'] = sku_id
-                # if activity already exists, skip 
+                # if activity already exists, update
                 if Manufacturing_Activity.objects.filter(user=activity['user'], sku=activity['sku'], goal_name=activity['goal_name']).exists():
-                    continue
-                serializer = ManufacturingActivitySerializer(data=activity)
+                    exist_activity = Manufacturing_Activity.objects.get(user=activity['user'], sku=activity['sku'], goal_name=activity['goal_name'])
+                    serializer = ManufacturingActivitySerializer(exist_activity, data={
+                        'manufacturing_line': activity['manufacturing_line'],
+                        'start': activity['start'],
+                        'end': activity['end'],
+                        'duration': activity['duration'],
+                        'status': activity['status']
+                    }, partial=True)
+                else:
+                    serializer = ManufacturingActivitySerializer(data=activity)
                 if serializer.is_valid():
                     serializer.save()
                 else:
@@ -1684,37 +1713,119 @@ def save_scheduler(request):
 def get_scheduler(request):
     if(request.method=='GET'):
         try:
-            timeline_data = Scheduler.objects.all()
-            # print(timeline_data)
-            manufacture_activities = Manufacturing_Activity.objects.all()
-            for manufacture_activity in manufacture_activities:
+            # get scheduler data from manufacture activity model 
+            activities = Manufacturing_Activity.objects.all()
+            if len(activities) == 0:
+                response = {}
+                response = {'init':'yes'}
+                return Response(response,status = status.HTTP_200_OK)
+            for manufacture_activity in activities:
                 goal = Goal.objects.get(goalname = manufacture_activity.goal_name.goalname)
-                # print(goal)
                 if goal.enable_goal == False and manufacture_activity.status != 'orphaned':
                     serializer = ManufacturingActivitySerializer(manufacture_activity,{'status':'orphaned'},partial=True)
                     if(serializer.is_valid()):
                         serializer.save()
-                elif goal.enable_goal == True and manufacture_activity.status != 'active':
+                elif goal.enable_goal == True and manufacture_activity.status == 'orphaned':
                     serializer = ManufacturingActivitySerializer(manufacture_activity,{'status':'active'},partial=True)
                     if(serializer.is_valid()):
                         serializer.save()
-                    # print(serializer.errors)
+            response = {
+                # all scheduled activities
+                'items': [],
+                # manufacturing lines for all scheduled activities
+                'groups': [],
+                # [{goal_name(enabled): {sku_name(active),}},]
+                'scheduled_goals': [],
+                # [{goal_name(enabled): {sku_name(non_active),},]
+                'unscheduled_goals': [],
+                # manufacturing lines for all enabled goals
+                'manufacturing_lines': []
+            }
+            # add items
+            for activity in activities:
+                activity = ManufacturingActivitySerializer(activity).data
+                sku_name = Sku.objects.get(id=activity['sku']).sku_name
+                allowed_manufacturing_lines = Sku_To_Ml_Shortname.objects.filter(sku=activity['sku']).values_list('ml_short_name', flat=True)
+                allowed_manufacturing_lines = list(allowed_manufacturing_lines)
+                deadline = Goal.objects.get(goalname=activity['goal_name'], user=activity['user']).deadline
+                style = "background-color: green;"
+                item = {
+                    'id': activity['sku'],
+                    'group': activity['manufacturing_line'],
+                    'manufacturing_lines': allowed_manufacturing_lines,
+                    'sku': sku_name,
+                    'start': activity['start'],
+                    'end': activity['end'],
+                    'time_needed': activity['duration'],
+                    'style': style,
+                    'status': activity['status'],
+                    'deadline': deadline,
+                    'goal': activity['goal_name'],
+                    'content': sku_name
+                }
+                response['items'].append(item)  
+            # add scheduled_goals and unscheduled_goals
+            # format: scheduled_goals:
+            # [{goal_name: {sku_name: {manufacturing_lines, hours_needed}}}]
+            enabled_goals = Goal.objects.filter(enable_goal=True)
+            manufacture_line_set = set()
+            for enabled_goal in enabled_goals:
+                scheduled_goal = {
+                    enabled_goal.goalname: {}
+                }
+                unscheduled_goal = {
+                    enabled_goal.goalname: {}
+                }
+                sku_ids = Manufacture_Goal.objects.filter(name__goalname=enabled_goal.goalname).values_list('sku', flat=True)
+                for sku_id in sku_ids:
+                    sku = Sku.objects.get(id=sku_id)
+                    manufacture_rate = sku.manufacture_rate
+                    desired_quantity = Manufacture_Goal.objects.get(sku=sku.id, name__goalname=enabled_goal.goalname).desired_quantity
+                    if manufacture_rate == 0:
+                        hours_needed = 0
+                    else:
+                        hours_needed = desired_quantity / manufacture_rate
+                    sku_lines = set(Sku_To_Ml_Shortname.objects.filter(sku=sku.id).values_list('ml_short_name', flat=True))
+                    if (not Manufacturing_Activity.objects.filter(sku=sku.id, goal_name=enabled_goal.goalname).exists() or 
+                        Manufacturing_Activity.objects.get(sku=sku.id, goal_name=enabled_goal.goalname).status == 'inactive'):
+                        unscheduled_goal[enabled_goal.goalname][sku.sku_name] = {
+                            'manufacturing_lines': list(sku_lines),
+                            'hours_needed': math.ceil(hours_needed)
+                        }
+                    else:
+                        scheduled_goal[enabled_goal.goalname][sku.sku_name] = {
+                            'manufacturing_lines': list(sku_lines),
+                            'hours_needed': math.ceil(hours_needed)
+                        }
+                    manufacture_line_set |= sku_lines
+                response['scheduled_goals'].append(scheduled_goal)
+                response['unscheduled_goals'].append(unscheduled_goal)
+            response['manufacturing_lines'] = list(manufacture_line_set)
+            # add groups
+            for manufacture_line in list(manufacture_line_set):
+                response['groups'].append({
+                    'id': manufacture_line,
+                    'content': manufacture_line
+                })
+            print('GET response')
+            print(response)
+            return Response(response,status = status.HTTP_200_OK)
 
-            if(len(timeline_data)!=0):
-                first = timeline_data.first()
-                # print(first.unscheduled_goals)
-                response = {}
-                response['items'] = first.items
-                response['groups'] = first.groups
-                response['scheduled_goals'] = first.scheduled_goals
-                response['unscheduled_goals'] = first.unscheduled_goals
-                response['manufacturing_lines'] = first.manufacturing_lines
-                return Response(response,status = status.HTTP_200_OK)
-            else:
-                response = {}
-                response = {'init':'yes'}
-                return Response(response,status = status.HTTP_200_OK)
+            # timeline_data = Scheduler.objects.all()
+            # # print(timeline_data)
+            # if(len(timeline_data)!=0):
+            #     first = timeline_data.first()
+            #     # print(first.unscheduled_goals)
+            #     response = {}
+            #     response['items'] = first.items
+            #     response['groups'] = first.groups
+            #     response['scheduled_goals'] = first.scheduled_goals
+            #     response['unscheduled_goals'] = first.unscheduled_goals
+            #     response['manufacturing_lines'] = first.manufacturing_lines
+
         except Exception as e: 
+            print('exception')
+            print(e)
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
