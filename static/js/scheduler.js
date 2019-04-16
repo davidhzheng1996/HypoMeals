@@ -233,6 +233,7 @@ var starting = new Vue({
                     },
                     onAdd: function (item, callback) {
                         starting.message = ''
+                        console.log(item)
                         // DO VALIDATIONS HERE
                         // item is sku, group is manufacturing line
                         // validate the time is within 8am to 6pm 
@@ -250,6 +251,7 @@ var starting = new Vue({
                         item.end = new Date(item.start.getTime() + actual_time_needed)
                         // visualize exceeding deadline
                         let deadline = new Date(item.deadline)
+                        console.log(item.deadline)
                         if (deadline < item.end) {
                             starting.message = 'sku ' + item.sku + ' completion time exceeds deadline ' + deadline.toString()
                             item.style = "background-color: red;"

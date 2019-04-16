@@ -1721,7 +1721,7 @@ def get_scheduler(request):
                 return Response(response,status = status.HTTP_200_OK)
             for manufacture_activity in activities:
                 goal = Goal.objects.get(goalname = manufacture_activity.goal_name.goalname)
-                if goal.enable_goal == False and manufacture_activity.status != 'orphaned':
+                if goal.enable_goal == False and manufacture_activity.status == 'active':
                     serializer = ManufacturingActivitySerializer(manufacture_activity,{'status':'orphaned'},partial=True)
                     if(serializer.is_valid()):
                         serializer.save()
@@ -1747,7 +1747,8 @@ def get_scheduler(request):
                 sku_name = Sku.objects.get(id=activity['sku']).sku_name
                 allowed_manufacturing_lines = Sku_To_Ml_Shortname.objects.filter(sku=activity['sku']).values_list('ml_short_name', flat=True)
                 allowed_manufacturing_lines = list(allowed_manufacturing_lines)
-                deadline = Goal.objects.get(goalname=activity['goal_name'], user=activity['user']).deadline
+                deadline = Goal.objects.get(goalname=activity['goal_name']).deadline
+                print(type(deadline))
                 style = "background-color: green;"
                 item = {
                     'id': activity['sku'],
@@ -1807,8 +1808,8 @@ def get_scheduler(request):
                     'id': manufacture_line,
                     'content': manufacture_line
                 })
-            print('GET response')
-            print(response)
+            # print('GET response')
+            # print(response)
             return Response(response,status = status.HTTP_200_OK)
 
             # timeline_data = Scheduler.objects.all()
@@ -1843,17 +1844,11 @@ def automate_scheduler(request):
             start_time = datetime.datetime.strptime(request.data['start_date']+' '+'08:00:00', '%Y-%m-%d %H:%M:%S')
             end_time = datetime.datetime.strptime(request.data['end_date']+' '+'18:00:00', '%Y-%m-%d %H:%M:%S')
             # print(start_date)
-            activities = Manufacturing_Activity.objects.filter(status='active', goal_name__deadline__range=[start_date,end_date]).order_by('goal_name__deadline','duration')
-            
+            activities = Manufacturing_Activity.objects.filter(status='inactive', goal_name__deadline__range=[start_date,end_date]).order_by('goal_name__deadline','duration')
+            print(activities)
             if not activities:
                 post_result = 'error: no activities can be scheduled'
                 return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
-            # activities = Manufacturing_Activity.objects.filter(status='unscheduled', goal_name__deadline__range=[start_date,end_date]).order_by('goal_name__deadline','duration')
-            # if len(activities) == 0:
-            #     print(activities)
-            #     response = {}
-            #     response = {'init':'yes'}
-            #     return Response(response,status = status.HTTP_200_OK)
             response = {
                 # all scheduled activities
                 'items': [],
@@ -1866,11 +1861,6 @@ def automate_scheduler(request):
                 # manufacturing lines for all enabled goals
                 'manufacturing_lines': []
             }
-            #initialize start time
-            # start_time = datetime.datetime.strptime(request.data['start_date']+' '+'8:00', '%Y-%m-%d %I:%M')
-            # # print(start_time)
-            # end_time = datetime.datetime.strptime(request.data['end_date']+' '+'18:00', '%Y-%m-%d %I:%M')
-            # print(end_time)
             time_needed = calculateTime(start_time,activity['duration'])
             # add items
             # for activity in activities:

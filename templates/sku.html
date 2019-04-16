@@ -61,11 +61,9 @@
                   <td>
                      <!-- <button class="btn btn-primary" v-on:click="viewIngr(sku.id)">View Ingrs</button> -->
                      <button class="btn btn-primary" v-on:click="viewFormula(sku.formula)">View Formula</button>
-                     {% if user.is_product_manager %}
-                     {% if user.is_superuser %}
+                     {% if user.is_product_manager or user.is_superuser %}
                      <button class="btn btn-info" v-on:click="getSku(sku.id)">Edit</button>
                      <button class="btn btn-danger" v-on:click="deleteSku(sku.id)">Delete</button>
-                     {% endif %}
                      {% endif %}
                   </td>
                </tr>
