@@ -12,6 +12,7 @@ var starting = new Vue({
         search_term: '',
         message: '',
         search_error: '',
+        automate_error: '',
         report: {'manufacture_line':'', 'start_date':'', 'end_date':'',user:''},
         automate: {'start_date':'', 'end_date':''},
     },
@@ -112,6 +113,7 @@ var starting = new Vue({
             })
              .catch((err) => {
                 console.log(err);
+                this.automate_error = err.bodyText;
             })
         },
         removeGoal: function(goal_name) {

@@ -1726,8 +1726,17 @@ def automate_scheduler(request):
         try:
             start_date = datetime.datetime.strptime(request.data['start_date'], '%Y-%m-%d').date()
             end_date = datetime.datetime.strptime(request.data['end_date'], '%Y-%m-%d').date()
+            if end_date < start_date:
+                post_result = 'error: end_date before start_date'
+                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
+            start_time = datetime.datetime.strptime(request.data['start_date']+' '+'08:00:00', '%Y-%m-%d %H:%M:%S')
+            end_time = datetime.datetime.strptime(request.data['end_date']+' '+'18:00:00', '%Y-%m-%d %H:%M:%S')
             # print(start_date)
             activities = Manufacturing_Activity.objects.filter(status='active', goal_name__deadline__range=[start_date,end_date]).order_by('goal_name__deadline','duration')
+            
+            if not activities:
+                post_result = 'error: no activities can be scheduled'
+                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
             # activities = Manufacturing_Activity.objects.filter(status='unscheduled', goal_name__deadline__range=[start_date,end_date]).order_by('goal_name__deadline','duration')
             # if len(activities) == 0:
             #     print(activities)
@@ -1747,32 +1756,34 @@ def automate_scheduler(request):
                 'manufacturing_lines': []
             }
             #initialize start time
-            start_time = datetime.datetime.strptime(request.data['start_date']+' '+'8:00', '%Y-%m-%d %I:%M')
-            print(start_time)
+            # start_time = datetime.datetime.strptime(request.data['start_date']+' '+'8:00', '%Y-%m-%d %I:%M')
+            # # print(start_time)
+            # end_time = datetime.datetime.strptime(request.data['end_date']+' '+'18:00', '%Y-%m-%d %I:%M')
+            # print(end_time)
             time_needed = calculateTime(start_time,activity['duration'])
             # add items
-            for activity in activities:
-                activity = ManufacturingActivitySerializer(activity).data
-                sku_name = Sku.objects.get(id=activity['sku']).sku_name
-                allowed_manufacturing_lines = Sku_To_Ml_Shortname.objects.filter(sku=activity['sku']).values_list('ml_short_name', flat=True)
-                allowed_manufacturing_lines = list(allowed_manufacturing_lines)
-                deadline = Goal.objects.get(goalname=activity['goal_name'], user=activity['user']).deadline
-                style = "background-color: green;"
-                item = {
-                    'id': activity['sku'],
-                    'group': activity['manufacturing_line'],
-                    'manufacturing_lines': allowed_manufacturing_lines,
-                    'sku': sku_name,
-                    'start': activity['start'],
-                    'end': activity['end'],
-                    'time_needed': activity['duration'],
-                    'style': style,
-                    'status': activity['status'],
-                    'deadline': deadline,
-                    'goal': activity['goal_name'],
-                    'content': sku_name
-                }
-                response['items'].append(item)  
+            # for activity in activities:
+            #     activity = ManufacturingActivitySerializer(activity).data
+            #     sku_name = Sku.objects.get(id=activity['sku']).sku_name
+            #     allowed_manufacturing_lines = Sku_To_Ml_Shortname.objects.filter(sku=activity['sku']).values_list('ml_short_name', flat=True)
+            #     allowed_manufacturing_lines = list(allowed_manufacturing_lines)
+            #     deadline = Goal.objects.get(goalname=activity['goal_name'], user=activity['user']).deadline
+            #     style = "background-color: green;"
+            #     item = {
+            #         'id': activity['sku'],
+            #         'group': activity['manufacturing_line'],
+            #         'manufacturing_lines': allowed_manufacturing_lines,
+            #         'sku': sku_name,
+            #         'start': activity['start'],
+            #         'end': activity['end'],
+            #         'time_needed': activity['duration'],
+            #         'style': style,
+            #         'status': activity['status'],
+            #         'deadline': deadline,
+            #         'goal': activity['goal_name'],
+            #         'content': sku_name
+            #     }
+            #     response['items'].append(item)  
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
