@@ -7,12 +7,14 @@ var starting = new Vue({
         scheduled_goals: [],        
         // manufacturing lines
         groups: new vis.DataSet(),
-        // skus
+        // all active/orphaned activities
         items: new vis.DataSet(),
+        // all activities
+        activities: [],
         search_term: '',
         message: '',
         search_error: '',
-        report: {'manufacture_line':'', 'start_date':'', 'end_date':'',user:''},
+        report: {'manufacture_line':'', 'start_date':'', 'end_date':'', user:''},
         automate: {'start_date':'', 'end_date':''},
     },
     methods: {
@@ -167,19 +169,42 @@ var starting = new Vue({
         handleDragStart: function (list_index, goal, sku, event) {
             var dragSrcEl = event.target;
             event.dataTransfer.effectAllowed = 'move';
-            // sku
-            var item = {
-                id: new Date(),
-                content: event.target.innerHTML,
-                goal: goal,
-                sku: sku,
-                manufacturing_lines: this.unscheduled_goals[list_index][goal][sku].manufacturing_lines,
-                time_needed: this.unscheduled_goals[list_index][goal][sku].hours_needed,
-                deadline: this.unscheduled_goals[list_index][goal].deadline,
-            };
+            // iterate through all skus to find the one user dragged
+            let dragged_item = null
+            console.log('handleDragStart')
+            console.log(goal)
+            console.log(sku)
+            this.activities.forEach(activity => {
+                if (activity.goal === goal && activity.sku === sku) {
+                    dragged_item = activity
+                } 
+            })
+            // var item = {
+            //     id: new Date(),
+            //     content: event.target.innerHTML,
+            //     goal: goal,
+            //     sku: sku,
+            //     manufacturing_lines: this.unscheduled_goals[list_index][goal][sku].manufacturing_lines,
+            //     time_needed: this.unscheduled_goals[list_index][goal][sku].hours_needed,
+            //     deadline: this.unscheduled_goals[list_index][goal].deadline,
+            // };
+            // item = {
+            //     'id': activity['sku'],
+            //     'group': activity['manufacturing_line'],
+            //     'manufacturing_lines': allowed_manufacturing_lines,
+            //     'sku': sku_name,
+            //     'start': activity['start'],
+            //     'end': activity['end'],
+            //     'time_needed': activity['duration'],
+            //     'style': style,
+            //     'status': activity['status'],
+            //     'deadline': deadline,
+            //     'goal': activity['goal_name'],
+            //     'content': sku_name
+            // }
             // set event.target ID with item ID
-            event.target.id = new Date(item.id).toISOString();
-            event.dataTransfer.setData("text", JSON.stringify(item));
+            event.target.id = dragged_item.id;
+            event.dataTransfer.setData("text", JSON.stringify(dragged_item));
 
             // Trigger on from the new item dragged when this item drag is finish
             // event.target.addEventListener('dragend', handleDragEnd.bind(this), false);
@@ -230,11 +255,14 @@ var starting = new Vue({
                         alert('dropped object with content: "' + objectData.content + '" to item: "' + item.content + '"');
                     },
                     onAdd: function (item, callback) {
+                        console.log('on adding')
+                        console.log(item)
                         starting.message = ''
                         // DO VALIDATIONS HERE
                         // item is sku, group is manufacturing line
                         // validate the time is within 8am to 6pm 
                         if (item.start.getHours() < 7 || item.start.getHours() > 17) {
+                            console.log(item.start.getHours())
                             starting.message = 'scheduled starting time outside of operation hours.'
                             return 
                         }
@@ -289,6 +317,7 @@ var starting = new Vue({
                         })
                     },
                     onMoving: function (item, callback) {
+                        console.log('on moving')
                         if (item.start.getHours() < 7 || item.start.getHours() > 17) {
                             callback(null)
                             return
@@ -329,14 +358,15 @@ var starting = new Vue({
                     this.groups = new vis.DataSet(response['groups'])
                     this.unscheduled_goals = response['unscheduled_goals']
                     this.scheduled_goals = response['scheduled_goals']
-                    console.log('this.items')
-                    console.log(this.items)
-                    console.log('this.groups')
-                    console.log(this.groups)
-                    console.log('this.unscheduled_goals')
-                    console.log(this.unscheduled_goals)
-                    console.log('this.scheduled_goals')
-                    console.log(this.scheduled_goals)
+                    this.activities = response['activities']
+                    // console.log('this.items')
+                    // console.log(this.items)
+                    // console.log('this.groups')
+                    // console.log(this.groups)
+                    // console.log('this.unscheduled_goals')
+                    // console.log(this.unscheduled_goals)
+                    // console.log('this.scheduled_goals')
+                    // console.log(this.scheduled_goals)
                 }
                 // create a Timeline
                 var container = document.getElementById('visualization');
