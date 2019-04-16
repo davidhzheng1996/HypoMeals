@@ -77,7 +77,8 @@ var starting = new Vue({
         // },
         saveTimeline: function(userid){
              let timeline_info = []
-             this.items.forEach((item) => {
+             this.activities.forEach((item) => {
+                 console.log(item)
                 timeline_info.push({
                     'user': userid,
                     'manufacturing_line': item['group'],
@@ -89,11 +90,11 @@ var starting = new Vue({
                     'status': item['status']
                 })
              })
-            console.log(this.items)
-            console.log(this.groups)
-            console.log(this.scheduled_goals)
-            console.log(this.unscheduled_goals)
-            console.log(this.manufacturing_lines)
+            // console.log(this.activities)
+            // console.log(this.groups)
+            // console.log(this.scheduled_goals)
+            // console.log(this.unscheduled_goals)
+            // console.log(this.manufacturing_lines)
              this.$http.post('api/save_scheduler',timeline_info)
              .then((response) => {
                 alert('Success')
@@ -123,6 +124,10 @@ var starting = new Vue({
                 }
             })
             this.items.remove(scheduled_goal_items)
+            // remove activities from activities
+            this.activities.filter(activity => {
+                return activity.goal !== goal_name
+            })
             // remove goal from both scheduled and unscheduled goal list
             var length = this.unscheduled_goals.length-1
             while(length>=0){
@@ -131,7 +136,6 @@ var starting = new Vue({
                 }
                 length = length-1
             }
-
             var length = this.scheduled_goals.length-1
             while(length>=0){
                 if(Object.keys(this.scheduled_goals[length])[0]==goal_name){
@@ -139,14 +143,12 @@ var starting = new Vue({
                 }
                 length = length-1
             }
-            // console.log(length)
-            // this.unscheduled_goals = this.unscheduled_goals.filter((unscheduled_goal) => {
-            //     return (!goal_name in unscheduled_goal)
-            // })
-            // console.log(this.unscheduled_goals)
-            // this.scheduled_goals = this.scheduled_goals.filter((scheduled_goal) => {
-            //     return (!goal_name in scheduled_goal)
-            // })
+            // remove goal from manufacture activites
+            this.$http.get('api/remove_mg/'+goal_name)
+             .then((response) => {
+            })
+             .catch((err) => {
+            })
         },
         createReport: function(userid) {
             this.report.user = parseInt(userid)
@@ -173,15 +175,14 @@ var starting = new Vue({
             event.dataTransfer.effectAllowed = 'move';
             // iterate through all skus to find the one user dragged
             let dragged_item = null
-            console.log('handleDragStart')
-            console.log(goal)
-            console.log(sku)
+            console.log(this.activities)
             this.activities.forEach(activity => {
                 if (activity.goal === goal && activity.sku === sku) {
                     dragged_item = activity;
-                    console.log(dragged_item.start)
                 } 
             })
+            delete dragged_item.start
+            delete dragged_item.end
             // var item = {
             //     id: new Date(),
             //     content: event.target.innerHTML,
@@ -258,15 +259,12 @@ var starting = new Vue({
                         alert('dropped object with content: "' + objectData.content + '" to item: "' + item.content + '"');
                     },
                     onAdd: function (item, callback) {
-                        console.log('on adding')
-                        console.log(item)
+                        item.status = 'active'
                         starting.message = ''
-                        console.log(item)
                         // DO VALIDATIONS HERE
                         // item is sku, group is manufacturing line
                         // validate the time is within 8am to 6pm 
                         if (item.start.getHours() < 7 || item.start.getHours() > 17) {
-                            console.log(item.start.getHours())
                             starting.message = 'scheduled starting time outside of operation hours.'
                             return 
                         }
@@ -280,7 +278,6 @@ var starting = new Vue({
                         item.end = new Date(item.start.getTime() + actual_time_needed)
                         // visualize exceeding deadline
                         let deadline = new Date(item.deadline)
-                        console.log(item.deadline)
                         if (deadline < item.end) {
                             starting.message = 'sku ' + item.sku + ' completion time exceeds deadline ' + deadline.toString()
                             item.style = "background-color: red;"
@@ -320,6 +317,11 @@ var starting = new Vue({
                                 Vue.delete(unscheduled_goal[item.goal], item.sku)
                             }
                         })
+                        starting.activities = starting.activities.filter(value => {
+                            return !(value.sku === item.sku && value.goal === item.goal)
+                        })
+                        starting.activities.push(item)
+                        console.log(starting.activities)
                     },
                     onMoving: function (item, callback) {
                         console.log('on moving')
@@ -356,6 +358,11 @@ var starting = new Vue({
                             }
                         })
                         starting.items.remove(item)
+                        starting.activities.forEach(activity => {
+                            if(activity.sku === item.sku && activity.goal === item.goal) {
+                                activity.status = 'inactive'
+                            }
+                        })
                     }
                 };
                 if(!response['init']){

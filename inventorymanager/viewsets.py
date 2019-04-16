@@ -1452,6 +1452,17 @@ def mg_to_skus(request,goal_name):
 
 @login_required(login_url='/accounts/login/')
 @api_view(['GET'])
+def remove_mg(request,goal_name):
+    if(request.method == 'GET'):
+        try: 
+            print(Manufacturing_Activity.objects.filter(goal_name=goal_name))
+            Manufacturing_Activity.objects.filter(goal_name=goal_name).delete()
+            return Response(status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['GET'])
 def mls_to_sku(request,skuid):
     if(request.method == 'GET'):
         try: 
@@ -1688,6 +1699,7 @@ def save_scheduler(request):
                 if serializer.is_valid():
                     serializer.save()
                 else:
+                    print(serializer.errors)
                     return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST) 
             return Response(request.data, status=status.HTTP_204_NO_CONTENT)
         except Exception as e: 
@@ -1745,15 +1757,14 @@ def get_scheduler(request):
                 allowed_manufacturing_lines = Sku_To_Ml_Shortname.objects.filter(sku=activity['sku']).values_list('ml_short_name', flat=True)
                 allowed_manufacturing_lines = list(allowed_manufacturing_lines)
                 deadline = Goal.objects.get(goalname=activity['goal_name']).deadline
-                print(type(deadline))
                 style = "background-color: gray;" if activity['status'] == 'orphaned' else "background-color: green;"
                 item = {
                     'id': activity['sku'],
                     'group': activity['manufacturing_line'],
                     'manufacturing_lines': allowed_manufacturing_lines,
                     'sku': sku_name,
-                    # 'start': activity['start'],
-                    # 'end': activity['end'],
+                    'start': activity['start'],
+                    'end': activity['end'],
                     'time_needed': activity['duration'],
                     'style': style,
                     'status': activity['status'],
@@ -1769,6 +1780,9 @@ def get_scheduler(request):
             enabled_goals = Goal.objects.filter(enable_goal=True)
             manufacture_line_set = set()
             for enabled_goal in enabled_goals:
+                # if there is no manufacture activity for this goal, skip
+                if not Manufacturing_Activity.objects.filter(goal_name=enabled_goal.goalname).exists():
+                    continue
                 scheduled_goal = {
                     enabled_goal.goalname: {}
                 }
@@ -1786,8 +1800,9 @@ def get_scheduler(request):
                         hours_needed = desired_quantity / manufacture_rate
                     sku_lines = set(Sku_To_Ml_Shortname.objects.filter(sku=sku.id).values_list('ml_short_name', flat=True))
                     deadline = Goal.objects.get(goalname=enabled_goal.goalname).deadline
-                    if (not Manufacturing_Activity.objects.filter(sku=sku.id, goal_name=enabled_goal.goalname).exists() or 
-                        Manufacturing_Activity.objects.get(sku=sku.id, goal_name=enabled_goal.goalname).status == 'inactive'):
+                    if not Manufacturing_Activity.objects.filter(sku=sku.id, goal_name=enabled_goal.goalname).exists():
+                        continue
+                    elif Manufacturing_Activity.objects.get(sku=sku.id, goal_name=enabled_goal.goalname).status == 'inactive':
                         unscheduled_goal[enabled_goal.goalname][sku.sku_name] = {
                             'manufacturing_lines': list(sku_lines),
                             'hours_needed': math.ceil(hours_needed)
