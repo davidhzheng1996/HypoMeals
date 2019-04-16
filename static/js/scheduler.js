@@ -178,7 +178,8 @@ var starting = new Vue({
             console.log(sku)
             this.activities.forEach(activity => {
                 if (activity.goal === goal && activity.sku === sku) {
-                    dragged_item = activity
+                    dragged_item = activity;
+                    console.log(dragged_item.start)
                 } 
             })
             // var item = {
