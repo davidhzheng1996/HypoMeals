@@ -115,88 +115,14 @@ class SkuViewSet(viewsets.ModelViewSet):
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
-    # @transaction.atomic
-    # def update(self, request, *args, **kwargs):
-    #     try:
-    #         errors = []
-    #         transaction_savepoint = transaction.savepoint()
-    #         post_data = request.data
-    #         sku_id = post_data['id']
-    #         sku_name = post_data['sku_name']
-    #         caseupc = post_data['caseupc']
-    #         unitupc = post_data['unitupc']
-    #         count = post_data['count']
-    #         unit_size = post_data['unit_size']
-    #         productline = post_data['productline']
-    #         formula_id = post_data['formula']
-    #         if post_data['formula_name']:
-    #             formula_name = post_data['formula_name']
-    #         formula_scale_factor = post_data['formula_scale_factor']
-    #         manufacture_rate = post_data['manufacture_rate']
-    #         manufacture_setup = post_data['manufacture_setup_cost']
-    #         manufacture_run = post_data['manufacture_run_cost']
-    #         comment = post_data['comment']
-    #         print(sku_id)
-
-    #         if Formula.objects.filter(id=formula_id).exists():
-    #             formula = Formula.objects.get(id=formula_id)
-    #             f = FormulaSerializer(formula)
-    #             f_data = f.data
-    #             formula.delete()
-    #             if formula_name:
-    #                 f_data['formula_name']=formula_name
-    #             serializer = FormulaSerializer(data=f_data)
-    #             if(serializer.is_valid()):
-    #                 serializer.save()
-    #             else:
-    #                 for error in serializer.errors.values():
-    #                     errors.append(error)
-    #         else:
-    #             serializer = FormulaSerializer(data={'formula_name':formula_name,'id':formula_id,'comment':comment})
-    #             if(serializer.is_valid()):
-    #                 serializer.save()
-    #             else:
-    #                 for error in serializer.errors.values():
-    #                     errors.append(error)
-    #         print('66')
-    #         sku = Sku.objects.get(id=sku_id)
-    #         print(sku)
-    #         s = SkuSerializer(sku)
-    #         s_data = s.data
-    #         print(s_data)
-    #         print('66')
-    #         sku.delete()
-    #         print('66')
-    #         s_data['sku_name']=sku_name
-    #         s_data['productline']=productline
-    #         s_data['caseupc']=caseupc
-    #         s_data['unitupc']=unitupc
-    #         s_data['count']=count
-    #         print('66')
-    #         s_data['unit_size']=unit_size
-    #         s_data['formula']=formula_id
-    #         s_data['formula_scale_factor']=formula_scale_factor
-    #         print('66')
-    #         s_data['manufacture_rate']=manufacture_rate
-    #         s_data['comment']=comment
-    #         s_data['manufacture_setup_cost'] = manufacture_setup
-    #         s_data['manufacture_run_cost'] = manufacture_run
-    #         print('66')
-    #         sku_serializer = SkuSerializer(data=s_data)
-    #         if(sku_serializer.is_valid()):
-    #             print(sku_serializer.data)
-    #             # sku_serializer.save()
-    #             # return Response(sku_serializer.data,status = status.HTTP_201_CREATED)
-    #         else:
-    #             for error in sku_serializer.errors.values():
-    #                 errors.append(error)
-    #         if errors != []:
-    #             transaction.savepoint_rollback(transaction_savepoint)
-    #             return Response(errors,status = status.HTTP_400_BAD_REQUEST)
-    #         transaction.savepoint_commit(transaction_savepoint)
-    #         return Response(sku_serializer.data,status = status.HTTP_201_CREATED)
-    #     except Exception as e: 
-    #         return Response(status = status.HTTP_400_BAD_REQUEST)
+    @transaction.atomic
+    def update(self, request, *args, **kwargs):
+        try:
+            super().update(request, *args, **kwargs) 
+            update_activity()
+            return Response(status = status.HTTP_201_CREATED)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -1456,7 +1382,6 @@ def mg_to_skus(request,goal_name):
 def remove_mg(request,goal_name):
     if(request.method == 'GET'):
         try: 
-            print(Manufacturing_Activity.objects.filter(goal_name=goal_name))
             Manufacturing_Activity.objects.filter(goal_name=goal_name).delete()
             return Response(status = status.HTTP_200_OK)
         except Exception as e: 
@@ -1577,6 +1502,7 @@ def update_manufacture_goal(request):
             serializer = ManufactureGoalSerializer(manufacture_goal,{'desired_quantity':request.data['desired_quantity'],'comment':request.data['comment'],'timestamp':request.data['timestamp']},partial=True)
             if(serializer.is_valid()):
                 serializer.save()
+                update_activity()
                 return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
             return Response(status = status.HTTP_400_BAD_REQUEST)
         except Exception as e: 
@@ -1714,42 +1640,19 @@ def get_scheduler(request):
         try:
             # get scheduler data from manufacture activity model 
             activities = Manufacturing_Activity.objects.all()
-            if len(activities) == 0:
-                response = {}
-                response = {'init':'yes'}
-                return Response(response,status = status.HTTP_200_OK)
-            for manufacture_activity in activities:
-                goal = Goal.objects.get(goalname = manufacture_activity.goal_name.goalname)
-                if goal.enable_goal == False and manufacture_activity.status == 'active':
-                    serializer = ManufacturingActivitySerializer(manufacture_activity,{'status':'orphaned'},partial=True)
-                    if(serializer.is_valid()):
-                        serializer.save()
-                elif goal.enable_goal == True and manufacture_activity.status == 'orphaned':
-                    serializer = ManufacturingActivitySerializer(manufacture_activity,{'status':'active'},partial=True)
-                    if(serializer.is_valid()):
-                        serializer.save()
+            # if len(activities) == 0:
+            #     response = {}
+            #     response = {'init':'yes'}
+            #     return Response(response,status = status.HTTP_200_OK)
             response = {
-                # all scheduled activities. Each activity is in the form of 
-                # {id(sku_id), group(manufacture line), manufacturing_lines(allowed manufacturing_lines), 
-                # sku(sku_name), start(start datetime), end(end datetime), time_needed(hours needed), style(green/gray),
-                # status(orphaned, active, inactive), deadline(datetime), goal(manufacture goal), content(sku_name)}
-                # items are used for visualizing activities on the Timeline
-                'items': [],
                 # all activities, including inactive ones
                 'activities': [],
-                # manufacturing lines for all scheduled activities. Each manufacture line in form of:
-                # {id(manufacture line), content(manufacture line)}
-                # groups are used for visualizing manufacture lines on the Timeline
-                'groups': [],
                 # [{goal_name(enabled): {sku_name(active),}},]
                 # for keeping track of goals and activities already-scheduled
                 'scheduled_goals': [],
                 # [{goal_name(enabled): {sku_name(non_active),},]
                 # for visualizing goals and activities to-be-scheduled
                 'unscheduled_goals': [],
-                # manufacturing lines for all enabled goals
-                # [manufacture_line_name]
-                'manufacturing_lines': []
             }
             # add items
             for m_activity in activities:
@@ -1777,12 +1680,9 @@ def get_scheduler(request):
                     'content': sku_name
                 }
                 response['activities'].append(item) 
-                if activity['status'] == 'active' or activity['status'] == 'orphaned':
-                    response['items'].append(item)  
             # add scheduled_goals and unscheduled_goals
             # format: [{goal_name: {sku_name: {manufacturing_lines, hours_needed}}}]
             enabled_goals = Goal.objects.filter(enable_goal=True)
-            manufacture_line_set = set()
             for enabled_goal in enabled_goals:
                 # if there is no manufacture activity for this goal, skip
                 if not Manufacturing_Activity.objects.filter(goal_name=enabled_goal.goalname).exists():
@@ -1819,32 +1719,9 @@ def get_scheduler(request):
                             'hours_needed': math.ceil(hours_needed)
                         }
                         scheduled_goal[enabled_goal.goalname]['deadline'] = deadline
-                    manufacture_line_set |= sku_lines
                 response['scheduled_goals'].append(scheduled_goal)
                 response['unscheduled_goals'].append(unscheduled_goal)
-            response['manufacturing_lines'] = list(manufacture_line_set)
-            # add groups
-            for manufacture_line in list(manufacture_line_set):
-                response['groups'].append({
-                    'id': manufacture_line,
-                    'content': manufacture_line
-                })
-            # print('GET response')
-            # print(response)
             return Response(response,status = status.HTTP_200_OK)
-
-            # timeline_data = Scheduler.objects.all()
-            # # print(timeline_data)
-            # if(len(timeline_data)!=0):
-            #     first = timeline_data.first()
-            #     # print(first.unscheduled_goals)
-            #     response = {}
-            #     response['items'] = first.items
-            #     response['groups'] = first.groups
-            #     response['scheduled_goals'] = first.scheduled_goals
-            #     response['unscheduled_goals'] = first.unscheduled_goals
-            #     response['manufacturing_lines'] = first.manufacturing_lines
-
         except Exception as e: 
             print('exception')
             print(e)
@@ -1971,5 +1848,37 @@ def get_sales_report(request):
         print(e)
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
-
+# Update Manufacturing Activity based on manufacturing rate and desired quantity
+def update_activity():
+    try:
+        for manufacture_activity in Manufacturing_Activity.objects.all():
+            goal = Goal.objects.get(goalname = manufacture_activity.goal_name.goalname)
+            # update status
+            update_status = manufacture_activity.status
+            if goal.enable_goal == False and manufacture_activity.status == 'active':
+                update_status = 'orphaned'
+            elif goal.enable_goal == True and manufacture_activity.status == 'orphaned':
+                update_status = 'active'
+            # update duration
+            manufacture_rate = Sku.objects.get(id=manufacture_activity.sku.id).manufacture_rate
+            desired_quantity = Manufacture_Goal.objects.get(
+                sku=manufacture_activity.sku.id, 
+                name__goalname=manufacture_activity.goal_name.goalname).desired_quantity
+            if manufacture_rate == 0:
+                duration = 0
+            else:
+                duration = desired_quantity / manufacture_rate
+            update_fields = {
+                'status': update_status,
+                'duration': math.ceil(duration),
+            }
+            print('update_fields')
+            print(update_fields)
+            serializer = ManufacturingActivitySerializer(manufacture_activity, data=update_fields, partial=True)
+            if(serializer.is_valid()):
+                serializer.save()
+            else:
+                print(serializer.errors)
+    except Exception as e: 
+        print(e)
 

@@ -2,14 +2,16 @@ var starting = new Vue({
     el: '#starting',
     delimiters: ['${', '}'],
     data: {
-        manufacturing_lines: new Set(),
+        // for visualizing the activity palette
         unscheduled_goals: [],
+        // is this useful?
         scheduled_goals: [],        
-        // manufacturing lines
+        // manufacturing lines on Timeline
         groups: new vis.DataSet(),
-        // all active/orphaned activities
+        // all active/orphaned activities on Timeline
         items: new vis.DataSet(),
-        // all activities
+        // all activities used for communicating with backend
+        // ideally, items and activities should be binded together 
         activities: [],
         search_term: '',
         message: '',
@@ -21,65 +23,40 @@ var starting = new Vue({
     },
     methods: {
         addGoal: function () {
+            // create manufacture activites for this goal in database
             $.get('api/mg_to_skus/'+this.search_term,(data)=>{
-                // add all skus to unscheduled goals
-                console.log(data)
-                this.unscheduled_goals.push(data)
-                // add all new manufacturing lines 
-                for (key in data) {
-                    if (data.hasOwnProperty(key)) {
-                        for (key2 in data[key]) {
-                            if (data[key].hasOwnProperty(key2)&&key2!='deadline') {
-                                for (key3 in data[key][key2].manufacturing_lines) {
-                                    this.manufacturing_lines.add(data[key][key2].manufacturing_lines[key3])
-                                }
-                            }
-                        }
-                    }
-                }
-                group_ids = this.groups.getIds()
-                for (let value of this.manufacturing_lines) {
-                    if(!group_ids.includes(value)){
-                        this.groups.add({ "id": value, "content": value })
-                    }
-                }
+                // refresh activity palette
+                this.populate()
+                // console.log(data)
+                // this.unscheduled_goals.push(data)
+                // // add all new manufacturing lines 
+                // let manufacturing_lines = []
+                // for (key in data) {
+                //     if (data.hasOwnProperty(key)) {
+                //         for (key2 in data[key]) {
+                //             if (data[key].hasOwnProperty(key2)&&key2!='deadline') {
+                //                 for (key3 in data[key][key2].manufacturing_lines) {
+                //                     manufacturing_lines.add(data[key][key2].manufacturing_lines[key3])
+                //                 }
+                //             }
+                //         }
+                //     }
+                // }
+                // group_ids = this.groups.getIds()
+                // for (let value of manufacturing_lines) {
+                //     if(!group_ids.includes(value)){
+                //         this.groups.add({ "id": value, "content": value })
+                //     }
+                // }
             }).fail(function(xhr, status, error) {
                 // this.search_error = xhr.responseText;
                 // console.log(this.search_error)
                 alert(xhr.responseText);
             });
         },
-        // addGoal: function () {
-        //     this.$http.get('api/mg_to_skus/'+this.search_term).then((response)=>{
-        //         // add all skus to unscheduled goals
-        //         console.log(response)
-        //         this.unscheduled_goals.push(response)
-        //         // add all new manufacturing lines 
-        //         for (key in response) {
-        //             if (response.hasOwnProperty(key)) {
-        //                 for (key2 in response[key]) {
-        //                     if (response[key].hasOwnProperty(key2)&&key2!='deadline') {
-        //                         for (key3 in response[key][key2].manufacturing_lines) {
-        //                             this.manufacturing_lines.add(response[key][key2].manufacturing_lines[key3])
-        //                         }
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //         group_ids = this.groups.getIds()
-        //         for (let value of this.manufacturing_lines) {
-        //             if(!group_ids.includes(value)){
-        //                 this.groups.add({ "id": value, "content": value })
-        //             }
-        //         }
-        //     }).catch((err) => {
-        //         console.log(err)
-        //     }); 
-        // },
         saveTimeline: function(userid){
              let timeline_info = []
              this.activities.forEach((item) => {
-                 console.log(item)
                 timeline_info.push({
                     'user': userid,
                     'manufacturing_line': item['group'],
@@ -91,11 +68,6 @@ var starting = new Vue({
                     'status': item['status']
                 })
              })
-            // console.log(this.activities)
-            // console.log(this.groups)
-            // console.log(this.scheduled_goals)
-            // console.log(this.unscheduled_goals)
-            // console.log(this.manufacturing_lines)
              this.$http.post('api/save_scheduler',timeline_info)
              .then((response) => {
                 alert('Success')
@@ -119,39 +91,14 @@ var starting = new Vue({
         //     ml['all_active'] = true;
         //  },
         removeGoal: function(goal_name) {
-            // remove scheduled skus on Timeline 
-            scheduled_goal_items = []
-            this.items.forEach((item) => {
-                if(item.goal === goal_name) {
-                    // item.style = "background-color: gray;"
-                    scheduled_goal_items.push(item)
-                }
-            })
-            this.items.remove(scheduled_goal_items)
-            // remove activities from activities
-            this.activities.filter(activity => {
-                return activity.goal !== goal_name
-            })
-            // remove goal from both scheduled and unscheduled goal list
-            var length = this.unscheduled_goals.length-1
-            while(length>=0){
-                if(Object.keys(this.unscheduled_goals[length])[0]==goal_name){
-                    this.unscheduled_goals.splice(length,1)
-                }
-                length = length-1
-            }
-            var length = this.scheduled_goals.length-1
-            while(length>=0){
-                if(Object.keys(this.scheduled_goals[length])[0]==goal_name){
-                    this.scheduled_goals.splice(length,1)
-                }
-                length = length-1
-            }
             // remove goal from manufacture activites
             this.$http.get('api/remove_mg/'+goal_name)
              .then((response) => {
+                 starting.populate()
             })
              .catch((err) => {
+                 alert(err)
+                 console.log(err)
             })
         },
         createReport: function(userid) {
@@ -179,7 +126,6 @@ var starting = new Vue({
             event.dataTransfer.effectAllowed = 'move';
             // iterate through all skus to find the one user dragged
             let dragged_item = null
-            console.log(this.activities)
             this.activities.forEach(activity => {
                 if (activity.goal === goal && activity.sku === sku) {
                     dragged_item = activity;
@@ -187,71 +133,43 @@ var starting = new Vue({
             })
             delete dragged_item.start
             delete dragged_item.end
-            // var item = {
-            //     id: new Date(),
-            //     content: event.target.innerHTML,
-            //     goal: goal,
-            //     sku: sku,
-            //     manufacturing_lines: this.unscheduled_goals[list_index][goal][sku].manufacturing_lines,
-            //     time_needed: this.unscheduled_goals[list_index][goal][sku].hours_needed,
-            //     deadline: this.unscheduled_goals[list_index][goal].deadline,
-            // };
-            // item = {
-            //     'id': activity['sku'],
-            //     'group': activity['manufacturing_line'],
-            //     'manufacturing_lines': allowed_manufacturing_lines,
-            //     'sku': sku_name,
-            //     'start': activity['start'],
-            //     'end': activity['end'],
-            //     'time_needed': activity['duration'],
-            //     'style': style,
-            //     'status': activity['status'],
-            //     'deadline': deadline,
-            //     'goal': activity['goal_name'],
-            //     'content': sku_name
-            // }
             // set event.target ID with item ID
-            event.target.id = dragged_item.id;
-            event.dataTransfer.setData("text", JSON.stringify(dragged_item));
-
-            // Trigger on from the new item dragged when this item drag is finish
-            // event.target.addEventListener('dragend', handleDragEnd.bind(this), false);
-        }
-    },
-    mounted: function () {
-        $.get('api/get_scheduler',(response)=>{
+            event.target.id = dragged_item.id
+            event.dataTransfer.setData("text", JSON.stringify(dragged_item))
+        },
+        actualTimeNeeded: function (start_time, hours_needed) {
+            // in mili
+            let time_needed = hours_needed * 3600000
+            let actual_time = 0
+            let start_day_end_time = new Date(start_time.getUTCFullYear(), 
+                                              start_time.getUTCMonth(), 
+                                              start_time.getUTCDate(),
+                                              17, 
+                                              0, 
+                                              0, 
+                                              0)
+            actual_time += start_day_end_time - start_time
+            time_needed -= start_day_end_time - start_time
+            if (time_needed !== 0) {
+                // night time of the day
+                actual_time += 3600000 * 14
+            }
+            let full_days = Math.floor(time_needed / (3600000*10))
+            actual_time += full_days * 3600000*24
+            time_needed -= full_days * 3600000*10
+            actual_time += time_needed
+            // console.log(hours_needed)
+            // console.log(start_time.toTimeString())
+            // console.log((new Date(start_time.getTime() + actual_time)).toTimeString())
+            return actual_time
+        },
+        setup_timeline: function() {
+            $.get('api/get_scheduler',(response)=>{
                 var timenow = new Date()
                 var timeend = new Date(timenow.getTime() + 3600000 * 24)
                 timenow = timenow.toISOString()
                 timeend = timeend.toISOString()
 
-                actualTimeNeeded = function (start_time, hours_needed) {
-                    // in mili
-                    let time_needed = hours_needed * 3600000
-                    let actual_time = 0
-                    let start_day_end_time = new Date(start_time.getUTCFullYear(), 
-                                                      start_time.getUTCMonth(), 
-                                                      start_time.getUTCDate(),
-                                                      17, 
-                                                      0, 
-                                                      0, 
-                                                      0)
-                    actual_time += start_day_end_time - start_time
-                    time_needed -= start_day_end_time - start_time
-                    if (time_needed !== 0) {
-                        // night time of the day
-                        actual_time += 3600000 * 14
-                    }
-                    let full_days = Math.floor(time_needed / (3600000*10))
-                    actual_time += full_days * 3600000*24
-                    time_needed -= full_days * 3600000*10
-                    actual_time += time_needed
-                    // console.log(hours_needed)
-                    // console.log(start_time.toTimeString())
-                    // console.log((new Date(start_time.getTime() + actual_time)).toTimeString())
-                    return actual_time
-                }
-            
                 var options = {
                     stack: true,
                     editable: true,
@@ -278,7 +196,7 @@ var starting = new Vue({
                             return
                         } 
                         // calculate actual hours needed with night time 
-                        let actual_time_needed = actualTimeNeeded(item.start, item.time_needed);
+                        let actual_time_needed = starting.actualTimeNeeded(item.start, item.time_needed);
                         item.end = new Date(item.start.getTime() + actual_time_needed)
                         // visualize exceeding deadline
                         let deadline = new Date(item.deadline)
@@ -334,7 +252,7 @@ var starting = new Vue({
                             return
                         }
                         // calculate actual hours needed with night time 
-                        let actual_time_needed = actualTimeNeeded(item.start, item.time_needed);
+                        let actual_time_needed = starting.actualTimeNeeded(item.start, item.time_needed);
                         item.end = new Date(item.start.getTime() + actual_time_needed)
                         // visualize exceeding deadline
                         let deadline = new Date(item.deadline)
@@ -369,26 +287,52 @@ var starting = new Vue({
                         })
                     }
                 };
-                if(!response['init']){
-                    this.items = new vis.DataSet(response['items'])
-                    this.groups = new vis.DataSet(response['groups'])
-                    this.unscheduled_goals = response['unscheduled_goals']
-                    this.scheduled_goals = response['scheduled_goals']
-                    this.activities = response['activities']
-                    // console.log('this.items')
-                    // console.log(this.items)
-                    // console.log('this.groups')
-                    // console.log(this.groups)
-                    // console.log('this.unscheduled_goals')
-                    // console.log(this.unscheduled_goals)
-                    // console.log('this.scheduled_goals')
-                    // console.log(this.scheduled_goals)
-                }
                 // create a Timeline
                 var container = document.getElementById('visualization');
                 timeline1 = new vis.Timeline(container, this.items, this.groups, options);
-                timeline1.on('doubleClick', function (properties) {});
         })
+        },
+        populate: function() {
+            console.log('populating')
+            $.get('api/get_scheduler',(response)=>{
+                if(!response['init']){
+                    console.log(response)
+                    this.unscheduled_goals = response['unscheduled_goals']
+                    this.scheduled_goals = response['scheduled_goals']
+                    // active, inactive and orphaned activities
+                    this.activities = response['activities']
+                    // populate items
+                    this.items.clear()
+                    this.activities.forEach(activity => {
+                        if (activity.status === 'active' || activity.status === 'orphaned') {
+                            // TODO: should update end datetime in the backend 
+                            activity.start = new Date(activity.start)
+                            let actual_time_needed = starting.actualTimeNeeded(activity.start, activity.time_needed);
+                            activity.end = new Date(activity.start.getTime() + actual_time_needed)
+                            this.items.add(activity)
+                        }
+                    })
+                    // populate groups
+                    this.groups.clear()
+                    this.activities.forEach(activity => {
+                        activity.manufacturing_lines.forEach(ml => {
+                            if(this.groups.get(ml) == null) {
+                                this.groups.add({
+                                    'id': ml,
+                                    'content': ml
+                                })
+                            }
+                        })
+                    })
+                    console.log('repopuluate groups:')
+                    console.log(this.groups)
+                }
+            })
+        },
+    },
+    mounted: function () {
+        this.setup_timeline()
+        this.populate()
         $("#search_input").autocomplete({
             minLength: 2,
             delay: 100,
