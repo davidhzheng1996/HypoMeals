@@ -1690,20 +1690,6 @@ def save_scheduler(request):
                 else:
                     return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST) 
             return Response(request.data, status=status.HTTP_204_NO_CONTENT)
-
-            # timeline_data = Scheduler.objects.all()
-            # print(timeline_data)
-            # if(len(timeline_data)==0):
-            #     serializer = SchedulerSerializer(data=request.data)
-            #     if(serializer.is_valid()):
-            #         serializer.save()
-            #         return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
-            # else: 
-            #     first = timeline_data.first()
-            #     serializer = SchedulerSerializer(first,request.data)
-            #     if(serializer.is_valid()):
-            #         serializer.save()
-            #         return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
         except Exception as e: 
             print(e)
             return Response(e, status = status.HTTP_400_BAD_REQUEST)
@@ -1730,15 +1716,26 @@ def get_scheduler(request):
                     if(serializer.is_valid()):
                         serializer.save()
             response = {
-                # all scheduled activities
+                # all scheduled activities. Each activity is in the form of 
+                # {id(sku_id), group(manufacture line), manufacturing_lines(allowed manufacturing_lines), 
+                # sku(sku_name), start(start datetime), end(end datetime), time_needed(hours needed), style(green/gray),
+                # status(orphaned, active, inactive), deadline(datetime), goal(manufacture goal), content(sku_name)}
+                # items are used for visualizing activities on the Timeline
                 'items': [],
-                # manufacturing lines for all scheduled activities
+                # all activities, including inactive ones
+                'activities': [],
+                # manufacturing lines for all scheduled activities. Each manufacture line in form of:
+                # {id(manufacture line), content(manufacture line)}
+                # groups are used for visualizing manufacture lines on the Timeline
                 'groups': [],
                 # [{goal_name(enabled): {sku_name(active),}},]
+                # for keeping track of goals and activities already-scheduled
                 'scheduled_goals': [],
                 # [{goal_name(enabled): {sku_name(non_active),},]
+                # for visualizing goals and activities to-be-scheduled
                 'unscheduled_goals': [],
                 # manufacturing lines for all enabled goals
+                # [manufacture_line_name]
                 'manufacturing_lines': []
             }
             # add items
@@ -1749,7 +1746,7 @@ def get_scheduler(request):
                 allowed_manufacturing_lines = list(allowed_manufacturing_lines)
                 deadline = Goal.objects.get(goalname=activity['goal_name']).deadline
                 print(type(deadline))
-                style = "background-color: green;"
+                style = "background-color: gray;" if activity['status'] == 'orphaned' else "background-color: green;"
                 item = {
                     'id': activity['sku'],
                     'group': activity['manufacturing_line'],
@@ -1764,10 +1761,11 @@ def get_scheduler(request):
                     'goal': activity['goal_name'],
                     'content': sku_name
                 }
-                response['items'].append(item)  
+                response['activities'].append(item) 
+                if activity['status'] == 'active' or activity['status'] == 'orphaned':
+                    response['items'].append(item)  
             # add scheduled_goals and unscheduled_goals
-            # format: scheduled_goals:
-            # [{goal_name: {sku_name: {manufacturing_lines, hours_needed}}}]
+            # format: [{goal_name: {sku_name: {manufacturing_lines, hours_needed}}}]
             enabled_goals = Goal.objects.filter(enable_goal=True)
             manufacture_line_set = set()
             for enabled_goal in enabled_goals:
@@ -1787,17 +1785,20 @@ def get_scheduler(request):
                     else:
                         hours_needed = desired_quantity / manufacture_rate
                     sku_lines = set(Sku_To_Ml_Shortname.objects.filter(sku=sku.id).values_list('ml_short_name', flat=True))
+                    deadline = Goal.objects.get(goalname=enabled_goal.goalname).deadline
                     if (not Manufacturing_Activity.objects.filter(sku=sku.id, goal_name=enabled_goal.goalname).exists() or 
                         Manufacturing_Activity.objects.get(sku=sku.id, goal_name=enabled_goal.goalname).status == 'inactive'):
                         unscheduled_goal[enabled_goal.goalname][sku.sku_name] = {
                             'manufacturing_lines': list(sku_lines),
                             'hours_needed': math.ceil(hours_needed)
                         }
+                        unscheduled_goal[enabled_goal.goalname]['deadline'] = deadline
                     else:
                         scheduled_goal[enabled_goal.goalname][sku.sku_name] = {
                             'manufacturing_lines': list(sku_lines),
                             'hours_needed': math.ceil(hours_needed)
                         }
+                        scheduled_goal[enabled_goal.goalname]['deadline'] = deadline
                     manufacture_line_set |= sku_lines
                 response['scheduled_goals'].append(scheduled_goal)
                 response['unscheduled_goals'].append(unscheduled_goal)
