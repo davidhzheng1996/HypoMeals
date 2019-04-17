@@ -19,7 +19,7 @@ DATABASES = {
 DATABASES['default'] =  dj_database_url.config()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(_file_)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
@@ -37,7 +37,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1','localhost','0.0.0.0','hypomeals-dev.herokuapp.com','hypomeals.herokuapp.com']
 
-AUTH_USER_MODEL = 'inventorymanager.User'
 
 # Application definition
 
@@ -120,7 +119,7 @@ REST_FRAMEWORK = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'America/New_York'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -139,14 +138,3 @@ STATIC_ROOT="./"
 LOGIN_REDIRECT_URL = '/'
 
 LOGOUT_REDIRECT_URL = '/'
-
-
-# LANGUAGE_CODE = 'en-us'
-
-# TIME_ZONE = 'America/New_York'
-
-# USE_I18N = True
-
-# USE_L10N = True
-
-# USE_TZ = True
