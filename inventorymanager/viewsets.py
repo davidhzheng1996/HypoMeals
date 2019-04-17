@@ -1856,13 +1856,13 @@ def automate_scheduler(request):
                     m_activity.start = temp_add_to_line[add_to_line]['start_time']
                     m_activity.end = temp_add_to_line[add_to_line]['end_time']
                     manufacturing_lines_ordered[add_to_line].insert(temp_add_to_line[add_to_line]['i'],m_activity)
+                    response['scheduled_activities'].append({'start':temp_add_to_line[add_to_line]['start_time'],'end':temp_add_to_line[add_to_line]['end_time'],'sku-id':m_activity.sku_id,'sku-name':sku_name,'goal-name':m_activity.goal_name_id,'manufacturing-line':add_to_line})
                 else: 
                     m_activity.start = temp_add_to_line[add_to_line]['start_time']
                     m_activity.end = temp_add_to_line[add_to_line]['end_time']
                     manufacturing_lines_ordered[add_to_line] = []
                     manufacturing_lines_ordered[add_to_line].append(m_activity)
-                print(manufacturing_lines_ordered)
-                response['scheduled_activities'].append({'start':temp_add_to_line[add_to_line]['start_time'],'end':temp_add_to_line[add_to_line]['end_time'],'sku-id':m_activity.sku_id,'sku-name':sku_name,'goal-name':m_activity.goal_name_id})
+                    response['scheduled_activities'].append({'start':temp_add_to_line[add_to_line]['start_time'],'end':temp_add_to_line[add_to_line]['end_time'],'sku-id':m_activity.sku_id,'sku-name':sku_name,'goal-name':m_activity.goal_name_id,'manufacturing-line':add_to_line})
                 print("************************")
                 # for ml in allowed_manufacturing_lines:
                 #     print(ml)
