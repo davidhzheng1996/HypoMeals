@@ -74,14 +74,14 @@ var starting = new Vue({
                     // change color
                     item.style = "background-color: green;"
                     // remove from unscheduled goals
-                    console.log(starting.unscheduled_goals)
+                    // console.log(starting.unscheduled_goals)
                     // starting.unscheduled_goals.forEach(unscheduled_goal => {
                     //     Vue.delete(unscheduled_goal[item.goal], item.sku)
                     // })
                 }
             })
             this.saveTimeline(userid)
-            // starting.populate()
+            // this.populate()
        },
         getAutomation: function(){
             // check if any activity is selected
