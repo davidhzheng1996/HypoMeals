@@ -30,27 +30,6 @@ var starting = new Vue({
             $.get('api/mg_to_skus/'+this.search_term,(data)=>{
                 // refresh activity palette
                 this.populate()
-                // console.log(data)
-                // this.unscheduled_goals.push(data)
-                // // add all new manufacturing lines 
-                // let manufacturing_lines = []
-                // for (key in data) {
-                //     if (data.hasOwnProperty(key)) {
-                //         for (key2 in data[key]) {
-                //             if (data[key].hasOwnProperty(key2)&&key2!='deadline') {
-                //                 for (key3 in data[key][key2].manufacturing_lines) {
-                //                     manufacturing_lines.add(data[key][key2].manufacturing_lines[key3])
-                //                 }
-                //             }
-                //         }
-                //     }
-                // }
-                // group_ids = this.groups.getIds()
-                // for (let value of manufacturing_lines) {
-                //     if(!group_ids.includes(value)){
-                //         this.groups.add({ "id": value, "content": value })
-                //     }
-                // }
             }).fail(function(xhr, status, error) {
                 // this.search_error = xhr.responseText;
                 // console.log(this.search_error)
@@ -79,6 +58,31 @@ var starting = new Vue({
                 alert('Faiulre')
             })
         },
+        saveAutomation: function(userid){
+            this.items.forEach(item => {
+                if(item.style === "background-color: purple;") {
+                    // update automated items to activities
+                    starting.activities.forEach(activity => {
+                        if(activity.sku === item.sku && activity.goal === item.goal) {
+                            activity.status = 'active'
+                            activity.time_needed = item.time_needed
+                            activity.start = item.start
+                            activity.end = item.end
+                            activity.group = item.group
+                        }
+                    })
+                    // change color
+                    item.style = "background-color: green;"
+                    // remove from unscheduled goals
+                    console.log(starting.unscheduled_goals)
+                    // starting.unscheduled_goals.forEach(unscheduled_goal => {
+                    //     Vue.delete(unscheduled_goal[item.goal], item.sku)
+                    // })
+                }
+            })
+            this.saveTimeline(userid)
+            // starting.populate()
+       },
         getAutomation: function(){
             // check if any activity is selected
             starting.automate['activities'] = []
@@ -100,30 +104,18 @@ var starting = new Vue({
             this.$http.post(api_url,this.automate)
              .then((response) => {
                 this.automate_response = response.data;
-                console.log(this.automate_response['scheduled_activities'])
-                // item = {
-                //     'id': activity['sku'],
-                //     'group': activity['manufacturing_line'],
-                //     'manufacturing_lines': allowed_manufacturing_lines,
-                //     'sku': sku_name,
-                //     'start': activity['start'],
-                //     'end': activity['end'],
-                //     'time_needed': activity['duration'],
-                //     'style': style,
-                //     'status': activity['status'],
-                //     'deadline': deadline,
-                //     'goal': activity['goal_name'],
-                //     'content': sku_name
-                // }
                 this.automate_response['scheduled_activities'].forEach(activity => {
                     this.items.add({
-                        'id': activity['sku-id']+activity['goal-name'],
+                        'id': activity['sku-name']+activity['goal-name'],
                         'start': activity['start'],
                         'end': activity['end'],
                         'style': "background-color: purple;",
                         'content': activity['sku-name'],
                         'goal': activity['goal-name'],
-                        'group': activity['manufacturing-line']
+                        'group': activity['manufacturing-line'],
+                        'sku': activity['sku-name'],
+                        'time_needed': Math.abs(new Date(activity['end']) - new Date(activity['start'])) / 36e5,
+                        'status': 'active'
                     })
                 })
                 $("#scheduleAutomationModal").modal('hide');
@@ -322,6 +314,7 @@ var starting = new Vue({
                                 activity.start = item.start
                                 activity.end = item.end
                                 activity.duration = item.duration
+                                activity.group = item.group
                             }
                         })
                         callback(item)
