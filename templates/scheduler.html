@@ -148,9 +148,40 @@
                </div>
                <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Create Report</button>
+                  <button type="submit" class="btn btn-primary" data-target="#schedulingProjectionModal">Create Provisional Scheduling</button>
                </div>
             </form>
+         </div>
+      </div>
+   </div>
+
+      <div class="modal fade" id="schedulingProjectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLongTitle">Scheduler Automation Table</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+               </button>
+            </div>
+            <table class="table">
+               <thead>
+                  <tr>
+                     <!-- <th>Year</th> -->
+                     <th>Start Time</th>
+                     <th>End Time</th>
+                     <th>Sku name</th>
+                     <th>Goal name</th>
+                  </tr>
+               </thead>
+               <tbody>
+
+               </tbody>
+            </table>
+            <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-info" data-dismiss="modal" v-on:click="scheduleData()">Copy Sales Avg</button>
+               </div>
          </div>
       </div>
    </div>
