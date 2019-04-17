@@ -118,6 +118,10 @@ var starting = new Vue({
                         'status': 'active'
                     })
                 })
+                console.log(this.automate_response['warning'])
+                if(this.automate_response['warning']){
+                    alert('warning: not all activities could be placed in timeline');
+                }
                 $("#scheduleAutomationModal").modal('hide');
                 this.loading = false;
             })
