@@ -1836,6 +1836,8 @@ def automate_scheduler(request):
                 if activity not in activities_list:
                     continue
                 inactive_list.append(activity)
+            print('inactive_list')
+            print(inactive_list)
             active_activities = Manufacturing_Activity.objects.filter((Q(status='active')|Q(status='orphaned')), goal_name__deadline__gte=start_date)
             # print(inactive_activities)
             # print(active_activities.filter(start=start_time,manufacturing_line=ml.ml_short_name).exists())
