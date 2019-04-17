@@ -1845,7 +1845,7 @@ def automate_scheduler(request):
                     manufacturing_lines_ordered[activity.manufacturing_line_id] = []
             for activity in active_activities: 
                 manufacturing_lines_ordered[activity.manufacturing_line_id].append(activity)
-            print( manufacturing_lines_ordered)
+            print(manufacturing_lines_ordered)
             # time_needed = calculateTime(start_time,activity['duration'])
             start_t = start_time
             # end_t = start_time
