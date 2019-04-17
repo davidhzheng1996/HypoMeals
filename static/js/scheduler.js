@@ -19,7 +19,7 @@ var starting = new Vue({
         automate_error: '',
         report: {'manufacture_line':'', 'start_date':'', 'end_date':'',user:''},
         automate: {'start_date':'', 'end_date':'', 'activities': []},
-        automate_response: [],
+        automate_response: {},
         active_manufacturing_activities:[],
         checkboxes: {},
         selected: false
@@ -100,6 +100,32 @@ var starting = new Vue({
             this.$http.post(api_url,this.automate)
              .then((response) => {
                 this.automate_response = response.data;
+                console.log(this.automate_response)
+                item = {
+                    'id': activity['sku'],
+                    'group': activity['manufacturing_line'],
+                    'manufacturing_lines': allowed_manufacturing_lines,
+                    'sku': sku_name,
+                    'start': activity['start'],
+                    'end': activity['end'],
+                    'time_needed': activity['duration'],
+                    'style': style,
+                    'status': activity['status'],
+                    'deadline': deadline,
+                    'goal': activity['goal_name'],
+                    'content': sku_name
+                }
+                automate_response['scheduled_activities'].forEach(activity => {
+                    this.items.push({
+                        'id': activity['sku-id'],
+                        'start': activity['start'],
+                        'end': activity['end'],
+                        'style': "background-color: purple;",
+                        'content': activity['sku-name'],
+                        'goal': activity['goal-name'],
+                        ''
+                    })
+                })
                 this.loading = false;
             })
              .catch((err) => {
