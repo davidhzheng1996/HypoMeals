@@ -37,6 +37,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1','localhost','0.0.0.0','hypomeals-dev.herokuapp.com','hypomeals.herokuapp.com']
 
+AUTH_USER_MODEL = 'inventorymanager.User'
 
 # Application definition
 
