@@ -1803,6 +1803,7 @@ def automate_scheduler(request):
     #     return returnDict
     if(request.method=='POST'):
         try:
+            print("HERE1")
             chosen_activities = request.data['activities']
             activities_list = []
             for item in chosen_activities:
@@ -1817,6 +1818,7 @@ def automate_scheduler(request):
             if end_date < start_date:
                 post_result = 'error: end_date before start_date'
                 return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
+            print('HERE2')
             # start_time = datetime.datetime.strptime(request.data['start_date']+' '+'08:00:00', '%Y-%m-%d %H:%M:%S')
             # end_time = datetime.datetime.strptime(request.data['end_date']+' '+'18:00:00', '%Y-%m-%d %H:%M:%S')
             start_time = datetime.datetime.fromisoformat(request.data['start_date']+'T'+'08:00:00-04:00')
@@ -1831,6 +1833,7 @@ def automate_scheduler(request):
                     continue
                 inactive_list.append(activity)
             active_activities = Manufacturing_Activity.objects.filter((Q(status='active')|Q(status='orphaned')), goal_name__deadline__gte=start_date).order_by('start')
+            print('HERE3')
             # print(inactive_activities)
             # print(active_activities.filter(start=start_time,manufacturing_line=ml.ml_short_name).exists())
             manufacturing_lines_ordered = {}
@@ -1854,6 +1857,7 @@ def automate_scheduler(request):
                 allowed_manufacturing_lines_list = list(allowed_manufacturing_lines)
                 deadline = Goal.objects.get(goalname=activity['goal_name']).deadline
                 temp_add_to_line = {}
+                print('HERE4')
                 for allowed_line in allowed_manufacturing_lines_list: 
                     time_needed_start = calculateTime(start_time,m_activity.duration)
                     if allowed_line in manufacturing_lines_ordered:
@@ -1877,7 +1881,7 @@ def automate_scheduler(request):
                    response['warning']=True
                 earliest_time = None
                 add_to_line = None
-
+                print('here5')
                 for line in temp_add_to_line:
                     if(earliest_time == None):
                         add_to_line = line
@@ -1910,6 +1914,7 @@ def automate_scheduler(request):
                 #     serializer.save()  
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
+            print(e)
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
