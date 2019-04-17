@@ -1713,7 +1713,7 @@ def get_scheduler(request):
                 # hours = m_activity.goal_name.quantity/m_activity.sku.manufacture_rate
                 style = "background-color: gray;" if activity['status'] == 'orphaned' else "background-color: green;"
                 item = {
-                    'id': activity['sku'],
+                    'id': sku_name+activity['goal_name'],
                     'group': activity['manufacturing_line'],
                     'manufacturing_lines': allowed_manufacturing_lines,
                     'sku': sku_name,
