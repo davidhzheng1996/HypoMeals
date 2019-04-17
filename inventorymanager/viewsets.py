@@ -1780,11 +1780,11 @@ def automate_scheduler(request):
             start_time = datetime.datetime.fromisoformat(str(start_time.date()+timedelta(days=1))+'T'+'08:00:00-04:00')
             return start_time
         return start_time
-    def findOverlap(start_time, end_time, active_activities,allowed_manufacturing_lines):
-        returnDict = {}
-        # for ml in allowed_manufacturing_lines:
+    # def findOverlap(start_time, end_time, active_activities,allowed_manufacturing_lines):
+    #     returnDict = {}
+    #     for ml in allowed_manufacturing_lines:
 
-        return returnDict;
+    #     return returnDict
     if(request.method=='POST'):
         try:
             chosen_activities = request.data['activities']
@@ -1793,7 +1793,9 @@ def automate_scheduler(request):
                 sku_id = Sku.objects.get(sku_name=item['sku']).id
                 activity = Manufacturing_Activity.objects.get(sku=sku_id,goal_name=item['goal'])
                 activities_list.append(activity)
-            # print(activities_list)
+            if not activities_list:
+                post_result = 'error: no activities chosen'
+                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
             start_date = datetime.datetime.strptime(request.data['start_date'], '%Y-%m-%d').date()
             end_date = datetime.datetime.strptime(request.data['end_date'], '%Y-%m-%d').date()
             if end_date < start_date:
@@ -1804,7 +1806,14 @@ def automate_scheduler(request):
             start_time = datetime.datetime.fromisoformat(request.data['start_date']+'T'+'08:00:00-04:00')
             end_time = datetime.datetime.fromisoformat(request.data['end_date']+'T'+'18:00:00-04:00')
             inactive_activities = Manufacturing_Activity.objects.filter(status='inactive', goal_name__deadline__gte=start_date).order_by('goal_name__deadline','duration')
-            print(inactive_activities)
+            if not inactive_activities:
+                post_result = 'error: no activities can be scheduled'
+                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
+            inactive_list = []
+            for activity in inactive_activities:
+                if activity not in activities_list:
+                    continue
+                inactive_list.append(activity)
             active_activities = Manufacturing_Activity.objects.filter((Q(status='active')|Q(status='orphaned')), goal_name__deadline__gte=start_date)
             # print(inactive_activities)
             # print(active_activities.filter(start=start_time,manufacturing_line=ml.ml_short_name).exists())
@@ -1815,10 +1824,6 @@ def automate_scheduler(request):
             for activity in active_activities: 
                 manufacturing_lines_ordered[activity.manufacturing_line_id].append(activity)
             print( manufacturing_lines_ordered)
-            print(inactive_activities)
-            if not inactive_activities:
-                post_result = 'error: no activities can be scheduled'
-                return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
             # time_needed = calculateTime(start_time,activity['duration'])
             start_t = start_time
             # end_t = start_time
@@ -1827,7 +1832,7 @@ def automate_scheduler(request):
                 'scheduled_activities':[],
                 'warning':False
             }
-            for m_activity in inactive_activities:
+            for m_activity in inactive_list:
                 print("====================")
                 activity = ManufacturingActivitySerializer(m_activity).data
                 sku_name = Sku.objects.get(id=activity['sku']).sku_name
@@ -1885,6 +1890,7 @@ def automate_scheduler(request):
                 print(manufacturing_lines_ordered)
                 response['scheduled_activities'].append({'start':temp_add_to_line[add_to_line]['start_time'],'end':temp_add_to_line[add_to_line]['end_time'],'sku-id':m_activity.sku_id,'sku-name':sku_name,'goal-name':m_activity.goal_name_id})
                 print("************************")
+                print(m_activity.goal_name_id)
                 # for ml in allowed_manufacturing_lines:
                 #     print(ml)
                 #     if active_activities.filter(start=start_t,manufacturing_line=ml).exists():

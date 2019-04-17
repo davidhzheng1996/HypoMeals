@@ -19,7 +19,7 @@ var starting = new Vue({
         automate_error: '',
         report: {'manufacture_line':'', 'start_date':'', 'end_date':'',user:''},
         automate: {'start_date':'', 'end_date':'', 'activities': []},
-        automate_response: [],
+        automate_response: {},
         active_manufacturing_activities:[],
         checkboxes: {},
         selected: false
