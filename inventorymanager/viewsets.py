@@ -800,7 +800,6 @@ def show_manufacturing_lines(request):
                     serializer = ManufactureLineSerializer(ml)
                     if serializer.data not in response:
                         response.append(serializer.data)
-            print(response)
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
@@ -1081,7 +1080,6 @@ def calculate_goal(request,goalid):
                 formula = sku.formula
                 ingredients = Formula_To_Ingredients.objects.filter(formula = formula)
                 for ingredient in ingredients: 
-                    print(ingredient.ig.ingredient_name)
                     temp = []
                     package_size = re.findall(r'\d*\.?\d+', ingredient.ig.package_size)
                     package_size_unit0 = re.sub(r'\d*\.?\d+', '', ingredient.ig.package_size)
@@ -1495,7 +1493,6 @@ def manufacture_goals_get(request,goalid):
             for goal in goals:
                 serializer = ManufactureGoalSerializer(goal)
                 response.append(serializer.data)
-            print(response)
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
@@ -1551,7 +1548,6 @@ def goal(request):
     if(request.method == 'GET'):
         try: 
             goals = Goal.objects.all()
-            print('hi')
             response = []
             for goal in goals:
                 serializer = GoalSerializer(goal)
@@ -1639,8 +1635,6 @@ def netid_login(request):
 def save_scheduler(request):
     if(request.method == 'POST'):
         try:
-            print('SAVE request')
-            print(request.data)
             if len(request.data) == 0:
                 return Response(request.data, status=status.HTTP_204_NO_CONTENT)
             for activity in request.data:
@@ -1749,7 +1743,6 @@ def get_scheduler(request):
                         hours_needed = 0
                     else:
                         hours_needed = desired_quantity / manufacture_rate
-                    print(hours_needed)
                     sku_lines = set(Sku_To_Ml_Shortname.objects.filter(sku=sku.id).values_list('ml_short_name', flat=True))
                     deadline = Goal.objects.get(goalname=enabled_goal.goalname).deadline
                     if not Manufacturing_Activity.objects.filter(sku=sku.id, goal_name=enabled_goal.goalname).exists():
@@ -1798,7 +1791,6 @@ def automate_scheduler(request):
     def timeCheck(start_time):
         start_date_end = datetime.datetime.fromisoformat(str(start_time.date())+'T'+'18:00:00-04:00')
         if start_time == start_date_end:
-            print('true')
             start_time = datetime.datetime.fromisoformat(str(start_time.date()+timedelta(days=1))+'T'+'08:00:00-04:00')
             return start_time
         return start_time
@@ -1836,7 +1828,7 @@ def automate_scheduler(request):
                 if activity not in activities_list:
                     continue
                 inactive_list.append(activity)
-            active_activities = Manufacturing_Activity.objects.filter((Q(status='active')|Q(status='orphaned')), goal_name__deadline__gte=start_date)
+            active_activities = Manufacturing_Activity.objects.filter((Q(status='active')|Q(status='orphaned')), goal_name__deadline__gte=start_date).order_by('start')
             # print(inactive_activities)
             # print(active_activities.filter(start=start_time,manufacturing_line=ml.ml_short_name).exists())
             manufacturing_lines_ordered = {}
@@ -1845,7 +1837,6 @@ def automate_scheduler(request):
                     manufacturing_lines_ordered[activity.manufacturing_line_id] = []
             for activity in active_activities: 
                 manufacturing_lines_ordered[activity.manufacturing_line_id].append(activity)
-            print( manufacturing_lines_ordered)
             # time_needed = calculateTime(start_time,activity['duration'])
             start_t = start_time
             # end_t = start_time
@@ -1855,7 +1846,6 @@ def automate_scheduler(request):
                 'warning':False
             }
             for m_activity in inactive_list:
-                print("====================")
                 activity = ManufacturingActivitySerializer(m_activity).data
                 sku_name = Sku.objects.get(id=activity['sku']).sku_name
                 allowed_manufacturing_lines = Sku_To_Ml_Shortname.objects.filter(sku=activity['sku']).values_list('ml_short_name', flat=True)
@@ -1878,15 +1868,11 @@ def automate_scheduler(request):
                             else: 
                                 if(manufacturing_lines_ordered[allowed_line][i].end+timedelta(seconds=time_needed)<=end_time):
                                     temp_add_to_line[allowed_line] = {'i':i+1, 'start_time':manufacturing_lines_ordered[allowed_line][i].end,'end_time':manufacturing_lines_ordered[allowed_line][i].end+timedelta(seconds=time_needed)}
-                                    print(temp_add_to_line)
                     else: 
                         if(start_time+timedelta(seconds=time_needed_start)<=end_time):
                             temp_add_to_line[allowed_line] = {'i':0, 'start_time':start_time,'end_time':start_time+timedelta(seconds=time_needed_start)}
-                print("TEMP ADD TO LINE BELOW: ")
-                print(temp_add_to_line)
                 if(not temp_add_to_line):
                    response['warning']=True
-                print('after setting warning')
                 earliest_time = None
                 add_to_line = None
 
@@ -1910,8 +1896,6 @@ def automate_scheduler(request):
                         manufacturing_lines_ordered[add_to_line] = []
                         manufacturing_lines_ordered[add_to_line].append(m_activity)
                         response['scheduled_activities'].append({'start':temp_add_to_line[add_to_line]['start_time'],'end':temp_add_to_line[add_to_line]['end_time'],'sku-id':m_activity.sku_id,'sku-name':sku_name,'goal-name':m_activity.goal_name_id,'manufacturing-line':add_to_line})
-                print("************************")
-                print(m_activity.goal_name_id)
                 # for ml in allowed_manufacturing_lines:
                 #     print(ml)
                 #     if active_activities.filter(start=start_t,manufacturing_line=ml).exists():
@@ -1946,7 +1930,6 @@ def get_sales_report(request):
         }
         return Response(result, status = status.HTTP_200_OK)
     except Exception as e: 
-        print('exception in get_sales_report:')
         print(e)
         return Response(status = status.HTTP_400_BAD_REQUEST)
 
@@ -1977,8 +1960,6 @@ def update_activity():
                 'status': update_status,
                 'duration': math.ceil(duration),
             }
-            print('update_fields')
-            print(update_fields)
             serializer = ManufacturingActivitySerializer(manufacture_activity, data=update_fields, partial=True)
             if(serializer.is_valid()):
                 serializer.save()
