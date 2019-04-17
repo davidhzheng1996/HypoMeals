@@ -94,38 +94,39 @@ var starting = new Vue({
             })
             if (starting.automate['activities'].length == 0) {
                 alert('no activity is selected')
-                $("#createReportModal").modal('hide');
+                $("#scheduleAutomationModal").modal('hide');
             }
             let api_url = '/api/automate_scheduler';
             this.$http.post(api_url,this.automate)
              .then((response) => {
                 this.automate_response = response.data;
                 console.log(this.automate_response)
-                item = {
-                    'id': activity['sku'],
-                    'group': activity['manufacturing_line'],
-                    'manufacturing_lines': allowed_manufacturing_lines,
-                    'sku': sku_name,
-                    'start': activity['start'],
-                    'end': activity['end'],
-                    'time_needed': activity['duration'],
-                    'style': style,
-                    'status': activity['status'],
-                    'deadline': deadline,
-                    'goal': activity['goal_name'],
-                    'content': sku_name
-                }
-                automate_response['scheduled_activities'].forEach(activity => {
-                    this.items.push({
-                        'id': activity['sku-id'],
+                // item = {
+                //     'id': activity['sku'],
+                //     'group': activity['manufacturing_line'],
+                //     'manufacturing_lines': allowed_manufacturing_lines,
+                //     'sku': sku_name,
+                //     'start': activity['start'],
+                //     'end': activity['end'],
+                //     'time_needed': activity['duration'],
+                //     'style': style,
+                //     'status': activity['status'],
+                //     'deadline': deadline,
+                //     'goal': activity['goal_name'],
+                //     'content': sku_name
+                // }
+                this.automate_response['scheduled_activities'].forEach(activity => {
+                    this.items.add({
+                        'id': activity['sku-id']+activity['goal-name'],
                         'start': activity['start'],
                         'end': activity['end'],
                         'style': "background-color: purple;",
                         'content': activity['sku-name'],
                         'goal': activity['goal-name'],
-                        ''
+                        'group': activity['manufacturing-line']
                     })
                 })
+                $("#scheduleAutomationModal").modal('hide');
                 this.loading = false;
             })
              .catch((err) => {
