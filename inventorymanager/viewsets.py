@@ -1640,10 +1640,22 @@ def get_scheduler(request):
         try:
             # get scheduler data from manufacture activity model 
             activities = Manufacturing_Activity.objects.all()
-            # if len(activities) == 0:
-            #     response = {}
-            #     response = {'init':'yes'}
-            #     return Response(response,status = status.HTTP_200_OK)
+            if len(activities) == 0:
+                response = {}
+                response = {'init':'yes'}
+                return Response(response,status = status.HTTP_200_OK)
+            for manufacture_activity in activities:
+                goal = Goal.objects.get(goalname = manufacture_activity.goal_name.goalname)
+                if goal.enable_goal == False and manufacture_activity.status == 'active':
+                    serializer = ManufacturingActivitySerializer(manufacture_activity,{'status':'orphaned'},partial=True)
+                    if(serializer.is_valid()):
+                        serializer.save()
+                elif goal.enable_goal == True and manufacture_activity.status == 'orphaned':
+                    serializer = ManufacturingActivitySerializer(manufacture_activity,{'status':'active'},partial=True)
+                    if(serializer.is_valid()):
+                        serializer.save()
+                elif goal.enable_goal == False and manufacture_activity.status == 'inactive':
+                    manufacture_activity.delete()
             response = {
                 # all activities, including inactive ones
                 'activities': [],
@@ -1755,6 +1767,11 @@ def automate_scheduler(request):
             start_time = datetime.datetime.fromisoformat(str(start_time.date()+timedelta(days=1))+'T'+'08:00:00-04:00')
             return start_time
         return start_time
+    def findOverlap(start_time, end_time, active_activities,allowed_manufacturing_lines):
+        returnDict = {}
+        # for ml in allowed_manufacturing_lines:
+
+        return returnDict;
     if(request.method=='POST'):
         try:
             start_date = datetime.datetime.strptime(request.data['start_date'], '%Y-%m-%d').date()
@@ -1766,9 +1783,10 @@ def automate_scheduler(request):
             # end_time = datetime.datetime.strptime(request.data['end_date']+' '+'18:00:00', '%Y-%m-%d %H:%M:%S')
             start_time = datetime.datetime.fromisoformat(request.data['start_date']+'T'+'08:00:00-04:00')
             end_time = datetime.datetime.fromisoformat(request.data['end_date']+'T'+'18:00:00-04:00')
-            inactive_activities = Manufacturing_Activity.objects.filter(status='inactive', goal_name__deadline__range=[start_date,end_date]).order_by('goal_name__deadline','duration')
-            active_activities = Manufacturing_Activity.objects.filter((Q(status='active')|Q(status='orphaned')), goal_name__deadline__range=[start_date,end_date])
-            print(inactive_activities)
+            inactive_activities = Manufacturing_Activity.objects.filter(status='inactive', goal_name__deadline__gte=start_date).order_by('goal_name__deadline','duration')
+            active_activities = Manufacturing_Activity.objects.filter((Q(status='active')|Q(status='orphaned')), goal_name__deadline__gte=start_date)
+            # print(inactive_activities)
+            # print(active_activities.filter(start=start_time,manufacturing_line=ml.ml_short_name).exists())
             if not inactive_activities:
                 post_result = 'error: no activities can be scheduled'
                 return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
@@ -1793,6 +1811,13 @@ def automate_scheduler(request):
                 sku_name = Sku.objects.get(id=activity['sku']).sku_name
                 allowed_manufacturing_lines = Sku_To_Ml_Shortname.objects.filter(sku=activity['sku']).values_list('ml_short_name', flat=True)
                 allowed_manufacturing_lines_list = list(allowed_manufacturing_lines)
+
+                # for ml in allowed_manufacturing_lines:
+                #     print(ml)
+                #     if active_activities.filter(start=start_t,manufacturing_line=ml).exists():
+                #         active_activity = active_activities.get(start=start_time,manufacturing_line=ml)
+
+
                 deadline = Goal.objects.get(goalname=activity['goal_name']).deadline
                 start_t = timeCheck(start_t)
                 seconds = int(calculateTime(start_t,activity['duration']))
@@ -1830,6 +1855,15 @@ def automate_scheduler(request):
                     serializer.save()  
                 start_t = end_t
             return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+def schedule_data(request):
+    if(request.method=='POST'):
+        try:
+            activities = Manufacturing_Activity.objects.all()
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
 

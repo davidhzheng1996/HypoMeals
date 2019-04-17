@@ -19,6 +19,7 @@ var starting = new Vue({
         automate_error: '',
         report: {'manufacture_line':'', 'start_date':'', 'end_date':'',user:''},
         automate: {'start_date':'', 'end_date':''},
+        automate_response: [],
         active_manufacturing_activities:[],
     },
     methods: {
@@ -80,12 +81,16 @@ var starting = new Vue({
             let api_url = '/api/automate_scheduler';
             this.$http.post(api_url,this.automate)
              .then((response) => {
+                this.automate_response = response.data;
                 this.loading = false;
             })
              .catch((err) => {
                 console.log(err);
                 this.automate_error = err.bodyText;
             })
+        },
+        scheduleData: function(){
+            
         },
         // ml_checkbox_click: function(ev, ml) {
         //     ml['all_active'] = true;
@@ -201,11 +206,11 @@ var starting = new Vue({
                         // visualize exceeding deadline
                         let deadline = new Date(item.deadline)
                         if (deadline < item.end) {
-                            starting.message = 'sku ' + item.sku + ' completion time exceeds deadline ' + deadline.toString()
+                            starting.message = 'sku ' + item.sku + ', completion time exceeds deadline ' + deadline.toString()
                             item.style = "background-color: red;"
                         } else {
-                            starting.message = 'start time: ' + item.start.toString() + '\n duration: ' + (actual_time_needed/3600000) + ' hours\n ' 
-                                                + 'deadline: ' + deadline.toString()
+                            starting.message = 'start time: ' + item.start.toString() + ',\n duration: ' + (actual_time_needed/3600000) + ', hours\n ' 
+                                                + ', deadline: ' + deadline.toString()
                             item.style = "background-color: green;"
                         }
                         delete item.type
@@ -247,7 +252,7 @@ var starting = new Vue({
                     },
                     onMoving: function (item, callback) {
                         console.log('on moving')
-                        if (item.start.getHours() < 7 || item.start.getHours() > 17) {
+                        if (item.start.getHours() < 8 || item.start.getHours() > 18) {
                             callback(null)
                             return
                         }
@@ -257,13 +262,14 @@ var starting = new Vue({
                         // visualize exceeding deadline
                         let deadline = new Date(item.deadline)
                         if (deadline < item.end) {
-                            starting.message = 'sku ' + item.sku + ' completion time exceeds deadline ' + deadline.toString()
+                            starting.message = 'sku ' + item.sku + ', completion time exceeds deadline ' + deadline.toString()
                             item.style = "background-color: red;"
                         } else {
-                            starting.message = 'start time: ' + item.start.toString() + ' duration: ' + (actual_time_needed/3600000) + ' hours ' 
-                                                + 'deadline: ' + deadline.toString()
+                            starting.message = 'start time: ' + item.start.toString() + ', duration: ' + (actual_time_needed/3600000) + ', hours ' 
+                                                + ', deadline: ' + deadline.toString()
                             item.style = "background-color: green;"
                         }
+                        console.log(item)
                         callback(item)
                     },
                     onRemove: function (item, callback) {
