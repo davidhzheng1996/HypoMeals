@@ -95,7 +95,8 @@ var vm = new Vue({
          var time = new Date().toLocaleString();
          this.newGoal.timestamp = time;
          var now = new Date();
-         var date = new Date(this.newGoal.deadline);
+         var parts = this.currentGoal.deadline+'T'+'23:59:59-04:00'
+         var date = new Date(parts);
          if(date < now){
             this.dateError = "Deadline cannot be in the past!"
             return;
@@ -118,7 +119,8 @@ var vm = new Vue({
         updateGoal: function(goalid) {
          this.loading = true;
          var now = new Date();
-         var date = new Date(this.currentGoal.deadline);
+         var parts = this.currentGoal.deadline+'T'+'23:59:59-04:00'
+         var date = new Date(parts);
          if(date < now){
             this.dateError = "Deadline cannot be in the past!"
             return;

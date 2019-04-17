@@ -784,6 +784,28 @@ def active_manufacturing_lines(request):
             return Response(status = status.HTTP_400_BAD_REQUEST)
 
 @login_required(login_url='/accounts/login/')
+@api_view(['POST'])
+# return list of all manufacturing lines with status 
+def show_manufacturing_lines(request):
+    if(request.method=='POST'):
+        try: 
+            active_sku_ids = request.data
+            ml_active_skus_count = {}
+            response = []
+            for sku_id in active_sku_ids:
+                mls_to_formula = Sku_To_Ml_Shortname.objects.filter(sku=sku_id)
+                ml_short_names= mls_to_formula.values_list("ml_short_name",flat=True) 
+                for ml_short_name in ml_short_names:
+                    ml = Manufacture_line.objects.get(ml_short_name=ml_short_name)
+                    serializer = ManufactureLineSerializer(ml)
+                    if serializer.data not in response:
+                        response.append(serializer.data)
+            print(response)
+            return Response(response,status = status.HTTP_200_OK)
+        except Exception as e: 
+            return Response(status = status.HTTP_400_BAD_REQUEST)
+
+@login_required(login_url='/accounts/login/')
 @api_view(['GET'])
 # return list of all manufacturing lines with status 
 def get_customer(request):

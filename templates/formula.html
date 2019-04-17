@@ -24,9 +24,7 @@
                <tr>
                   <th v-on:click="sortBy('id')" scope="col">ID</th>
                   <th v-on:click="sortBy('formula_name')" scope="col">Name</th>
-                  {% if user.is_product_manager or user.is_superuser %}
                   <th scope="col">Actions</th>
-                  {% endif %}
                </tr>
             </thead>
             <tbody>
