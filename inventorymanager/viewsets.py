@@ -1787,6 +1787,13 @@ def automate_scheduler(request):
         return returnDict;
     if(request.method=='POST'):
         try:
+            chosen_activities = request.data['activities']
+            activities_list = []
+            for item in chosen_activities:
+                sku_id = Sku.objects.get(sku_name=item['sku']).id
+                activity = Manufacturing_Activity.objects.get(sku=sku_id,goal_name=item['goal'])
+                activities_list.append(activity)
+            # print(activities_list)
             start_date = datetime.datetime.strptime(request.data['start_date'], '%Y-%m-%d').date()
             end_date = datetime.datetime.strptime(request.data['end_date'], '%Y-%m-%d').date()
             if end_date < start_date:
@@ -1797,6 +1804,7 @@ def automate_scheduler(request):
             start_time = datetime.datetime.fromisoformat(request.data['start_date']+'T'+'08:00:00-04:00')
             end_time = datetime.datetime.fromisoformat(request.data['end_date']+'T'+'18:00:00-04:00')
             inactive_activities = Manufacturing_Activity.objects.filter(status='inactive', goal_name__deadline__gte=start_date).order_by('goal_name__deadline','duration')
+            print(inactive_activities)
             active_activities = Manufacturing_Activity.objects.filter((Q(status='active')|Q(status='orphaned')), goal_name__deadline__gte=start_date)
             # print(inactive_activities)
             # print(active_activities.filter(start=start_time,manufacturing_line=ml.ml_short_name).exists())
