@@ -94,12 +94,14 @@ var starting = new Vue({
             })
             if (starting.automate['activities'].length == 0) {
                 alert('no activity is selected')
-                $("#createReportModal").modal('hide');
+                $("#scheduleAutomationModal").modal('hide');
             }
             let api_url = '/api/automate_scheduler';
             this.$http.post(api_url,this.automate)
              .then((response) => {
                 this.automate_response = response.data;
+                console.log(this.automate_response['scheduled_activities'])
+                $("#scheduleAutomationModal").modal('hide');
                 this.loading = false;
             })
              .catch((err) => {
