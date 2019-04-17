@@ -18,9 +18,10 @@ var starting = new Vue({
         search_error: '',
         automate_error: '',
         report: {'manufacture_line':'', 'start_date':'', 'end_date':'',user:''},
-        automate: {'start_date':'', 'end_date':''},
+        automate: {'start_date':'', 'end_date':'', 'activities': []},
         automate_response: [],
         active_manufacturing_activities:[],
+        checkboxes: {},
     },
     methods: {
         addGoal: function () {
@@ -78,6 +79,21 @@ var starting = new Vue({
             })
         },
         getAutomation: function(){
+            // check if any activity is selected
+            Object.keys(starting.checkboxes).forEach(function(goal) {
+                Object.keys(starting.checkboxes[goal]).forEach(function(sku) {
+                    if(starting.checkboxes[goal][sku]['active'] == true) {
+                        starting.automate['activities'].push({
+                            'goal': goal,
+                            'sku': sku
+                        })
+                    }
+                })
+            })
+            if (starting.automate['activities'].length == 0) {
+                alert('no activity is selected')
+                $("#createReportModal").modal('hide');
+            }
             let api_url = '/api/automate_scheduler';
             this.$http.post(api_url,this.automate)
              .then((response) => {
@@ -248,14 +264,16 @@ var starting = new Vue({
                             return !(value.sku === item.sku && value.goal === item.goal)
                         })
                         starting.activities.push(item)
-                        console.log(starting.activities)
                     },
                     onMoving: function (item, callback) {
-                        console.log('on moving')
                         if (item.start.getHours() < 8 || item.start.getHours() > 18) {
                             callback(null)
                             return
                         }
+                        if(!item.manufacturing_lines.includes(item.group)){
+                            callback(null)
+                            return
+                        } 
                         // calculate actual hours needed with night time 
                         let actual_time_needed = starting.actualTimeNeeded(item.start, item.time_needed);
                         item.end = new Date(item.start.getTime() + actual_time_needed)
@@ -269,7 +287,14 @@ var starting = new Vue({
                                                 + ', deadline: ' + deadline.toString()
                             item.style = "background-color: green;"
                         }
-                        console.log(item)
+                        // update activities
+                        starting.activities.forEach(activity => {
+                            if(activity.goal === item.goal && activity.sku === item.sku) {
+                                activity.start = item.start
+                                activity.end = item.end
+                                activity.duration = item.duration
+                            }
+                        })
                         callback(item)
                     },
                     onRemove: function (item, callback) {
@@ -299,16 +324,17 @@ var starting = new Vue({
         })
         },
         populate: function() {
-            console.log('populating')
+            // console.log('populating')
             $.get('api/get_scheduler',(response)=>{
                 if(!response['init']){
-                    console.log(response)
+                    // console.log(response)
                     this.unscheduled_goals = response['unscheduled_goals']
                     this.scheduled_goals = response['scheduled_goals']
                     // active, inactive and orphaned activities
                     this.activities = response['activities']
                     // populate items
                     this.items.clear()
+                    this.checkboxes = {}
                     this.activities.forEach(activity => {
                         if (activity.status === 'active' || activity.status === 'orphaned') {
                             // TODO: should update end datetime in the backend 
@@ -316,6 +342,14 @@ var starting = new Vue({
                             let actual_time_needed = starting.actualTimeNeeded(activity.start, activity.time_needed);
                             activity.end = new Date(activity.start.getTime() + actual_time_needed)
                             this.items.add(activity)
+                        }
+                        goal = activity.goal
+                        sku = activity.sku
+                        if (this.checkboxes[goal] == null) {
+                            this.checkboxes[goal] = {}
+                        } 
+                        this.checkboxes[goal][sku] = {
+                        'active': false
                         }
                     })
                     // populate groups
@@ -330,9 +364,11 @@ var starting = new Vue({
                             }
                         })
                     })
-                    console.log('repopuluate groups:')
-                    console.log(this.groups)
+                    // console.log('repopuluate groups:')
+                    // console.log(this.groups)
                 }
+                console.log(this.checkboxes)
+                // console.log(this.unscheduled_goals)
             })
         },
     },
