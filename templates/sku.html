@@ -43,11 +43,13 @@
                   <th v-on:click="sortBy('caseupc')" scope="col">Case UPC</th>
                   <th v-on:click="sortBy('productline')" scope="col">Productline</th>
                   <th v-on:click="sortBy('unit_size')" scope="col">Unit Size</th>
-                  <th v-on:click="sortBy('count')" scope="col">Count</th>
+                  <!-- <th v-on:click="sortBy('count')" scope="col">Count</th> -->
                   <th v-on:click="sortBy('formula')" scope="col">Formula</th>
+                  <th v-on:click="sortBy('manufacture_rate')" scope="col">Manufacture Rate</th>
                   {% if user.is_analyst %}
                   <th scope="col">Formula Scale Factor</th>
-                  <th scope="col">Manufacture Rate</th>
+                  <th scope="col">Count</th>
+                  <!-- <th scope="col">Manufacture Rate</th> -->
                   <th scope="col">Manufacture Setup Cost</th>
                   <th scope="col">Manufacture Run Cost</th>
                   {% endif %}
@@ -65,11 +67,13 @@
                   <td>${sku.caseupc}</td>
                   <td>${sku.productline}</td>
                   <td>${sku.unit_size}</td>
-                  <td>${sku.count}</td>
+                  <!-- <td>${sku.count}</td> -->
                   <td>${sku.formula}</td>
+                  <td>${sku.manufacture_rate}</td>
                   {% if user.is_analyst %}
                   <td>${sku.formula_scale_factor}</td>
-                  <td>${sku.manufacture_rate}</td>
+                  <!-- <td>${sku.manufacture_rate}</td> -->
+                  <td>${sku.count}</td>
                   <td>${sku.manufacture_setup_cost}</td>
                   <td>${sku.manufacture_run_cost}</td>
                   {% endif %}

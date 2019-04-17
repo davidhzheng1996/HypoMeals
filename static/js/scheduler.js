@@ -190,7 +190,7 @@ var starting = new Vue({
             let start_day_end_time = new Date(start_time.getUTCFullYear(), 
                                               start_time.getUTCMonth(), 
                                               start_time.getUTCDate(),
-                                              17, 
+                                              18, 
                                               0, 
                                               0, 
                                               0)
@@ -245,7 +245,8 @@ var starting = new Vue({
                         let actual_time_needed = starting.actualTimeNeeded(item.start, item.time_needed);
                         item.end = new Date(item.start.getTime() + actual_time_needed)
                         // visualize exceeding deadline
-                        let deadline = new Date(item.deadline)
+                        let deadline = new Date(item.deadline+'T'+'18:00:00-04:00')
+                        console.log(deadline)
                         if (deadline < item.end) {
                             starting.message = 'sku ' + item.sku + ', completion time exceeds deadline ' + deadline.toString()
                             item.style = "background-color: red;"
@@ -303,7 +304,7 @@ var starting = new Vue({
                         let actual_time_needed = starting.actualTimeNeeded(item.start, item.time_needed);
                         item.end = new Date(item.start.getTime() + actual_time_needed)
                         // visualize exceeding deadline
-                        let deadline = new Date(item.deadline)
+                        let deadline = new Date(item.deadline+'T'+'18:00:00-04:00')
                         if (deadline < item.end) {
                             starting.message = 'sku ' + item.sku + ', completion time exceeds deadline ' + deadline.toString()
                             item.style = "background-color: red;"
