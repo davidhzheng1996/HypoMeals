@@ -21,6 +21,7 @@
         <input id = "search_input" class="form-control mr-sm-2" type="text" placeholder="Search" autocomplete="on" v-model="search_term"  aria-label="Search" @blur="onBlur">
         <button class="btn btn-outline-success my-2 my-sm-0 schedule-button" v-on:click.prevent="addGoal()">Add Goal</button>
         <button class="btn btn-outline-success my-2 my-sm-0 schedule-button" v-on:click.prevent="saveTimeline('{{user.id}}')">Save Timeline</button>
+        <button class="btn btn-outline-success my-2 my-sm-0 schedule-button" v-on:click.prevent="saveAutomation('{{user.id}}')">Save Automation</button>
     </div>
 	<div class='pane'>
 	    <div class='side' style="max-width:350px;overflow:auto">
