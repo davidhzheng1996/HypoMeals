@@ -43,6 +43,7 @@ new Vue({
       case_upc_errors: '',
      unit_upc_errors: '',
      error: '',
+     show_mls:[],
    },
    mounted: function() {
        this.getSkus();
@@ -368,7 +369,20 @@ new Vue({
             console.log(err);
         })
       },
-
+      showManufactureLines: function(evnet){
+        let active_skus = this.skus.filter((sku) => {
+          return sku.active;
+        }).map((sku) => {
+          return sku.id
+        })
+        this.$http.post('/api/show_manufacturing_lines/', active_skus)
+        .then((response) => {
+            this.show_mls = response.data;
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+      },
       updateManufactureLines: function(event) {
         let active_skus = this.skus.filter((sku) => {
           return sku.active;

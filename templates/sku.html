@@ -25,6 +25,11 @@
                         <button class="btn btn-success" data-toggle="modal" data-target="#updateMLModal" v-on:click.prevent="getManufactureLines()">View Manufacturing Lines</button>
                   </div>
          {% endif %}
+         {% if user.is_analyst %}
+          <div class="form-inline my-2 ml-2 mr-2 my-lg-0">
+                        <button class="btn btn-success" data-toggle="modal" data-target="#showMLModal" v-on:click.prevent="showManufactureLines()">View Manufacturing Lines</button>
+                  </div>
+         {% endif %}
          <div class="form-inline my-2 ml-2 mr-2 my-lg-0">
                                     <button class="btn btn-success" type="submit" @click="disablePage">See Full Listing</button>
                   </div>
@@ -445,6 +450,36 @@
                                     <button type="submit" class="btn btn-primary">Save changes</button>
                               </div>
                         </form>
+                  </div>
+            </div>
+            <div class="loading" v-if="loading===true">Loading&#8230;</div>
+      </div>
+      {% endif %}
+
+      {% if user.is_analyst %}
+      <div class="modal fade" id="showMLModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                        <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">Manufacturing Lines</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                              </button>
+                        </div>
+                        <table>
+                           <thead>
+                                 <tr>
+                                       <th scope="col">Name</th>
+                                       <th scope="col">Short Name</th>
+                                 </tr>
+                           </thead>
+                           <tbody>
+                                 <tr v-for="ml in show_mls">
+                                       <td>${ml.ml_name}</td>
+                                       <td>${ml.ml_short_name}</td>
+                                 </tr>
+                           </tbody>
+                        </table>
                   </div>
             </div>
             <div class="loading" v-if="loading===true">Loading&#8230;</div>
