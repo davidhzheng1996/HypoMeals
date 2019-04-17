@@ -101,6 +101,7 @@ var starting = new Vue({
                 $("#scheduleAutomationModal").modal('hide');
             }
             let api_url = '/api/automate_scheduler';
+            console.log('right before post request');
             this.$http.post(api_url,this.automate)
              .then((response) => {
                 this.automate_response = response.data;
