@@ -1787,73 +1787,93 @@ def automate_scheduler(request):
             active_activities = Manufacturing_Activity.objects.filter((Q(status='active')|Q(status='orphaned')), goal_name__deadline__gte=start_date)
             # print(inactive_activities)
             # print(active_activities.filter(start=start_time,manufacturing_line=ml.ml_short_name).exists())
+            manufacturing_lines_ordered = {}
+            for activity in active_activities: 
+                if(not activity.manufacturing_line_id in manufacturing_lines_ordered):
+                    manufacturing_lines_ordered[activity.manufacturing_line_id] = []
+            for activity in active_activities: 
+                manufacturing_lines_ordered[activity.manufacturing_line_id].append(activity)
+            print( manufacturing_lines_ordered)
+            print(inactive_activities)
             if not inactive_activities:
                 post_result = 'error: no activities can be scheduled'
                 return Response(post_result, status = status.HTTP_400_BAD_REQUEST)
-            response = {
-                # all scheduled activities
-                'items': [],
-                # manufacturing lines for all scheduled activities
-                'groups': [],
-                # [{goal_name(enabled): [sku_name(active),]},]
-                'scheduled_goals': {},
-                # [{goal_name(enabled): [sku_name(non_active),]},]
-                'unscheduled_goals': {},
-                # manufacturing lines for all enabled goals
-                'manufacturing_lines': []
-            }
             # time_needed = calculateTime(start_time,activity['duration'])
             start_t = start_time
             # end_t = start_time
             # add items
+            response = {
+                'scheduled_activities':[],
+                'warning':False
+            }
             for m_activity in inactive_activities:
+                print("====================")
                 activity = ManufacturingActivitySerializer(m_activity).data
                 sku_name = Sku.objects.get(id=activity['sku']).sku_name
                 allowed_manufacturing_lines = Sku_To_Ml_Shortname.objects.filter(sku=activity['sku']).values_list('ml_short_name', flat=True)
                 allowed_manufacturing_lines_list = list(allowed_manufacturing_lines)
+                deadline = Goal.objects.get(goalname=activity['goal_name']).deadline
+                temp_add_to_line = {}
+                for allowed_line in allowed_manufacturing_lines_list: 
+                    time_needed_start = calculateTime(start_time,m_activity.duration)
+                    if allowed_line in manufacturing_lines_ordered:
+                        for i,active_activity in enumerate(manufacturing_lines_ordered[allowed_line]):
+                            if(i==0):
+                                if(start_time+timedelta(seconds=time_needed_start)<=manufacturing_lines_ordered[allowed_line][i].start):
+                                    temp_add_to_line[allowed_line] = {'i':0,'start_time':start_time,'end_time':start_time+timedelta(seconds=time_needed_start)}
+                                    break;
+                            time_needed = calculateTime(manufacturing_lines_ordered[allowed_line][i].end,m_activity.duration)
+                            if(i<len(manufacturing_lines_ordered[allowed_line])-1):
+                                if(manufacturing_lines_ordered[allowed_line][i].end+timedelta(seconds=time_needed)<=manufacturing_lines_ordered[allowed_line][i+1].start):
+                                    temp_add_to_line[allowed_line] = {'i':i+1, 'start_time':manufacturing_lines_ordered[allowed_line][i].end,'end_time':manufacturing_lines_ordered[allowed_line][i].end+timedelta(seconds=time_needed)}
+                            else: 
+                                if(manufacturing_lines_ordered[allowed_line][i].end+timedelta(seconds=time_needed)<=end_time):
+                                    temp_add_to_line[allowed_line] = {'i':i+1, 'start_time':manufacturing_lines_ordered[allowed_line][i].end,'end_time':manufacturing_lines_ordered[allowed_line][i].end+timedelta(seconds=time_needed)}
+                                    print(temp_add_to_line)
+                    else: 
+                        if(start_time+timedelta(seconds=time_needed_start)<=end_time):
+                            temp_add_to_line[allowed_line] = {'i':0, 'start_time':start_time,'end_time':start_time+timedelta(seconds=time_needed_start)}
+                print(temp_add_to_line)
+                if(not temp_add_to_line):
+                   response['warning']=True
+                earliest_time = None
+                add_to_line = None
 
+                for line in temp_add_to_line:
+                    if(earliest_time == None):
+                        add_to_line = line
+                        earliest_time = temp_add_to_line[line]['start_time']
+                    else: 
+                        if(earliest_time > temp_add_to_line[line]['start_time']):
+                            add_to_line = line
+                            earliest_time = temp_add_to_line[line]['start_time']
+                if(add_to_line!=None):
+                    print("FINAL ADDED LINE BELOW:")
+                    print(temp_add_to_line[add_to_line])
+                
+
+                if(add_to_line in manufacturing_lines_ordered):
+                    m_activity.start = temp_add_to_line[add_to_line]['start_time']
+                    m_activity.end = temp_add_to_line[add_to_line]['end_time']
+                    manufacturing_lines_ordered[add_to_line].insert(temp_add_to_line[add_to_line]['i'],m_activity)
+                else: 
+                    m_activity.start = temp_add_to_line[add_to_line]['start_time']
+                    m_activity.end = temp_add_to_line[add_to_line]['end_time']
+                    manufacturing_lines_ordered[add_to_line] = []
+                    manufacturing_lines_ordered[add_to_line].append(m_activity)
+                print(manufacturing_lines_ordered)
+                response['scheduled_activities'].append({'start':temp_add_to_line[add_to_line]['start_time'],'end':temp_add_to_line[add_to_line]['end_time'],'sku-id':m_activity.sku_id,'sku-name':sku_name,'goal-name':m_activity.goal_name_id})
+                print("************************")
                 # for ml in allowed_manufacturing_lines:
                 #     print(ml)
                 #     if active_activities.filter(start=start_t,manufacturing_line=ml).exists():
                 #         active_activity = active_activities.get(start=start_time,manufacturing_line=ml)
 
 
-                deadline = Goal.objects.get(goalname=activity['goal_name']).deadline
-                start_t = timeCheck(start_t)
-                seconds = int(calculateTime(start_t,activity['duration']))
-                # print(seconds)
-                end_t1 = start_t + datetime.timedelta(seconds=seconds)
-                print('start')
-                print(start_t)
-                print('end_t1')
-                print(end_t1)
-                if end_t1.date() > deadline:
-                    continue
-                if end_t1 > end_time:
-                    break
-                end_t = start_t + datetime.timedelta(seconds=seconds)
-                print('end_t')
-                print(end_t)
-                style = "background-color: green;"
-                item = {
-                    'id': activity['sku'],
-                    'group': activity['manufacturing_line'],
-                    'manufacturing_lines': allowed_manufacturing_lines_list,
-                    'sku': sku_name,
-                    'start': start_t,
-                    'end': end_t,
-                    'time_needed': activity['duration'],
-                    'style': style,
-                    'status': activity['status'],
-                    'deadline': deadline,
-                    'goal': activity['goal_name'],
-                    'content': sku_name
-                }
-                response['items'].append(item)
-                serializer = ManufacturingActivitySerializer(m_activity,{'start':start_t,'end':end_t},partial=True)
-                if(serializer.is_valid()):
-                    serializer.save()  
-                start_t = end_t
+              
+                # serializer = ManufacturingActivitySerializer(m_activity,{'start':start_t,'end':end_t},partial=True)
+                # if(serializer.is_valid()):
+                #     serializer.save()  
             return Response(response,status = status.HTTP_200_OK)
         except Exception as e: 
             return Response(status = status.HTTP_400_BAD_REQUEST)
