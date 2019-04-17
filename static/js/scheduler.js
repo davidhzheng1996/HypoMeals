@@ -22,6 +22,7 @@ var starting = new Vue({
         automate_response: [],
         active_manufacturing_activities:[],
         checkboxes: {},
+        selected: false
     },
     methods: {
         addGoal: function () {
@@ -80,6 +81,7 @@ var starting = new Vue({
         },
         getAutomation: function(){
             // check if any activity is selected
+            starting.automate['activities'] = []
             Object.keys(starting.checkboxes).forEach(function(goal) {
                 Object.keys(starting.checkboxes[goal]).forEach(function(sku) {
                     if(starting.checkboxes[goal][sku]['active'] == true) {
@@ -323,6 +325,21 @@ var starting = new Vue({
                 timeline1 = new vis.Timeline(container, this.items, this.groups, options);
         })
         },
+        select_all_activities: function() {
+            // set all unscheduled activities to be checked
+            // [{goal_name(enabled): [sku_name(non_active),]},]
+            this.unscheduled_goals.forEach(goal => {
+                // console.log(goal)
+                Object.keys(goal).forEach(goalname => {
+                    let skus = goal[goalname]
+                    Object.keys(skus).forEach(sku => {
+                        if(sku !== 'deadline') {
+                            this.checkboxes[goalname][sku]['active'] = this.selected
+                        }
+                    })
+                })
+            })
+        },
         populate: function() {
             // console.log('populating')
             $.get('api/get_scheduler',(response)=>{
@@ -347,7 +364,7 @@ var starting = new Vue({
                         sku = activity.sku
                         if (this.checkboxes[goal] == null) {
                             this.checkboxes[goal] = {}
-                        } 
+                        } ''
                         this.checkboxes[goal][sku] = {
                         'active': false
                         }
@@ -367,8 +384,9 @@ var starting = new Vue({
                     // console.log('repopuluate groups:')
                     // console.log(this.groups)
                 }
-                console.log(this.checkboxes)
+                // console.log(this.checkboxes)
                 // console.log(this.unscheduled_goals)
+                // this.select_all_activities()
             })
         },
     },
