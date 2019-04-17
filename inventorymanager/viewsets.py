@@ -1770,6 +1770,8 @@ def get_scheduler(request):
 @login_required(login_url='/accounts/login/')
 @api_view(['POST'])
 def automate_scheduler(request):
+    print("IS IT ACTUALLY COMING HERE")
+    print("dfljsadlfsadj;sjdlkfjaskd")
     def calculateTime(start_time,duration):
         actual_seconds = 0.0
         duration_seconds = float(duration * 3600)
