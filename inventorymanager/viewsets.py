@@ -401,8 +401,16 @@ def sales_summary(request):
                         cost = costCalculate(float_quantity, quantity_unit, float_package_size, package_size_unit, sku.formula_scale_factor, ingr.ig.cpp)
                         ingr_cost_per_case = ingr_cost_per_case + cost
                     year_dict['overall']['revenue'] = overall_rev
-                    count = Manufacture_Goal.objects.filter(sku=sku.id).count()
-                    size = Manufacture_Goal.objects.filter(sku=sku.id).aggregate(Sum('desired_quantity')).get('desired_quantity__sum',0.00)
+                    # count = Manufacture_Goal.objects.filter(sku=sku.id).count()
+                    # size = Manufacture_Goal.objects.filter(sku=sku.id).aggregate(Sum('desired_quantity')).get('desired_quantity__sum',0.00)
+                    count = Manufacturing_Activity.objects.filter(sku=sku.id,status='active').count()
+                    manufacturing_activities = Manufacturing_Activity.objects.filter(sku=sku.id,status='active')
+                    size = 0
+                    for activity in manufacturing_activities:
+                        desired_quantity = Manufacture_Goal.objects.get(
+                            sku=activity.sku.id, 
+                            name__goalname=activity.goal_name.goalname).desired_quantity
+                        size += desired_quantity
                     if not count:
                         avg_run_size = 10
                     else:
@@ -641,11 +649,16 @@ def get_sku_drilldown(request, skuid):
                     quantity_unit = quantity_unit[:-1]
                 cost = costCalculate(float_quantity, quantity_unit, float_package_size, package_size_unit, sku.formula_scale_factor, ingr.ig.cpp)
                 ingr_cost_per_case = ingr_cost_per_case + cost
-            count = Manufacture_Goal.objects.filter(sku=sku.id).count()
-            size = Manufacture_Goal.objects.filter(sku=sku.id).aggregate(Sum('desired_quantity')).get('desired_quantity__sum',0.00)
-            # for goal in goals:
-            #     size = size + goal.desired_quantity
-            #     count = count + 1;
+            # count = Manufacture_Goal.objects.filter(sku=sku.id).count()
+            # size = Manufacture_Goal.objects.filter(sku=sku.id).aggregate(Sum('desired_quantity')).get('desired_quantity__sum',0.00)
+            count = Manufacturing_Activity.objects.filter(sku=sku.id,status='active').count()
+            manufacturing_activities = Manufacturing_Activity.objects.filter(sku=sku.id,status='active')
+            size = 0
+            for activity in manufacturing_activities:
+                desired_quantity = Manufacture_Goal.objects.get(
+                    sku=activity.sku.id, 
+                    name__goalname=activity.goal_name.goalname).desired_quantity
+                size += desired_quantity
             if not count:
                 avg_run_size = 10
             else:
@@ -1893,6 +1906,9 @@ def update_activity():
                 update_status = 'orphaned'
             elif goal.enable_goal == True and manufacture_activity.status == 'orphaned':
                 update_status = 'active'
+            elif goal.enable_goal == False and manufacture_activity.status == 'inactive':
+                manufacture_activity.delete()
+                continue
             # update duration
             manufacture_rate = Sku.objects.get(id=manufacture_activity.sku.id).manufacture_rate
             desired_quantity = Manufacture_Goal.objects.get(
