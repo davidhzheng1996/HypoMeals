@@ -1852,6 +1852,7 @@ def automate_scheduler(request):
                             if(i<len(manufacturing_lines_ordered[allowed_line])-1):
                                 if(manufacturing_lines_ordered[allowed_line][i].end+timedelta(seconds=time_needed)<=manufacturing_lines_ordered[allowed_line][i+1].start):
                                     temp_add_to_line[allowed_line] = {'i':i+1, 'start_time':manufacturing_lines_ordered[allowed_line][i].end,'end_time':manufacturing_lines_ordered[allowed_line][i].end+timedelta(seconds=time_needed)}
+                                    break;
                             else: 
                                 if(manufacturing_lines_ordered[allowed_line][i].end+timedelta(seconds=time_needed)<=end_time):
                                     temp_add_to_line[allowed_line] = {'i':i+1, 'start_time':manufacturing_lines_ordered[allowed_line][i].end,'end_time':manufacturing_lines_ordered[allowed_line][i].end+timedelta(seconds=time_needed)}
@@ -1859,9 +1860,11 @@ def automate_scheduler(request):
                     else: 
                         if(start_time+timedelta(seconds=time_needed_start)<=end_time):
                             temp_add_to_line[allowed_line] = {'i':0, 'start_time':start_time,'end_time':start_time+timedelta(seconds=time_needed_start)}
+                print("TEMP ADD TO LINE BELOW: ")
                 print(temp_add_to_line)
                 if(not temp_add_to_line):
                    response['warning']=True
+                print('after setting warning')
                 earliest_time = None
                 add_to_line = None
 
@@ -1874,21 +1877,17 @@ def automate_scheduler(request):
                             add_to_line = line
                             earliest_time = temp_add_to_line[line]['start_time']
                 if(add_to_line!=None):
-                    print("FINAL ADDED LINE BELOW:")
-                    print(temp_add_to_line[add_to_line])
-                
-
-                if(add_to_line in manufacturing_lines_ordered):
-                    m_activity.start = temp_add_to_line[add_to_line]['start_time']
-                    m_activity.end = temp_add_to_line[add_to_line]['end_time']
-                    manufacturing_lines_ordered[add_to_line].insert(temp_add_to_line[add_to_line]['i'],m_activity)
-                    response['scheduled_activities'].append({'start':temp_add_to_line[add_to_line]['start_time'],'end':temp_add_to_line[add_to_line]['end_time'],'sku-id':m_activity.sku_id,'sku-name':sku_name,'goal-name':m_activity.goal_name_id,'manufacturing-line':add_to_line})
-                else: 
-                    m_activity.start = temp_add_to_line[add_to_line]['start_time']
-                    m_activity.end = temp_add_to_line[add_to_line]['end_time']
-                    manufacturing_lines_ordered[add_to_line] = []
-                    manufacturing_lines_ordered[add_to_line].append(m_activity)
-                    response['scheduled_activities'].append({'start':temp_add_to_line[add_to_line]['start_time'],'end':temp_add_to_line[add_to_line]['end_time'],'sku-id':m_activity.sku_id,'sku-name':sku_name,'goal-name':m_activity.goal_name_id,'manufacturing-line':add_to_line})
+                    if(add_to_line in manufacturing_lines_ordered):
+                        m_activity.start = temp_add_to_line[add_to_line]['start_time']
+                        m_activity.end = temp_add_to_line[add_to_line]['end_time']
+                        manufacturing_lines_ordered[add_to_line].insert(temp_add_to_line[add_to_line]['i'],m_activity)
+                        response['scheduled_activities'].append({'start':temp_add_to_line[add_to_line]['start_time'],'end':temp_add_to_line[add_to_line]['end_time'],'sku-id':m_activity.sku_id,'sku-name':sku_name,'goal-name':m_activity.goal_name_id,'manufacturing-line':add_to_line})
+                    else: 
+                        m_activity.start = temp_add_to_line[add_to_line]['start_time']
+                        m_activity.end = temp_add_to_line[add_to_line]['end_time']
+                        manufacturing_lines_ordered[add_to_line] = []
+                        manufacturing_lines_ordered[add_to_line].append(m_activity)
+                        response['scheduled_activities'].append({'start':temp_add_to_line[add_to_line]['start_time'],'end':temp_add_to_line[add_to_line]['end_time'],'sku-id':m_activity.sku_id,'sku-name':sku_name,'goal-name':m_activity.goal_name_id,'manufacturing-line':add_to_line})
                 print("************************")
                 print(m_activity.goal_name_id)
                 # for ml in allowed_manufacturing_lines:
