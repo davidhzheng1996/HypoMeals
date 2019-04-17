@@ -27,6 +27,8 @@
 	        <pre id="output"></pre>
 	    </div>
 	    <div class='side'>
+          select all unscheduled activities
+         <input type="checkbox" v-model="selected" v-on:change="select_all_activities">
 	    	<template v-for="(goal,list_index) in unscheduled_goals">
 	    		<template v-for="(value,index) in goal">
 	    			<div class="column">
